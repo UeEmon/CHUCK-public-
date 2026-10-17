@@ -1,0 +1,198 @@
+{
+  "comparison": "CHUCK HTTP API vs standalone same bundled VOACAP engine; not Marine service",
+  "cases": [
+    {
+      "case": "tokyo-guam",
+      "parameters": {
+        "tx_lat": 35.68,
+        "tx_lon": 139.76,
+        "year": 2026,
+        "month": 10,
+        "ssn": 80,
+        "ssn_source": "manual",
+        "power_w": 150,
+        "frequencies": [
+          4,
+          6,
+          8,
+          12,
+          16
+        ],
+        "noise": 150,
+        "min_angle": 3,
+        "required_snr": 40,
+        "reliability": 90,
+        "tx_antenna": "whip",
+        "rx_antenna": "whip",
+        "tx_gain": 0,
+        "rx_gain": 0,
+        "polarization_loss_db": 0,
+        "rx_lat": 13.45,
+        "rx_lon": 144.75
+      },
+      "points": 120,
+      "max_absolute_difference": {
+        "reliability": 0,
+        "snr_db_hz": 0,
+        "signal_dbw": 0,
+        "takeoff_deg": 0,
+        "muf_mhz": 0
+      },
+      "null_mismatches": 0,
+      "utc12_8mhz": {
+        "chuck": {
+          "frequency_mhz": 8.0,
+          "takeoff_deg": 18.5,
+          "muf_day_fraction": 0.98,
+          "signal_dbw": -108.0,
+          "snr_db_hz": 45.0,
+          "reliability": 71.0
+        },
+        "voacap": {
+          "frequency_mhz": 8,
+          "takeoff_deg": 18.5,
+          "signal_dbw": -108.0,
+          "snr_db_hz": 45.0,
+          "reliability": 71.0
+        }
+      },
+      "engine": "voacapl 0.7.7",
+      "engine_commit": "c12a98b348c39f36f2659b8b3aa97b86284c8a1d",
+      "direct_header": "VOACAP   VERSION 16.1207W"
+    },
+    {
+      "case": "tokyo-honolulu",
+      "parameters": {
+        "tx_lat": 35.68,
+        "tx_lon": 139.76,
+        "year": 2026,
+        "month": 10,
+        "ssn": 80,
+        "ssn_source": "manual",
+        "power_w": 150,
+        "frequencies": [
+          4,
+          6,
+          8,
+          12,
+          16
+        ],
+        "noise": 150,
+        "min_angle": 3,
+        "required_snr": 40,
+        "reliability": 90,
+        "tx_antenna": "whip",
+        "rx_antenna": "whip",
+        "tx_gain": 0,
+        "rx_gain": 0,
+        "polarization_loss_db": 0,
+        "rx_lat": 21.31,
+        "rx_lon": -157.86
+      },
+      "points": 120,
+      "max_absolute_difference": {
+        "reliability": 0,
+        "snr_db_hz": 0,
+        "signal_dbw": 0,
+        "takeoff_deg": 0,
+        "muf_mhz": 0
+      },
+      "null_mismatches": 0,
+      "utc12_8mhz": {
+        "chuck": {
+          "frequency_mhz": 8.0,
+          "takeoff_deg": 15.4,
+          "muf_day_fraction": 0.9,
+          "signal_dbw": -122.0,
+          "snr_db_hz": 41.0,
+          "reliability": 53.0
+        },
+        "voacap": {
+          "frequency_mhz": 8,
+          "takeoff_deg": 15.4,
+          "signal_dbw": -122.0,
+          "snr_db_hz": 41.0,
+          "reliability": 53.0
+        }
+      },
+      "engine": "voacapl 0.7.7",
+      "engine_commit": "c12a98b348c39f36f2659b8b3aa97b86284c8a1d",
+      "direct_header": "VOACAP   VERSION 16.1207W"
+    },
+    {
+      "case": "tokyo-london",
+      "parameters": {
+        "tx_lat": 35.68,
+        "tx_lon": 139.76,
+        "year": 2026,
+        "month": 10,
+        "ssn": 80,
+        "ssn_source": "manual",
+        "power_w": 150,
+        "frequencies": [
+          4,
+          6,
+          8,
+          12,
+          16
+        ],
+        "noise": 150,
+        "min_angle": 3,
+        "required_snr": 40,
+        "reliability": 90,
+        "tx_antenna": "whip",
+        "rx_antenna": "whip",
+        "tx_gain": 0,
+        "rx_gain": 0,
+        "polarization_loss_db": 0,
+        "rx_lat": 51.51,
+        "rx_lon": -0.13
+      },
+      "points": 120,
+      "max_absolute_difference": {
+        "reliability": 0,
+        "snr_db_hz": 0,
+        "signal_dbw": 0,
+        "takeoff_deg": 0,
+        "muf_mhz": 0
+      },
+      "null_mismatches": 0,
+      "utc12_8mhz": {
+        "chuck": {
+          "frequency_mhz": 8.0,
+          "takeoff_deg": 6.9,
+          "muf_day_fraction": 0.99,
+          "signal_dbw": -166.0,
+          "snr_db_hz": 0.0,
+          "reliability": 0.0
+        },
+        "voacap": {
+          "frequency_mhz": 8,
+          "takeoff_deg": 6.9,
+          "signal_dbw": -166.0,
+          "snr_db_hz": 0.0,
+          "reliability": 0.0
+        }
+      },
+      "engine": "voacapl 0.7.7",
+      "engine_commit": "c12a98b348c39f36f2659b8b3aa97b86284c8a1d",
+      "direct_header": "VOACAP   VERSION 16.1207W"
+    }
+  ],
+  "upstream_windows_reference_max_difference": {
+    "reliability": 1.0,
+    "snr_db_hz": 0,
+    "signal_dbw": 1.0,
+    "takeoff_deg": 0.10000000000000053,
+    "muf_mhz": 0.10000000000000142
+  },
+  "upstream_windows_reference_tolerance": {
+    "reliability": 1,
+    "snr_db_hz": 1,
+    "signal_dbw": 1,
+    "takeoff_deg": 0.1,
+    "muf_mhz": 0.1
+  },
+  "upstream_windows_reference_within_tolerance": true,
+  "passed": true
+}

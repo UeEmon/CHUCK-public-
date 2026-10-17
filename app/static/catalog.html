@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>アンテナ資料の送付 — CHUCK</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><div class="brand">CHUCK</div><select id="language" aria-label="Language" style="width:auto;margin-left:auto"><option value="ja">日本語</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ko">한국어</option></select></header>
+<div class="workspace" style="max-width:720px;margin:auto">
+<div class="panel">
+<h1>アンテナ資料の送付</h1>
+<p>ご寄付ありがとうございます。</p>
+<p class="hint">資料の送付は希望者のみの任意です。送らなくても寄付は完了しています。</p>
+<p class="hint">いただいた資料は内容を確認して登録を検討しますが、登録をお約束するものではありません。資料の内容や公開の可否によっては見送ることがあります。寄付は登録の対価ではありません。</p>
+<p class="hint">資料の原本は公開・再配布せず、登録の確認にだけ使います。文字の読み取りに外部のAIサービスを使う場合があります。公開されているカタログや仕様書をお送りください。</p>
+<form id="catalog-form">
+<label>GitHub Sponsorsで寄付したGitHubユーザー名<input name="login" required maxlength="40" autocomplete="username" data-user-content></label>
+<label>資料（PDF・PNG・JPEG・WebP、8MBまで）<input name="file" type="file" accept="application/pdf,image/png,image/jpeg,image/webp" required></label>
+<label>アンテナ名・型式などのメモ（任意）<input name="note" maxlength="1000"></label>
+<label>連絡先（任意。メールアドレスやコールサイン。公開しません）<input name="contact" maxlength="200"></label>
+<label class="ocr-check"><input name="consent" type="checkbox" required> 登録が確約されないことを了承しました</label>
+<button class="primary" type="submit">資料を送る</button>
+</form>
+<p id="status" class="muted" role="status"></p>
+<p class="exports"><a href="/">CHUCKに戻る</a></p>
+</div>
+</div>
+<script src="catalog.js"></script><script src="i18n-messages.js"></script><script src="public-messages.js"></script><script src="i18n.js"></script>
+</body></html>

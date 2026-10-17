@@ -1,0 +1,55 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+#*.out
+*.app
+
+# build files
+*.in
+
+# temporary files
+*~
+
+# voacapl specific files
+Makefile
+autom4te.cache/
+config.log
+config.status
+src/hfmufesw/Makefile
+src/modules/Makefile
+src/voa_lib/Makefile
+src/voacapw/Makefile
+src/voacapw/voacapl
+src/wp10dwin/Makefile
+voacapl/itshfbc/bin/anttyp90/Makefile
+voacapl/itshfbc/bin/anttyp90/anttyp90
+voacapl/itshfbc/coeffs/Makefile
+voacapl/itshfbc/coeffs/coefbinw
+voacapl/itshfbc/coeffs/coeffbin
+voacapl/itshfbc/coeffs/fof2bin
+voacapl/itshfbc/coeffs/fof2binw
+voacapl/itshfbc/bin/dst/dst2ascii
+voacapl/itshfbc/bin/dst/dst2csv

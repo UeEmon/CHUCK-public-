@@ -1,0 +1,2 @@
+# Preserve upstream legal texts byte-for-byte, including trailing blank lines.
+licenses/*.txt -whitespace -text

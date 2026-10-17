@@ -1,0 +1,8 @@
+data
+gateway-data
+.git
+__pycache__
+*.pyc
+tests
+dist
+.env

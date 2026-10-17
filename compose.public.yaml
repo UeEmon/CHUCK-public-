@@ -1,0 +1,21 @@
+# Public deployment: layer this on top of compose.yaml.
+#   docker compose -f compose.yaml -f compose.public.yaml up -d --build
+# See docs/PUBLIC_DEPLOYMENT.md. The admin secret must also be given to the
+# reverse proxy, which sends it only from the password-protected admin site.
+services:
+  hf-propagation:
+    command: ["python", "public_server.py"]
+    environment:
+      CHUCK_ADMIN_SECRET: "${CHUCK_ADMIN_SECRET:?set CHUCK_ADMIN_SECRET (32+ random characters)}"
+      CHUCK_RATE_BUDGET: "${CHUCK_RATE_BUDGET:-60}"
+      CHUCK_RATE_WINDOW_SECONDS: "${CHUCK_RATE_WINDOW_SECONDS:-3600}"
+      CHUCK_RESULT_RETENTION_DAYS: "${CHUCK_RESULT_RETENTION_DAYS:-30}"
+      CHUCK_MAX_RESULTS: "${CHUCK_MAX_RESULTS:-20000}"
+      # GitHub Sponsors page shown with the antenna request (https: or mailto:).
+      CHUCK_DONATION_URL: "${CHUCK_DONATION_URL:-}"
+      # Leave empty to use the built-in page /catalog.html once the webhook is set up.
+      CHUCK_CONTACT_URL: "${CHUCK_CONTACT_URL:-}"
+      # Secret of the GitHub Sponsors webhook (16+ characters). See docs/SPONSORS_SETUP.md.
+      GITHUB_SPONSORS_WEBHOOK_SECRET: "${GITHUB_SPONSORS_WEBHOOK_SECRET:-}"
+      # Monthly running cost in US dollars for the donation meter (0 hides the meter).
+      CHUCK_MONTHLY_COST_USD: "${CHUCK_MONTHLY_COST_USD:-0}"

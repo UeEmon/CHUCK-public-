@@ -1,0 +1,132 @@
+# 宇宙天気ソースとAPI連携
+
+調査・実装日: 2026-10-15
+
+## 取得時刻と最新更新（2026-10-16追加）
+
+「予察条件・宇宙天気」の取得時刻一覧で、ソースごとの観測・発行時刻と最終取得成功時刻（UTC）を分けて表示します。NICTは局ごとに観測時刻を表示。NOAA月間系列は発行時刻が提供されないため不明と明記し、対象月を発行時刻と取り違えません。
+
+「最新データをまとめて取得」はNOAAの3系列、D-RAP、NICTを更新し、GIROが有効なら選択局も更新します。各パネルの取得ボタンもキャッシュTTLを待たずに再取得します。GIRO無効設定を迂回して取得する機能ではありません。
+
+APIの`GET /api/space-weather?year=2026&month=10&refresh=1`、`/api/observations?refresh=1`、`/api/observations/giro?station=JR055&refresh=1`で同じ動作を要求できます。既定は従来どおりキャッシュを利用。`fetched_at`は最後の成功時刻、`fetch_state`はdownloaded/cache/failed。失敗時は古い値と取得時刻を維持し、失敗・古さを表示します。失敗後60秒の再試行抑制は強制更新時も維持します。
+
+最新に再取得できても提供元の観測時刻が進むとは限りません。予察済みの計算結果は自動再計算しません。国外の追加候補と条件は[国外電離圏データ調査](INTERNATIONAL_IONOSPHERE.md)を参照。
+
+## 採用ソース
+
+NOAA Space Weather Prediction Center (SWPC) の公開HTTPS JSON。APIキー不要。
+
+| 用途 | エンドポイント | 読み取る項目 |
+|---|---|---|
+| 対象月の観測平滑SSN | https://services.swpc.noaa.gov/json/solar-cycle/observed-solar-cycle-indices.json | time-tag, smoothed_ssn, smoothed_f10.7 |
+| 対象月の予測平滑SSN | https://services.swpc.noaa.gov/json/solar-cycle/predicted-solar-cycle.json | time-tag, predicted_ssn, predicted_f10.7 |
+| 現在の障害レベル | https://services.swpc.noaa.gov/products/noaa-scales.json | 0.DateStamp, 0.TimeStamp, 0.R/S/G.Scale |
+
+仕様: https://www.spaceweather.gov/products/solar-cycle-progression
+予測平滑値: https://www.spaceweather.gov/products/predicted-sunspot-number-and-radio-flux
+障害レベル: https://www.spaceweather.gov/noaa-scales-explanation
+
+NOAAが配信するSSNはSIDC、F10.7はカナダPenticton由来。出典リンクを画面に表示。
+欠測の -1、null、非有限値を排除し、0を正しい観測値として保持します。
+対象月の観測平滑SSNがあれば優先、なければ同月の予測平滑SSNを採用します。
+データがない月には近隣月を代入しません。250を超えるSSNも切り詰めず不採用です（現行エンジン入力上限）。
+
+## モデルとの関係
+
+VOACAPはCCIR係数と平滑国際黒点数を用いる月間統計モデルです。
+https://www.voacap.com/2023/understanding/choosingssn.html
+
+本連携はNOAA公表の平滑SSNをそのまま入力する選択肢を提供します。
+現代のSSN尺度と旧VOACAP係数との校正、従来Marineサービスと同じ予測手法・数値になることは未検証です。
+尺度変換係数を根拠なく固定しません。既定は手動入力を維持します。
+F10.7からSSNへの換算、KpやR/S/Gによる信頼度・吸収損失の補正は行いません。
+現在のR/S/Gは現在時刻の世界規模の指標で、選択年月・送受信経路への影響を直接表す値ではありません。
+
+## 比較した候補
+
+| 候補 | 評価／今回の扱い |
+|---|---|
+| NOAA SWPC | 平滑SSNの観測・予測とR/S/Gを公開JSONで提供。今回採用 |
+| SIDC/SILSO | 国際黒点数の一次ソース。NOAA経由で利用。予測法・尺度の追加比較候補 |
+| NICT宇宙天気予報 | 国内の電離圏・デリンジャー現象等に有用。今回は参考先として記載。API仕様・利用条件・対象データの確認後に追加可能 |
+
+NICT: https://swc.nict.go.jp/
+NICTのAPI提供の紹介: https://www2.nict.go.jp/oihq/seeds/detail/0073.html
+利用条件: https://swc.nict.go.jp/notice.html
+SIDC/SILSO: https://www.sidc.be/SILSO/
+
+## 運用
+
+ブラウザからは自サーバーのGET /api/space-weatherを呼びます。サーバーが固定の3 URLのみを取得します。
+送受信位置、回線条件、個人情報は外部送信しません。
+月別データは6時間、現在指標は5分間キャッシュ。/data/space-weather に永続保存します。
+外部取得は8秒タイムアウト、最大2 MB。失敗時は60秒間再試行を抑制します。
+取得日時はAPIへのアクセス時刻であり、上流データの発行日時ではありません。
+現在指標は上流のDateStamp/TimeStampをUTCとして別途表示し、1時間より古い値も期限切れとします。
+通信失敗時の古いキャッシュは参照表示できますが、自動計算用SSNとしては拒否します。
+
+手動計算はネット接続に依存しません。画面の「取得・表示」またはNOAAモード選択時のみ取得します。
+自動計算時にも対象月をサーバー側で照合し、実使用値のスナップショットを結果・履歴・JSON/CSVへ保存します。
+古い履歴を再計算するときNOAAモードなら新しい取得値を使う可能性があります。再現計算は手動モードで保存済みSSNを指定してください。
+
+## 観測・障害情報（D-RAP／NICT／GIRO）
+
+「観測・障害情報」タブの「国内観測・D-RAPを取得」で現在情報を取得します。
+回線マップの「D-RAP吸収」でHAFの格子を重ねます。透明は0、灰色は欠測、黄→赤は低→高周波数。
+1時間より古い／5分キャッシュ更新失敗のD-RAPは薄く表示し、経路付近の最大値の算出を停止します。
+表示時点の状態のため、過去・未来の月間予測に同時刻の情報として混用しないでください。
+
+### D-RAP
+
+- URL: https://services.swpc.noaa.gov/text/drap_global_frequencies.txt
+- 緯度・経度の数値格子とProduct Valid At（UTC）を解析します。固定の格子間隔に依存しません。
+- 値はHAF（垂直伝搬で1 dBの吸収の影響を受ける最高周波数MHz）。MUF、経路損失、LUFではありません。
+- 短経路を101点で参照し、最寄り格子のHAF最大値・欠測点数を参考表示。
+  これは電離圏反射点や斜め伝搬の吸収量を計算するものではありません。
+- 解説: https://www.spaceweather.gov/products/d-region-absorption-predictions-d-rap
+
+### NICT
+
+- URL: https://wdc.nict.go.jp/Ionosphere/realtime/oblver/index.html
+- NICTが公開する数値サマリの国内4局（WK546／TO536／YG431／OK426）を解析。
+- 最新観測時刻のJSTをUTCに変換。F領域の垂直MUF（foF2相当）と500〜4000 kmの距離別LUF／MUFを表示します。
+- E領域の値はF領域に混入させません。自動読取の値であり、観測点の近傍の状況を示す参考情報です。
+- VOACAPの指定回線MUFを別条件の参考値として併記します。両者は場所・経路・時刻・定義が異なるため、誤差率や補正係数を出しません。
+- 表示する観測局座標は概略位置。近傍局選択・電離圏反射点計算には使用しません。
+- foF2履歴・27日中央値はNICT原典へのリンクで確認します。画像やWebページをフレーム内に取り込みません。
+- 出典表示: WDC for Ionosphere and Space Weather, Tokyo, NICT。
+- 原典: https://wdc.nict.go.jp/Ionosphere/realtime/oblver.html
+- 謝辞要件: https://wdc.nict.go.jp/wdc-top/policy.html
+
+### 海外観測（GIRO／DIDBase）
+
+- 公開の数値ダウンロードフォーム https://giro.uml.edu/didbase/scaled.php へ固定条件のPOSTを行います。
+- 対象局: GU513（Guam）、JR055（Juliusruh）、MHJ45（Millstone Hill）。初期選択はJR055。
+- 過去2時間のfoF2、MUF(D=3000 km)、自動読取CS、限定符を取得。最新の表とfoF2時系列を表示し、取得できた局を地図にも表示します。
+- CSは0〜100、999は手動、−1は不明。低CSも隠さず表示します。自動読取は誤読がありえます。
+- 欠測はnullで表し、時系列の欠測や15分を超える間隔を線で接続しません。
+- 観測局・最新観測時刻・取得時刻を混同しません。選択局のデータがないとき、他局の値で代用しません。
+- CC BY-NC-SA 4.0、LGDC Rules of the Roadに利用・共有条件があります。業務運用が教育／非商用研究に当たると自動的に仮定しません。
+- **既定では海外への接続は無効**です。適用条件を満たす環境、または提供元から必要な許諾を得た環境で、`.env` に `HF_GIRO_ENABLED=1` を設定し、`docker compose up -d --build` で有効化してください。
+- 設定はサーバー側です。ブラウザから有効化や取得先URLの指定はできません。
+- 利用規則: https://giro.uml.edu/didbase/RulesOfTheRoad.html
+- 局の稼働・提供遅延により欠測する場合があります。今回の実接続ではJR055／MHJ45から取得でき、GU513は取得できませんでした（継続的欠測を意味しません）。
+
+### キャッシュと利用上の区別
+
+すべて5分間キャッシュ、取得失敗時60秒の再試行抑制、HTTPタイムアウト10秒、応答上限2 MB。
+観測時刻が1時間より古い場合も古いと表示します。データは/data/observationsに保存します。
+国内・D-RAPは独立して取得するため、一方が停止しても他方を参照できます。
+観測データをリポジトリへ同梱せず、API応答に出典と観測時刻・取得時刻・stale・errorを含めます。
+現在の観測表示は月間予測履歴と別管理で、履歴時点の観測を再現する機能はありません。
+
+豪州BoMは、一般Webページの自動抽出を禁止する条件と、データ別の利用・再配布条件があるため、今回の海外観測はGIROで実装しました。
+登録型のBoM APIや別途許諾を受けたデータの追加は行っていません。
+https://www.bom.gov.au/copyright
+
+
+## 外部データの権利・利用条件
+
+[DATA_LICENSES.md](../DATA_LICENSES.md) を参照してください。各APIのdata_termsにも
+該当する出典・条件と原文リンクを付加しています。この追記は計算への入力選択・データ取得方法を変更しません。
+本体MITとは別条件であり、文書や設定を追加したこと自体が許諾の取得を意味するものではありません。

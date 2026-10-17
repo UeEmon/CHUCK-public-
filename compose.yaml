@@ -1,0 +1,75 @@
+services:
+  hf-propagation:
+    build: .
+    image: hf-propagation:local
+    ports:
+      - "${HF_BIND:-127.0.0.1}:${HF_PORT:-18082}:8000"
+    environment:
+      HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      HF_ANTENNA_OCR_MODEL: "${HF_ANTENNA_OCR_MODEL:-}"
+      HF_ANTENNA_OCR_PROVIDER: "${HF_ANTENNA_OCR_PROVIDER:-openai}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      ANTHROPIC_MODEL: "${ANTHROPIC_MODEL:-}"
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
+      GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
+      GEMINI_MODEL: "${GEMINI_MODEL:-}"
+      LOCAL_LLM_BASE_URL: "${LOCAL_LLM_BASE_URL:-http://host.docker.internal:11434}"
+      LOCAL_LLM_PROTOCOL: "${LOCAL_LLM_PROTOCOL:-ollama}"
+      LOCAL_LLM_API_KEY: "${LOCAL_LLM_API_KEY:-}"
+      LOCAL_LLM_MODEL: "${LOCAL_LLM_MODEL:-}"
+      HF_POSITION_GATEWAY_URL: "http://position-gateway:8001"
+      HF_POSITION_GATEWAY_TOKEN: "${HF_POSITION_GATEWAY_TOKEN:-}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      position-gateway:
+        condition: service_healthy
+    volumes:
+      - hf-data:/data
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+  position-gateway:
+    build: .
+    image: hf-propagation:local
+    command: ["python", "gateway_server.py"]
+    ports:
+      - "${HF_GATEWAY_BIND:-127.0.0.1}:${HF_GATEWAY_PORT:-18083}:8001"
+    environment:
+      HF_POSITION_INGEST_TOKEN: "${HF_POSITION_INGEST_TOKEN:-}"
+      HF_POSITION_GATEWAY_TOKEN: "${HF_POSITION_GATEWAY_TOKEN:-}"
+      HF_POSITION_MAX_AGE_SECONDS: "${HF_POSITION_MAX_AGE_SECONDS:-300}"
+      HF_GATEWAY_UI_PASSWORD: "${HF_GATEWAY_UI_PASSWORD:-}"
+      HF_GATEWAY_UI_SECURE_COOKIE: "${HF_GATEWAY_UI_SECURE_COOKIE:-0}"
+    volumes:
+      - gateway-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:8001/api/health'))['ok']"]
+      interval: 20s
+      start_period: 10s
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+  position-migrate:
+    profiles: ["tools"]
+    build: .
+    image: hf-propagation:local
+    command: ["python", "migrate_positions.py", "--source", "/legacy/predictions.sqlite3", "--destination", "/data/positions.sqlite3"]
+    volumes:
+      - hf-data:/legacy:ro
+      - gateway-data:/data
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+volumes:
+  hf-data:
+  gateway-data:
