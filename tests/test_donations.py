@@ -154,5 +154,17 @@ class DonationTests(unittest.TestCase):
         self.assertGreater(body.index('public-messages.js'),body.index('i18n-messages.js'))
 
 
+    def test_admin_page_is_translated(self):
+        status,body=self.request('/support-admin.html');body=body.decode()
+        self.assertEqual(status,200);self.assertIn('id="language"',body)
+        order=[body.index(s) for s in ('support-admin.js','i18n-messages.js','support-messages.js','i18n.js')]
+        self.assertEqual(order,sorted(order))
+        source=(Path(__file__).resolve().parents[1]/'app'/'static'/'support-messages.js').read_text(encoding='utf-8')
+        entries=json.loads('{'+source.split('const messages={',1)[1].split('\n };',1)[0]+'}')
+        self.assertTrue(all(len(v)==7 and all(v) for v in entries.values()))
+        script=(Path(__file__).resolve().parents[1]/'app'/'static'/'support-admin.js').read_text(encoding='utf-8')
+        for word in ('未処理','解約予定','非表示にする','保存しました','記録なし'):
+            self.assertIn("'"+word+"'",script);self.assertIn(word,entries)
+
 if __name__=='__main__':
     unittest.main()

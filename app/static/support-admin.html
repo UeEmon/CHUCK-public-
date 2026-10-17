@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>寄付と資料の管理 — CHUCK</title><link rel="stylesheet" href="style.css"></head>
 <body>
-<header><div class="brand">CHUCK 管理</div><a href="/" style="margin-left:auto;color:var(--accent)">アプリに戻る</a></header>
+<header><div class="brand">CHUCK 管理</div><select id="language" aria-label="Language" style="width:auto;margin-left:auto"><option value="ja">日本語</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ko">한국어</option></select><a href="/" style="margin-left:12px;color:var(--accent)">アプリに戻る</a></header>
 <div class="workspace" style="max-width:1200px;margin:auto">
 <p id="status" class="muted" role="status"></p>
 <div class="panel"><h3>アンテナ資料</h3><p class="hint">「スポンサー」はそのユーザー名のスポンサー状況です（「記録なし」はそのユーザー名のスポンサー記録がないもの）。登録したら、アンテナ画面で作成したプリセットのIDを入れて「登録済み」にします。見送る場合は「見送り」にします。</p><div id="catalogs" class="table-wrap"></div></div>
 <div class="panel"><h3 id="ledger-title">スポンサー</h3><p class="hint">GitHubで公開を選んだスポンサーだけが公開サイトの支援者一覧に載ります。非表示にすると一覧から外します。</p><div id="donations" class="table-wrap"></div></div>
 <div class="panel"><h3>最近の通知</h3><div id="events" class="table-wrap"></div></div>
 </div>
-<script src="support-admin.js"></script>
+<script src="support-admin.js"></script><script src="i18n-messages.js"></script><script src="support-messages.js"></script><script src="i18n.js"></script>
 </body></html>
