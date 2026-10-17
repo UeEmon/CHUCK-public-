@@ -1,21 +1,22 @@
 'use strict';
 // Public deployment layer, loaded right after app.js by public_server.py.
-// Shared presets are read-only for visitors; their own presets and history
-// stay in this browser. Admin requests (through the admin site) are untouched.
+// Shared presets are read-only for visitors; their own locations, one own
+// antenna and their history stay in this browser. Admin requests (through the admin site) are untouched.
 const PUBLIC_CONFIG=fetch('/api/public-config').then(r=>r.ok?r.json():{public:false}).catch(()=>({public:false}));
 const PUBLIC_STORE='chuck-public-v1';
-const PUBLIC_LIMIT=200,HISTORY_LIMIT=100;
+const PUBLIC_LIMIT=200,HISTORY_LIMIT=100,ANTENNA_LIMIT=1;
 const publicKinds={'/api/predict':'point','/api/coverage':'coverage','/api/diversity':'rx_diversity'};
 
 function publicLoad(){
- try{const v=JSON.parse(localStorage.getItem(PUBLIC_STORE)||'{}');return {locations:Array.isArray(v.locations)?v.locations:[],history:Array.isArray(v.history)?v.history:[]};}
- catch{return {locations:[],history:[]};}
+ try{const v=JSON.parse(localStorage.getItem(PUBLIC_STORE)||'{}');const list=k=>Array.isArray(v[k])?v[k]:[];return {locations:list('locations'),antennas:list('antennas').slice(0,ANTENNA_LIMIT),history:list('history')};}
+ catch{return {locations:[],antennas:[],history:[]};}
 }
 function publicSave(v){
  try{localStorage.setItem(PUBLIC_STORE,JSON.stringify(v));}
  catch{throw Error('このブラウザに保存できません。プライベートモードや保存領域の設定を確認してください。');}
 }
-const ANTENNA_ADMIN_ONLY='アンテナプリセットの登録は管理者のみです。';
+const ANTENNA_SHARED='全員が使える共通のアンテナプリセットは管理者が登録します。';
+const ANTENNA_FULL='このブラウザに登録できる自分のアンテナは1つまでです。今のアンテナを編集するか、削除してから登録してください。';
 const isLocalPreset=p=>typeof p?.id==='string'&&p.id.startsWith('local-');
 function localId(){return 'local-'+(crypto.randomUUID?crypto.randomUUID().replace(/-/g,''):Date.now().toString(16)+Math.random().toString(16).slice(2));}
 function publicName(name){
@@ -30,24 +31,37 @@ function cleanLocation(p){
  const region=typeof p.region==='string'&&p.region.trim()?p.region.trim().slice(0,40):'マイ地点';
  return {id:p.id,name:publicName(p.name),kind:'fixed',region,lat:publicNumber(p.lat,'緯度',-89,89),lon:publicNumber(p.lon,'経度',-180,180)};
 }
+const ANTENNA_MODELS=['whip','isotropic','monopole','dipole','vertical_dipole'],GEOMETRIC=['monopole','dipole','vertical_dipole'];
+function cleanAntenna(p){
+ // Mirrors the server's antenna_parameters; the calculation checks the values again.
+ if(!ANTENNA_MODELS.includes(p.model))throw Error('アンテナのモデルを選んでください');
+ const range=(value,min,max,fallback)=>{if(value===undefined||value===null||value==='')return fallback;const n=Number(value);if(!Number.isFinite(n)||n<min||n>max)throw Error('アンテナの利得・寸法が入力できる範囲を超えています');return n;};
+ const length=GEOMETRIC.includes(p.model)?range(p.length_m,.1,200,NaN):null;if(Number.isNaN(length))throw Error('アンテナの利得・寸法が入力できる範囲を超えています');
+ const a={id:p.id,name:publicName(p.name),model:p.model,gain:range(p.gain,-20,30,0),length_m:length,
+  height_m:range(p.height_m,0,200,p.model==='dipole'||p.model==='vertical_dipole'?10:0),azimuth_deg:range(p.azimuth_deg,0,359.9,0),
+  ground_permittivity:range(p.ground_permittivity,1,80,13),ground_conductivity:range(p.ground_conductivity,.00003,5,.005),reference_only:false};
+ if(a.model==='dipole'&&a.height_m<.1)throw Error('水平ダイポールの地上高は0.1 m以上にしてください');
+ if(a.model==='vertical_dipole'&&a.height_m<=a.length_m/2)throw Error('垂直ダイポールの給電点高は全長の半分より高くしてください');
+ return a;
+}
 function editLocalPreset(data,catalogNow){
- if(data.collection==='antennas')throw Error(ANTENNA_ADMIN_ONLY);
- const store=publicLoad(),key='locations',rows=store[key];
+ const antennas=data.collection==='antennas',store=publicLoad(),key=antennas?'antennas':'locations',rows=store[key];
  if(data.action==='delete'){
   if(!isLocalPreset({id:data.id}))throw Error('共通プリセットは削除できません（管理者のみ）');
   store[key]=rows.filter(p=>p.id!==data.id);publicSave(store);return {revision:catalogNow.revision,id:data.id};
  }
  if(data.action!=='save')throw Error('公開版では使用できない操作です');
- const input={...data.preset};delete input.document_ref;
- const shared=catalogNow.presets;
+ const input={...data.preset};delete input.document_ref;delete input.reference;
+ const shared=antennas?catalogNow.antennas:catalogNow.presets;
  // Editing a shared preset saves the visitor's own copy.
  if(!isLocalPreset(input)){
   input.id=localId();
   if(typeof input.name==='string'&&shared.some(v=>v.name===input.name.trim()))input.name=input.name.trim().slice(0,34)+'（コピー）';
  }
- const p=cleanLocation(input);
+ const p=antennas?cleanAntenna(input):cleanLocation(input);
  if([...shared,...rows].some(v=>v.name===p.name&&v.id!==p.id))throw Error('同じ名前が登録されています');
  const index=rows.findIndex(v=>v.id===p.id);
+ if(index<0&&antennas&&rows.length>=ANTENNA_LIMIT)throw Error(ANTENNA_FULL);
  if(index<0&&rows.length>=PUBLIC_LIMIT)throw Error('このブラウザに保存できるのは'+PUBLIC_LIMIT+'件までです');
  if(index<0)rows.push(p);else rows[index]=p;
  publicSave(store);return {revision:catalogNow.revision,id:p.id};
@@ -68,7 +82,7 @@ api=async function(url,options){
  if(path==='/api/history')return publicLoad().history;
  if(path==='/api/presets'&&method==='GET'){
   publicSharedCatalog=await upstreamApi(url,options);const store=publicLoad();
-  return {...publicSharedCatalog,presets:[...publicSharedCatalog.presets,...store.locations]};
+  return {...publicSharedCatalog,presets:[...publicSharedCatalog.presets,...store.locations],antennas:[...publicSharedCatalog.antennas,...store.antennas]};
  }
  if(path==='/api/presets')return editLocalPreset(JSON.parse(options.body),publicSharedCatalog);
  if(['/api/ai-settings','/api/antenna-imports','/api/positions','/api/position-stations'].some(p=>path===p||path.startsWith(p+'/')))
@@ -79,7 +93,7 @@ api=async function(url,options){
 };
 
 function publicExport(){
- const blob=new Blob([JSON.stringify((({locations,history})=>({format:'chuck-public-v1',exported:new Date().toISOString(),locations,history}))(publicLoad()),null,2)],{type:'application/json'});
+ const blob=new Blob([JSON.stringify((({locations,antennas,history})=>({format:'chuck-public-v1',exported:new Date().toISOString(),locations,antennas,history}))(publicLoad()),null,2)],{type:'application/json'});
  const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='chuck-my-data.json';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),1000);
 }
 async function publicImport(file){
@@ -89,6 +103,10 @@ async function publicImport(file){
   for(const raw of Array.isArray(data.locations)?data.locations:[]){
    if(store.locations.length>=PUBLIC_LIMIT)break;
    try{const p=cleanLocation({...raw,id:isLocalPreset(raw)?raw.id:localId()});if(store.locations.some(v=>v.id===p.id||v.name===p.name))continue;store.locations.push(p);added++;}catch{/* Skip invalid rows. */}
+  }
+  for(const raw of Array.isArray(data.antennas)?data.antennas:[]){
+   if(store.antennas.length>=ANTENNA_LIMIT)break;
+   try{const a=cleanAntenna({...raw,id:isLocalPreset(raw)?raw.id:localId()});if(publicSharedCatalog.antennas.some(v=>v.name===a.name))continue;store.antennas.push(a);added++;}catch{/* Skip invalid rows. */}
   }
   const known=new Set(store.history.map(h=>h.id));
   for(const h of Array.isArray(data.history)?data.history:[])if(typeof h?.id==='string'&&/^[0-9a-f]{32}$/.test(h.id)&&!known.has(h.id)){store.history.push(h);known.add(h.id);}
@@ -129,7 +147,7 @@ async function supportMeter(cfg){
 function antennaRequest(cfg){
  // Antennas are curated by the administrator; donors may optionally send catalogs.
  const box=document.createElement('div');box.className='panel public-antenna-request';
- box.append(publicHint(ANTENNA_ADMIN_ONLY),publicHint(CATALOG_OPTIONAL),publicHint(CATALOG_NOT_PROMISED));
+ box.append(publicHint(ANTENNA_SHARED),publicHint(CATALOG_OPTIONAL),publicHint(CATALOG_NOT_PROMISED));
  const links=document.createElement('p');links.className='exports';
  for(const [url,label]of [[cfg.donation_url,'GitHub Sponsorsで寄付する'],[cfg.contact_url,'アンテナ資料を送る（希望者のみ）']]){
   if(!url)continue;const a=document.createElement('a');a.href=url;a.textContent=label;
@@ -153,10 +171,16 @@ Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
  hide(document.querySelector('[data-tab="positions"]'));hide(document.getElementById('positions'));
  hide(document.getElementById('ai-settings-panel'));hide(document.getElementById('antenna-import-panel'));
  const mobile=document.querySelector('#location-editor select[name="kind"] option[value="mobile"]');if(mobile)mobile.remove();
+ const ownAntenna='アンテナは自分用を1つだけ登録できます。このブラウザにだけ保存され、他の利用者には表示されません。共通のアンテナは「コピーして編集」で自分用に変えられます。';
  const shared='共通プリセットは閲覧専用です。追加・編集した地点は「自分の」プリセットとしてこのブラウザにだけ保存され、他の利用者には表示されません。';
  const locationEditor=document.getElementById('location-editor');if(locationEditor)locationEditor.before(publicHint(shared),publicTools());
  const antennaEditor=document.getElementById('antenna-editor');
- if(antennaEditor){antennaEditor.before(antennaRequest(cfg));hide(antennaEditor);}
+ if(antennaEditor){
+  antennaEditor.before(antennaRequest(cfg),publicHint(ownAntenna));
+  // Document-backed and reference-only antennas stay with the administrator.
+  for(const name of ['reference_only'])hide(antennaEditor.elements[name]?.closest('label'));
+  for(const id of ['ocr-reviewed','ocr-approximation'])hide(document.getElementById(id)?.closest('label'));
+ }
  const historyList=document.getElementById('history-list');
  if(historyList)historyList.before(publicHint('計算履歴はこのブラウザにだけ保存されます。サーバー上の結果は'+cfg.retention_days+'日後に削除されます。'),publicTools());
  if(typeof renderCatalog==='function'){
@@ -167,7 +191,6 @@ Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
     const trs=document.querySelectorAll('#'+target+' tr');
     rows.forEach((p,i)=>{
      const buttons=trs[i+1]?.querySelectorAll('button');if(!buttons||buttons.length<2||isLocalPreset(p))return;
-     if(target==='antennas-list'){for(const b of buttons)hide(b);return;}
      buttons[0].textContent='コピーして編集';buttons[1].disabled=true;buttons[1].title='共通プリセットは削除できません';
     });
    }
