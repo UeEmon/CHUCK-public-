@@ -22,6 +22,8 @@
  async function load(){
   const [ledger,catalogs]=await Promise.all([call('/api/admin/donations'),call('/api/admin/catalog-requests')]);
   document.getElementById('ledger-title').textContent=`スポンサー（${ledger.month}の見込み：毎月 ${usd(ledger.monthly_usd)}＋1回のみ ${usd(ledger.one_time_usd)}、手数料なし・入金はGitHubの明細で確認）`;
+  const auto=ledger.running_costs.reduce((sum,c)=>sum+c.usd,0),latest=ledger.running_costs.map(c=>c.updated).sort().pop();
+  document.getElementById('running-cost').textContent=latest?`運営費の目安：${usd(ledger.goal_usd)}（固定額 ${usd(ledger.fixed_cost_usd)}＋サーバーの請求額 ${usd(auto)}、${when(latest)}更新）`:`運営費の目安：${usd(ledger.goal_usd)}（固定額のみ、サーバーの請求額はまだ届いていません）`;
   table(document.getElementById('donations'),['開始日時','GitHub','金額','種類','状態','公開','一覧',''],ledger.sponsorships,(tr,s)=>{
    cell(tr,when(s.created));cell(tr,s.login,true);cell(tr,usd(s.usd));cell(tr,s.one_time?'1回のみ':'毎月');cell(tr,STATES[s.state]||s.state);cell(tr,s.privacy==='public'?'公開':'非公開');
    cell(tr,s.privacy!=='public'?'—':s.hidden?'非表示':'表示中');

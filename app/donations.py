@@ -9,6 +9,7 @@ stay with GitHub. Sponsors may send antenna catalogs under their GitHub login.
 from datetime import datetime, timedelta, timezone
 import hashlib
 import hmac
+import math
 import re
 import uuid
 
@@ -22,6 +23,8 @@ DELIVERY=re.compile(r'[0-9A-Fa-f-]{8,64}')
 CONTROL=re.compile(r'[\x00-\x1f\x7f]')
 # Monthly sponsorships still counted this month; one-time ones count in the month they were made.
 COUNTED=('active','pending_cancellation')
+# A reported running cost older than this is ignored, so a stopped timer cannot leave a stale goal.
+COST_MAX_AGE=timedelta(days=40)
 
 
 class SignatureError(Exception):pass
@@ -64,6 +67,8 @@ class DonationStore:
             c.execute('CREATE TABLE IF NOT EXISTS sponsorships (node_id TEXT PRIMARY KEY, login TEXT NOT NULL, privacy TEXT NOT NULL, cents INTEGER NOT NULL, one_time INTEGER NOT NULL, state TEXT NOT NULL, created TEXT NOT NULL, updated TEXT NOT NULL, hidden INTEGER NOT NULL DEFAULT 0)')
             # One row per webhook delivery, so a redelivered event is applied once.
             c.execute('CREATE TABLE IF NOT EXISTS sponsor_events (delivery TEXT PRIMARY KEY, received TEXT NOT NULL, action TEXT NOT NULL, node_id TEXT NOT NULL, login TEXT NOT NULL, cents INTEGER NOT NULL, one_time INTEGER NOT NULL)')
+            # Server cost reported by the host (for example the Oracle bill); one row per source.
+            c.execute('CREATE TABLE IF NOT EXISTS running_costs (source TEXT PRIMARY KEY, usd REAL NOT NULL, updated TEXT NOT NULL)')
             c.execute('CREATE TABLE IF NOT EXISTS catalog_requests (id TEXT PRIMARY KEY, created TEXT NOT NULL, login TEXT NOT NULL, contact TEXT NOT NULL, note TEXT NOT NULL, filename TEXT NOT NULL, media_type TEXT NOT NULL, content BLOB NOT NULL, status TEXT NOT NULL DEFAULT \'pending\', antenna_preset_id TEXT NOT NULL DEFAULT \'\', admin_note TEXT NOT NULL DEFAULT \'\', updated TEXT NOT NULL)')
         return c
 
@@ -100,6 +105,20 @@ class DonationStore:
             # Only sponsors who chose to be public on GitHub are listed, newest first.
             names=[r[0] for r in c.execute(f"SELECT login FROM sponsorships WHERE privacy='public' AND hidden=0 AND (state IN {COUNTED} OR (one_time=1 AND created>=?)) GROUP BY lower(login) ORDER BY MAX(created) DESC LIMIT 50",(since,))]
         return dict(month=month,goal_usd=goal_usd,expected_usd=round((recurring+once)/100,2),supporters=names)
+
+    def set_running_cost(self,source,usd):
+        source=clean_text(source,40)
+        if not source:raise ValueError('source が必要です')
+        if isinstance(usd,bool) or not isinstance(usd,(int,float)) or not math.isfinite(usd) or not 0<=usd<=100000:raise ValueError('usd は0以上の金額にしてください')
+        with self.connection() as c:
+            c.execute('INSERT INTO running_costs VALUES (?,?,?) ON CONFLICT(source) DO UPDATE SET usd=excluded.usd,updated=excluded.updated',
+                      (source,round(float(usd),2),datetime.now(timezone.utc).isoformat()))
+
+    def running_costs(self):
+        since=(datetime.now(timezone.utc)-COST_MAX_AGE).isoformat()
+        with self.connection() as c:
+            rows=c.execute('SELECT source,usd,updated FROM running_costs WHERE updated>=? ORDER BY source',(since,)).fetchall()
+        return [dict(source=s,usd=u,updated=t) for s,u,t in rows]
 
     def ledger(self,limit=200):
         with self.connection() as c:

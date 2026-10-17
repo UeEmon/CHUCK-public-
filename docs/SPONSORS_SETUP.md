@@ -44,8 +44,10 @@ https://<公開サイトのドメイン>/catalog.html
 ```sh
 GITHUB_SPONSORS_WEBHOOK_SECRET=<Webhook の Secret と同じ値>
 CHUCK_DONATION_URL=https://github.com/sponsors/<ユーザー名>
-CHUCK_MONTHLY_COST_USD=20     # 寄付メーターの目安額（米ドル）。0 で非表示
+CHUCK_MONTHLY_COST_USD=20     # 運営費の固定分（米ドル。ドメイン代など）。サーバーの請求額はこれに自動で足されます
 ```
+
+寄付メーターの「運営費の目安」は、`CHUCK_MONTHLY_COST_USD` に、サーバーから届いた請求額を足した金額です。請求額はサーバー側の定期処理が `POST /api/admin/running-cost`（管理用の秘密が必要、本文は `{"source":"oracle","usd":1.23}`）で毎日送ります。40日届かない請求額は数えません。目安が0のときメーターは出ません。
 
 設定後に `docker compose -f compose.yaml -f compose.public.yaml up -d` で再起動します。アンテナ画面に「GitHub Sponsorsで寄付する」「アンテナ資料を送る（希望者のみ）」のボタンと寄付メーターが出ます。
 

@@ -144,6 +144,26 @@ class DonationTests(unittest.TestCase):
         self.assertEqual(self.request('/api/admin/catalog-requests/'+'0'*32,dict(status='declined'))[0],403)
         self.assertEqual(self.request('/api/admin/catalog-requests/'+'0'*32,dict(status='declined'),admin=True,headers={'Origin':'https://evil.example'})[0],403)
 
+    def test_running_cost_is_added_to_the_fixed_goal(self):
+        cost='/api/admin/running-cost'
+        self.assertEqual(self.request(cost,dict(source='oracle',usd=1))[0],403)
+        self.assertEqual(self.request(cost,dict(source='oracle',usd=1),admin=True,headers={'Origin':'https://evil.example'})[0],403)
+        for bad in (-1,'3',True,float('inf'),None):
+            self.assertEqual(self.request(cost,raw=json.dumps(dict(source='oracle',usd=bad)).encode(),admin=True)[0],400,bad)
+        os.environ['CHUCK_MONTHLY_COST_USD']='2'
+        try:
+            status,body=self.request(cost,dict(source='oracle',usd=3.456),admin=True)
+            self.assertEqual((status,json.loads(body)['goal_usd']),(200,5.46))
+            self.assertEqual(json.loads(self.request('/api/support/summary')[1])['goal_usd'],5.46)
+            ledger=self.ledger()
+            self.assertEqual((ledger['fixed_cost_usd'],[c['usd'] for c in ledger['running_costs']]),(2,[3.46]))
+            # A report the timer stopped refreshing no longer counts.
+            with self.server.connection() as c:c.execute("UPDATE running_costs SET updated='2000-01-01T00:00:00+00:00'")
+            self.assertEqual(json.loads(self.request('/api/support/summary')[1])['goal_usd'],2)
+        finally:
+            os.environ.pop('CHUCK_MONTHLY_COST_USD',None)
+            with self.server.connection() as c:c.execute('DELETE FROM running_costs')
+
     def test_config_points_to_built_in_catalog_page(self):
         cfg=json.loads(self.request('/api/public-config')[1])
         self.assertTrue(cfg['donations']);self.assertEqual(cfg['contact_url'],'/catalog.html')

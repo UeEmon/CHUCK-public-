@@ -46,7 +46,7 @@
 | `CHUCK_DONATION_URL` | GitHub Sponsors のページ（例：`https://github.com/sponsors/UeEmon`）。未設定ならボタンなし |
 | `CHUCK_CONTACT_URL` | 資料の送付先を外部フォームにする場合だけ設定。未設定なら組み込みの受付ページ |
 | `GITHUB_SPONSORS_WEBHOOK_SECRET` | GitHub Sponsors の Webhook に設定した秘密の文字列（16文字以上）。未設定なら台帳・受付ページ・メーターは無効 |
-| `CHUCK_MONTHLY_COST_USD` | 寄付メーターの目安額（米ドル）。0 で非表示 |
+| `CHUCK_MONTHLY_COST_USD` | 運営費の固定分（米ドル）。サーバーが `/api/admin/running-cost` で送る請求額を足したものが寄付メーターの目安。合計0で非表示 |
 
 寄付者は受付ページで GitHub のユーザー名を入力し、希望すれば資料（PDF・PNG・JPEG・WebP、8MBまで、1ユーザー名5件まで）を送れます。送信には「登録が確約されないことを了承」のチェックが必須です。非公開のスポンサーを第三者に知られないよう、受付ページはスポンサーかどうかに関わらず同じ応答を返し、照合結果は管理画面だけに表示します。管理者は管理サイトの `/support-admin.html` でスポンサーと資料を確認し、登録したプリセットIDと状態（未処理・登録済み・見送り）を記録します。支援者一覧には GitHub で公開を選んだスポンサーだけを載せ、管理画面から非表示にできます。
 

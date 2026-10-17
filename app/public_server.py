@@ -56,6 +56,11 @@ def int_env(name,default):
     except ValueError:return default
 
 
+def monthly_goal():
+    # The fixed part (domain and so on) plus whatever the host reported recently, such as the Oracle bill.
+    return round(int_env('CHUCK_MONTHLY_COST_USD',0)+sum(c['usd'] for c in DONATIONS.running_costs()),2)
+
+
 class RateLimiter:
     """Sliding-window budget of calculation cost per client."""
     def __init__(self,budget,window_seconds,clock=time.monotonic):
@@ -191,12 +196,12 @@ class PublicHandler(server.Handler):
         return self.rfile.read(length) if 0<length<=limit else None
 
     def support_get(self,path):
-        if path=='/api/support/summary':
-            return self.json(200,DONATIONS.summary(int_env('CHUCK_MONTHLY_COST_USD',0)))
+        if path=='/api/support/summary':return self.json(200,DONATIONS.summary(monthly_goal()))
         return self.json(404,{'error':'見つかりません'})
 
     def admin_get(self,path):
-        if path=='/api/admin/donations':return self.json(200,DONATIONS.ledger())
+        if path=='/api/admin/donations':
+            return self.json(200,dict(DONATIONS.ledger(),fixed_cost_usd=int_env('CHUCK_MONTHLY_COST_USD',0),running_costs=DONATIONS.running_costs(),goal_usd=monthly_goal()))
         if path=='/api/admin/catalog-requests':return self.json(200,DONATIONS.catalogs())
         match=re.fullmatch(r'/api/admin/catalog-requests/([0-9a-f]{32})/file',path)
         row=DONATIONS.catalog_file(match.group(1)) if match else None
@@ -238,6 +243,7 @@ class PublicHandler(server.Handler):
         try:
             data=json.loads(body or b'')
             if not isinstance(data,dict):raise ValueError('JSONオブジェクトが必要です')
+            if path=='/api/admin/running-cost':DONATIONS.set_running_cost(data.get('source'),data.get('usd'));return self.json(200,{'goal_usd':monthly_goal()})
             match=re.fullmatch(r'/api/admin/catalog-requests/([0-9a-f]{32})',path)
             if match:DONATIONS.update_catalog(match.group(1),data);return self.json(200,{'ok':True})
             match=re.fullmatch(r'/api/admin/supporters/([A-Za-z0-9-]{1,39})',path)
