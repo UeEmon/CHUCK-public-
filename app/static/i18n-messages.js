@@ -91,6 +91,24 @@ const HF_MESSAGES={
     "Weltansicht",
     "전체 보기"
   ],
+  "拡大": [
+    "Zoom in",
+    "Zoom avant",
+    "Acercar",
+    "Ingrandisci",
+    "Aproximar",
+    "Vergrößern",
+    "확대"
+  ],
+  "縮小": [
+    "Zoom out",
+    "Zoom arrière",
+    "Alejar",
+    "Riduci",
+    "Afastar",
+    "Verkleinern",
+    "축소"
+  ],
   "地点は右側のプリセットから選択": [
     "Select locations from presets on the right",
     "Choisir les lieux à droite",
@@ -100,14 +118,14 @@ const HF_MESSAGES={
     "Standorte rechts auswählen",
     "오른쪽 프리셋에서 지점 선택"
   ],
-  "ドラッグで移動 · ホイール／サムホイールで拡縮 · Natural Earth": [
-    "Drag to pan · Wheel/thumb wheel to zoom · Natural Earth",
-    "Glisser pour déplacer · Molette pour zoomer · Natural Earth",
-    "Arrastre para mover · Rueda para ampliar · Natural Earth",
-    "Trascina per spostare · Rotella per lo zoom · Natural Earth",
-    "Arraste para mover · Roda para ampliar · Natural Earth",
-    "Ziehen zum Verschieben · Mausrad zum Zoomen · Natural Earth",
-    "드래그로 이동 · 휠/엄지 휠로 확대·축소 · Natural Earth"
+  "ドラッグで移動 · ホイール／ピンチ／＋－で拡縮 · Natural Earth": [
+    "Drag to pan · Wheel, pinch or +/− to zoom · Natural Earth",
+    "Glisser pour déplacer · Molette, pincement ou +/− pour zoomer · Natural Earth",
+    "Arrastre para mover · Rueda, pellizco o +/− para ampliar · Natural Earth",
+    "Trascina per spostare · Rotella, pizzico o +/− per lo zoom · Natural Earth",
+    "Arraste para mover · Roda, pinça ou +/− para ampliar · Natural Earth",
+    "Ziehen zum Verschieben · Mausrad, Zwei-Finger-Geste oder +/− zum Zoomen · Natural Earth",
+    "드래그로 이동 · 휠/핀치/+−로 확대·축소 · Natural Earth"
   ],
   "D-RAPと観測局は「予察条件・宇宙天気」タブで取得できます。": [
     "Load D-RAP and stations in Forecast & space weather.",

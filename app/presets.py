@@ -7,6 +7,9 @@ from urllib.parse import urlsplit
 from engine import InputError, ANTENNAS, antenna_parameters
 from position_contract import identifier, numeric
 
+# Archived copy: the maker's site serves an expired self-signed certificate.
+P3_SOURCE='https://web.archive.org/web/20260516023653/https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html'
+
 DEFAULTS=[('yokosuka','横須賀',35.30,139.67),('naha','那覇',26.21,127.68),('chichijima','父島',27.09,142.19),
           ('guam','グアム',13.45,144.75),('honolulu','ホノルル',21.31,-157.86),
           ('singapore','シンガポール',1.29,103.85),('sydney','シドニー',-33.87,151.21)]
@@ -150,10 +153,19 @@ class PresetStore:
                     item=dict(id='reference-air-p3-longwire',name=name,model='whip',reference_only=True,
                               reference=dict(operator='P-3 family (public reference)',designation='P-3 dual HF long-wire',checked_on='2026-10-16',
                                 notes='メーカーのP-3用シャント改修説明で従来の2本式HFロングワイヤーを確認。全長・給電条件・機体込み実測指向性は未確認。2本を1本の全長として合算しない。各派生機の仕様や現在の搭載状態は断定しない。計算選択不可。',
-                                sources=['https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html']))
+                                sources=[P3_SOURCE]))
                     p=validate_preset(item,'antennas')
                     c.execute('INSERT OR IGNORE INTO antenna_presets VALUES (?,?)',(p['id'],json.dumps(p,ensure_ascii=False)))
                 if not created:c.execute('UPDATE station_presets_meta SET revision=revision+1 WHERE id=1')
+            if c.execute("INSERT OR IGNORE INTO preset_migrations VALUES ('p3-source-archive-v1')").rowcount:
+                # ASB's own site serves an expired self-signed certificate, so browsers warn; point to the archived copy.
+                changed=False
+                for key,payload in c.execute('SELECT id,payload FROM antenna_presets').fetchall():
+                    item=json.loads(payload);ref=item.get('reference') or {}
+                    if 'https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html' not in ref.get('sources',[]):continue
+                    ref['sources']=[P3_SOURCE if u=='https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html' else u for u in ref['sources']]
+                    c.execute('UPDATE antenna_presets SET payload=? WHERE id=?',(json.dumps(item,ensure_ascii=False),key));changed=True
+                if changed and not created:c.execute('UPDATE station_presets_meta SET revision=revision+1 WHERE id=1')
             c.commit()
             return c
         except Exception:

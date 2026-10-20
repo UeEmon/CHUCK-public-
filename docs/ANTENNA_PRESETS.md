@@ -56,8 +56,8 @@ P-1・P-3C固有のHFアンテナ寸法と機体込みの実測指向性は、�
 
 追加資料：
 
-- [ASB：P-3用HFシャントアンテナの開発説明](https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html)
-- [ASB：HF Shunt Antenna Program](https://www.asbavionics.com/hf-shunt-antenna.html)
+- [ASB：P-3用HFシャントアンテナの開発説明](https://web.archive.org/web/20260516023653/https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html)
+- [ASB：HF Shunt Antenna Program](https://web.archive.org/web/2026/https://www.asbavionics.com/hf-shunt-antenna.html)
 - [NAVSEA/SERMC：Capabilities Manual、2020-08-27、Antenna Repair](https://www.navsea.navy.mil/Portals/103/Documents/SERMC/Capabilities%20Manual%2027AUG2020.pdf)
 - [NAVAIR：P-3用HF無線機更新の記事、2010-03-24](https://www.navair.navy.mil/node/10701)は無線機の更新を裏付ける資料であり、アンテナ寸法や放射特性の根拠には使用しない。
 
