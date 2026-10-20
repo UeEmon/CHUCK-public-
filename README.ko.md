@@ -1,4 +1,8 @@
+<p align="center"><img src="docs/images/chuck-icon.png" alt="CHUCK" width="140"></p>
+
 # CHUCK
+
+**C**overage & **H**F **U**sability **C**alculation **K**it
 
 [日本語](README.md) | [English](README.en.md) | [Français](README.fr.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Português](README.pt.md) | [Deutsch](README.de.md) | 한국어
 

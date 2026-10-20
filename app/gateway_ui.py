@@ -50,7 +50,9 @@ class GatewayUI:
                '/gateway.js':(BASE/'gateway_static/gateway.js','text/javascript; charset=utf-8'),
                '/style.css':(BASE/'gateway_static/style.css','text/css; charset=utf-8'),
                '/i18n.js':(BASE/'static/i18n.js','text/javascript; charset=utf-8'),
-               '/i18n-messages.js':(BASE/'static/i18n-messages.js','text/javascript; charset=utf-8')}
+               '/i18n-messages.js':(BASE/'static/i18n-messages.js','text/javascript; charset=utf-8'),
+               '/chuck-icon.png':(BASE/'static/chuck-icon.png','image/png'),
+               '/favicon.png':(BASE/'static/favicon.png','image/png')}
         if path in files:
             file,mime=files[path];body=file.read_bytes();self.send_response(200)
             for key,value in [('Content-Type',mime),('Content-Length',str(len(body))),('Cache-Control','no-store'),('X-Content-Type-Options','nosniff'),('X-Frame-Options','DENY'),

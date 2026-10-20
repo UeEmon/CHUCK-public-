@@ -2,7 +2,7 @@
 
 作成日：2026年10月16日。基準main：`863d89471a3d2e906288c4760480893d27594325`。本書追加前の機能・操作要領が揃った状態を基準とする。
 
-CHUCKは **Coverage & HF Usability Calculation Kit** の略称。HF伝搬・通信信頼度を予察するWebシステムで、旧名称はSPARK。リポジトリ名は `UeEmon/VOCAP-COMPATIBILITY-` のまま維持している。本書は別の開発者またはAIが、実装の境界、検証状況、制約を保持して作業を再開するための資料である。
+CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは依頼者提供のchuckさんの肖像画で、`app/static/chuck-icon.png`（ヘッダー）、`app/static/favicon.png`（ブラウザタブ）、`docs/images/chuck-icon.png`（README）に置いている。HF伝搬・通信信頼度を予察するWebシステムで、旧名称はSPARK。リポジトリ名は `UeEmon/VOCAP-COMPATIBILITY-` のまま維持している。本書は別の開発者またはAIが、実装の境界、検証状況、制約を保持して作業を再開するための資料である。
 
 ## 1 現在の到達点
 
