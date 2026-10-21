@@ -101,3 +101,11 @@ python3 -m unittest discover -s tests
 ```
 
 本家で `index.html` の `<script src="app.js"></script>` が変わった場合、`public_server.py` は500を返して差し込みの失敗を知らせます。そのときは差し込み位置を合わせてください。本家で `i18n-messages.js` の読み込みタグが変わった場合は公開版の翻訳が読み込まれず、追加した文言が日本語のままになります。本家で新しいAPIが増えた場合は、管理者限定にすべきかを確認し、`ADMIN_GET`／`ADMIN_POST` に追加します。
+
+## 公開リポジトリへの同期
+
+開発はこの非公開リポジトリ CHUCK-public-dev で行い、利用者が見る公開リポジトリ [UeEmon/CHUCK-public-](https://github.com/UeEmon/CHUCK-public-) には履歴を持たない写しを置きます。main が更新されると、`.github/workflows/publish.yml` が公開リポジトリへ main と同じ中身のコミットを1つ足します。Oracle Cloud の本番は公開リポジトリを5分おきに取り込むため、マージしてから数分で本番にも反映されます。
+
+- 書き込みには公開リポジトリのデプロイキー（書き込み可）を使います。秘密鍵はこのリポジトリの Secret `PUBLIC_DEPLOY_KEY` にだけ置きます。
+- 公開リポジトリに直接入った変更があると、上書きで消さないように同期を止めます。その変更をこのリポジトリに取り込めば、次の同期から再開します。
+- 手動で同期し直すときは、Actions の Publish を Run workflow で実行します。

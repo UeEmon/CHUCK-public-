@@ -1,0 +1,57 @@
+# 開発用 CHUCK-public-dev の main を、公開版 UeEmon/CHUCK-public- へ同期する。
+# 公開版は履歴を持たない写しで、同期のたびに main と同じ中身のコミットを1つ足す。
+# 公開版に入ると、Oracle Cloud の本番は自動更新（5分おき）で反映する。
+# 鍵は公開版の書き込み用デプロイキーで、秘密鍵は Secret PUBLIC_DEPLOY_KEY にだけ置く。
+name: Publish
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: publish
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  publish:
+    # 公開版にも同じファイルが写るため、公開版では動かさない
+    if: github.repository == 'UeEmon/CHUCK-public-dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: dev
+          fetch-depth: 100
+      - name: Copy main to CHUCK-public-
+        env:
+          KEY: ${{ secrets.PUBLIC_DEPLOY_KEY }}
+        run: |
+          set -eu
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/publish
+          chmod 600 ~/.ssh/publish
+          echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > ~/.ssh/known_hosts
+          export GIT_SSH_COMMAND='ssh -i ~/.ssh/publish -o IdentitiesOnly=yes'
+          git clone --quiet --depth 1 git@github.com:UeEmon/CHUCK-public-.git pub
+          tree=$(git -C dev rev-parse 'HEAD^{tree}')
+          cd pub
+          # 公開版に開発用にない変更が直接入っていたら、上書きで消さないよう止める
+          if ! git -C ../dev log --first-parent --format=%T -100 | grep -qx "$(git rev-parse 'HEAD^{tree}')"; then
+            echo "::error::公開版に開発用にない変更があります。開発用に取り込んでから同期してください。"
+            exit 1
+          fi
+          git rm -rq --ignore-unmatch .
+          git -C ../dev archive HEAD | tar -x
+          git add -A
+          if git diff --cached --quiet; then
+            echo "公開版は最新です"
+            exit 0
+          fi
+          subject=$(git -C ../dev log -1 --format=%s)
+          case "$subject" in
+            "Merge pull request "*) subject=$(git -C ../dev log -1 --format=%b | sed -n '/./{p;q}') ;;
+          esac
+          git -c user.name=Claude -c user.email=noreply@anthropic.com commit --quiet -m "${subject:-Sync from development}"
+          test "$(git rev-parse 'HEAD^{tree}')" = "$tree"
+          git push --quiet origin HEAD:main
+          echo "公開版を $(git rev-parse --short HEAD) に更新しました"
