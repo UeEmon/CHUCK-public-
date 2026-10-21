@@ -149,7 +149,8 @@ raw/input個別ダウンロードは地点間のみです。NOAA自動SSN・排�
   "mesh_sites":[
     {"name":"A","lat":35.68,"lon":139.69,"antenna":"whip","gain":0,"noise":150,"power_w":1000},
     {"name":"B","lat":26.21,"lon":127.68,"antenna":"dipole","length_m":20,"height_m":12,"noise":145,"power_w":100},
-    {"name":"C","lat":13.45,"lon":144.75,"position_ref":{"source":"gateway","id":"ship"}}
+    {"name":"C","lat":13.45,"lon":144.75,"position_ref":{"source":"gateway","id":"ship"},
+     "receive":{"antenna":"vertical_dipole","length_m":10,"height_m":8,"gain":0}}
   ]
 }
 ```
@@ -157,9 +158,10 @@ raw/input個別ダウンロードは地点間のみです。NOAA自動SSN・排�
 mesh_sitesは2〜8個。拠点名は重複しない1〜40文字、拠点どうしは1 km以上離します。
 antenna/gain/polarization/noise/power_wを省略した場合は共通のtx_antenna/tx_gain/tx_polarization/noise/power_w
 （未指定ならwhip/0/model/150/1000）を使います。アンテナ寸法等はrx_sitesと同じ項目を拠点ごとに指定できます。
+receiveは受信に使う別のアンテナで、antenna/gainと寸法等を指定します。省略すると送信と同じアンテナで受信します。
 position_refはゲートウェイの最新位置に置き換え、position_inputs.mesh_site_Nに記録します。
 
-応答：kind=mesh、parameters（正規化した拠点一覧mesh_sitesを含む）、sites（id=n1〜nN、name、lat/lon、antenna、gain、noise、power_w、偏波・寸法）、
+応答：kind=mesh、parameters（正規化した拠点一覧mesh_sitesを含む）、sites（id=n1〜nN、name、lat/lon、antenna、gain、noise、power_w、偏波・寸法、receive（別の受信アンテナ、なければnull））、
 links（tx_id、rx_id、distance_km、bearing_deg、24時間×周波数のhours）、note、engine/engine_commit、履歴id/created。
 linksはTXの入力順、RXの入力順に並び、自己経路は含みません。経路ごとの生出力・入力カードは保存しません。
 

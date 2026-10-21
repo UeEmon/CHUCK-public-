@@ -47,7 +47,7 @@ function renderMeshMatrix(){
 function renderMeshLink(){
  const r=meshResult;if(!r||!meshSelected)return;const link=meshLink(meshSelected.tx,meshSelected.rx);if(!link)return;
  const hour=Number($('mesh-hour').value),frequency=$('mesh-frequency').value,tx=meshSite(link.tx_id),rx=meshSite(link.rx_id);
- const title=$('mesh-link-title');title.replaceChildren();for(const [text,user]of [[tx.name,true],[' → ',false],[rx.name,true],[` · ${link.distance_km} km · ${link.bearing_deg} °`,false]]){const span=cell('span',text);if(user)span.dataset.userContent='true';title.append(span);}
+ const title=$('mesh-link-title');title.replaceChildren();for(const [text,user]of [[tx.name,true],[' → ',false],[rx.name,true],[` · ${link.distance_km} km · ${link.bearing_deg} ° · ${tx.antenna} → ${(rx.receive??rx).antenna}`,false]]){const span=cell('span',text);if(user)span.dataset.userContent='true';title.append(span);}
  const table=document.createElement('table');table.className='heat';const head=document.createElement('tr');head.append(cell('th','MHz / UTC'));for(let h=0;h<24;h++){const th=cell('th',String(h).padStart(2,'0'));th.classList.toggle('selected',h===hour);head.append(th);}table.append(head);
  for(const f of r.parameters.frequencies){
   const tr=document.createElement('tr'),label=cell('th',f.toFixed(3));label.classList.toggle('selected',frequency===String(f));tr.append(label);

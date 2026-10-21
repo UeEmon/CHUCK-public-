@@ -4842,5 +4842,50 @@ const HF_MESSAGES={
     "Remover estação",
     "Station entfernen",
     "거점 삭제"
+  ],
+  "送信アンテナプリセット": [
+    "Transmit antenna preset",
+    "Préréglage d’antenne d’émission",
+    "Preajuste de antena de transmisión",
+    "Preset antenna di trasmissione",
+    "Predefinição da antena de transmissão",
+    "Sendeantennen-Vorlage",
+    "송신 안테나 프리셋"
+  ],
+  "受信アンテナプリセット": [
+    "Receive antenna preset",
+    "Préréglage d’antenne de réception",
+    "Preajuste de antena de recepción",
+    "Preset antenna di ricezione",
+    "Predefinição da antena de recepção",
+    "Empfangsantennen-Vorlage",
+    "수신 안테나 프리셋"
+  ],
+  "送信と同じ": [
+    "Same as transmit",
+    "Identique à l’émission",
+    "Igual que la de transmisión",
+    "Uguale alla trasmissione",
+    "Igual à de transmissão",
+    "Wie Sendeantenne",
+    "송신과 동일"
+  ],
+  "受信アンテナのプリセットを選択し直してください。": [
+    "Select the receive antenna preset again.",
+    "Sélectionnez de nouveau le préréglage d’antenne de réception.",
+    "Vuelva a seleccionar el preajuste de antena de recepción.",
+    "Seleziona di nuovo il preset dell’antenna di ricezione.",
+    "Selecione novamente a predefinição da antena de recepção.",
+    "Empfangsantennen-Vorlage erneut auswählen.",
+    "수신 안테나 프리셋을 다시 선택하세요."
+  ],
+  "保存受信アンテナ": [
+    "Saved receive antenna",
+    "Antenne de réception enregistrée",
+    "Antena de recepción guardada",
+    "Antenna di ricezione salvata",
+    "Antena de recepção salva",
+    "Gespeicherte Empfangsantenne",
+    "저장된 수신 안테나"
   ]
 };

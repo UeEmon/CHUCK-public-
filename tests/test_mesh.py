@@ -71,6 +71,26 @@ class MeshTests(unittest.TestCase):
         self.assertNotIn('raw_output', r['links'][0])
         self.assertEqual(r['parameters']['mesh_sites'], sites)
 
+    def test_separate_receiving_antenna(self):
+        data = copy.deepcopy(self.data)
+        data['mesh_sites'][0]['receive'] = dict(antenna='vertical_dipole', length_m=10, height_m=8, gain=2)
+        sites = prepare(data)
+        self.assertEqual((sites[0]['antenna'], sites[0]['receive']['antenna']), ('whip', 'vertical_dipole'))
+        self.assertEqual((sites[0]['receive']['length_m'], sites[0]['receive']['gain']), (10, 2))
+        self.assertIsNone(sites[1]['receive'])
+        p = validate(dict(data, tx_lat=sites[0]['lat'], tx_lon=sites[0]['lon'], rx_lat=sites[1]['lat'], rx_lon=sites[1]['lon']))
+        calls = []
+        def run(q): calls.append(q);return fake_run(q)
+        predict(Mock(run=run), p, sites)
+        n1_to_n2, n2_to_n1 = calls[0], calls[2]
+        self.assertEqual(n1_to_n2['tx_antenna'], 'whip')
+        self.assertEqual((n2_to_n1['rx_antenna'], n2_to_n1['rx_length_m'], n2_to_n1['rx_gain']), ('vertical_dipole', 10, 2))
+        self.assertEqual((n2_to_n1['tx_antenna'], n2_to_n1['tx_length_m']), ('dipole', 20))
+        self.assertEqual((n1_to_n2['rx_antenna'], n1_to_n2['rx_length_m']), ('dipole', 20))
+        for bad in ['whip', dict(antenna='other'), dict(antenna='vertical_dipole', length_m=10, height_m=2)]:
+            data['mesh_sites'][0]['receive'] = bad
+            with self.subTest(bad=bad), self.assertRaises(InputError): prepare(data)
+
     def test_position_references_resolve_per_node(self):
         data = copy.deepcopy(self.data)
         data['mesh_sites'][2]['position_ref'] = dict(source='gw', id='ship')

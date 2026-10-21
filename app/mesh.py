@@ -34,7 +34,7 @@ def prepare(data):
         if name in names:
             raise InputError('拠点名は重複しないように指定してください')
         names.add(name)
-        # Validate this node as TX towards its neighbour; the node fields are the same as RX.
+        # Validate this node as TX towards its neighbour, then its own receiving antenna if any.
         other = raw[(i+1) % len(raw)]
         q = dict(data, **endpoint(site, data, 'tx'), **endpoint(other, data, 'rx'),
                  power_w=site.get('power_w', data.get('power_w', 1000)))
@@ -45,9 +45,24 @@ def prepare(data):
         except InputError as e:
             raise InputError(name+': '+str(e))
         noise = number(dict(noise=site.get('noise', data.get('noise', 150))), 'noise', 100, 180)
+        receive = site.get('receive')
+        if receive is not None:
+            # A separate receiving antenna at the same place; none means the TX antenna is used.
+            if not isinstance(receive, dict):
+                raise InputError(name+': receiveはJSONオブジェクトで指定してください')
+            q = dict(data, **endpoint(other, data, 'tx'),
+                     **endpoint(dict(receive, lat=site.get('lat'), lon=site.get('lon'),
+                                     polarization=site.get('polarization', data.get('rx_polarization', 'model'))), data, 'rx'),
+                     power_w=other.get('power_w', data.get('power_w', 1000)))
+            if data.get('ssn_source') in ('noaa', 'effective'): q['ssn'] = 0
+            try:
+                r = validate(q)
+            except InputError as e:
+                raise InputError(name+' (RX): '+str(e))
+            receive = dict(antenna=r['rx_antenna'], gain=r['rx_gain'], **{key: r['rx_'+key] for key in ANTENNA_FIELDS})
         sites.append(dict(id='n'+str(i+1), name=name, lat=p['tx_lat'], lon=p['tx_lon'],
                           antenna=p['tx_antenna'], gain=p['tx_gain'], noise=noise,
-                          power_w=p['power_w'], polarization=p['tx_polarization'],
+                          power_w=p['power_w'], polarization=p['tx_polarization'], receive=receive,
                           **{key: p['tx_'+key] for key in ANTENNA_FIELDS}))
         if 'position_ref' in site: sites[-1]['position_ref'] = site['position_ref']
     for i, a in enumerate(sites):
@@ -60,10 +75,10 @@ def prepare(data):
 def pair(p, tx, rx):
     """Calculation parameters for the directed link tx → rx."""
     q = dict(p, power_w=tx['power_w'], noise=rx['noise'])
-    for prefix, site in (('tx', tx), ('rx', rx)):
-        q.update({prefix+'_lat': site['lat'], prefix+'_lon': site['lon'], prefix+'_antenna': site['antenna'],
-                  prefix+'_gain': site['gain'], prefix+'_polarization': site['polarization']})
-        q.update({prefix+'_'+key: site[key] for key in ANTENNA_FIELDS})
+    for prefix, site, antenna in (('tx', tx, tx), ('rx', rx, rx.get('receive') or rx)):
+        q.update({prefix+'_lat': site['lat'], prefix+'_lon': site['lon'], prefix+'_antenna': antenna['antenna'],
+                  prefix+'_gain': antenna['gain'], prefix+'_polarization': site['polarization']})
+        q.update({prefix+'_'+key: antenna[key] for key in ANTENNA_FIELDS})
     q = validate(q)
     q['ssn_source'] = p.get('ssn_source', 'manual')
     return q
