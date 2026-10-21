@@ -46,6 +46,20 @@ class ApiTests(unittest.TestCase):
                 self.assertEqual(snapshot_call.call_count,1)
                 self.assertTrue(all(s['parameters']['ssn']==87.5 for s in automatic['sites']))
                 self.assertEqual(automatic['space_weather']['ssn']['value'],87.5)
+                now=datetime.now(timezone.utc)
+                effective={'value':42.5,'used_count':3,'stations':[],'error':None,'note':'fixture'}
+                with patch.object(server.EFFECTIVE_SSN,'snapshot',return_value=effective):
+                    current=dict(p,year=now.year,month=now.month,ssn_source='effective',ssn=999)
+                    e=json.load(request('/api/predict',current))
+                    self.assertEqual(json.load(request(f'/api/effective-ssn?year={now.year}&month={now.month}'))['value'],42.5)
+                self.assertEqual(e['parameters']['ssn'],42.5)
+                self.assertEqual(e['parameters']['ssn_source'],'effective')
+                self.assertEqual(e['effective_ssn']['used_count'],3)
+                self.assertNotIn('space_weather',e)
+                with request('/api/results/'+e['id']+'/csv') as response:self.assertIn('# effective_ssn',response.read().decode('utf-8-sig'))
+                with patch.object(server.EFFECTIVE_SSN,'snapshot',return_value=dict(effective,value=None,error='不足')):
+                    with self.assertRaises(urllib.error.HTTPError) as failed:request('/api/predict',current)
+                self.assertEqual(failed.exception.code,503)
                 from positions import PositionStore
                 import sqlite3
                 store=PositionStore(lambda:sqlite3.connect(Path(tmp)/'positions.sqlite3'))

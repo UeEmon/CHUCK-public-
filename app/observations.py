@@ -1,4 +1,4 @@
-"""Public HF observations. These products do not modify VOACAP predictions."""
+"""Public HF observations. Only the opt-in effective SSN (effective_ssn.py) feeds them into VOACAP."""
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 import copy
@@ -204,7 +204,7 @@ class Observations:
             nict = pool.submit(self.fetch, 'nict', NICT_URL, parse_nict,force=force)
             return {'drap': drap.result(), 'nict': nict.result(),
                     'giro': {'enabled': self.giro_enabled, 'stations': GIRO_STATIONS, 'terms_url': GIRO_TERMS},
-                    'note': '観測・障害情報は現在の状況。月間VOACAP結果の信頼度・SNR・MUFを変更しません。'}
+                    'note': '観測・障害情報は現在の状況。SSN取得方法で実効SSNを選んだ計算だけ、foF2観測からSSNを求めて使います。それ以外は月間VOACAP結果の信頼度・SNR・MUFを変更しません。'}
 
     def giro(self, code,force=False):
         if code not in GIRO_STATIONS:
