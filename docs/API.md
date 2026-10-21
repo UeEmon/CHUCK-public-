@@ -147,6 +147,18 @@ observed_at=UTC ISO時刻, stale, source_url, fetched_at）、sources, note。
 NOAA利用時は結果直下のspace_weatherに取得時点の出典情報を保存します。
 詳細はSPACE_WEATHER.md。
 
+## 実効SSN
+
+`GET /api/effective-ssn?year=2026&month=10`
+
+省略時は現在のUTC年月。観測foF2から求めた実効SSNを返します。
+応答: method, target_month, computed_at, value（使えないときnull）, used_count, min_stations, spread（min, max）,
+stations（code, name, provider, lat, lon, observed_at, fof2_mhz, model_fof2_mhz.ssn_0/ssn_250, effective_ssn, used, reason, credit）, error, note, giro_enabled。
+値が求められなくても200でvalue=nullとerrorを返します。不正な年月は400。
+
+`ssn_source: "effective"` を `POST /api/predict`・`/api/coverage`・`/api/diversity` に指定すると、クライアントのSSNを使わずサーバーで求めた値を使います。
+対象年月が現在の月でなければ400、現在の月で観測が2局未満なら503。結果直下のeffective_ssnに上の応答を保存します。
+
 ## 観測・障害情報
 
 `GET /api/observations`

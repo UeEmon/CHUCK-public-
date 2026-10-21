@@ -156,10 +156,10 @@ class Engine:
         self.model=Path(os.environ.get('VOACAP_MODEL','/usr/local/share/voacapl/itshfbc'))
     def ready(self):
         return bool(shutil.which(self.binary)) and (self.model/'coeffs/coeff01.bin').exists()
-    def run(self,p,hour=None):
+    def execute(self,prepare):
+        """Run one card deck; prepare(root) may edit private files and returns the deck."""
         if not self.ready():
             raise EngineError('計算エンジンが準備されていません。docker compose up --build で起動してください。')
-        card=cards(p,hour)
         # Each calculation gets private run/database/antenna files. Short paths
         # also satisfy the upstream 50-character legacy run-directory limit.
         with tempfile.TemporaryDirectory(prefix='hf-',dir='/tmp') as tmp:
@@ -169,6 +169,21 @@ class Engine:
                 (root/name).symlink_to(self.model/name,target_is_directory=True)
             for name in ('database','antennas'):
                 shutil.copytree(self.model/name,root/name)
+            card=prepare(root)
+            (root/'run').mkdir()
+            (root/'run/voacapx.dat').write_text(card,encoding='ascii')
+            try:
+                cp=subprocess.run([self.binary,'-s',str(root)],cwd=tmp,stdin=subprocess.DEVNULL,capture_output=True,text=True,timeout=60)
+            except subprocess.TimeoutExpired:
+                raise EngineError('計算が60秒を超えました。条件を見直してください。')
+            out=root/'run/voacapx.out'
+            if cp.returncode or not out.exists():
+                raise EngineError('VOACAP計算に失敗しました: '+(cp.stderr or cp.stdout)[-800:])
+            return out.read_text(errors='replace')
+    def run(self,p,hour=None):
+        card=cards(p,hour)
+        def antennas(root):
+            nonlocal card
             for prefix in ('tx','rx'):
                 source=root/'antennas'/ANTENNAS[p[prefix+'_antenna']]
                 # Separate files allow independent TX/RX gain even for same model.
@@ -177,16 +192,8 @@ class Engine:
             card=card.replace(ANTENNAS[p['tx_antenna']].ljust(21),'tx.voa'.ljust(21),1)
             # Replacement of RX must occur only on RX card.
             card='\n'.join(line.replace(ANTENNAS[p['rx_antenna']].ljust(21),'rx.voa'.ljust(21)) if line.startswith('ANTENNA       2') else line for line in card.splitlines())+'\n'
-            (root/'run').mkdir()
-            (root/'run/voacapx.dat').write_text(card,encoding='ascii')
-            try:
-                cp=subprocess.run([self.binary,'-s',str(root)],cwd=tmp,capture_output=True,text=True,timeout=60)
-            except subprocess.TimeoutExpired:
-                raise EngineError('計算が60秒を超えました。条件を見直してください。')
-            out=root/'run/voacapx.out'
-            if cp.returncode or not out.exists():
-                raise EngineError('VOACAP計算に失敗しました: '+(cp.stderr or cp.stdout)[-800:])
-            raw=out.read_text(errors='replace')
+            return card
+        raw=self.execute(antennas)
         hours=parse_output(raw,p['frequencies'])
         if hour is None and len(hours)!=24:
             raise EngineError(f'24時間の結果が揃いません（{len(hours)}時間）')

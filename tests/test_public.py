@@ -99,6 +99,21 @@ class PublicModeTests(unittest.TestCase):
         finally:
             self.public.LIMITER=previous
 
+    def test_effective_ssn_is_open_to_visitors_and_rate_limited(self):
+        from unittest.mock import patch
+        snapshot=dict(value=42.5,used_count=2,stations=[],error=None,note='fixture')
+        with patch.object(self.server.EFFECTIVE_SSN,'snapshot',return_value=snapshot):
+            status,body=self.request('/api/effective-ssn')
+            self.assertEqual(status,200,body)
+            self.assertEqual(json.loads(body)['value'],42.5)
+            previous=self.public.LIMITER
+            self.public.LIMITER=self.public.RateLimiter(0,60)
+            try:
+                status,body=self.request('/api/predict',dict(tx_lat=35.3,tx_lon=139.67,rx_lat=13.45,rx_lon=144.75,ssn_source='effective'))
+                self.assertEqual(status,429,body)
+            finally:
+                self.public.LIMITER=previous
+
     def test_rate_limiter_window(self):
         now=[0.0]
         limiter=self.public.RateLimiter(5,60,clock=lambda:now[0])

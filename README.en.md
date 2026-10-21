@@ -47,7 +47,7 @@ Changing inputs does not recalculate existing results. Recalculate to compare wi
 
 ## External data, mobile sites and AI
 
-The conditions/space-weather tab combines NOAA SSN/F10.7/R/S/G, D-RAP, NICT and optional GIRO observations. Observation/publication time and last successful retrieval time are shown separately, with individual/batch refresh. NOAA automatic SSN requires an exact matching month; expired SSN is not silently used. Other displayed observations do not automatically correct VOACAP predictions. See [space weather](docs/SPACE_WEATHER.md) and [international sources](docs/INTERNATIONAL_IONOSPHERE.md).
+The conditions/space-weather tab combines NOAA SSN/F10.7/R/S/G, D-RAP, NICT and optional GIRO observations. Observation/publication time and last successful retrieval time are shown separately, with individual/batch refresh. NOAA automatic SSN requires an exact matching month; expired SSN is not silently used. Other observations correct VOACAP only when you choose the effective SSN, which inverts current ionosonde foF2 (NICT, plus GIRO when enabled) into the SSN VOACAP needs to reproduce it, for the current month only. See [space weather](docs/SPACE_WEATHER.md) and [international sources](docs/INTERNATIONAL_IONOSPHERE.md).
 
 GIRO is disabled by default. Set `HF_GIRO_ENABLED=1` in `.env` only when your use meets its terms or you have the required permission. No GIRO connection is made while disabled.
 

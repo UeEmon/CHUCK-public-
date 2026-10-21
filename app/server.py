@@ -16,6 +16,7 @@ from engine import Engine, InputError, EngineError, validate, number, distance
 
 from space_weather import SpaceWeather, SpaceWeatherError
 from observations import Observations, GIRO_STATIONS
+from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
@@ -29,6 +30,7 @@ DB=DATA/'predictions.sqlite3'
 ENGINE=Engine()
 SPACE_WEATHER=SpaceWeather(DATA/'space-weather')
 OBSERVATIONS=Observations(DATA/'observations',os.environ.get('HF_GIRO_ENABLED','0')=='1')
+EFFECTIVE_SSN=EffectiveSSN(ENGINE,OBSERVATIONS)
 RUN_LOCK=threading.Lock()
 
 def connection():
@@ -116,6 +118,13 @@ class Handler(BaseHTTPRequestHandler):
                 year=number(date,'year',1900,2100,integer=True)
                 month=number(date,'month',1,12,integer=True)
                 return self.json(200,SPACE_WEATHER.snapshot(year,month,force=query.get('refresh')==['1']))
+            if path=='/api/effective-ssn':
+                query=parse_qs(urlparse(self.path).query)
+                now=datetime.now(timezone.utc)
+                date={k:query.get(k,[v])[0] for k,v in [('year',now.year),('month',now.month)]}
+                year=number(date,'year',1900,2100,integer=True)
+                month=number(date,'month',1,12,integer=True)
+                return self.json(200,EFFECTIVE_SSN.snapshot(year,month,force=query.get('refresh')==['1']))
             if path=='/api/history':
                 with connection() as c: rows=c.execute('SELECT id,created,kind,json_extract(result,\'$.parameters\') FROM predictions ORDER BY created DESC LIMIT 100').fetchall()
                 return self.json(200,[dict(id=r[0],created=r[1],kind=r[2],parameters=json.loads(r[3])) for r in rows])
@@ -134,6 +143,7 @@ class Handler(BaseHTTPRequestHandler):
                         # Metadata before data makes exported calculations reproducible.
                         w.writerow(['# parameters',json.dumps(r['parameters'],ensure_ascii=False)])
                         if 'space_weather' in r: w.writerow(['# space_weather',json.dumps(r['space_weather'],ensure_ascii=False)])
+                        if 'effective_ssn' in r: w.writerow(['# effective_ssn',json.dumps(r['effective_ssn'],ensure_ascii=False)])
                         if 'position_inputs' in r: w.writerow(['# position_inputs',json.dumps(r['position_inputs'],ensure_ascii=False)])
                         w.writerow(['# engine',r['engine'],r['engine_commit']])
                         if r.get('kind') == 'rx_diversity':
@@ -162,8 +172,8 @@ class Handler(BaseHTTPRequestHandler):
             if not file.is_relative_to((BASE/'static').resolve()) or not file.is_file():
                 return self.json(404,{'error':'見つかりません'})
             return self.send(200,file.read_bytes(),mimetypes.guess_type(str(file))[0] or 'application/octet-stream')
-        except (GatewayError,ai_providers.AIError) as e: self.json(503,{'error':str(e)})
-        except InputError as e: self.json(400 if path in ('/api/space-weather','/api/observations/giro') else 404,{'error':str(e)})
+        except (GatewayError,ai_providers.AIError,EngineError) as e: self.json(503,{'error':str(e)})
+        except InputError as e: self.json(400 if path in ('/api/space-weather','/api/effective-ssn','/api/observations/giro') else 404,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc()
             self.json(500,{'error':'読み込みに失敗しました。サーバーログを確認してください。'})
@@ -197,8 +207,12 @@ class Handler(BaseHTTPRequestHandler):
                 first=sites[0]
                 data=dict(data,rx_lat=first['lat'],rx_lon=first['lon'],rx_antenna=first['antenna'],rx_gain=first['gain'],noise=first['noise'])
                 data.update({'rx_'+key:first[key] for key in __import__('engine').ANTENNA_FIELDS})
-            p=validate(dict(data,ssn=0) if data.get('ssn_source')=='noaa' else data)
-            prepared,weather=SPACE_WEATHER.calculation_input(dict(data,year=p['year'],month=p['month']))
+            p=validate(dict(data,ssn=0) if data.get('ssn_source') in ('noaa','effective') else data)
+            weather=effective=None
+            if data.get('ssn_source')=='effective':
+                prepared,effective=EFFECTIVE_SSN.calculation_input(dict(data,year=p['year'],month=p['month']))
+            else:
+                prepared,weather=SPACE_WEATHER.calculation_input(dict(data,year=p['year'],month=p['month']))
             p=validate(prepared)
             p['ssn_source']=data.get('ssn_source','manual')
             for key in ('tx_position','rx_position'):
@@ -209,11 +223,12 @@ class Handler(BaseHTTPRequestHandler):
                 raise InputError('採用した位置情報が準備中に期限切れになりました。再計算してください。')
             r=diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
             if weather is not None: r['space_weather']=weather
+            if effective is not None: r['effective_ssn']=effective
             if position_inputs: r['position_inputs']=position_inputs
             if isinstance(data.get('ui_selection'),dict): r['ui_selection']=data['ui_selection']
             self.json(200,save(r,'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
-        except (EngineError,SpaceWeatherError) as e: self.json(503,{'error':str(e)})
+        except (EngineError,SpaceWeatherError,EffectiveSSNError) as e: self.json(503,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc()
             self.json(500,{'error':'計算に失敗しました。サーバーログを確認してください。'})

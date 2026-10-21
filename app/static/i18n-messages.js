@@ -4239,5 +4239,50 @@ const HF_MESSAGES={
     "Atualização concluída. Verifique o estado de cada fonte.",
     "Aktualisierung abgeschlossen. Abrufstatus jeder Quelle prüfen.",
     "업데이트 처리가 완료되었습니다. 각 출처의 취득 상태를 확인하세요."
+  ],
+  "観測foF2から実効SSNを計算時に算出（今月のみ）": [
+    "Effective SSN from observed foF2 at calculation (current month only)",
+    "SSN effectif d’après la foF2 observée au calcul (mois en cours uniquement)",
+    "SSN efectivo a partir de foF2 observada al calcular (solo mes actual)",
+    "SSN effettivo dalla foF2 osservata al calcolo (solo mese corrente)",
+    "SSN efetivo a partir da foF2 observada no cálculo (somente mês atual)",
+    "Effektive SSN aus beobachteter foF2 bei Berechnung (nur aktueller Monat)",
+    "관측 foF2로 계산 시 유효 SSN 산출(이번 달만)"
+  ],
+  "観測foF2から実効SSNを算出中…": [
+    "Deriving effective SSN from observed foF2…",
+    "Calcul de la SSN effective d’après la foF2 observée…",
+    "Calculando el SSN efectivo a partir de foF2 observada…",
+    "Calcolo dell’SSN effettivo dalla foF2 osservata…",
+    "Calculando o SSN efetivo a partir da foF2 observada…",
+    "Effektive SSN wird aus beobachteter foF2 berechnet…",
+    "관측 foF2로 유효 SSN 산출 중…"
+  ],
+  "実効SSN {value}（{count}局の中央値、範囲 {low}〜{high}）。計算時に再算出します。": [
+    "Effective SSN {value} (median of {count} stations, range {low}–{high}). Recomputed at calculation.",
+    "SSN effective {value} (médiane de {count} stations, plage {low}–{high}). Recalculée au calcul.",
+    "SSN efectivo {value} (mediana de {count} estaciones, rango {low}–{high}). Se recalcula al calcular.",
+    "SSN effettivo {value} (mediana di {count} stazioni, intervallo {low}–{high}). Ricalcolato al calcolo.",
+    "SSN efetivo {value} (mediana de {count} estações, faixa {low}–{high}). Recalculado no cálculo.",
+    "Effektive SSN {value} (Median aus {count} Stationen, Bereich {low}–{high}). Wird bei der Berechnung neu bestimmt.",
+    "유효 SSN {value}({count}개 관측소 중앙값, 범위 {low}~{high}). 계산 시 다시 산출합니다."
+  ],
+  "実効SSN（観測局の中央値）": [
+    "Effective SSN (station median)",
+    "SSN effective (médiane des stations)",
+    "SSN efectivo (mediana de estaciones)",
+    "SSN effettivo (mediana delle stazioni)",
+    "SSN efetivo (mediana das estações)",
+    "Effektive SSN (Stationsmedian)",
+    "유효 SSN(관측소 중앙값)"
+  ],
+  "[除外]": [
+    "[excluded]",
+    "[exclue]",
+    "[excluida]",
+    "[esclusa]",
+    "[excluída]",
+    "[ausgeschlossen]",
+    "[제외]"
   ]
 };
