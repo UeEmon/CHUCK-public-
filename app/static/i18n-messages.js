@@ -757,42 +757,6 @@ const HF_MESSAGES={
     "Gewinnkorrektur ist ein einheitlicher Modellversatz. SNR auf 1 Hz bezogen.",
     "이득 보정은 모델 전체에 일괄 적용합니다. SNR은 1 Hz 대역 환산값입니다."
   ],
-  "変調方式・受信品質": [
-    "Modulation & reception quality",
-    "Modulation et qualité de réception",
-    "Modulación y calidad de recepción",
-    "Modulazione e qualità di ricezione",
-    "Modulação e qualidade de recepção",
-    "Modulation und Empfangsqualität",
-    "변조 방식·수신 품질"
-  ],
-  "変調方式": [
-    "Modulation",
-    "Modulation",
-    "Modulación",
-    "Modulazione",
-    "Modulação",
-    "Modulation",
-    "변조 방식"
-  ],
-  "手動／未指定": [
-    "Manual / unspecified",
-    "Manuel / non précisé",
-    "Manual / sin especificar",
-    "Manuale / non specificata",
-    "Manual / não especificado",
-    "Manuell / nicht angegeben",
-    "수동·미지정"
-  ],
-  "その他デジタル": [
-    "Other digital",
-    "Autre numérique",
-    "Otro digital",
-    "Altro digitale",
-    "Outro digital",
-    "Sonstiges Digitalverfahren",
-    "기타 디지털"
-  ],
   "SNR入力方法": [
     "SNR input method",
     "Méthode de saisie du SNR",
@@ -811,24 +775,6 @@ const HF_MESSAGES={
     "Auf 1 Hz bezogenes SNR eingeben",
     "1 Hz 환산 SNR 직접 입력"
   ],
-  "帯域内SNRと帯域幅から換算": [
-    "Convert in-band SNR and bandwidth",
-    "Convertir SNR en bande et largeur de bande",
-    "Convertir SNR en banda y ancho de banda",
-    "Converti SNR in banda e larghezza di banda",
-    "Converter SNR na banda e largura de banda",
-    "Band-SNR und Bandbreite umrechnen",
-    "대역 내 SNR·대역폭으로 환산"
-  ],
-  "受信帯域幅 Hz": [
-    "Receiver bandwidth Hz",
-    "Bande passante du récepteur Hz",
-    "Ancho de banda del receptor Hz",
-    "Larghezza di banda del ricevitore Hz",
-    "Largura de banda do receptor Hz",
-    "Empfängerbandbreite Hz",
-    "수신 대역폭 Hz"
-  ],
   "帯域内の必要SNR dB": [
     "Required in-band SNR dB",
     "SNR requis en bande dB",
@@ -837,15 +783,6 @@ const HF_MESSAGES={
     "SNR necessário na banda dB",
     "Erforderliches Band-SNR dB",
     "대역 내 요구 SNR dB"
-  ],
-  "CW 24、SSB 45、AM 67 dB·Hzは受信品質の例示値で変更可能です。その他の方式はモデム・符号化・速度・目標BER等に応じた値を指定してください。変調波形・帯域選択性・遅延拡散による復号性能は計算しません。": [
-    "CW 24, SSB 45 and AM 67 dB·Hz are editable quality examples. For other modes use modem, coding, rate and target BER requirements. Waveforms, frequency selectivity and delay-spread decoding are not modeled.",
-    "CW 24, SSB 45 et AM 67 dB·Hz sont des exemples modifiables. Autres modes : utiliser les exigences du modem, du codage, du débit et du BER. Pas de simulation de forme d’onde, sélectivité ou décodage avec étalement des retards.",
-    "CW 24, SSB 45 y AM 67 dB·Hz son ejemplos editables. Para otros modos use los requisitos del módem, codificación, velocidad y BER. No se modelan formas de onda, selectividad ni decodificación con dispersión temporal.",
-    "CW 24, SSB 45 e AM 67 dB·Hz sono esempi modificabili. Per altri modi usare i requisiti di modem, codifica, velocità e BER. Forme d’onda, selettività e decodifica con dispersione temporale non sono modellate.",
-    "CW 24, SSB 45 e AM 67 dB·Hz são exemplos editáveis. Para outros modos use requisitos do modem, codificação, taxa e BER. Formas de onda, seletividade e decodificação com dispersão temporal não são modeladas.",
-    "CW 24, SSB 45 und AM 67 dB·Hz sind veränderbare Qualitätsbeispiele. Für andere Verfahren gelten Modem-, Codierungs-, Datenraten- und BER-Anforderungen. Keine Wellenform-, Selektivitäts- oder Laufzeitspreizungs-Decodierungssimulation.",
-    "CW 24·SSB 45·AM 67 dB·Hz는 수정 가능한 품질 예시입니다. 다른 방식은 모뎀·부호화·속도·목표 BER에 맞춰 지정하세요. 파형·주파수 선택성·지연 확산에 따른 복호 성능은 계산하지 않습니다."
   ],
   "偏波方式と追加損失": [
     "Polarization & additional loss",
@@ -3088,23 +3025,149 @@ const HF_MESSAGES={
     "Vertikaler Dipol",
     "수직 다이폴"
   ],
-  "アンテナ全長 m": [
-    "Total antenna length m",
-    "Longueur totale m",
-    "Longitud total m",
-    "Lunghezza totale m",
-    "Comprimento total m",
-    "Antennengesamtlänge m",
-    "안테나 전체 길이 m"
+  "水平ログペリ": [
+    "Horizontal log-periodic",
+    "Log-périodique horizontale",
+    "Log-periódica horizontal",
+    "Log-periodica orizzontale",
+    "Log-periódica horizontal",
+    "Horizontale Log-Periodic",
+    "수평 대수주기"
   ],
-  "地上高／給電点高 m": [
-    "Height / feed-point height m",
-    "Hauteur / point d’alimentation m",
-    "Altura / punto de alimentación m",
-    "Altezza / punto di alimentazione m",
-    "Altura / ponto de alimentação m",
-    "Höhe / Speisepunkthöhe m",
-    "지상 높이 / 급전점 높이 m"
+  "素子数": [
+    "Elements",
+    "Éléments",
+    "Elementos",
+    "Elementi",
+    "Elementos",
+    "Elemente",
+    "소자 수"
+  ],
+  "短縮率 τ": [
+    "Scale factor τ",
+    "Facteur d’échelle τ",
+    "Factor de escala τ",
+    "Fattore di scala τ",
+    "Fator de escala τ",
+    "Skalierungsfaktor τ",
+    "축소율 τ"
+  ],
+  "素子先端角 °（軸から）": [
+    "Element-tip angle ° (from axis)",
+    "Angle des extrémités ° (depuis l’axe)",
+    "Ángulo de puntas ° (desde el eje)",
+    "Angolo delle punte ° (dall’asse)",
+    "Ângulo das pontas ° (a partir do eixo)",
+    "Elementspitzenwinkel ° (zur Achse)",
+    "소자 끝 각도 ° (축 기준)"
+  ],
+  "アレイ傾斜 °（鉛直から、90=水平）": [
+    "Array slope ° (from vertical, 90 = horizontal)",
+    "Inclinaison du réseau ° (depuis la verticale, 90 = horizontal)",
+    "Inclinación del arreglo ° (desde la vertical, 90 = horizontal)",
+    "Inclinazione della schiera ° (dalla verticale, 90 = orizzontale)",
+    "Inclinação do arranjo ° (a partir da vertical, 90 = horizontal)",
+    "Gruppenneigung ° (zur Senkrechten, 90 = horizontal)",
+    "배열 경사 ° (수직 기준, 90 = 수평)"
+  ],
+  "給電線インピーダンス Ω": [
+    "Feeder impedance Ω",
+    "Impédance de la ligne Ω",
+    "Impedancia de la línea Ω",
+    "Impedenza della linea Ω",
+    "Impedância da linha Ω",
+    "Speiseleitungsimpedanz Ω",
+    "급전선 임피던스 Ω"
+  ],
+  "全方向（オムニ）": [
+    "Omnidirectional",
+    "Omnidirectionnelle",
+    "Omnidireccional",
+    "Omnidirezionale",
+    "Omnidirecional",
+    "Rundstrahlend",
+    "무지향성"
+  ],
+  "指向性": [
+    "Directional",
+    "Directive",
+    "Directiva",
+    "Direttiva",
+    "Diretiva",
+    "Richtantenne",
+    "지향성"
+  ],
+  "アンテナ全長 m（ログペリは最長素子、逆Lは水平部）": [
+    "Total antenna length m (log-periodic: longest element; inverted L: horizontal section)",
+    "Longueur totale m (log-périodique : élément le plus long ; L inversé : partie horizontale)",
+    "Longitud total m (log-periódica: elemento más largo; L invertida: tramo horizontal)",
+    "Lunghezza totale m (log-periodica: elemento più lungo; L rovesciata: tratto orizzontale)",
+    "Comprimento total m (log-periódica: elemento mais longo; L invertido: trecho horizontal)",
+    "Antennengesamtlänge m (Log-Periodic: längstes Element; umgekehrtes L: waagerechter Teil)",
+    "안테나 전체 길이 m (대수주기: 최장 소자, 역L: 수평부)"
+  ],
+  "地上高／給電点高 m（逆Lは垂直部）": [
+    "Height / feed height m (inverted L: vertical section)",
+    "Hauteur / hauteur d’alimentation m (L inversé : partie verticale)",
+    "Altura / altura de alimentación m (L invertida: tramo vertical)",
+    "Altezza / altezza di alimentazione m (L rovesciata: tratto verticale)",
+    "Altura / altura de alimentação m (L invertido: trecho vertical)",
+    "Höhe / Speisepunkthöhe m (umgekehrtes L: senkrechter Teil)",
+    "지상고 / 급전점 높이 m (역L: 수직부)"
+  ],
+  "逆L": [
+    "Inverted L",
+    "L inversé",
+    "L invertida",
+    "L rovesciata",
+    "L invertido",
+    "Umgekehrtes L",
+    "역L"
+  ],
+  "傾斜ロングワイヤー（スローパー）": [
+    "Sloping long wire (sloper)",
+    "Long fil incliné (sloper)",
+    "Hilo largo inclinado (sloper)",
+    "Filo lungo inclinato (sloper)",
+    "Fio longo inclinado (sloper)",
+    "Schräger Langdraht (Sloper)",
+    "경사 롱와이어 (슬로퍼)"
+  ],
+  "線の傾斜 °（水平から）": [
+    "Wire slope ° (from horizontal)",
+    "Inclinaison du fil ° (depuis l’horizontale)",
+    "Inclinación del hilo ° (desde la horizontal)",
+    "Inclinazione del filo ° (dall’orizzontale)",
+    "Inclinação do fio ° (a partir da horizontal)",
+    "Drahtneigung ° (zur Waagerechten)",
+    "선 경사 ° (수평 기준)"
+  ],
+  "主放射方向の決め方": [
+    "Main-beam direction",
+    "Orientation du lobe",
+    "Dirección del lóbulo",
+    "Direzione del lobo",
+    "Direção do lóbulo",
+    "Hauptstrahlrichtung festlegen",
+    "주 방사 방향 설정"
+  ],
+  "方位を固定": [
+    "Fixed bearing",
+    "Azimut fixe",
+    "Azimut fijo",
+    "Azimut fisso",
+    "Azimute fixo",
+    "Feste Richtung",
+    "고정 방위"
+  ],
+  "相手局へ向ける": [
+    "Toward the other station",
+    "Vers l’autre station",
+    "Hacia la otra estación",
+    "Verso l’altra stazione",
+    "Para a outra estação",
+    "Zur Gegenstation",
+    "상대국 방향"
   ],
   "主放射方位 °（真北基準）": [
     "Main-beam bearing ° (true north)",
@@ -4240,6 +4303,231 @@ const HF_MESSAGES={
     "Aktualisierung abgeschlossen. Abrufstatus jeder Quelle prüfen.",
     "업데이트 처리가 완료되었습니다. 각 출처의 취득 상태를 확인하세요."
   ],
+  "電波型式・受信品質": [
+    "Emission class & reception quality",
+    "Classe d’émission et qualité de réception",
+    "Clase de emisión y calidad de recepción",
+    "Classe di emissione e qualità di ricezione",
+    "Classe de emissão e qualidade de recepção",
+    "Sendeart und Empfangsqualität",
+    "전파형식·수신 품질"
+  ],
+  "電波型式": [
+    "Emission class",
+    "Classe d’émission",
+    "Clase de emisión",
+    "Classe di emissione",
+    "Classe de emissão",
+    "Sendeart",
+    "전파형식"
+  ],
+  "未指定": [
+    "Unspecified",
+    "Non précisée",
+    "Sin especificar",
+    "Non specificata",
+    "Não especificada",
+    "Nicht angegeben",
+    "미지정"
+  ],
+  "電信": [
+    "Telegraphy",
+    "Télégraphie",
+    "Telegrafía",
+    "Telegrafia",
+    "Telegrafia",
+    "Telegrafie",
+    "전신"
+  ],
+  "電話": [
+    "Telephony",
+    "Téléphonie",
+    "Telefonía",
+    "Telefonia",
+    "Telefonia",
+    "Telefonie",
+    "전화"
+  ],
+  "データ": [
+    "Data",
+    "Données",
+    "Datos",
+    "Dati",
+    "Dados",
+    "Daten",
+    "데이터"
+  ],
+  "A1A 電信（モールス・聴覚受信）": [
+    "A1A Telegraphy (Morse, aural reception)",
+    "A1A Télégraphie (Morse, réception auditive)",
+    "A1A Telegrafía (Morse, recepción auditiva)",
+    "A1A Telegrafia (Morse, ricezione uditiva)",
+    "A1A Telegrafia (Morse, recepção auditiva)",
+    "A1A Telegrafie (Morse, Hörempfang)",
+    "A1A 전신(모스, 청각 수신)"
+  ],
+  "F1B 電信（FSK・自動受信）": [
+    "F1B Telegraphy (FSK, automatic reception)",
+    "F1B Télégraphie (FSK, réception automatique)",
+    "F1B Telegrafía (FSK, recepción automática)",
+    "F1B Telegrafia (FSK, ricezione automatica)",
+    "F1B Telegrafia (FSK, recepção automática)",
+    "F1B Telegrafie (FSK, automatischer Empfang)",
+    "F1B 전신(FSK, 자동 수신)"
+  ],
+  "G1B 電信（PSK・自動受信）": [
+    "G1B Telegraphy (PSK, automatic reception)",
+    "G1B Télégraphie (PSK, réception automatique)",
+    "G1B Telegrafía (PSK, recepción automática)",
+    "G1B Telegrafia (PSK, ricezione automatica)",
+    "G1B Telegrafia (PSK, recepção automática)",
+    "G1B Telegrafie (PSK, automatischer Empfang)",
+    "G1B 전신(PSK, 자동 수신)"
+  ],
+  "J2B 電信（SSB副搬送波・自動受信）": [
+    "J2B Telegraphy (SSB subcarrier, automatic reception)",
+    "J2B Télégraphie (sous-porteuse BLU, réception automatique)",
+    "J2B Telegrafía (subportadora BLU, recepción automática)",
+    "J2B Telegrafia (sottoportante SSB, ricezione automatica)",
+    "J2B Telegrafia (subportadora SSB, recepção automática)",
+    "J2B Telegrafie (SSB-Hilfsträger, automatischer Empfang)",
+    "J2B 전신(SSB 부반송파, 자동 수신)"
+  ],
+  "A3E 電話（両側波帯AM）": [
+    "A3E Telephony (double-sideband AM)",
+    "A3E Téléphonie (AM double bande latérale)",
+    "A3E Telefonía (AM de doble banda lateral)",
+    "A3E Telefonia (AM a doppia banda laterale)",
+    "A3E Telefonia (AM de banda lateral dupla)",
+    "A3E Telefonie (Zweiseitenband-AM)",
+    "A3E 전화(양측파대 AM)"
+  ],
+  "H3E 電話（SSB全搬送波）": [
+    "H3E Telephony (SSB, full carrier)",
+    "H3E Téléphonie (BLU, porteuse complète)",
+    "H3E Telefonía (BLU, portadora completa)",
+    "H3E Telefonia (SSB, portante intera)",
+    "H3E Telefonia (SSB, portadora completa)",
+    "H3E Telefonie (ESB, voller Träger)",
+    "H3E 전화(SSB 전반송파)"
+  ],
+  "R3E 電話（SSB低減搬送波）": [
+    "R3E Telephony (SSB, reduced carrier)",
+    "R3E Téléphonie (BLU, porteuse réduite)",
+    "R3E Telefonía (BLU, portadora reducida)",
+    "R3E Telefonia (SSB, portante ridotta)",
+    "R3E Telefonia (SSB, portadora reduzida)",
+    "R3E Telefonie (ESB, reduzierter Träger)",
+    "R3E 전화(SSB 저감반송파)"
+  ],
+  "J3E 電話（SSB抑圧搬送波）": [
+    "J3E Telephony (SSB, suppressed carrier)",
+    "J3E Téléphonie (BLU, porteuse supprimée)",
+    "J3E Telefonía (BLU, portadora suprimida)",
+    "J3E Telefonia (SSB, portante soppressa)",
+    "J3E Telefonia (SSB, portadora suprimida)",
+    "J3E Telefonie (ESB, unterdrückter Träger)",
+    "J3E 전화(SSB 억압반송파)"
+  ],
+  "F3E 電話（FM）": [
+    "F3E Telephony (FM)",
+    "F3E Téléphonie (FM)",
+    "F3E Telefonía (FM)",
+    "F3E Telefonia (FM)",
+    "F3E Telefonia (FM)",
+    "F3E Telefonie (FM)",
+    "F3E 전화(FM)"
+  ],
+  "F1D データ（FSK）": [
+    "F1D Data (FSK)",
+    "F1D Données (FSK)",
+    "F1D Datos (FSK)",
+    "F1D Dati (FSK)",
+    "F1D Dados (FSK)",
+    "F1D Daten (FSK)",
+    "F1D 데이터(FSK)"
+  ],
+  "G1D データ（PSK）": [
+    "G1D Data (PSK)",
+    "G1D Données (PSK)",
+    "G1D Datos (PSK)",
+    "G1D Dati (PSK)",
+    "G1D Dados (PSK)",
+    "G1D Daten (PSK)",
+    "G1D 데이터(PSK)"
+  ],
+  "J2D データ（SSB副搬送波）": [
+    "J2D Data (SSB subcarrier)",
+    "J2D Données (sous-porteuse BLU)",
+    "J2D Datos (subportadora BLU)",
+    "J2D Dati (sottoportante SSB)",
+    "J2D Dados (subportadora SSB)",
+    "J2D Daten (SSB-Hilfsträger)",
+    "J2D 데이터(SSB 부반송파)"
+  ],
+  "占有帯域幅": [
+    "Occupied bandwidth",
+    "Largeur de bande occupée",
+    "Ancho de banda ocupado",
+    "Larghezza di banda occupata",
+    "Largura de banda ocupada",
+    "Belegte Bandbreite",
+    "점유주파수대폭"
+  ],
+  "帯域内SNRと占有帯域幅から換算": [
+    "Convert in-band SNR and occupied bandwidth",
+    "Convertir SNR en bande et largeur occupée",
+    "Convertir SNR en banda y ancho ocupado",
+    "Converti SNR in banda e larghezza occupata",
+    "Converter SNR na banda e largura ocupada",
+    "Band-SNR und belegte Bandbreite umrechnen",
+    "대역 내 SNR·점유주파수대폭으로 환산"
+  ],
+  "電波型式未指定": [
+    "Emission class unspecified",
+    "Classe d’émission non précisée",
+    "Clase de emisión sin especificar",
+    "Classe di emissione non specificata",
+    "Classe de emissão não especificada",
+    "Sendeart nicht angegeben",
+    "전파형식 미지정"
+  ],
+  "電波型式の表記：{code}（占有帯域幅 {hz} Hz）": [
+    "Emission designation: {code} (occupied bandwidth {hz} Hz)",
+    "Désignation d’émission : {code} (largeur occupée {hz} Hz)",
+    "Designación de emisión: {code} (ancho ocupado {hz} Hz)",
+    "Designazione di emissione: {code} (larghezza occupata {hz} Hz)",
+    "Designação de emissão: {code} (largura ocupada {hz} Hz)",
+    "Sendeartbezeichnung: {code} (belegte Bandbreite {hz} Hz)",
+    "전파형식 표기: {code}(점유주파수대폭 {hz} Hz)"
+  ],
+  "占有帯域幅 {hz} Hz": [
+    "Occupied bandwidth {hz} Hz",
+    "Largeur de bande occupée {hz} Hz",
+    "Ancho de banda ocupado {hz} Hz",
+    "Larghezza di banda occupata {hz} Hz",
+    "Largura de banda ocupada {hz} Hz",
+    "Belegte Bandbreite {hz} Hz",
+    "점유주파수대폭 {hz} Hz"
+  ],
+  "占有帯域幅は3K00、2K40、500Hのように入力してください。": [
+    "Enter the occupied bandwidth as 3K00, 2K40, 500H, etc.",
+    "Saisir la largeur occupée sous la forme 3K00, 2K40, 500H, etc.",
+    "Introduzca el ancho ocupado como 3K00, 2K40, 500H, etc.",
+    "Inserire la larghezza occupata come 3K00, 2K40, 500H, ecc.",
+    "Informe a largura ocupada como 3K00, 2K40, 500H etc.",
+    "Belegte Bandbreite als 3K00, 2K40, 500H usw. eingeben.",
+    "점유주파수대폭은 3K00, 2K40, 500H처럼 입력하세요."
+  ],
+  "A1A 24、J3E 45、A3E 67 dB·Hzは受信品質の例示値で変更可能です。占有帯域幅は電波型式の表記法（3桁の数字と小数点位置の単位文字H・K・M、例 3K00、2K40、500H）で入力します。その他の方式はモデム・符号化・速度・目標BER等に応じた値を指定してください。変調波形・帯域選択性・遅延拡散による復号性能は計算しません。": [
+    "A1A 24, J3E 45 and A3E 67 dB·Hz are editable quality examples. Enter the occupied bandwidth in emission-designation notation (three figures with the unit letter H, K or M at the decimal point, e.g. 3K00, 2K40, 500H). For other modes use modem, coding, rate and target BER requirements. Waveforms, frequency selectivity and delay-spread decoding are not modeled.",
+    "A1A 24, J3E 45 et A3E 67 dB·Hz sont des exemples modifiables. Saisir la largeur occupée selon la notation des désignations d’émission (trois chiffres, la lettre H, K ou M à la place de la virgule, p. ex. 3K00, 2K40, 500H). Autres modes : utiliser les exigences du modem, du codage, du débit et du BER. Pas de simulation de forme d’onde, sélectivité ou décodage avec étalement des retards.",
+    "A1A 24, J3E 45 y A3E 67 dB·Hz son ejemplos editables. Introduzca el ancho ocupado en la notación de designación de emisiones (tres cifras con la letra H, K o M en lugar de la coma, p. ej. 3K00, 2K40, 500H). Para otros modos use los requisitos del módem, codificación, velocidad y BER. No se modelan formas de onda, selectividad ni decodificación con dispersión temporal.",
+    "A1A 24, J3E 45 e A3E 67 dB·Hz sono esempi modificabili. Inserire la larghezza occupata nella notazione delle designazioni di emissione (tre cifre con la lettera H, K o M al posto della virgola, es. 3K00, 2K40, 500H). Per altri modi usare i requisiti di modem, codifica, velocità e BER. Forme d’onda, selettività e decodifica con dispersione temporale non sono modellate.",
+    "A1A 24, J3E 45 e A3E 67 dB·Hz são exemplos editáveis. Informe a largura ocupada na notação de designação de emissão (três algarismos com a letra H, K ou M no lugar da vírgula, ex. 3K00, 2K40, 500H). Para outros modos use requisitos do modem, codificação, taxa e BER. Formas de onda, seletividade e decodificação com dispersão temporal não são modeladas.",
+    "A1A 24, J3E 45 und A3E 67 dB·Hz sind veränderbare Qualitätsbeispiele. Belegte Bandbreite in der Sendeart-Notation eingeben (drei Ziffern, Einheitenbuchstabe H, K oder M an der Kommastelle, z. B. 3K00, 2K40, 500H). Für andere Verfahren gelten Modem-, Codierungs-, Datenraten- und BER-Anforderungen. Keine Wellenform-, Selektivitäts- oder Laufzeitspreizungs-Decodierungssimulation.",
+    "A1A 24·J3E 45·A3E 67 dB·Hz는 수정 가능한 품질 예시입니다. 점유주파수대폭은 전파형식 표기법(세 자리 숫자와 소수점 위치의 단위 문자 H·K·M, 예 3K00, 2K40, 500H)으로 입력합니다. 다른 방식은 모뎀·부호화·속도·목표 BER에 맞춰 지정하세요. 파형·주파수 선택성·지연 확산에 따른 복호 성능은 계산하지 않습니다."
+  ],
   "観測foF2から実効SSNを計算時に算出（今月のみ）": [
     "Effective SSN from observed foF2 at calculation (current month only)",
     "SSN effectif d’après la foF2 observée au calcul (mois en cours uniquement)",
@@ -4258,15 +4546,6 @@ const HF_MESSAGES={
     "Effektive SSN wird aus beobachteter foF2 berechnet…",
     "관측 foF2로 유효 SSN 산출 중…"
   ],
-  "実効SSN {value}（{count}局の中央値、範囲 {low}〜{high}）。計算時に再算出します。": [
-    "Effective SSN {value} (median of {count} stations, range {low}–{high}). Recomputed at calculation.",
-    "SSN effective {value} (médiane de {count} stations, plage {low}–{high}). Recalculée au calcul.",
-    "SSN efectivo {value} (mediana de {count} estaciones, rango {low}–{high}). Se recalcula al calcular.",
-    "SSN effettivo {value} (mediana di {count} stazioni, intervallo {low}–{high}). Ricalcolato al calcolo.",
-    "SSN efetivo {value} (mediana de {count} estações, faixa {low}–{high}). Recalculado no cálculo.",
-    "Effektive SSN {value} (Median aus {count} Stationen, Bereich {low}–{high}). Wird bei der Berechnung neu bestimmt.",
-    "유효 SSN {value}({count}개 관측소 중앙값, 범위 {low}~{high}). 계산 시 다시 산출합니다."
-  ],
   "実効SSN（観測局の中央値）": [
     "Effective SSN (station median)",
     "SSN effective (médiane des stations)",
@@ -4275,6 +4554,15 @@ const HF_MESSAGES={
     "SSN efetivo (mediana das estações)",
     "Effektive SSN (Stationsmedian)",
     "유효 SSN(관측소 중앙값)"
+  ],
+  "実効SSN {value}（{count}局の中央値、範囲 {low}〜{high}）。計算時に再算出します。": [
+    "Effective SSN {value} (median of {count} stations, range {low}–{high}). Recomputed at calculation.",
+    "SSN effective {value} (médiane de {count} stations, plage {low}–{high}). Recalculée au calcul.",
+    "SSN efectivo {value} (mediana de {count} estaciones, rango {low}–{high}). Se recalcula al calcular.",
+    "SSN effettivo {value} (mediana di {count} stazioni, intervallo {low}–{high}). Ricalcolato al calcolo.",
+    "SSN efetivo {value} (mediana de {count} estações, faixa {low}–{high}). Recalculado no cálculo.",
+    "Effektive SSN {value} (Median aus {count} Stationen, Bereich {low}–{high}). Wird bei der Berechnung neu bestimmt.",
+    "유효 SSN {value}({count}개 관측소 중앙값, 범위 {low}~{high}). 계산 시 다시 산출합니다."
   ],
   "[除外]": [
     "[excluded]",

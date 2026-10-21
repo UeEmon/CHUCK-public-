@@ -8,11 +8,37 @@ import tempfile
 
 ENGINE_COMMIT = 'c12a98b348c39f36f2659b8b3aa97b86284c8a1d'
 ANTENNAS = {'isotropic':'samples/sample.00','whip':'default/swwhip.voa',
-            'monopole':'samples/sample.22','dipole':'samples/sample.23','vertical_dipole':'samples/sample.35'}
-GEOMETRIC_ANTENNAS=('monopole','dipole','vertical_dipole')
-ANTENNA_FIELDS=('length_m','height_m','azimuth_deg','ground_permittivity','ground_conductivity')
+            'monopole':'samples/sample.22','dipole':'samples/sample.23','vertical_dipole':'samples/sample.35',
+            'log_periodic':'samples/sample.43','inverted_l':'samples/sample.38','sloping_long_wire':'samples/sample.41'}
+GEOMETRIC_ANTENNAS=('monopole','dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire')
+# Only these have a main-beam azimuth; the others are omnidirectional in azimuth.
+DIRECTIONAL_ANTENNAS=('dipole','log_periodic','inverted_l','sloping_long_wire')
+# HFMUFES models whose files have no gain-above-dipole slot (mufesint.for): parameter
+# numbers for length_m/height_m, and model-specific fields as number, range, default.
+# Type 43 log-periodic: length_m is the rear (longest) element and height_m the feed height.
+# Type 38 inverted L: length_m is the horizontal top and height_m the vertical section.
+# Type 41 sloping long wire: length_m is the wire and height_m the feed height.
+NO_GAIN_SLOT={'log_periodic':{'height_m':6,'length_m':7},'inverted_l':{'length_m':6,'height_m':7},
+              'sloping_long_wire':{'length_m':7,'height_m':8}}
+MODEL_FIELDS={'log_periodic':{'lp_slope_deg':(8,0,90,90),'lp_impedance_ohm':(9,50,1000,450),
+                              'lp_apex_deg':(10,5,45,25),'lp_tau':(11,.7,.98,.9),'lp_elements':(12,3,20,16)},
+              'sloping_long_wire':{'lw_slope_deg':(6,0,90,10)}}
+# beam_main of the sloping long wire is the direction the wire rises toward; its strongest
+# low-angle lobe points the other way (toward the low feed end), so CHUCK's azimuth is offset.
+BEAM_OFFSET_DEG={'sloping_long_wire':180}
+ANTENNA_FIELDS=('length_m','height_m','azimuth_deg','azimuth_mode','ground_permittivity','ground_conductivity',
+                *(field for fields in MODEL_FIELDS.values() for field in fields))
+# 'path' aims the main beam at the other end of each circuit (VOACAP beam_main = path bearing).
+AZIMUTH_MODES=('fixed','path')
 POLARIZATIONS = ('model','vertical','horizontal','rhcp','lhcp','linear_other')
-MODULATIONS = ('manual','cw','ssb','am','fm','fsk','psk','qam','ofdm','digital')
+# Emission classes follow the Radio Regulations Appendix 1 / 電波法施行規則第4条の2 notation:
+# main carrier modulation, nature of modulating signal, type of information.
+EMISSION_SYMBOLS = ('NAHRJBCFGDPKLMQVWX','0123789X','NABCDEFWX')
+# Names used before emission designations; only unambiguous ones keep a class.
+LEGACY_MODULATIONS = {'cw':'A1A','ssb':'J3E','am':'A3E','fm':'F3E','fsk':'F1B',
+                      'psk':'manual','qam':'manual','ofdm':'manual','digital':'manual'}
+BANDWIDTH_UNITS = {'H':1,'K':1e3,'M':1e6,'G':1e9}
+DEFAULT_FREQUENCIES = (2,4,6,8,10,12,14,16,18,20)
 
 class InputError(ValueError):
     pass
@@ -32,15 +58,54 @@ def number(data, key, low, high, default=None, integer=False):
         raise InputError(f'{key}: {low}〜{high}の範囲で入力してください')
     return int(value) if integer else value
 
+def emission_class(value):
+    if not isinstance(value,str):raise InputError('modulation: 設定値が不正です')
+    if value in LEGACY_MODULATIONS:return LEGACY_MODULATIONS[value]
+    if value=='manual':return value
+    code=value.upper()
+    if len(code)!=3 or any(c not in symbols for c,symbols in zip(code,EMISSION_SYMBOLS)):
+        raise InputError('modulation: 電波型式は3文字（例 J3E）で指定してください')
+    return code
+
+def parse_bandwidth(value):
+    """Necessary bandwidth notation: three digits and a unit letter at the decimal point, e.g. 2K40."""
+    code=value.upper() if isinstance(value,str) else ''
+    letters=[c for c in code if c in BANDWIDTH_UNITS]
+    if len(code)!=4 or len(letters)!=1 or not code.replace(letters[0],'').isdigit() or code[0] in '0KMG':
+        raise InputError('bandwidth: 占有帯域幅は表記法（例 3K00、500H）で指定してください')
+    whole,frac=code.split(letters[0])
+    hz=round(float((whole or '0')+'.'+(frac or '0'))*BANDWIDTH_UNITS[letters[0]],6)
+    number({'bandwidth':hz},'bandwidth',1,1000000)
+    return code,int(hz) if hz==int(hz) else hz
+
+def format_bandwidth(hz):
+    """Round Hz to the three significant figures of the notation."""
+    for letter,unit in BANDWIDTH_UNITS.items():
+        value=hz/unit
+        if value<1000:
+            digits=len(str(int(value)))
+            text=f'{value:.{3-digits}f}'
+            if len(text.replace('.',''))==3:return text.replace('.',letter) if '.' in text else text+letter
+    raise InputError('bandwidth: 範囲外です')
+
 def antenna_parameters(data,model,prefix=''):
     """Positive dimensions are metres, not a wavelength that changes per band."""
     p={}
     key=prefix+'length_m'
     p['length_m']=number(data,key,.1,200) if model in GEOMETRIC_ANTENNAS or data.get(key) is not None else None
-    for field,lo,hi,default in [('height_m',0,200,10 if model in ('dipole','vertical_dipole') else 0),
+    for field,lo,hi,default in [('height_m',0,200,10 if model in ('dipole','vertical_dipole','log_periodic','inverted_l') else 0),
                               ('azimuth_deg',0,359.9,0),('ground_permittivity',1,80,13),
                               ('ground_conductivity',.00003,5,.005)]:
         p[field]=number(data,prefix+field,lo,hi,default)
+    mode=data.get(prefix+'azimuth_mode','fixed')
+    if not isinstance(mode,str) or mode not in AZIMUTH_MODES:raise InputError('azimuth_mode: fixed/pathで指定してください')
+    p['azimuth_mode']=mode
+    for owner,fields in MODEL_FIELDS.items():
+        for field,(_,lo,hi,default) in fields.items():
+            key=prefix+field
+            p[field]=number(data,key,lo,hi,default,integer=field=='lp_elements') if model==owner or data.get(key) is not None else None
+    if model=='log_periodic' and p['height_m']<.1:raise InputError('ログペリの給電点高は0.1 m以上です')
+    if model=='inverted_l' and p['height_m']<.1:raise InputError('逆Lの垂直部の高さは0.1 m以上です')
     if model=='dipole' and p['height_m']<.1:raise InputError('水平ダイポールの地上高は0.1 m以上です')
     if model=='vertical_dipole' and p['height_m']<=p['length_m']/2:
         raise InputError('垂直ダイポールの給電点高は全長の半分より高くしてください')
@@ -50,7 +115,12 @@ def antenna_file(p,prefix,source):
     lines=source.splitlines()
     model=p[prefix+'_antenna']
     def setparm(n,value):lines[n+1]=f'{value:12.6f}  [{n:2d}] CHUCK antenna parameter'
-    if model in GEOMETRIC_ANTENNAS:
+    if model in NO_GAIN_SLOT:
+        # No gain-above-dipole slot; cards() applies the gain correction instead.
+        for n,key in [(3,'ground_permittivity'),(4,'ground_conductivity')]+[(n,key) for key,n in NO_GAIN_SLOT[model].items()]:
+            setparm(n,p[prefix+'_'+key])
+        for field,(n,*_) in MODEL_FIELDS.get(model,{}).items():setparm(n,p[prefix+'_'+field])
+    elif model in GEOMETRIC_ANTENNAS:
         for n,key in [(3,'ground_permittivity'),(4,'ground_conductivity'),(6,'length_m')]:
             setparm(n,p[prefix+'_'+key])
         if model=='monopole':setparm(7,p[prefix+'_gain'])
@@ -63,7 +133,8 @@ def validate(data):
     if not isinstance(data, dict):
         raise InputError('JSONオブジェクトが必要です')
     p = {}
-    for key,choices,default in [('modulation',MODULATIONS,'manual'),('snr_input',('direct','bandwidth'),'direct'),
+    p['modulation']=emission_class(data.get('modulation','manual'))
+    for key,choices,default in [('snr_input',('direct','bandwidth'),'direct'),
                                 ('tx_polarization',POLARIZATIONS,'model'),('rx_polarization',POLARIZATIONS,'model')]:
         value=data.get(key,default)
         if not isinstance(value,str) or value not in choices: raise InputError(key+': 設定値が不正です')
@@ -80,15 +151,22 @@ def validate(data):
         p.update({prefix+'_'+k:v for k,v in antenna_parameters(data,ant,prefix+'_').items()})
     p['year'] = number(data,'year',1900,2100,integer=True)
     p['month'] = number(data,'month',1,12,integer=True)
-    for key,lo,hi,default in [('ssn',0,250,80),('power_w',1,100000,150),('noise',100,180,150),('min_angle',0.1,45,3),('required_snr',0,99,40),('reliability',1,99,90)]:
+    for key,lo,hi,default in [('ssn',0,250,80),('power_w',1,100000,1000),('noise',100,180,150),('min_angle',0.1,45,3),('required_snr',0,99,40),('reliability',1,99,90)]:
         if key!='required_snr': p[key] = number(data,key,lo,hi,default)
+    bandwidth=data.get('bandwidth')
+    if bandwidth is None and data.get('bandwidth_hz') is not None:
+        bandwidth=format_bandwidth(number(data,'bandwidth_hz',1,1000000))
+    if bandwidth is not None:p['bandwidth'],p['bandwidth_hz']=parse_bandwidth(bandwidth)
     if p['snr_input']=='bandwidth':
-        p['bandwidth_hz']=number(data,'bandwidth_hz',1,1000000)
+        if bandwidth is None:raise InputError('bandwidth: 占有帯域幅を指定してください')
         p['inband_snr_db']=number(data,'inband_snr_db',-40,60)
         p['required_snr']=round(p['inband_snr_db']+10*math.log10(p['bandwidth_hz']),4)
         number(p,'required_snr',0,99)
     else:p['required_snr']=number(data,'required_snr',0,99,40)
-    freq = data.get('frequencies',[2,4,6,8,12,16,18,22,25])
+    # The card holds 10 characters; a zero power would make VOACAP fall back to 1 kW.
+    if not 1e-6<=card_power_kw(p)<1e5:
+        raise InputError('送信電力・ログペリ利得補正・偏波損失の組合せが計算範囲外です')
+    freq = data.get('frequencies',list(DEFAULT_FREQUENCIES))
     if not isinstance(freq,list) or not 1 <= len(freq) <= 11:
         raise InputError('周波数は1〜11個で指定してください')
     p['frequencies'] = [number({'f':f},'f',2,30) for f in freq]
@@ -106,6 +184,13 @@ def bearing(a,b,c,d):
     a,b,c,d=map(math.radians,(a,b,c,d))
     return (math.degrees(math.atan2(math.sin(d-b)*math.cos(c),math.cos(a)*math.sin(c)-math.sin(a)*math.cos(c)*math.cos(d-b)))+360)%360
 
+def card_power_kw(p):
+    """TX card power with corrections that VOACAP cannot take elsewhere."""
+    # Antenna files without a gain slot get their correction here; for the RX end
+    # this also only shifts the signal, as VOACAP noise is external to the antenna.
+    extra=sum(p[q+'_gain'] for q in ('tx','rx') if p[q+'_antenna'] in NO_GAIN_SLOT)
+    return p['power_w']/1000*10**((extra-p.get('polarization_loss_db',0))/10)
+
 def cards(p, hour=None):
     coords=''.join(f'{abs(p[k]):{w}.2f}{pos if p[k]>=0 else neg}' for k,w,pos,neg in [('tx_lat',5,'N','S'),('tx_lon',9,'E','W'),('rx_lat',9,'N','S'),('rx_lon',9,'E','W')])
     start,end = (1,24) if hour is None else (hour or 24,hour or 24)
@@ -114,9 +199,13 @@ def cards(p, hour=None):
         ant=f'[{ANTENNAS[p[prefix+"_antenna"]]:<21}]'
         # A user-assumed extra path loss is equivalent to reducing launch power.
         # Polarization labels alone never synthesize a different antenna pattern.
-        power=p['power_w']/1000*10**(-p.get('polarization_loss_db',0)/10) if i==1 else 0
-        azimuth=p.get(prefix+'_azimuth_deg',0) if p[prefix+'_antenna'] in GEOMETRIC_ANTENNAS else 0
-        lines.append(f'ANTENNA   {i:5d}{i:5d}{2:5d}{30:5d}{(p[prefix+'_gain'] if p[prefix+'_antenna']=='isotropic' else 0.):10.3f}{ant}{azimuth:5.1f}{power:10.6f}')
+        power=card_power_kw(p) if i==1 else 0
+        azimuth=p.get(prefix+'_azimuth_deg',0) if p[prefix+'_antenna'] in DIRECTIONAL_ANTENNAS else 0
+        if p[prefix+'_antenna'] in DIRECTIONAL_ANTENNAS and p.get(prefix+'_azimuth_mode')=='path':
+            own,other=('tx','rx') if i==1 else ('rx','tx')
+            azimuth=round(bearing(p[own+'_lat'],p[own+'_lon'],p[other+'_lat'],p[other+'_lon']),1)%360
+        azimuth=round((azimuth+BEAM_OFFSET_DEG.get(p[prefix+'_antenna'],0))%360,1)
+        lines.append(f'ANTENNA   {i:5d}{i:5d}{2:5d}{30:5d}{(p[prefix+'_gain'] if p[prefix+'_antenna']=='isotropic' else 0.):10.3f}{ant}{azimuth:5.1f}{power:10.{max(0,min(6,8-len(str(int(power)))))}f}')
     lines+=['FREQUENCY $'+''.join(f'{f:6.3f}' for f in (p['frequencies']+[0]*11)[:11]),'METHOD       30    0','EXECUTE','QUIT']
     return '\n'.join(lines)+'\n'
 

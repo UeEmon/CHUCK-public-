@@ -31,7 +31,7 @@ class PresetTests(unittest.TestCase):
         reopened=PresetStore(lambda:sqlite3.connect(self.db)).snapshot()
         self.assertEqual(next(p for p in reopened['presets'] if p['id']==tokyo['id'])['lat'],35.1)
         self.assertNotIn('default-london',[p['id'] for p in reopened['presets']])
-        self.assertEqual(len(reopened['antennas']),17)
+        self.assertEqual(len(reopened['antennas']),20)
     def test_edit_conflict_validation_and_shared_revision(self):
         revision=self.store.snapshot()['revision']
         self.edit(collection='antennas',action='save',preset=dict(id='custom',name='カスタム',model='whip',gain=3.5))
@@ -51,11 +51,30 @@ class PresetTests(unittest.TestCase):
         self.assertTrue(rows['reference-air-p3-longwire']['reference_only'])
         self.assertIsNone(rows['reference-air-p3-longwire']['length_m'])
         self.assertEqual(rows['standard-dipole-20']['height_m'],10)
+        self.assertEqual({rows['standard-dipole-'+n]['azimuth_mode'] for n in ('10','20','40')},{'path'})
+        self.assertEqual(rows['standard-whip-5']['azimuth_mode'],'fixed')
+        self.assertEqual((rows['standard-lpda-25']['model'],rows['standard-lpda-25']['azimuth_mode'],rows['standard-lpda-25']['lp_elements']),('log_periodic','path',16))
+        self.assertEqual((rows['standard-inverted-l-30']['height_m'],rows['standard-sloper-40']['lw_slope_deg']),(12,15))
         self.edit(collection='antennas',action='delete',id='reference-marine-at83')
         self.edit(collection='antennas',action='save',preset=dict(rows['standard-whip-5'],name='Edited whip',length_m=6))
         after={p['id']:p for p in self.store.snapshot()['antennas']}
         self.assertNotIn('reference-marine-at83',after)
         self.assertEqual(after['standard-whip-5']['length_m'],6)
+    def test_dipole_path_migration_keeps_edited_bearings(self):
+        self.store.snapshot()
+        with sqlite3.connect(self.db) as c:
+            # Simulate a catalog created before the migration: seeds face north, one edited.
+            c.execute("DELETE FROM preset_migrations WHERE id='dipole-path-azimuth-v1'")
+            for key in ('standard-dipole-10','standard-dipole-20'):
+                p=json.loads(c.execute('SELECT payload FROM antenna_presets WHERE id=?',(key,)).fetchone()[0])
+                p.pop('azimuth_mode')
+                if key=='standard-dipole-20':p['azimuth_deg']=90
+                c.execute('UPDATE antenna_presets SET payload=? WHERE id=?',(json.dumps(p,ensure_ascii=False),key))
+        revision=self.store.snapshot()['revision']
+        rows={p['id']:p for p in PresetStore(lambda:sqlite3.connect(self.db)).snapshot()['antennas']}
+        self.assertEqual(rows['standard-dipole-10']['azimuth_mode'],'path')
+        self.assertEqual((rows['standard-dipole-20']['azimuth_mode'],rows['standard-dipole-20']['azimuth_deg']),('fixed',90))
+        self.assertEqual(self.store.snapshot()['revision'],revision)
     def test_mobile_auto_registration_is_idempotent_and_deletion_is_respected(self):
         p=dict(source='ais',id='ship1',name='船舶',lat=35,lon=139,stale=False,prediction_compatible=True)
         self.assertEqual(self.store.sync_mobile([dict(p,stale=True)])['imported'],0)

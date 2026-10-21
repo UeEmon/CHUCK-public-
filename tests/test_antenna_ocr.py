@@ -109,7 +109,7 @@ class OCRTests(unittest.TestCase):
                 self.assertEqual(call('/api/antenna-imports',upload(),{'Origin':origin})[0],415)
                 code,body,_=call('/api/antenna-imports',upload(),good);self.assertEqual(code,200)
                 doc=json.loads(body);self.assertNotIn('test-not-a-real-key',body.decode())
-                self.assertEqual(len(PresetStore(lambda:sqlite3.connect(self.db)).snapshot()['antennas']),17)
+                self.assertEqual(len(PresetStore(lambda:sqlite3.connect(self.db)).snapshot()['antennas']),20)
                 code,body,h=call('/api/antenna-imports/'+doc['id']+'/source');self.assertEqual(code,200);self.assertIn('attachment',h['Content-Disposition'])
                 self.assertEqual(call('/api/antenna-imports/'+doc['id']+'/delete',{},good)[0],200)
             finally:listener.shutdown();listener.server_close();thread.join()

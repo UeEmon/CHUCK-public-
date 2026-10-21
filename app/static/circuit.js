@@ -6,9 +6,16 @@ const defaultPresetNames={"default-new-york":"ニューヨーク","default-washi
 Object.assign(defaultPresetNames,{"standard-whip-24":"垂直ホイップ 2.4 m","standard-whip-5":"垂直ホイップ 5 m","standard-whip-7":"垂直ホイップ 7 m","standard-whip-10":"垂直ホイップ 10 m","standard-gp-5":"グランドプレーン 5 m","standard-dipole-10":"水平ダイポール 全長10 m","standard-dipole-20":"水平ダイポール 全長20 m","standard-dipole-40":"水平ダイポール 全長40 m","standard-vertical-10":"垂直ダイポール 全長10 m","standard-vertical-20":"垂直ダイポール 全長20 m","reference-usn-as2537c":"USN AS-2537C/SR（寸法近似）"});
 function isOriginalPreset(p){return defaultPresetNames[p.id]===p.name;}
 function displayedPresetName(p){return isOriginalPreset(p)&&window.HF_I18N?HF_I18N.translate(p.name):p.name;}
-const antennaFields=['length_m','height_m','azimuth_deg','ground_permittivity','ground_conductivity'];
-function antennaConfig(a){return {length_m:a?.length_m??null,height_m:a?.height_m??0,azimuth_deg:a?.azimuth_deg??0,ground_permittivity:a?.ground_permittivity??13,ground_conductivity:a?.ground_conductivity??.005};}
-function antennaSummary(a){return a.model+' / '+a.gain+' dB'+(a.length_m!=null?' / L '+a.length_m+' m':'')+(a.model==='dipole'||a.model==='vertical_dipole'?' / h '+a.height_m+' m / '+a.azimuth_deg+'°':'');}
+const lpDefaults={lp_elements:16,lp_tau:.9,lp_apex_deg:25,lp_slope_deg:90,lp_impedance_ohm:450};
+// Model-specific fields and their defaults, mirroring engine.MODEL_FIELDS.
+const modelFields={log_periodic:lpDefaults,sloping_long_wire:{lw_slope_deg:10}};
+const extraDefaults=Object.assign({},...Object.values(modelFields));
+const antennaFields=['length_m','height_m','azimuth_deg','ground_permittivity','ground_conductivity',...Object.keys(extraDefaults)];
+// Mirrors engine.DIRECTIONAL_ANTENNAS: only these use a main-beam direction.
+const directionalModels=['dipole','log_periodic','inverted_l','sloping_long_wire'];
+const isDirectional=a=>directionalModels.includes(a?.model);
+function antennaConfig(a){return {length_m:a?.length_m??null,height_m:a?.height_m??0,azimuth_deg:a?.azimuth_deg??0,azimuth_mode:a?.azimuth_mode??'fixed',ground_permittivity:a?.ground_permittivity??13,ground_conductivity:a?.ground_conductivity??.005,...Object.fromEntries(Object.keys(extraDefaults).map(k=>[k,a?.[k]??null]))};}
+function antennaSummary(a){return a.model+' / '+a.gain+' dB'+(a.length_m!=null?' / L '+a.length_m+' m':'')+(['dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire'].includes(a.model)?' / h '+a.height_m+' m':'')+(a.model==='log_periodic'?' / '+a.lp_elements+'el τ'+a.lp_tau:'')+(a.model==='sloping_long_wire'?' / '+a.lw_slope_deg+'°↗':'')+(isDirectional(a)?' / '+(a.azimuth_mode==='path'?'→ 相手局':a.azimuth_deg+'°'):'');}
 const transientLocations=[],transientAntennas=[];
 const allLocations=()=>[...catalog.presets,...transientLocations];
 const allAntennas=()=>[...catalog.antennas,...transientAntennas];
@@ -47,10 +54,11 @@ function renderCircuit(){
   const box=document.createElement('fieldset'),legend=cell('legend',index<0?'TX · 送信地点':'RX'+(index+1)+' · 受信地点');box.className='station-card';box.append(legend);
   const location=document.createElement('select'),antenna=document.createElement('select');
   location.add(new Option('地点を選択',''));for(const region of new Set(allLocations().map(p=>p.region))){const group=document.createElement('optgroup');group.label=region;for(const p of allLocations().filter(p=>p.region===region)){const option=new Option(p.name+(p.kind==='mobile'?' [M]':''),p.id);if(!isOriginalPreset(p))option.dataset.userContent='true';group.append(option);};location.append(group);}
-  antenna.add(new Option('アンテナを選択',''));for(const p of allAntennas()){const option=new Option(p.name+' / '+antennaSummary(p),p.id);if(!isOriginalPreset(p))option.dataset.userContent='true';option.disabled=p.reference_only===true;antenna.add(option);};
+  antenna.add(new Option('アンテナを選択',''));for(const [title,directional]of [['全方向（オムニ）',false],['指向性',true]]){const group=document.createElement('optgroup');group.label=title;for(const p of allAntennas().filter(p=>isDirectional(p)===directional)){const option=new Option(p.name+' / '+antennaSummary(p),p.id);if(!isOriginalPreset(p))option.dataset.userContent='true';option.disabled=p.reference_only===true;group.append(option);}if(group.children.length)antenna.append(group);}
   location.value=e.location_id;antenna.value=e.antenna_id;location.onchange=()=>{e.location_id=location.value;renderCircuit();};antenna.onchange=()=>{e.antenna_id=antenna.value;drawMap();};
   for(const [title,select]of [['地点プリセット',location],['アンテナプリセット',antenna]]){const label=cell('label',title);label.append(select);box.append(label);}
   const l=liveLocation(locationFor(e));const info=cell('p',l?fmt(l.lat,4)+'°, '+fmt(l.lon,4)+'°'+(l.kind==='mobile'?' · '+l.position_ref.source+'/'+l.position_ref.id+(l.unavailable?' [有効位置なし]':' [最新位置に連動]'):''):'地点を選択してください');info.className='hint endpoint-position';box.append(info);
+  if(index<0)box.append($('tx-power-field'));
   if(index>=0){
    const label=cell('label','雑音 −dBW @3 MHz'),input=document.createElement('input');Object.assign(input,{type:'number',min:100,max:180,step:'any',required:true,value:e.noise});input.oninput=()=>e.noise=Number(input.value);label.append(input);box.append(label);
    const swap=cell('button','TXと交換'),remove=cell('button','RXを削除');swap.type=remove.type='button';swap.onclick=()=>swapReceiver(index);remove.disabled=circuit.rxs.length===1;remove.dataset.locked=String(remove.disabled);remove.onclick=()=>{if(busy||circuit.rxs.length===1)return;circuit.rxs.splice(index,1);renderCircuit();};box.append(swap,remove);
@@ -82,9 +90,11 @@ function restoreCircuit(selection,p){
   circuit={tx:endpoint(selection.tx),rxs:selection.rxs.map(v=>endpoint(v))};
  }else{
   const loc=(name,lat,lon,ref)=>({name,lat,lon,kind:ref?'mobile':'fixed',region:'履歴・保存設定',...(ref?{position_ref:ref}:{})});
-  const tx=endpoint(null,loc('保存TX',p.tx_lat,p.tx_lon,p.tx_position),{name:'保存TXアンテナ',model:p.tx_antenna,gain:p.tx_gain},150);
-  const sites=p.rx_sites??[{name:'保存RX',lat:p.rx_lat,lon:p.rx_lon,antenna:p.rx_antenna,gain:p.rx_gain,noise:p.noise,position_ref:p.rx_position}];
-  circuit={tx,rxs:sites.slice(0,8).map(s=>endpoint(null,loc(s.name,s.lat,s.lon,s.position_ref),{name:'保存RXアンテナ',model:s.antenna,gain:s.gain},s.noise))};
+  // Older history has no selection snapshot; keep its saved dimensions and ground constants.
+  const dims=(source,prefix)=>Object.fromEntries(Object.keys(antennaConfig(null)).filter(k=>source[prefix+k]!==undefined).map(k=>[k,source[prefix+k]]));
+  const tx=endpoint(null,loc('保存TX',p.tx_lat,p.tx_lon,p.tx_position),{name:'保存TXアンテナ',model:p.tx_antenna,gain:p.tx_gain,...dims(p,'tx_')},150);
+  const sites=p.rx_sites??[{name:'保存RX',lat:p.rx_lat,lon:p.rx_lon,antenna:p.rx_antenna,gain:p.rx_gain,noise:p.noise,position_ref:p.rx_position,...dims(p,'rx_')}];
+  circuit={tx,rxs:sites.slice(0,8).map(s=>endpoint(null,loc(s.name,s.lat,s.lon,s.position_ref),{name:'保存RXアンテナ',model:s.antenna,gain:s.gain,...dims(s,'')},s.noise))};
  }
  if(!selection){circuit.tx.polarization=p.tx_polarization??'model';circuit.rxs.forEach((e,i)=>e.polarization=p.rx_sites?.[i]?.polarization??p.rx_polarization??'model');} $('diversity-independent').checked=(selection?.independence_assumption??p.independence_assumption)===true;updateRadioConditions();renderCircuit();
 }
@@ -92,8 +102,8 @@ async function loadCatalog(){catalog=await api('/api/presets');renderCatalog();r
 function renderCatalog(){
  for(const [collection,rows,target]of [['locations',catalog.presets,'locations-list'],['antennas',catalog.antennas,'antennas-list']]){
   const table=document.createElement('table'),head=document.createElement('tr');['名称',collection==='locations'?'地域 / 地点':'モデル / 利得','編集','削除',...(collection==='antennas'?['出典・モデル注記']:[])].forEach(t=>head.append(cell('th',t)));table.append(head);
-  for(const p of rows){
-   const tr=document.createElement('tr');const nameCell=cell('td',p.name);if(!isOriginalPreset(p))nameCell.dataset.userContent='true';tr.append(nameCell,cell('td',collection==='locations'?p.region+' / '+(p.kind==='mobile'?p.position_ref.source+'/'+p.position_ref.id:fmt(p.lat,4)+', '+fmt(p.lon,4)):antennaSummary(p)));
+  for(const p of collection==='antennas'?[...rows].sort((a,b)=>isDirectional(a)-isDirectional(b)):rows){
+   const tr=document.createElement('tr');const nameCell=cell('td',p.name);if(!isOriginalPreset(p))nameCell.dataset.userContent='true';tr.append(nameCell,cell('td',collection==='locations'?p.region+' / '+(p.kind==='mobile'?p.position_ref.source+'/'+p.position_ref.id:fmt(p.lat,4)+', '+fmt(p.lon,4)):(isDirectional(p)?'指向性':'全方向')+' / '+antennaSummary(p)));
    for(const [title,action]of [['編集',()=>editCatalog(collection,p)],['削除',()=>mutateCatalog({collection,action:'delete',id:p.id})]]){const td=document.createElement('td'),b=cell('button',title);b.type='button';b.onclick=action;td.append(b);tr.append(td);}if(collection==='antennas'){const td=document.createElement('td');if(p.reference){for(const [i,url]of p.reference.sources.entries()){const link=cell('a','Source '+(i+1));link.href=url;link.target='_blank';link.rel='noopener noreferrer';td.append(link,document.createTextNode(' '));}const note=cell('small',p.reference.notes);note.className='hint';td.append(note);if(p.reference_only)td.append(cell('strong','参考資料のみ（計算不可）'));}if(p.document_ref){const link=cell('a','原本をダウンロード');link.href='/api/antenna-imports/'+p.document_ref.id+'/source';link.download='';td.append(link);}tr.append(td);}table.append(tr);
   }$(target).replaceChildren(table);
  }
@@ -152,10 +162,16 @@ $('location-editor').elements.mobile_ref.onchange=copyMobileCoordinates;
 window.addEventListener('hf-language-change',()=>drawMap());
 
 function updateAntennaEditor(){
- const f=$('antenna-editor'),model=f.elements.model.value,geometric=['monopole','dipole','vertical_dipole'].includes(model),dipole=model==='dipole'||model==='vertical_dipole';
- for(const key of antennaFields){const enabled=key==='length_m'?geometric:key==='height_m'?dipole:key==='azimuth_deg'?model==='dipole':geometric;f.elements[key].disabled=!enabled;f.elements[key].required=enabled;}
+ const f=$('antenna-editor'),model=f.elements.model.value,geometric=['monopole','dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire'].includes(model),dipole=['dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire'].includes(model);
+ for(const key of antennaFields){const enabled=key==='length_m'?geometric:key==='height_m'?dipole:key==='azimuth_deg'?isDirectional({model})&&f.elements.azimuth_mode.value!=='path':key in extraDefaults?key in (modelFields[model]??{}):geometric;f.elements[key].disabled=!enabled;f.elements[key].required=enabled;}
+ f.elements.azimuth_mode.disabled=!isDirectional({model});
+ for(const label of f.querySelectorAll('.directional-only'))label.hidden=!isDirectional({model});
+ for(const label of f.querySelectorAll('.lp-only'))label.hidden=model!=='log_periodic';
+ for(const label of f.querySelectorAll('.lw-only'))label.hidden=model!=='sloping_long_wire';
 }
-$('antenna-editor').elements.model.onchange=()=>{const f=$('antenna-editor');if(!f.elements.length_m.value)f.elements.length_m.value=10;if(f.elements.model.value==='dipole'&&Number(f.elements.height_m.value)<=0)f.elements.height_m.value=10;if(f.elements.model.value==='vertical_dipole')f.elements.height_m.value=Math.max(Number(f.elements.height_m.value),Number(f.elements.length_m.value)/2+1);updateAntennaEditor();};
+$('antenna-editor').elements.model.onchange=()=>{const f=$('antenna-editor');for(const [key,value]of Object.entries(extraDefaults))if(!f.elements[key].value)f.elements[key].value=value;if(f.elements.model.value==='inverted_l'&&Number(f.elements.height_m.value)<=0)f.elements.height_m.value=12;if(f.elements.model.value==='log_periodic'){if(!f.elements.length_m.value)f.elements.length_m.value=25;if(Number(f.elements.height_m.value)<=0)f.elements.height_m.value=20;}if(!f.elements.length_m.value)f.elements.length_m.value=10;if(f.elements.model.value==='dipole'&&Number(f.elements.height_m.value)<=0)f.elements.height_m.value=10;if(f.elements.model.value==='vertical_dipole')f.elements.height_m.value=Math.max(Number(f.elements.height_m.value),Number(f.elements.length_m.value)/2+1);updateAntennaEditor();};
+$('antenna-editor').elements.azimuth_mode.onchange=updateAntennaEditor;
 updateAntennaEditor();
 Object.assign(defaultPresetNames,{"reference-marine-at100d":"艦船 Comrod AT100D（寸法近似）","reference-marine-at83":"艦船 Comrod AT83（寸法近似）","reference-air-chelton455":"航空機 Chelton 455（参考資料）"});
 Object.assign(defaultPresetNames,{'reference-air-p3-longwire':'P-3 HFロングワイヤー（参考資料）'});
+Object.assign(defaultPresetNames,{'standard-lpda-25':'水平ログペリ 最長25 m・16素子','standard-inverted-l-30':'逆L 水平部30 m・垂直部12 m','standard-sloper-40':'スローパー 40 m・傾斜15°'});

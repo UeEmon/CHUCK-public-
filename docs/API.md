@@ -31,29 +31,36 @@ POSTの例：
   "tx_lat":35.30,"tx_lon":139.67,
   "rx_lat":13.45,"rx_lon":144.75,
   "year":2026,"month":10,"ssn":80,
-  "power_w":150,"frequencies":[2,4,6,8,12,16,18,22,25],
+  "power_w":1000,"frequencies":[2,4,6,8,10,12,14,16,18,20],
   "tx_antenna":"whip","rx_antenna":"whip",
   "tx_gain":0,"rx_gain":0,
   "noise":150,"min_angle":3,"required_snr":40,"reliability":90
 }
 ```
 
-`tx_antenna` / `rx_antenna` は `whip`、`isotropic`、`monopole`、`dipole`、`vertical_dipole`。
+`tx_antenna` / `rx_antenna` は `whip`、`isotropic`、`monopole`、`dipole`、`vertical_dipole`、`log_periodic`、`inverted_l`、`sloping_long_wire`。
 `year,month,tx_lat,tx_lon,rx_lat,rx_lon` は必須、その他は上記の既定値を使用します。
 
 寸法付き3モデルは`tx_length_m` / `rx_length_m`（0.1〜200 m）が必須です。
 `{tx,rx}_height_m`（0〜200 m、ダイポール既定10・その他0）、`{tx,rx}_azimuth_deg`（0〜359.9、既定0）、
 `{tx,rx}_ground_permittivity`（1〜80、既定13）、`{tx,rx}_ground_conductivity`（0.00003〜5 S/m、既定0.005）も指定できます。
 水平ダイポールは高さ0.1 m以上、垂直ダイポールは給電点高が全長の半分より上である必要があります。
-方位は水平ダイポールの主放射方向で、ワイヤー方向ではありません。モノポールは地表設置、基準モデルは寸法未使用。
-`rx_sites[]`ではプレフィックスなしの`length_m,height_m,azimuth_deg,ground_permittivity,ground_conductivity`を局ごとに指定できます。
+方位は水平ダイポールの主放射方向で、ワイヤー方向ではありません。`{tx,rx}_azimuth_mode`は`fixed`（既定、`azimuth_deg`を使用）または`path`（TXは受信局、RXは送信局への大圏方位を使用し、`azimuth_deg`は無視）。モノポールは地表設置、基準モデルは寸法未使用。
+`log_periodic`（水平ログペリ、HFMUFES Type 43）は`length_m`を最長素子長、`height_m`を給電点高（0.1 m以上、既定10）とし、`{tx,rx}_lp_elements`（3〜20の整数、既定16）、`{tx,rx}_lp_tau`（0.7〜0.98、既定0.9）、`{tx,rx}_lp_apex_deg`（素子先端角5〜45°、既定25）、`{tx,rx}_lp_slope_deg`（鉛直からのアレイ傾斜0〜90°、既定90＝水平）、`{tx,rx}_lp_impedance_ohm`（50〜1000 Ω、既定450）を指定できます。`inverted_l`（逆L、Type 38）は`length_m`を水平部、`height_m`を垂直部（0.1 m以上、既定10）とします。`sloping_long_wire`（スローパー、Type 41）は`length_m`を線長、`height_m`を給電点高、`{tx,rx}_lw_slope_deg`（水平からの傾斜0〜90°、既定10）とし、方位は線が下る向き（主ローブ）で指定します。他のモデルではモデル固有項目は`null`です。ログペリ・逆L・スローパーの利得補正はTXカードの電力へ換算するため、送信電力・利得補正・偏波損失の組合せが1 mW〜100 MW相当の範囲外ならエラーです。
+`rx_sites[]`ではプレフィックスなしの`length_m,height_m,azimuth_deg,azimuth_mode,ground_permittivity,ground_conductivity`と`lp_*`・`lw_slope_deg`を局ごとに指定できます。
 
 ### 変調・受信帯域・偏波
 
-- `modulation`: `manual/cw/ssb/am/fm/fsk/psk/qam/ofdm/digital`（既定manual）。
-  方式名は記録で、APIが方式ごとの必要SNRを強制しません。UIでCW/SSB/AMを選ぶと24/45/67を例示入力しますが編集可能です。
+- `modulation`: 電波型式の3文字（例 `A1A`、`J3E`、`F1B`）または`manual`（既定）。
+  1文字目は主搬送波の変調（N/A/H/R/J/B/C/F/G/D/P/K/L/M/Q/V/W/X）、2文字目は変調信号の性質（0/1/2/3/7/8/9/X）、
+  3文字目は伝送情報の型式（N/A/B/C/D/E/F/W/X）。小文字は大文字に正規化します。
+  旧形式の`cw/ssb/am/fm/fsk`はそれぞれ`A1A/J3E/A3E/F3E/F1B`へ読み替え、`psk/qam/ofdm/digital`は`manual`として扱います。
+  電波型式は記録で、APIが型式ごとの必要SNRを強制しません。UIでA1A/J3E/A3Eを選ぶと24/45/67を例示入力しますが編集可能です。
+- `bandwidth`: 占有帯域幅を電波型式の表記法で指定（例 `500H`、`2K40`、`3K00`、`16K0`）。
+  4文字で、単位文字H/K/M/Gを小数点の位置に置きます（1 Hz〜1M00）。結果には`bandwidth`と換算した`bandwidth_hz`を保存します。
+  旧形式の`bandwidth_hz`だけを指定した場合は有効数字3桁の表記へ丸めて扱います。
 - `snr_input`: `direct`（既定）なら従来の`required_snr`（0〜99 dB·Hz）。
-  `bandwidth`なら`bandwidth_hz`（1〜1,000,000）と`inband_snr_db`（−40〜60）を指定。
+  `bandwidth`なら`bandwidth`（または旧形式の`bandwidth_hz`）と`inband_snr_db`（−40〜60）を指定。
   サーバーで`required_snr = inband_snr_db + 10 log10(bandwidth_hz)`を算出し、小数4桁へ丸めて0〜99の範囲を検証します。
 - `tx_polarization/rx_polarization`: `model/vertical/horizontal/rhcp/lhcp/linear_other`（既定model）。
   メタデータとして保存し、方式名だけでパターンや偏波損失を変更しません。

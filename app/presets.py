@@ -166,6 +166,33 @@ class PresetStore:
                     ref['sources']=[P3_SOURCE if u=='https://www.asbavionics.com/asb-avionics-develops-hf-shunt-antenna-for-p3.html' else u for u in ref['sources']]
                     c.execute('UPDATE antenna_presets SET payload=? WHERE id=?',(json.dumps(item,ensure_ascii=False),key));changed=True
                 if changed and not created:c.execute('UPDATE station_presets_meta SET revision=revision+1 WHERE id=1')
+            if c.execute("INSERT OR IGNORE INTO preset_migrations VALUES ('dipole-path-azimuth-v1')").rowcount:
+                # Standard horizontal dipoles were seeded facing north; aim untouched
+                # seeds at the other station. Edited copies keep their bearing.
+                seeds={'standard-dipole-10':('水平ダイポール 全長10 m',10,10),'standard-dipole-20':('水平ダイポール 全長20 m',20,10),
+                       'standard-dipole-40':('水平ダイポール 全長40 m',40,15)}
+                changed=False
+                for key,(name,length,height) in seeds.items():
+                    row=c.execute('SELECT payload FROM antenna_presets WHERE id=?',(key,)).fetchone()
+                    if not row:continue
+                    p=validate_preset(json.loads(row[0]),'antennas')
+                    if p!=validate_preset(dict(id=key,name=name,model='dipole',length_m=length,height_m=height),'antennas'):continue
+                    p['azimuth_mode']='path'
+                    c.execute('UPDATE antenna_presets SET payload=? WHERE id=?',(json.dumps(p,ensure_ascii=False),key))
+                    changed=True
+                if changed and not created:c.execute('UPDATE station_presets_meta SET revision=revision+1 WHERE id=1')
+            if c.execute("INSERT OR IGNORE INTO preset_migrations VALUES ('wire-directional-standards-v1')").rowcount:
+                items=[dict(id='standard-lpda-25',name='水平ログペリ 最長25 m・16素子',model='log_periodic',length_m=25,height_m=20,azimuth_mode='path'),
+                       dict(id='standard-inverted-l-30',name='逆L 水平部30 m・垂直部12 m',model='inverted_l',length_m=30,height_m=12),
+                       dict(id='standard-sloper-40',name='スローパー 40 m・傾斜15°',model='sloping_long_wire',length_m=40,height_m=2,lw_slope_deg=15,azimuth_mode='path')]
+                added=False
+                for item in items:
+                    if c.execute('SELECT COUNT(*) FROM antenna_presets').fetchone()[0]>=200:break
+                    if c.execute("SELECT 1 FROM antenna_presets WHERE json_extract(payload,'$.name')=?",(item['name'],)).fetchone():continue
+                    p=validate_preset(item,'antennas')
+                    c.execute('INSERT OR IGNORE INTO antenna_presets VALUES (?,?)',(p['id'],json.dumps(p,ensure_ascii=False)))
+                    added=True
+                if added and not created:c.execute('UPDATE station_presets_meta SET revision=revision+1 WHERE id=1')
             c.commit()
             return c
         except Exception:

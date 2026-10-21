@@ -22,7 +22,7 @@ CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは
 | 実行依存 | Python 3.12標準ライブラリ、ブラウザの素のJavaScript、Fortranエンジン |
 | 最新確認 | Python 85テスト成功（実エンジン付きは84件時点でスキップなし）、実Chromiumによる回帰試験成功、Apple Silicon実機でDocker完成イメージの検証成功（2026-10-17） |
 
-Docker完成イメージとApple Silicon（arm64）は2026-10-17に実機で検証済み（`docs/VALIDATION.md`）。**次の優先事項はP1の再配布束の実生成。** amd64のDocker、実回線の検証完了とは扱わない。
+Docker完成イメージとApple Silicon（arm64）は2026-10-17に実機で検証済み（`docs/VALIDATION.md`）。arm64の再配布束も同日に生成し、最終イメージ内の全85試験がスキップなしで成功した。**次の優先事項はP1のMarine版との数値比較。** amd64のDocker、実回線の検証完了とは扱わない。
 
 ## 2 クリーン環境での再開
 
@@ -172,7 +172,7 @@ OCRはPDF・PNG・JPEG・WebP、1件8 MiB以下。ローカルは画像のみ。
 - 地図はNatural Earth同梱データのSVG表示。ドラッグで中心移動、縦／横ホイールで拡縮。倍率1と日付変更線付近も循環する。
 - 地点は右側で選ぶ。TXは1局、RXは1～8局。交換は指定RXとTXだけを相互交換する。右クリックで局を動かす仕様へ戻さない。
 - 結果は地図下のタブ。条件変更だけで結果を再計算しない。地図の現在入力と結果の計算時点を明確にする。
-- 計算モデルはwhip、isotropic、monopole、dipole、vertical_dipole。寸法モデルは物理全長・設置高・主放射方位・地面定数を使用する。
+- 計算モデルはwhip、isotropic、monopole、dipole、vertical_dipole、log_periodic（Type 43）、inverted_l（Type 38）、sloping_long_wire（Type 41）。指向性はdipole・log_periodic・inverted_l・sloping_long_wireで、主放射方向は固定方位か相手局方向。寸法モデルは物理全長・設置高・主放射方位・地面定数を使用する。
 - P-3用ロングワイヤーや不明な機体・艦体込みパターンは参考資料のみ。公開装備の採用・寸法・近似範囲を出典なしで拡大しない。
 - `i18n-messages.js` が8言語の辞書、`i18n.js` がDOM翻訳・除外制御。利用者名、原文根拠、技術診断、ライセンス原文は安易に翻訳しない。
 
@@ -204,7 +204,7 @@ VOACAP_BIN=/path/to/voacapl VOACAP_MODEL=/path/to/itshfbc \
 HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
 ```
 
-エンジン未指定での成功表示にはスキップが含まれ得る。リリース判断では件数とスキップ数を記録する。`docs/VALIDATION.md` の各節は当時の履歴であり、古い「ブラウザ未検証」を現在の総合状態と取り違えない。最終イメージ内の `compare_voacap.py` はarm64で成功した。Docker内の全テストとブラウザ試験は再配布束の生成で確認する。
+エンジン未指定での成功表示にはスキップが含まれ得る。リリース判断では件数とスキップ数を記録する。`docs/VALIDATION.md` の各節は当時の履歴であり、古い「ブラウザ未検証」を現在の総合状態と取り違えない。最終イメージ内の `compare_voacap.py` はarm64で成功した。Docker内の全テストは再配布束の生成で85件スキップなしを確認した。ブラウザ試験のarm64実行は未実施。
 
 ## 11 VOACAPとの比較
 
@@ -238,7 +238,7 @@ python3 scripts/compare_voacap.py --output-dir dist/voacap-comparison
 |---|---|---|
 | 済 | Docker完成イメージ | 2026-10-17、arm64実機でclean cloneからbuild、両サービス起動、計算、CSV、履歴再読込、イメージ内比較を確認 |
 | 済 | Apple SiliconとARM64 | 2026-10-17、実Macでarm64ビルド・ライセンス監査・主要APIを確認。画面のブラウザ試験はarm64未実施 |
-| P1 | 再配布束の実生成 | 固定版通知、正確な対応ソース、最終image内監査と全試験、SHA一覧が揃う |
+| 済 | 再配布束の実生成 | 2026-10-17、arm64でライセンス監査・対応ソース・最終image内85試験（スキップ0）・SHA一覧を確認。amd64束は未生成 |
 | P1 | 有料AIとローカル推論 | 権限のある実資料で各AIの画像・PDF可否、モデル選択、料金・失敗を確認 |
 | P1 | 実位置入力と遠隔HTTPS | GNSS等の実送信元、UTC同期、期限、認証、前段TLSとCookieを確認 |
 | P1 | Marine版との数値比較 | 月・SSN・全アンテナ・雑音・Method・要求SNR等を揃え、基準と差を保存 |
