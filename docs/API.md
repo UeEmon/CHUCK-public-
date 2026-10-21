@@ -138,6 +138,36 @@ CSVサイト名の先頭= / + / - / @は数式対策としてアポストロフ�
 raw/input個別ダウンロードは地点間のみです。NOAA自動SSN・排他・Origin検証・エラーコードは既存と共通。
 エンジンは最大8回逐次実行、各回60秒まで。失敗時は部分結果を履歴保存しません。
 
+## 拠点間メッシュ
+
+`POST /api/mesh`：年月・周波数・要求SNR等の共通値に、拠点一覧mesh_sitesを追加します。
+トップレベルのtx_*/rx_*は不要です（先頭2拠点から設定）。tx_position/rx_position/rx_sitesは無視します。
+
+```json
+{
+  "year":2026,"month":10,"ssn_source":"manual","ssn":80,"frequencies":[4,8,12],"power_w":500,
+  "mesh_sites":[
+    {"name":"A","lat":35.68,"lon":139.69,"antenna":"whip","gain":0,"noise":150,"power_w":1000},
+    {"name":"B","lat":26.21,"lon":127.68,"antenna":"dipole","length_m":20,"height_m":12,"noise":145,"power_w":100},
+    {"name":"C","lat":13.45,"lon":144.75,"position_ref":{"source":"gateway","id":"ship"}}
+  ]
+}
+```
+
+mesh_sitesは2〜8個。拠点名は重複しない1〜40文字、拠点どうしは1 km以上離します。
+antenna/gain/polarization/noise/power_wを省略した場合は共通のtx_antenna/tx_gain/tx_polarization/noise/power_w
+（未指定ならwhip/0/model/150/1000）を使います。アンテナ寸法等はrx_sitesと同じ項目を拠点ごとに指定できます。
+position_refはゲートウェイの最新位置に置き換え、position_inputs.mesh_site_Nに記録します。
+
+応答：kind=mesh、parameters（正規化した拠点一覧mesh_sitesを含む）、sites（id=n1〜nN、name、lat/lon、antenna、gain、noise、power_w、偏波・寸法）、
+links（tx_id、rx_id、distance_km、bearing_deg、24時間×周波数のhours）、note、engine/engine_commit、履歴id/created。
+linksはTXの入力順、RXの入力順に並び、自己経路は含みません。経路ごとの生出力・入力カードは保存しません。
+
+履歴kind=mesh。CSVは経路×UTC×周波数の行で、tx_id/tx_name/rx_id/rx_name、REL/SNR/信号/打上げ角/MUF、距離、
+目標REL以上かどうか（meets_target）を収録します。拠点名の先頭= / + / - / @にはアポストロフィを付加します。
+エンジンはN×(N−1)回逐次実行、各回60秒まで。失敗時は部分結果を保存しません。
+公開版では回数制限のコストが8です。詳細は[MESH.md](MESH.md)。
+
 ## 宇宙天気API
 
 `GET /api/space-weather?year=2026&month=10`

@@ -4572,5 +4572,275 @@ const HF_MESSAGES={
     "[excluída]",
     "[ausgeschlossen]",
     "[제외]"
+  ],
+  "メッシュ結果": [
+    "Mesh results",
+    "Résultats maillés",
+    "Resultados de malla",
+    "Risultati mesh",
+    "Resultados de malha",
+    "Mesh-Ergebnisse",
+    "메시 결과"
+  ],
+  "拠点間メッシュ · TX×RX のREL": [
+    "Station mesh · TX×RX REL",
+    "Maillage entre stations · REL TX×RX",
+    "Malla entre estaciones · REL TX×RX",
+    "Mesh tra stazioni · REL TX×RX",
+    "Malha entre estações · REL TX×RX",
+    "Stationsnetz · REL TX×RX",
+    "거점 간 메시 · TX×RX REL"
+  ],
+  "メッシュを選ぶと、すべての拠点の組み合わせを両方向で計算します。行が送信拠点、列が受信拠点です。": [
+    "With mesh selected, every pair of stations is calculated in both directions. Rows are transmitting stations, columns are receiving stations.",
+    "En mode maillé, chaque paire de stations est calculée dans les deux sens. Les lignes sont les stations émettrices, les colonnes les stations réceptrices.",
+    "En modo malla se calcula cada par de estaciones en ambos sentidos. Las filas son estaciones transmisoras y las columnas receptoras.",
+    "In modalità mesh ogni coppia di stazioni viene calcolata in entrambe le direzioni. Le righe sono le stazioni trasmittenti, le colonne quelle riceventi.",
+    "No modo malha, cada par de estações é calculado nos dois sentidos. As linhas são estações transmissoras e as colunas receptoras.",
+    "Im Mesh-Modus wird jedes Stationspaar in beide Richtungen berechnet. Zeilen sind sendende, Spalten empfangende Stationen.",
+    "메시를 선택하면 모든 거점 조합을 양방향으로 계산합니다. 행은 송신 거점, 열은 수신 거점입니다."
+  ],
+  "RELは月間統計であり、瞬時の受信可否ではありません。中継（多段ホップ）・同時送信の干渉・チャネル割当は評価しません。": [
+    "REL is a monthly statistic, not instantaneous reception. Relaying (multi-hop), simultaneous-transmission interference and channel assignment are not evaluated.",
+    "La REL est une statistique mensuelle, pas une réception instantanée. Le relais (multi-sauts), les interférences d’émissions simultanées et l’attribution des canaux ne sont pas évalués.",
+    "REL es una estadística mensual, no la recepción instantánea. No se evalúan el relevo (multisalto), la interferencia por transmisiones simultáneas ni la asignación de canales.",
+    "La REL è una statistica mensile, non la ricezione istantanea. Il relay (multi-hop), l’interferenza da trasmissioni simultanee e l’assegnazione dei canali non sono valutati.",
+    "REL é uma estatística mensal, não a recepção instantânea. Retransmissão (multissalto), interferência de transmissões simultâneas e atribuição de canais não são avaliadas.",
+    "REL ist eine Monatsstatistik, kein momentaner Empfang. Weiterleitung (Multi-Hop), Störungen durch gleichzeitiges Senden und Kanalzuteilung werden nicht bewertet.",
+    "REL은 월간 통계이며 순간 수신 여부가 아닙니다. 중계(다중 홉), 동시 송신 간섭, 채널 할당은 평가하지 않습니다."
+  ],
+  "計算後に、各UTC・周波数の拠点間RELを表示します。": [
+    "After calculation, REL between stations is shown for each UTC hour and frequency.",
+    "Après le calcul, la REL entre stations s’affiche pour chaque heure UTC et fréquence.",
+    "Tras el cálculo se muestra la REL entre estaciones para cada hora UTC y frecuencia.",
+    "Dopo il calcolo viene mostrata la REL tra stazioni per ogni ora UTC e frequenza.",
+    "Após o cálculo, a REL entre estações é exibida para cada hora UTC e frequência.",
+    "Nach der Berechnung wird die REL zwischen Stationen je UTC-Stunde und Frequenz angezeigt.",
+    "계산 후 UTC 시각·주파수별 거점 간 REL을 표시합니다."
+  ],
+  "TX × RX マトリックス · REL（%）": [
+    "TX × RX matrix · REL (%)",
+    "Matrice TX × RX · REL (%)",
+    "Matriz TX × RX · REL (%)",
+    "Matrice TX × RX · REL (%)",
+    "Matriz TX × RX · REL (%)",
+    "TX × RX-Matrix · REL (%)",
+    "TX × RX 매트릭스 · REL(%)"
+  ],
+  "周波数": [
+    "Frequency",
+    "Fréquence",
+    "Frecuencia",
+    "Frequenza",
+    "Frequência",
+    "Frequenz",
+    "주파수"
+  ],
+  "最良周波数": [
+    "Best frequency",
+    "Meilleure fréquence",
+    "Mejor frecuencia",
+    "Frequenza migliore",
+    "Melhor frequência",
+    "Beste Frequenz",
+    "최적 주파수"
+  ],
+  "▶ 再生": [
+    "▶ Play",
+    "▶ Lecture",
+    "▶ Reproducir",
+    "▶ Riproduci",
+    "▶ Reproduzir",
+    "▶ Abspielen",
+    "▶ 재생"
+  ],
+  "■ 停止": [
+    "■ Stop",
+    "■ Arrêt",
+    "■ Detener",
+    "■ Ferma",
+    "■ Parar",
+    "■ Stopp",
+    "■ 정지"
+  ],
+  "スライダーで時刻を動かすと、マトリックス全体がその時刻に切り替わります。最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は目標REL以上、灰色は欠測です。セルを選ぶと下にその経路の24時間を表示します。": [
+    "Moving the slider switches the whole matrix to that hour. With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks the target REL or above; grey is missing data. Select a cell to show that link's 24 hours below.",
+    "Le curseur fait passer toute la matrice à l’heure choisie. En mode Meilleure fréquence, la ligne inférieure de chaque cellule indique la fréquence (MHz) de REL maximale. Un point signale la REL cible atteinte ; le gris indique une donnée manquante. Sélectionnez une cellule pour afficher les 24 heures de cette liaison.",
+    "Al mover el control, toda la matriz cambia a esa hora. Con Mejor frecuencia, la línea inferior de cada celda muestra la frecuencia (MHz) de mayor REL. Un punto indica REL objetivo o superior; el gris indica falta de datos. Seleccione una celda para ver las 24 horas de ese enlace.",
+    "Spostando il cursore l’intera matrice passa a quell’ora. Con Frequenza migliore, la riga inferiore di ogni cella mostra la frequenza (MHz) con REL massima. Un punto indica REL obiettivo o superiore; il grigio indica dati mancanti. Seleziona una cella per vedere sotto le 24 ore di quel collegamento.",
+    "Ao mover o controle, toda a matriz muda para essa hora. Com Melhor frequência, a linha inferior de cada célula mostra a frequência (MHz) de maior REL. Um ponto indica REL alvo ou superior; cinza indica dado ausente. Selecione uma célula para ver abaixo as 24 horas desse enlace.",
+    "Mit dem Schieberegler wechselt die gesamte Matrix auf diese Stunde. Bei Beste Frequenz zeigt die untere Zeile jeder Zelle die Frequenz (MHz) mit der höchsten REL. Ein Punkt markiert Ziel-REL oder höher, Grau fehlende Daten. Eine Zelle wählen, um darunter die 24 Stunden dieser Verbindung zu sehen.",
+    "슬라이더를 움직이면 매트릭스 전체가 해당 시각으로 바뀝니다. 최적 주파수에서는 각 셀 아래 줄에 REL이 가장 높은 주파수(MHz)를 표시합니다. 점은 목표 REL 이상, 회색은 결측입니다. 셀을 선택하면 아래에 그 경로의 24시간을 표시합니다."
+  ],
+  "経路の詳細 · 周波数 × UTC": [
+    "Link detail · frequency × UTC",
+    "Détail de la liaison · fréquence × UTC",
+    "Detalle del enlace · frecuencia × UTC",
+    "Dettaglio collegamento · frequenza × UTC",
+    "Detalhe do enlace · frequência × UTC",
+    "Verbindungsdetails · Frequenz × UTC",
+    "경로 상세 · 주파수 × UTC"
+  ],
+  "逆方向を表示": [
+    "Show reverse direction",
+    "Afficher le sens inverse",
+    "Mostrar sentido inverso",
+    "Mostra direzione inversa",
+    "Mostrar sentido inverso",
+    "Gegenrichtung anzeigen",
+    "역방향 표시"
+  ],
+  "メッシュ（全拠点間を両方向で計算）": [
+    "Mesh (calculate all station pairs in both directions)",
+    "Maillage (toutes les paires de stations dans les deux sens)",
+    "Malla (todos los pares de estaciones en ambos sentidos)",
+    "Mesh (tutte le coppie di stazioni in entrambe le direzioni)",
+    "Malha (todos os pares de estações nos dois sentidos)",
+    "Mesh (alle Stationspaare in beide Richtungen)",
+    "메시(모든 거점 간을 양방향으로 계산)"
+  ],
+  "メッシュでは全局が送受信する拠点になり、2〜8拠点（最大56経路）を計算します。": [
+    "In mesh mode every station both transmits and receives; 2–8 stations (up to 56 links) are calculated.",
+    "En mode maillé, chaque station émet et reçoit ; 2 à 8 stations (jusqu’à 56 liaisons) sont calculées.",
+    "En modo malla cada estación transmite y recibe; se calculan de 2 a 8 estaciones (hasta 56 enlaces).",
+    "In modalità mesh ogni stazione trasmette e riceve; si calcolano da 2 a 8 stazioni (fino a 56 collegamenti).",
+    "No modo malha cada estação transmite e recebe; são calculadas de 2 a 8 estações (até 56 enlaces).",
+    "Im Mesh-Modus sendet und empfängt jede Station; 2–8 Stationen (bis zu 56 Verbindungen) werden berechnet.",
+    "메시에서는 모든 국이 송수신 거점이 되며 2~8개 거점(최대 56경로)을 계산합니다."
+  ],
+  "拠点{n} · 送受信": [
+    "Station {n} · TX/RX",
+    "Station {n} · émission/réception",
+    "Estación {n} · TX/RX",
+    "Stazione {n} · TX/RX",
+    "Estação {n} · TX/RX",
+    "Station {n} · Senden/Empfangen",
+    "거점{n} · 송수신"
+  ],
+  "＋ 拠点を追加": [
+    "+ Add station",
+    "+ Ajouter une station",
+    "+ Añadir estación",
+    "+ Aggiungi stazione",
+    "+ Adicionar estação",
+    "+ Station hinzufügen",
+    "+ 거점 추가"
+  ],
+  "メッシュ {n}拠点 · {count}経路": [
+    "Mesh · {n} stations · {count} links",
+    "Maillage · {n} stations · {count} liaisons",
+    "Malla · {n} estaciones · {count} enlaces",
+    "Mesh · {n} stazioni · {count} collegamenti",
+    "Malha · {n} estações · {count} enlaces",
+    "Mesh · {n} Stationen · {count} Verbindungen",
+    "메시 {n}거점 · {count}경로"
+  ],
+  "メッシュ {n}拠点 · {count}組（短経路）": [
+    "Mesh · {n} stations · {count} pairs (short path)",
+    "Maillage · {n} stations · {count} paires (trajet court)",
+    "Malla · {n} estaciones · {count} pares (trayecto corto)",
+    "Mesh · {n} stazioni · {count} coppie (percorso breve)",
+    "Malha · {n} estações · {count} pares (caminho curto)",
+    "Mesh · {n} Stationen · {count} Paare (kurzer Weg)",
+    "메시 {n}거점 · {count}쌍(단경로)"
+  ],
+  "メッシュの{n}経路を計算しています。完了までお待ちください…": [
+    "Calculating {n} mesh links. Please wait…",
+    "Calcul de {n} liaisons du maillage. Veuillez patienter…",
+    "Calculando {n} enlaces de la malla. Espere…",
+    "Calcolo di {n} collegamenti mesh in corso. Attendere…",
+    "Calculando {n} enlaces da malha. Aguarde…",
+    "{n} Mesh-Verbindungen werden berechnet. Bitte warten…",
+    "메시 {n}경로를 계산하고 있습니다. 잠시 기다려 주세요…"
+  ],
+  "目標REL {target}% 以上: {count} / {total} 経路 · 双方向とも: {pairs} / {all} 組": [
+    "Target REL {target}% or above: {count} / {total} links · both directions: {pairs} / {all} pairs",
+    "REL cible {target}% ou plus : {count} / {total} liaisons · dans les deux sens : {pairs} / {all} paires",
+    "REL objetivo {target}% o más: {count} / {total} enlaces · en ambos sentidos: {pairs} / {all} pares",
+    "REL obiettivo {target}% o superiore: {count} / {total} collegamenti · in entrambe le direzioni: {pairs} / {all} coppie",
+    "REL alvo {target}% ou mais: {count} / {total} enlaces · nos dois sentidos: {pairs} / {all} pares",
+    "Ziel-REL {target}% oder höher: {count} / {total} Verbindungen · beide Richtungen: {pairs} / {all} Paare",
+    "목표 REL {target}% 이상: {count} / {total}경로 · 양방향 모두: {pairs} / {all}쌍"
+  ],
+  "拠点間メッシュ": [
+    "Station mesh",
+    "Maillage entre stations",
+    "Malla entre estaciones",
+    "Mesh tra stazioni",
+    "Malha entre estações",
+    "Stationsnetz",
+    "거점 간 메시"
+  ],
+  "メッシュは2〜8拠点にしてください。": [
+    "Use 2–8 mesh stations.",
+    "Utilisez 2 à 8 stations maillées.",
+    "Use de 2 a 8 estaciones en la malla.",
+    "Usa da 2 a 8 stazioni mesh.",
+    "Use de 2 a 8 estações na malha.",
+    "Bitte 2–8 Mesh-Stationen verwenden.",
+    "메시는 2~8개 거점으로 지정하세요."
+  ],
+  "メッシュは2〜8拠点です。RXを7局以下にしてから選択してください。": [
+    "Mesh supports 2–8 stations. Reduce RX to 7 or fewer before selecting it.",
+    "Le maillage accepte 2 à 8 stations. Réduisez à 7 RX ou moins avant de le choisir.",
+    "La malla admite de 2 a 8 estaciones. Reduzca a 7 RX o menos antes de elegirla.",
+    "La mesh supporta da 2 a 8 stazioni. Riduci a 7 RX o meno prima di selezionarla.",
+    "A malha aceita de 2 a 8 estações. Reduza para 7 RX ou menos antes de escolhê-la.",
+    "Mesh unterstützt 2–8 Stationen. Vor der Auswahl auf höchstens 7 RX reduzieren.",
+    "메시는 2~8개 거점입니다. RX를 7국 이하로 줄인 뒤 선택하세요."
+  ],
+  "送信電力は1〜100000 Wで指定してください。": [
+    "Set transmit power between 1 and 100000 W.",
+    "Indiquez une puissance d’émission de 1 à 100000 W.",
+    "Indique una potencia de transmisión de 1 a 100000 W.",
+    "Imposta una potenza di trasmissione tra 1 e 100000 W.",
+    "Defina a potência de transmissão entre 1 e 100000 W.",
+    "Sendeleistung zwischen 1 und 100000 W angeben.",
+    "송신 전력을 1~100000 W로 지정하세요."
+  ],
+  "拠点": [
+    "Stations",
+    "Stations",
+    "Estaciones",
+    "Stazioni",
+    "Estações",
+    "Stationen",
+    "거점"
+  ],
+  "保存アンテナ": [
+    "Saved antenna",
+    "Antenne enregistrée",
+    "Antena guardada",
+    "Antenna salvata",
+    "Antena salva",
+    "Gespeicherte Antenne",
+    "저장된 안테나"
+  ],
+  "RELは各経路・UTC・周波数の月間統計です。VOACAPは送受信を入れ替えるとアンテナ・送信電力・受信雑音が変わるため、行（TX）と列（RX）の有向経路を別々に計算します。中継（多段ホップ）の到達性・同時送信の干渉・チャネル割当・経路間の相関はモデル化していません。経路ごとの生出力は保存しません。必要な場合は単一RXで再計算してください。": [
+    "REL is a monthly statistic per link, UTC hour and frequency. Swapping TX and RX changes antennas, transmit power and receiver noise in VOACAP, so each directed link (row TX, column RX) is calculated separately. Multi-hop relay reachability, simultaneous-transmission interference, channel assignment and correlation between links are not modelled. Raw output per link is not stored; recalculate as a single RX if needed.",
+    "La REL est une statistique mensuelle par liaison, heure UTC et fréquence. Inverser TX et RX change antennes, puissance d’émission et bruit de réception dans VOACAP ; chaque liaison orientée (ligne TX, colonne RX) est donc calculée séparément. L’accessibilité par relais multi-sauts, les interférences d’émissions simultanées, l’attribution des canaux et la corrélation entre liaisons ne sont pas modélisées. La sortie brute par liaison n’est pas conservée ; recalculez en RX unique si besoin.",
+    "REL es una estadística mensual por enlace, hora UTC y frecuencia. Intercambiar TX y RX cambia antenas, potencia de transmisión y ruido de recepción en VOACAP, por lo que cada enlace dirigido (fila TX, columna RX) se calcula por separado. No se modelan la alcanzabilidad por relevo multisalto, la interferencia por transmisiones simultáneas, la asignación de canales ni la correlación entre enlaces. No se guarda la salida bruta por enlace; recalcule con un solo RX si la necesita.",
+    "La REL è una statistica mensile per collegamento, ora UTC e frequenza. Scambiando TX e RX cambiano in VOACAP antenne, potenza di trasmissione e rumore di ricezione, quindi ogni collegamento orientato (riga TX, colonna RX) è calcolato separatamente. Raggiungibilità via relay multi-hop, interferenza da trasmissioni simultanee, assegnazione dei canali e correlazione tra collegamenti non sono modellate. L’output grezzo per collegamento non viene salvato; ricalcola con un solo RX se serve.",
+    "REL é uma estatística mensal por enlace, hora UTC e frequência. Trocar TX e RX muda antenas, potência de transmissão e ruído de recepção no VOACAP, por isso cada enlace direcionado (linha TX, coluna RX) é calculado separadamente. Alcance por retransmissão multissalto, interferência de transmissões simultâneas, atribuição de canais e correlação entre enlaces não são modelados. A saída bruta por enlace não é salva; recalcule com um único RX se necessário.",
+    "REL ist eine Monatsstatistik je Verbindung, UTC-Stunde und Frequenz. Das Vertauschen von TX und RX ändert in VOACAP Antennen, Sendeleistung und Empfangsrauschen, daher wird jede gerichtete Verbindung (Zeile TX, Spalte RX) getrennt berechnet. Erreichbarkeit über Multi-Hop-Relais, Störungen durch gleichzeitiges Senden, Kanalzuteilung und Korrelation zwischen Verbindungen werden nicht modelliert. Rohausgaben je Verbindung werden nicht gespeichert; bei Bedarf als einzelnen RX neu berechnen.",
+    "REL은 경로·UTC 시각·주파수별 월간 통계입니다. VOACAP에서는 송수신을 바꾸면 안테나·송신 전력·수신 잡음이 달라지므로 행(TX)과 열(RX)의 방향별 경로를 따로 계산합니다. 다중 홉 중계 도달성, 동시 송신 간섭, 채널 할당, 경로 간 상관은 모델링하지 않습니다. 경로별 원시 출력은 저장하지 않으며, 필요하면 단일 RX로 다시 계산하세요."
+  ],
+  "拠点{n} · 偏波": [
+    "Station {n} · polarization",
+    "Station {n} · polarisation",
+    "Estación {n} · polarización",
+    "Stazione {n} · polarizzazione",
+    "Estação {n} · polarização",
+    "Station {n} · Polarisation",
+    "거점{n} · 편파"
+  ],
+  "拠点を削除": [
+    "Remove station",
+    "Supprimer la station",
+    "Eliminar estación",
+    "Rimuovi stazione",
+    "Remover estação",
+    "Station entfernen",
+    "거점 삭제"
   ]
 };

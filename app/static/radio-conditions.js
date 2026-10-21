@@ -3,7 +3,7 @@ const polarizationLabels={model:'アンテナモデルに従う',vertical:'垂�
 function renderPolarizationSettings(){
  const target=$('polarization-settings');target.replaceChildren();
  for(const [i,e]of [circuit.tx,...circuit.rxs].entries()){
-  const label=cell('label',i===0?'TX · 偏波':'RX'+i+' · 偏波'),select=document.createElement('select');
+  const label=cell('label',typeof meshMode==='function'&&meshMode()?'拠点'+(i+1)+' · 偏波':i===0?'TX · 偏波':'RX'+i+' · 偏波'),select=document.createElement('select');
   for(const [value,text]of Object.entries(polarizationLabels))select.add(new Option(text,value));
   select.value=e.polarization??'model';select.onchange=()=>e.polarization=select.value;label.append(select);target.append(label);
  }

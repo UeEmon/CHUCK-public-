@@ -41,6 +41,7 @@ El historial y los preajustes se conservan en `hf-data`. `docker compose down -v
 - Configure mes, número suavizado de manchas solares (SSN), potencia, hasta 11 frecuencias entre 2 y 30 MHz, antena, ruido, SNR y fiabilidad requeridos.
 - Consulte predicciones de 24 horas (CCIR/Method 30) en las pestañas bajo el mapa: fiabilidad, diversidad y cobertura regional (máximo 35 puntos independientes). Seleccione una celda para detalles UTC y frecuencias recomendadas.
 - Propagation Chart muestra REL/SNR y MUF por trayecto, selección de RX y exportación SVG. Incluye historial SQLite, CSV/JSON y entrada/salida VOACAP sin procesar.
+- El modo malla calcula todos los pares de 2 a 8 estaciones en ambos sentidos y muestra la REL por frecuencia como matriz TX × RX, con control UTC y potencia, antena y ruido por estación. No modela relevos ni interferencias. Véase [malla](docs/MESH.md).
 - Language permite elegir japonés, inglés, francés, español, italiano, portugués, alemán o coreano sin cambiar los nombres introducidos.
 
 Cambiar las entradas no recalcula los resultados existentes. Ejecute de nuevo el cálculo. Se admiten hasta 200 ubicaciones y 200 antenas, con detección de conflictos de edición.

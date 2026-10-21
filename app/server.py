@@ -18,6 +18,7 @@ from space_weather import SpaceWeather, SpaceWeatherError
 from observations import Observations, GIRO_STATIONS
 from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
+import mesh
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
 from antenna_ocr import DocumentStore, OCRError, OCRBusy, config as ocr_config, MAX_FILE
@@ -158,6 +159,15 @@ class Handler(BaseHTTPRequestHandler):
                                         name=site['name']
                                         if name.startswith(('=','+','-','@')): name="'"+name
                                         w.writerow([h['hour_utc'],v['frequency_mhz'],site['id'],name,v.get('reliability'),v.get('snr_db_hz'),v.get('signal_dbw'),h['muf_mhz'],s['best_site_id'],s['union_lower_percent'],s['union_upper_percent'],s['independent_scenario_percent'],s['complete'],s['sites_meeting_target']])
+                        elif r.get('kind') == 'mesh':
+                            w.writerow(['# mesh_note',r['note']])
+                            w.writerow(['UTC','MHz','tx_id','tx_name','rx_id','rx_name','REL_percent','SNR_dBHz','S_dBW','TOA_deg','MUF_MHz','distance_km','meets_target'])
+                            names={s['id']:s['name'] if not s['name'].startswith(('=','+','-','@')) else "'"+s['name'] for s in r['sites']}
+                            for link in r['links']:
+                                for h in link['hours']:
+                                    for v in h['rows']:
+                                        rel=v.get('reliability')
+                                        w.writerow([h['hour_utc'],v['frequency_mhz'],link['tx_id'],names[link['tx_id']],link['rx_id'],names[link['rx_id']],rel,v.get('snr_db_hz'),v.get('signal_dbw'),v.get('takeoff_deg'),h['muf_mhz'],link['distance_km'],rel is not None and rel>=r['parameters']['reliability']])
                         elif 'hours' in r:
                             w.writerow(['UTC','MHz','REL_percent','SNR_dBHz','S_dBW','TOA_deg','MUF_MHz'])
                             for h in r['hours']:
@@ -185,7 +195,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/position-stations': return self.configure_position_station()
         if path=='/api/presets': return self.edit_presets()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
-        if path not in ('/api/predict','/api/coverage','/api/diversity'): return self.json(404,{'error':'見つかりません'})
+        if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
         origin=self.headers.get('Origin')
         if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
@@ -199,6 +209,9 @@ class Handler(BaseHTTPRequestHandler):
             data=json.loads(self.rfile.read(length))
             if not isinstance(data,dict): raise InputError('JSONオブジェクトが必要です')
             if path=='/api/diversity': data.pop('rx_position',None)
+            if path=='/api/mesh':
+                for key in ('tx_position','rx_position','rx_sites'): data.pop(key,None)
+            else: data.pop('mesh_sites',None)
             data,position_inputs=POSITIONS.apply(data)
             if path=='/api/coverage' and 'rx_position' in data:
                 data.update(center_lat=data['rx_lat'],center_lon=data['rx_lon'])
@@ -207,6 +220,9 @@ class Handler(BaseHTTPRequestHandler):
                 first=sites[0]
                 data=dict(data,rx_lat=first['lat'],rx_lon=first['lon'],rx_antenna=first['antenna'],rx_gain=first['gain'],noise=first['noise'])
                 data.update({'rx_'+key:first[key] for key in __import__('engine').ANTENNA_FIELDS})
+            nodes=mesh.prepare(data) if path=='/api/mesh' else None
+            if nodes:
+                data=dict(data,**mesh.endpoint(nodes[0],data,'tx'),**mesh.endpoint(nodes[1],data,'rx'),power_w=nodes[0]['power_w'],noise=nodes[1]['noise'])
             p=validate(dict(data,ssn=0) if data.get('ssn_source') in ('noaa','effective') else data)
             weather=effective=None
             if data.get('ssn_source')=='effective':
@@ -221,12 +237,12 @@ class Handler(BaseHTTPRequestHandler):
             if not locked: return self.json(409,{'error':'別の計算を実行中です。完了後に再実行してください。'})
             if any(datetime.fromisoformat(v['expires_at']) < datetime.now(timezone.utc) for v in position_inputs.values()):
                 raise InputError('採用した位置情報が準備中に期限切れになりました。再計算してください。')
-            r=diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
+            r=mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
             if weather is not None: r['space_weather']=weather
             if effective is not None: r['effective_ssn']=effective
             if position_inputs: r['position_inputs']=position_inputs
             if isinstance(data.get('ui_selection'),dict): r['ui_selection']=data['ui_selection']
-            self.json(200,save(r,'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
+            self.json(200,save(r,'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except (EngineError,SpaceWeatherError,EffectiveSSNError) as e: self.json(503,{'error':str(e)})
         except Exception:

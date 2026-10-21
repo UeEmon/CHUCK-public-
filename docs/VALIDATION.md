@@ -1,5 +1,13 @@
 # 検証記録 — v0.1
 
+## 拠点間メッシュ（2026-10-21、x86-64 Linux）
+
+- voacapl 0.7.7を `vendor/` からgfortranでビルドし、`VOACAP_BIN`/`VOACAP_MODEL` を指定して全単体試験を実行。スキップなしで成功。
+- `test_api.py` で3拠点のメッシュを実エンジンで計算し、6経路、n1→n2が同条件の地点間予測と完全一致、逆方向は不一致（電力・雑音の非対称）、CSVの行数と数式対策を確認。
+- `tests/ui_mesh.cjs` をChromium（Playwright）で実行し、メッシュ選択時だけ拠点別の送信電力欄が出ること、電力・アンテナが要求に反映されること、3×3マトリックスと対角、UTCスライダー・周波数切替・再生、経路詳細と逆方向、英語表示、履歴からの復元を確認。
+- 既存の `tests/ui_workbench.cjs` は、変更前のmainでも同梱アンテナ数（21→20）とP-3参考アンテナの前提で止まる。メッシュの変更とは無関係で、止まる位置までは変更前と同じく通過した。
+- Docker完成イメージ・Apple Siliconでのメッシュ実行は未検証。
+
 ## 再配布束の実生成（2026-10-17 JST、Apple Silicon）
 
 - main `60ec389` のclean cloneから `python3 scripts/build_redistribution.py <出力先>/bundle-arm64` を実行し、85秒で成功。

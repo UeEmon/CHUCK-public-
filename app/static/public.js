@@ -5,7 +5,7 @@
 const PUBLIC_CONFIG=fetch('/api/public-config').then(r=>r.ok?r.json():{public:false}).catch(()=>({public:false}));
 const PUBLIC_STORE='chuck-public-v1';
 const PUBLIC_LIMIT=200,HISTORY_LIMIT=100,ANTENNA_LIMIT=1;
-const publicKinds={'/api/predict':'point','/api/coverage':'coverage','/api/diversity':'rx_diversity'};
+const publicKinds={'/api/predict':'point','/api/coverage':'coverage','/api/diversity':'rx_diversity','/api/mesh':'mesh'};
 
 function publicLoad(){
  try{const v=JSON.parse(localStorage.getItem(PUBLIC_STORE)||'{}');const list=k=>Array.isArray(v[k])?v[k]:[];return {locations:list('locations'),antennas:list('antennas').slice(0,ANTENNA_LIMIT),history:list('history')};}

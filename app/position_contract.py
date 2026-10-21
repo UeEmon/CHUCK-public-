@@ -81,8 +81,9 @@ def validate_snapshot(snapshot):
 
 
 def has_references(data):
-    return any(k in data for k in ('tx_position','rx_position')) or (
-        isinstance(data.get('rx_sites'),list) and any(isinstance(s,dict) and 'position_ref' in s for s in data['rx_sites']))
+    return any(k in data for k in ('tx_position','rx_position')) or any(
+        isinstance(data.get(key),list) and any(isinstance(s,dict) and 'position_ref' in s for s in data[key])
+        for key in ('rx_sites','mesh_sites'))
 
 
 def apply_snapshot(data, snapshot, now=None):
@@ -102,8 +103,9 @@ def apply_snapshot(data, snapshot, now=None):
         if prefix+'_position' in data:
             p=resolve(data[prefix+'_position'])
             data[prefix+'_lat'],data[prefix+'_lon']=p['lat'],p['lon'];inputs[prefix]=p
-    if isinstance(data.get('rx_sites'),list):
-        for i,site in enumerate(data['rx_sites']):
-            if isinstance(site,dict) and 'position_ref' in site:
-                p=resolve(site['position_ref']);site.update(lat=p['lat'],lon=p['lon']);inputs['rx_site_'+str(i+1)]=p
+    for key,label in (('rx_sites','rx_site_'),('mesh_sites','mesh_site_')):
+        if isinstance(data.get(key),list):
+            for i,site in enumerate(data[key]):
+                if isinstance(site,dict) and 'position_ref' in site:
+                    p=resolve(site['position_ref']);site.update(lat=p['lat'],lon=p['lon']);inputs[label+str(i+1)]=p
     return data,inputs

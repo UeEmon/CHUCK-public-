@@ -27,7 +27,9 @@ function liveLocation(p){
  const row=typeof positionData!=='undefined'&&positionData?.positions.find(r=>r.source===p.position_ref.source&&r.id===p.position_ref.id);
  return {...p,lat:row?.lat??p.lat,lon:row?.lon??p.lon,unavailable:!row||row.stale||!row.prediction_compatible||Date.parse(row.expires_at)<=Date.now(),position_ref:{...p.position_ref}};
 }
-function circuitEndpoints(){const tx=liveLocation(locationFor(circuit.tx));if(!tx)return [];return [{...tx,label:'TX'},...circuit.rxs.map((e,i)=>{const l=liveLocation(locationFor(e));return l?{...l,label:'RX'+(i+1)}:null;}).filter(Boolean)];}
+const meshMode=()=>$('mesh-mode').checked;
+const MESH_MAX=8;
+function circuitEndpoints(){if(meshMode())return [circuit.tx,...circuit.rxs].map((e,i)=>{const l=liveLocation(locationFor(e));return l?{...l,label:'N'+(i+1)}:null;}).filter(Boolean);const tx=liveLocation(locationFor(circuit.tx));if(!tx)return [];return [{...tx,label:'TX'},...circuit.rxs.map((e,i)=>{const l=liveLocation(locationFor(e));return l?{...l,label:'RX'+(i+1)}:null;}).filter(Boolean)];}
 function circuitParams(){
  const p={};
  for(const [prefix,e]of [['tx',circuit.tx],['rx',circuit.rxs[0]]]){
@@ -39,34 +41,43 @@ function circuitParams(){
  p.noise=Number(circuit.rxs[0].noise);return p;
 }
 function circuitSites(){return circuit.rxs.map((e,i)=>{const l=liveLocation(locationFor(e)),a=antennaFor(e);return {...antennaConfig(a),polarization:e.polarization??'model',name:l.name.slice(0,31)+' [RX'+(i+1)+']',lat:l.lat,lon:l.lon,antenna:a.model,gain:a.gain,noise:Number(e.noise),...(l.position_ref?{position_ref:{...l.position_ref}}:{})};});}
+// Kept as a reference: renderCircuit detaches the shared power field while it rebuilds the cards.
+const sharedPower=$('power_w');
+function meshPower(e){return Number(e.power_w??sharedPower.value);}
+// Every mesh node transmits and receives, so each keeps its own power, antenna and noise.
+function circuitMeshSites(){return [circuit.tx,...circuit.rxs].map((e,i)=>{const l=liveLocation(locationFor(e)),a=antennaFor(e);return {...antennaConfig(a),polarization:e.polarization??'model',name:l.name.slice(0,31)+' [N'+(i+1)+']',lat:l.lat,lon:l.lon,antenna:a.model,gain:a.gain,noise:Number(e.noise),power_w:meshPower(e),...(l.position_ref?{position_ref:{...l.position_ref}}:{})};});}
 function validateCircuit(){
  if(circuit.rxs.length<1||circuit.rxs.length>8)throw Error('RXは1〜8局にしてください。');
+ if(meshMode()&&circuit.rxs.length+1>MESH_MAX)throw Error('メッシュは2〜8拠点にしてください。');
+ if(meshMode())for(const e of [circuit.tx,...circuit.rxs]){const w=meshPower(e);if(!(w>=1&&w<=100000))throw Error('送信電力は1〜100000 Wで指定してください。');}
  for(const e of [circuit.tx,...circuit.rxs]){
   const l=liveLocation(locationFor(e));if(antennaFor(e)?.reference_only)throw Error('参考資料のアンテナは計算に使用できません。');if(!l||!antennaFor(e))throw Error('地点とアンテナのプリセットを選択してください。削除されたプリセットは再選択が必要です。');
   if(l.unavailable)throw Error(l.name+'の有効な最新位置がありません。ゲートウェイの受信状態を確認してください。');
  }
 }
-function circuitSnapshot(){const snapshot=e=>({...e,location:locationFor(e),antenna:antennaFor(e)});return {version:2,tx:snapshot(circuit.tx),rxs:circuit.rxs.map(snapshot),independence_assumption:$('diversity-independent').checked};}
+function circuitSnapshot(){const snapshot=e=>({...e,location:locationFor(e),antenna:antennaFor(e)});return {version:2,tx:snapshot(circuit.tx),rxs:circuit.rxs.map(snapshot),independence_assumption:$('diversity-independent').checked,mesh:meshMode()};}
 function swapReceiver(i){if(busy)return;[circuit.tx,circuit.rxs[i]]=[circuit.rxs[i],circuit.tx];renderCircuit();}
-function addReceiver(){if(busy||circuit.rxs.length>=8)return;const used=new Set([circuit.tx,...circuit.rxs].map(e=>e.location_id));const l=catalog.presets.find(p=>!used.has(p.id))??catalog.presets[0];circuit.rxs.push({location_id:l?.id??'',antenna_id:catalog.antennas[0]?.id??'',noise:150,polarization:'model'});renderCircuit();}
+function rxLimit(){return meshMode()?MESH_MAX-1:8;}
+function addReceiver(){if(busy||circuit.rxs.length>=rxLimit())return;const used=new Set([circuit.tx,...circuit.rxs].map(e=>e.location_id));const l=catalog.presets.find(p=>!used.has(p.id))??catalog.presets[0];circuit.rxs.push({location_id:l?.id??'',antenna_id:catalog.antennas[0]?.id??'',noise:150,polarization:'model',...(meshMode()?{power_w:Number(sharedPower.value)}:{})});renderCircuit();}
 function renderCircuit(){
  function card(e,index){
-  const box=document.createElement('fieldset'),legend=cell('legend',index<0?'TX · 送信地点':'RX'+(index+1)+' · 受信地点');box.className='station-card';box.append(legend);
+  const mesh=meshMode(),box=document.createElement('fieldset'),legend=cell('legend',mesh?'拠点'+(index+2)+' · 送受信':index<0?'TX · 送信地点':'RX'+(index+1)+' · 受信地点');box.className='station-card';box.append(legend);
   const location=document.createElement('select'),antenna=document.createElement('select');
   location.add(new Option('地点を選択',''));for(const region of new Set(allLocations().map(p=>p.region))){const group=document.createElement('optgroup');group.label=region;for(const p of allLocations().filter(p=>p.region===region)){const option=new Option(p.name+(p.kind==='mobile'?' [M]':''),p.id);if(!isOriginalPreset(p))option.dataset.userContent='true';group.append(option);};location.append(group);}
   antenna.add(new Option('アンテナを選択',''));for(const [title,directional]of [['全方向（オムニ）',false],['指向性',true]]){const group=document.createElement('optgroup');group.label=title;for(const p of allAntennas().filter(p=>isDirectional(p)===directional)){const option=new Option(p.name+' / '+antennaSummary(p),p.id);if(!isOriginalPreset(p))option.dataset.userContent='true';option.disabled=p.reference_only===true;group.append(option);}if(group.children.length)antenna.append(group);}
   location.value=e.location_id;antenna.value=e.antenna_id;location.onchange=()=>{e.location_id=location.value;renderCircuit();};antenna.onchange=()=>{e.antenna_id=antenna.value;drawMap();};
   for(const [title,select]of [['地点プリセット',location],['アンテナプリセット',antenna]]){const label=cell('label',title);label.append(select);box.append(label);}
   const l=liveLocation(locationFor(e));const info=cell('p',l?fmt(l.lat,4)+'°, '+fmt(l.lon,4)+'°'+(l.kind==='mobile'?' · '+l.position_ref.source+'/'+l.position_ref.id+(l.unavailable?' [有効位置なし]':' [最新位置に連動]'):''):'地点を選択してください');info.className='hint endpoint-position';box.append(info);
-  if(index<0)box.append($('tx-power-field'));
-  if(index>=0){
+  if(index<0){const power=$('tx-power-field');power.hidden=mesh;box.append(power);}
+  if(mesh){const label=cell('label','送信電力 W'),input=document.createElement('input');e.power_w=meshPower(e);Object.assign(input,{type:'number',min:1,max:100000,step:'any',required:true,value:e.power_w});input.className='mesh-power';input.oninput=()=>e.power_w=Number(input.value);label.append(input);box.append(label);}
+  if(index>=0||mesh){
    const label=cell('label','雑音 −dBW @3 MHz'),input=document.createElement('input');Object.assign(input,{type:'number',min:100,max:180,step:'any',required:true,value:e.noise});input.oninput=()=>e.noise=Number(input.value);label.append(input);box.append(label);
-   const swap=cell('button','TXと交換'),remove=cell('button','RXを削除');swap.type=remove.type='button';swap.onclick=()=>swapReceiver(index);remove.disabled=circuit.rxs.length===1;remove.dataset.locked=String(remove.disabled);remove.onclick=()=>{if(busy||circuit.rxs.length===1)return;circuit.rxs.splice(index,1);renderCircuit();};box.append(swap,remove);
+   const swap=cell('button','TXと交換'),remove=cell('button',mesh?'拠点を削除':'RXを削除');swap.type=remove.type='button';swap.onclick=()=>swapReceiver(index);swap.hidden=mesh||index<0;if(index<0)remove.hidden=true;remove.disabled=circuit.rxs.length===1;remove.dataset.locked=String(remove.disabled);remove.onclick=()=>{if(busy||circuit.rxs.length===1)return;circuit.rxs.splice(index,1);renderCircuit();};box.append(swap,remove);
   }
   return box;
  }
  $('tx-selection').replaceChildren(card(circuit.tx,-1));$('rx-selections').replaceChildren(...circuit.rxs.map(card));
- $('add-rx-site').disabled=busy||circuit.rxs.length>=8;$('circuit-mode').textContent=circuit.rxs.length===1?'単一RX · 地点間予察':'RX '+circuit.rxs.length+'局 · ダイバーシティー受信';
+ const n=circuit.rxs.length+1;$('add-rx-site').disabled=busy||circuit.rxs.length>=rxLimit();$('add-rx-site').textContent=meshMode()?'＋ 拠点を追加':'＋ RXを追加';$('circuit-mode').textContent=meshMode()?`メッシュ ${n}拠点 · ${n*(n-1)}経路`:circuit.rxs.length===1?'単一RX · 地点間予察':'RX '+circuit.rxs.length+'局 · ダイバーシティー受信';
  renderPolarizationSettings();setBusy(busy);drawMap();
 }
 function refreshCircuitPositions(){
@@ -77,14 +88,15 @@ function refreshCircuitPositions(){
 function restoreCircuit(selection,p){
  transientLocations.length=0;transientAntennas.length=0;
  let counter=0;
- function endpoint(snapshot,location,antenna,noise){
+ function endpoint(snapshot,location,antenna,noise,power_w){
   const suffix=String(++counter),loc=snapshot?.location??location,ant=snapshot?.antenna??antenna;
   if(!loc||!ant)throw Error('保存された地点・アンテナ設定が不正です');
   let l=catalog.presets.find(v=>v.id===snapshot?.location_id&&v.lat===loc.lat&&v.lon===loc.lon&&v.name===loc.name&&v.kind===loc.kind&&JSON.stringify(v.position_ref)===JSON.stringify(loc.position_ref));
   if(!l){l={...loc,id:'history-location-'+suffix,region:'履歴・保存設定'};transientLocations.push(l);}
   let a=catalog.antennas.find(v=>v.id===snapshot?.antenna_id&&v.model===ant.model&&v.gain===ant.gain&&v.name===ant.name&&JSON.stringify(antennaConfig(v))===JSON.stringify(antennaConfig(ant))&&(v.reference_only??false)===(ant.reference_only??false)&&JSON.stringify(v.document_ref??null)===JSON.stringify(ant.document_ref??null));
   if(!a){a={...ant,id:'history-antenna-'+suffix};transientAntennas.push(a);}
-  return {location_id:l.id,antenna_id:a.id,noise:Number(snapshot?.noise??noise??150),polarization:snapshot?.polarization??'model'};
+  const power=snapshot?.power_w??power_w;
+  return {location_id:l.id,antenna_id:a.id,noise:Number(snapshot?.noise??noise??150),polarization:snapshot?.polarization??'model',...(power!==undefined?{power_w:Number(power)}:{})};
  }
  if(selection?.version===2&&selection.tx&&Array.isArray(selection.rxs)&&selection.rxs.length>=1&&selection.rxs.length<=8){
   circuit={tx:endpoint(selection.tx),rxs:selection.rxs.map(v=>endpoint(v))};
@@ -93,10 +105,16 @@ function restoreCircuit(selection,p){
   // Older history has no selection snapshot; keep its saved dimensions and ground constants.
   const dims=(source,prefix)=>Object.fromEntries(Object.keys(antennaConfig(null)).filter(k=>source[prefix+k]!==undefined).map(k=>[k,source[prefix+k]]));
   const tx=endpoint(null,loc('保存TX',p.tx_lat,p.tx_lon,p.tx_position),{name:'保存TXアンテナ',model:p.tx_antenna,gain:p.tx_gain,...dims(p,'tx_')},150);
+  if(Array.isArray(p.mesh_sites)&&p.mesh_sites.length>=2){
+   const [first,...rest]=p.mesh_sites.slice(0,MESH_MAX).map(s=>endpoint(null,loc(s.name,s.lat,s.lon,s.position_ref),{name:'保存アンテナ',model:s.antenna,gain:s.gain,...dims(s,'')},s.noise,s.power_w));
+   circuit={tx:first,rxs:rest};
+  }else{
   const sites=p.rx_sites??[{name:'保存RX',lat:p.rx_lat,lon:p.rx_lon,antenna:p.rx_antenna,gain:p.rx_gain,noise:p.noise,position_ref:p.rx_position,...dims(p,'rx_')}];
   circuit={tx,rxs:sites.slice(0,8).map(s=>endpoint(null,loc(s.name,s.lat,s.lon,s.position_ref),{name:'保存RXアンテナ',model:s.antenna,gain:s.gain,...dims(s,'')},s.noise))};
+  }
  }
- if(!selection){circuit.tx.polarization=p.tx_polarization??'model';circuit.rxs.forEach((e,i)=>e.polarization=p.rx_sites?.[i]?.polarization??p.rx_polarization??'model');} $('diversity-independent').checked=(selection?.independence_assumption??p.independence_assumption)===true;updateRadioConditions();renderCircuit();
+ $('mesh-mode').checked=selection?.mesh??Array.isArray(p.mesh_sites);
+ if(!selection){circuit.tx.polarization=p.tx_polarization??'model';circuit.rxs.forEach((e,i)=>e.polarization=p.rx_sites?.[i]?.polarization??p.rx_polarization??'model');if(Array.isArray(p.mesh_sites))[circuit.tx,...circuit.rxs].forEach((e,i)=>e.polarization=p.mesh_sites[i]?.polarization??'model');} $('diversity-independent').checked=(selection?.independence_assumption??p.independence_assumption)===true;updateRadioConditions();renderCircuit();
 }
 async function loadCatalog(){catalog=await api('/api/presets');renderCatalog();renderCircuit();}
 function renderCatalog(){
@@ -142,6 +160,7 @@ function registerReceived(p){
  editCatalog('locations',existing??{name:p.name.slice(0,40),kind:'mobile',region:'移動局',lat:p.lat,lon:p.lon,position_ref:{source:p.source,id:p.id}});
 }
 $('add-rx-site').onclick=addReceiver;
+$('mesh-mode').onchange=()=>{if(meshMode()&&circuit.rxs.length>MESH_MAX-1){$('mesh-mode').checked=false;notice('メッシュは2〜8拠点です。RXを7局以下にしてから選択してください。',true);return;}renderCircuit();};
 $('station-selection').onsubmit=e=>e.preventDefault();
 $('catalog-refresh').onclick=()=>loadCatalog().catch(e=>notice(e.message,true));
 for(const [collection,id]of [['locations','location-editor'],['antennas','antenna-editor']]){

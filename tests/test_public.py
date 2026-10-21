@@ -89,12 +89,16 @@ class PublicModeTests(unittest.TestCase):
         self.assertEqual(self.request('/api/predict',dict(p,rx_position=dict(source='a',id='b')))[0],400)
         sites=[dict(name='RX',position_ref=dict(source='a',id='b'))]
         self.assertEqual(self.request('/api/diversity',dict(p,rx_sites=sites))[0],400)
+        self.assertEqual(self.request('/api/mesh',dict(p,mesh_sites=[dict(name='A',lat=1,lon=2),*sites]))[0],400)
 
     def test_calculations_are_rate_limited(self):
         previous=self.public.LIMITER
         self.public.LIMITER=self.public.RateLimiter(0,60)
         try:
             status,body=self.request('/api/predict',dict(tx_lat=35.3,tx_lon=139.67,rx_lat=13.45,rx_lon=144.75))
+            self.assertEqual(status,429,body)
+            # A mesh is the most expensive calculation and must never bypass the budget.
+            status,body=self.request('/api/mesh',dict(mesh_sites=[dict(name='A',lat=35.3,lon=139.67),dict(name='B',lat=13.45,lon=144.75)]))
             self.assertEqual(status,429,body)
         finally:
             self.public.LIMITER=previous

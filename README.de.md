@@ -41,6 +41,7 @@ Verlauf und Vorlagen bleiben bei normalen Stopps/Neubauten im Volume `hf-data`. 
 - Monat, geglättete Sonnenfleckenzahl (SSN), Leistung, bis zu 11 Frequenzen zwischen 2 und 30 MHz, Antenne, Rauschen, erforderlichen SNR und Zuverlässigkeit einstellen.
 - Unter der Karte zeigen Registerkarten 24-Stunden-Prognosen (CCIR/Method 30), Diversity und regionale Abdeckung (höchstens 35 unabhängige Punkte). Eine Zelle öffnet UTC-Details und Frequenzempfehlungen.
 - Propagation Chart mit REL/SNR, Pfad-MUF, RX-Auswahl und SVG-Export. SQLite-Verlauf, CSV/JSON sowie VOACAP-Rohein-/ausgabe verfügbar.
+- Der Mesh-Modus berechnet alle Paare von 2–8 Stationen in beide Richtungen und zeigt die REL je Frequenz als TX × RX-Matrix, mit UTC-Schieberegler sowie Leistung, Antenne und Rauschen je Station. Relais und Störungen werden nicht modelliert. Siehe [Mesh](docs/MESH.md).
 - Language bietet Japanisch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Deutsch und Koreanisch, ohne eigene Namen zu ändern.
 
 Geänderte Eingaben berechnen vorhandene Ergebnisse nicht neu. Berechnung erneut starten. Jeweils bis zu 200 Standorte und Antennen; gleichzeitige Bearbeitung wird auf Konflikte geprüft.

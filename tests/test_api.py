@@ -79,6 +79,21 @@ class ApiTests(unittest.TestCase):
                     csv=response.read().decode('utf-8-sig')
                     self.assertIn('union_lower_percent',csv)
                     self.assertIn("'=RX1",csv)
+                nodes=[dict(name='Yokosuka',lat=35.3,lon=139.67),dict(name='=Guam',lat=13.45,lon=144.75),dict(name='那覇',lat=26.21,lon=127.68,power_w=100,noise=145)]
+                m=json.load(request('/api/mesh',dict(multi,tx_lat=0,tx_lon=0,rx_sites=sites,mesh_sites=nodes)))
+                self.assertEqual(m['kind'],'mesh')
+                self.assertEqual(len(m['links']),6)
+                link={(l['tx_id'],l['rx_id']):l for l in m['links']}
+                self.assertEqual(link[('n1','n2')]['hours'],r['hours'])
+                self.assertNotEqual(link[('n2','n1')]['hours'],r['hours'])
+                self.assertEqual(json.load(request('/api/history'))[0]['kind'],'mesh')
+                with request('/api/results/'+m['id']+'/csv') as response:
+                    csv=response.read().decode('utf-8-sig')
+                    self.assertIn('tx_name,rx_id',csv)
+                    self.assertIn("'=Guam",csv)
+                    self.assertEqual(csv.count('\n'),4+6*24*len(r['parameters']['frequencies']))
+                with self.assertRaises(urllib.error.HTTPError) as e:request('/api/mesh',dict(p,mesh_sites=nodes[:1]))
+                self.assertEqual(e.exception.code,400)
                 for bad in [dict(p,rx_sites=sites[:1]),dict(p,rx_sites=[dict(name='bad',lat=True,lon=144),sites[1]])]:
                     with self.assertRaises(urllib.error.HTTPError) as e:request('/api/diversity',bad)
                     self.assertEqual(e.exception.code,400)
@@ -96,7 +111,7 @@ class ApiTests(unittest.TestCase):
                 self.assertEqual(e.exception.code,403)
                 for path in ['/','/app.js','/style.css','/land.geojson']:
                     with request(path) as response:self.assertEqual(response.status,200)
-                for path in ['/diversity.js']:
+                for path in ['/diversity.js','/mesh.js']:
                     with request(path) as response:self.assertEqual(response.status,200)
             finally:
                 http.shutdown();http.server_close();thread.join()
