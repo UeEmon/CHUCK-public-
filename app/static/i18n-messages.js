@@ -136,6 +136,42 @@ const HF_MESSAGES={
     "D-RAP und Messstationen unter Bedingungen und Weltraumwetter laden.",
     "예측 조건·우주 날씨 탭에서 D-RAP 및 관측소를 불러옵니다."
   ],
+  "D-RAP HAF: 黄＝低、赤＝高（0〜30 MHz以上）、透明＝0、灰＝欠測。観測局: 紫＝取得済、灰＝古い。": [
+    "D-RAP HAF: yellow = low, red = high (0 to 30+ MHz), clear = 0, gray = missing. Stations: purple = fetched, gray = stale.",
+    "D-RAP HAF : jaune = bas, rouge = élevé (0 à 30 MHz et plus), transparent = 0, gris = manquant. Stations : violet = chargé, gris = ancien.",
+    "D-RAP HAF: amarillo = bajo, rojo = alto (0 a 30 MHz o más), transparente = 0, gris = sin datos. Estaciones: morado = obtenido, gris = antiguo.",
+    "D-RAP HAF: giallo = basso, rosso = alto (da 0 a oltre 30 MHz), trasparente = 0, grigio = dato mancante. Stazioni: viola = scaricato, grigio = obsoleto.",
+    "D-RAP HAF: amarelo = baixo, vermelho = alto (0 a 30 MHz ou mais), transparente = 0, cinza = sem dados. Estações: roxo = obtido, cinza = antigo.",
+    "D-RAP HAF: Gelb = niedrig, Rot = hoch (0 bis über 30 MHz), transparent = 0, Grau = fehlend. Messstationen: Lila = abgerufen, Grau = veraltet.",
+    "D-RAP HAF: 노랑=낮음, 빨강=높음(0~30 MHz 이상), 투명=0, 회색=결측. 관측소: 보라=가져옴, 회색=오래됨."
+  ],
+  "D-RAP HAF: 黄＝低、赤＝高（0〜30 MHz以上）、透明＝0、灰＝欠測。期限切れのため薄く表示。観測局: 紫＝取得済、灰＝古い。": [
+    "D-RAP HAF: yellow = low, red = high (0 to 30+ MHz), clear = 0, gray = missing. Faded because it has expired. Stations: purple = fetched, gray = stale.",
+    "D-RAP HAF : jaune = bas, rouge = élevé (0 à 30 MHz et plus), transparent = 0, gris = manquant. Atténué car expiré. Stations : violet = chargé, gris = ancien.",
+    "D-RAP HAF: amarillo = bajo, rojo = alto (0 a 30 MHz o más), transparente = 0, gris = sin datos. Atenuado por estar vencido. Estaciones: morado = obtenido, gris = antiguo.",
+    "D-RAP HAF: giallo = basso, rosso = alto (da 0 a oltre 30 MHz), trasparente = 0, grigio = dato mancante. Attenuato perché scaduto. Stazioni: viola = scaricato, grigio = obsoleto.",
+    "D-RAP HAF: amarelo = baixo, vermelho = alto (0 a 30 MHz ou mais), transparente = 0, cinza = sem dados. Esmaecido por estar expirado. Estações: roxo = obtido, cinza = antigo.",
+    "D-RAP HAF: Gelb = niedrig, Rot = hoch (0 bis über 30 MHz), transparent = 0, Grau = fehlend. Blass dargestellt, da abgelaufen. Messstationen: Lila = abgerufen, Grau = veraltet.",
+    "D-RAP HAF: 노랑=낮음, 빨강=높음(0~30 MHz 이상), 투명=0, 회색=결측. 만료되어 흐리게 표시. 관측소: 보라=가져옴, 회색=오래됨."
+  ],
+  "D-RAP未取得。観測局は紫＝取得済、灰＝古い。": [
+    "D-RAP not fetched. Stations: purple = fetched, gray = stale.",
+    "D-RAP non chargé. Stations : violet = chargé, gris = ancien.",
+    "D-RAP sin obtener. Estaciones: morado = obtenido, gris = antiguo.",
+    "D-RAP non scaricato. Stazioni: viola = scaricato, grigio = obsoleto.",
+    "D-RAP não obtido. Estações: roxo = obtido, cinza = antigo.",
+    "D-RAP nicht abgerufen. Messstationen: Lila = abgerufen, Grau = veraltet.",
+    "D-RAP 미취득. 관측소: 보라=가져옴, 회색=오래됨."
+  ],
+  "D-RAPは古い情報のため薄く表示。国内外の灰色観測局も古い情報です。取得ボタンで更新してください。": [
+    "D-RAP is stale and shown faded. Gray stations in Japan and abroad are also stale. Press a fetch button to refresh.",
+    "D-RAP est ancien et affiché atténué. Les stations grises au Japon et à l’étranger sont aussi anciennes. Utilisez un bouton de chargement pour actualiser.",
+    "D-RAP es antiguo y se muestra atenuado. Las estaciones grises de Japón y del extranjero también son antiguas. Pulse un botón de obtención para actualizar.",
+    "D-RAP è obsoleto e mostrato attenuato. Anche le stazioni grigie in Giappone e all’estero sono obsolete. Premi un pulsante di scaricamento per aggiornare.",
+    "D-RAP está antigo e aparece esmaecido. As estações cinza no Japão e no exterior também estão antigas. Pressione um botão de obtenção para atualizar.",
+    "D-RAP ist veraltet und blass dargestellt. Graue Messstationen in Japan und im Ausland sind ebenfalls veraltet. Zum Aktualisieren eine Abruf-Schaltfläche drücken.",
+    "D-RAP이 오래되어 흐리게 표시됩니다. 국내외 회색 관측소도 오래된 정보입니다. 가져오기 버튼으로 갱신하세요."
+  ],
   "地点と条件を確認して、計算を開始してください。": [
     "Check locations and conditions, then calculate.",
     "Vérifier les lieux et conditions, puis calculer.",

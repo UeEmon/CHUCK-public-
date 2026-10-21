@@ -27,4 +27,21 @@ class LocalesTests(unittest.TestCase):
             if text=='日本語':continue # Language names always remain native.
             self.assertTrue(text in messages,text)
 
+    def test_map_legend_variants_are_translated(self):
+        raw=(STATIC/'i18n-messages.js').read_text()
+        messages=json.loads(raw.split('const HF_MESSAGES=',1)[1].strip().removesuffix(';'))
+        source=(STATIC/'observations.js').read_text()
+        legends=[]
+        for line in source.splitlines():
+            if "$('observation-map-legend').textContent=" not in line:continue
+            for literal in re.findall(r"`([^`]*)`|'([^']*[ぁ-んァ-ヶ一-龯][^']*)'",line.split('textContent=',1)[1]):
+                text=literal[0] or literal[1]
+                # Expand ${cond?'A':''} into both rendered variants.
+                optional=re.search(r"\$\{[^?]+\?'([^']*)':''\}",text)
+                legends+=[text.replace(optional[0],v) for v in (optional[1],'')] if optional else [text]
+        self.assertGreaterEqual(len(legends),4)
+        for text in legends:
+            self.assertNotIn('${',text)
+            self.assertTrue(text in messages,text)
+
 if __name__=='__main__':unittest.main()
