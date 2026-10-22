@@ -48,6 +48,7 @@ L'historique et les préréglages sont conservés dans le volume `hf-data`. Atte
 - Les sites candidats classent jusqu’à 10 lieux enregistrés comme sites de réception (TX→candidat) ou relais (TX→candidat→RX1) selon les heures à la REL cible. Voir [sites candidats](docs/SITES.md).
 - Le recalcul programmé relance les résultats point à point enregistrés avec la dernière SSN lissée NOAA (toutes les 24 heures par défaut, `HF_WATCH_INTERVAL_HOURS`) et affiche un avis si les heures à la REL cible diminuent. Non disponible pour les visiteurs de l’édition publique. Voir [recalcul programmé](docs/WATCH.md).
 - « Imprimer le rapport » sur un résultat à un seul RX ouvre une page imprimable avec les conditions, la fréquence recommandée par heure, la carte de fiabilité et le plan de fréquences sur 24 heures (enregistrable en PDF depuis la boîte d’impression). Voir [rapport](docs/REPORT.md).
+- Les nouvelles fonctions sont annoncées dans l’application : un bandeau et des points sur les onglets signalent les ajouts depuis la dernière visite, et « Nouveautés » les liste toutes. Voir [nouveautés](docs/WHATS_NEW.md).
 - Language permet de choisir japonais, anglais, français, espagnol, italien, portugais, allemand ou coréen, sans modifier les noms saisis.
 
 Une modification des entrées ne recalcule pas les résultats existants : relancez le calcul. Les préréglages sont limités à 200 lieux et 200 antennes ; les conflits d'édition sont détectés.

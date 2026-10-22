@@ -8073,5 +8073,392 @@ const HF_MESSAGES={
     "Mapa de calor de confiabilidade (REL %)",
     "Zuverlässigkeits-Heatmap (REL %)",
     "신뢰도 히트맵(REL %)"
+  ],
+  "新機能のお知らせ": [
+    "What’s new",
+    "Nouveautés",
+    "Novedades",
+    "Novità",
+    "Novidades",
+    "Neuigkeiten",
+    "새 기능 안내"
+  ],
+  "新しい機能": [
+    "New features",
+    "Nouvelles fonctions",
+    "Nuevas funciones",
+    "Nuove funzioni",
+    "Novos recursos",
+    "Neue Funktionen",
+    "새 기능"
+  ],
+  "初期リリースからの機能追加の履歴です。前回の表示以降に追加された機能に NEW を付けています。「見る」でその機能の画面へ移動します。": [
+    "This is the history of features added since the initial release. Features added since you last looked are marked NEW. “Show” takes you to the feature.",
+    "Voici l’historique des fonctions ajoutées depuis la première version. Les fonctions ajoutées depuis votre dernière visite sont marquées NEW. « Voir » ouvre la fonction.",
+    "Este es el historial de funciones añadidas desde la versión inicial. Las funciones añadidas desde la última vez están marcadas como NEW. «Ver» lleva a la función.",
+    "Questa è la cronologia delle funzioni aggiunte dalla prima versione. Le funzioni aggiunte dall’ultima visita sono contrassegnate NEW. «Mostra» apre la funzione.",
+    "Este é o histórico de funções adicionadas desde a versão inicial. Os recursos adicionados desde a última vez estão marcados como NEW. “Ver” leva ao recurso.",
+    "Dies ist der Verlauf der seit der ersten Version hinzugefügten Funktionen. Seit dem letzten Besuch hinzugefügte Funktionen sind mit NEW markiert. „Anzeigen“ öffnet die Funktion.",
+    "초기 릴리스 이후 추가된 기능의 이력입니다. 지난번 표시 이후 추가된 기능에 NEW를 붙였습니다. '보기'를 누르면 그 기능 화면으로 이동합니다."
+  ],
+  "閉じる": [
+    "Close",
+    "Fermer",
+    "Cerrar",
+    "Chiudi",
+    "Fechar",
+    "Schließen",
+    "닫기"
+  ],
+  "見る": [
+    "Show",
+    "Voir",
+    "Ver",
+    "Mostra",
+    "Ver",
+    "Anzeigen",
+    "보기"
+  ],
+  "報告書の印刷": [
+    "Report printing",
+    "Impression du rapport",
+    "Impresión de informe",
+    "Stampa del rapporto",
+    "Impressão de relatório",
+    "Berichtsdruck",
+    "보고서 인쇄"
+  ],
+  "24時間予測の条件、時刻別の推奨周波数、ヒートマップ、24時間計画を1枚の印刷用ページにまとめます。": [
+    "Puts the conditions, hourly recommended frequency, heatmap and 24-hour plan of a 24-hour prediction on one printable page.",
+    "Réunit sur une page imprimable les conditions, la fréquence recommandée par heure, la carte de fiabilité et le plan sur 24 heures d’une prévision.",
+    "Reúne en una página imprimible las condiciones, la frecuencia recomendada por hora, el mapa de calor y el plan de 24 horas de una predicción.",
+    "Riunisce in una pagina stampabile condizioni, frequenza consigliata per ora, mappa di affidabilità e piano di 24 ore di una previsione.",
+    "Reúne numa página imprimível as condições, a frequência recomendada por hora, o mapa de calor e o plano de 24 horas de uma previsão.",
+    "Fasst Bedingungen, empfohlene Frequenz je Stunde, Heatmap und 24-Stunden-Plan einer Prognose auf einer druckbaren Seite zusammen.",
+    "24시간 예측의 조건, 시각별 추천 주파수, 히트맵, 24시간 계획을 한 장의 인쇄용 페이지로 정리합니다."
+  ],
+  "保存した地点間予測を毎日NOAAの最新SSNで再計算し、目標REL以上の時間が減ったら画面上部で知らせます。": [
+    "Recalculates saved point-to-point predictions daily with the latest NOAA SSN and shows a notice at the top when the hours at the target REL decrease.",
+    "Recalcule chaque jour les prévisions point à point enregistrées avec la dernière SSN NOAA et affiche un avis en haut si les heures à la REL cible diminuent.",
+    "Recalcula a diario las predicciones punto a punto guardadas con la última SSN de NOAA y avisa arriba si disminuyen las horas con la REL objetivo.",
+    "Ricalcola ogni giorno le previsioni punto-punto salvate con l’ultima SSN NOAA e mostra un avviso in alto se le ore alla REL obiettivo diminuiscono.",
+    "Recalcula diariamente as previsões ponto a ponto salvas com a última SSN da NOAA e avisa no topo se as horas na REL alvo diminuírem.",
+    "Rechnet gespeicherte Punkt-zu-Punkt-Prognosen täglich mit der neuesten NOAA-SSN neu und zeigt oben einen Hinweis, wenn die Stunden mit Ziel-REL abnehmen.",
+    "저장한 지점 간 예측을 매일 NOAA 최신 SSN으로 재계산하고, 목표 REL 이상 시간이 줄면 화면 위쪽에서 알립니다."
+  ],
+  "登録済みの地点から、受信地点や中継地点として目標RELに届く時間が長い順に候補を並べます。": [
+    "Ranks saved locations as receive or relay sites by how many hours they reach the target REL.",
+    "Classe les lieux enregistrés comme sites de réception ou relais selon le nombre d’heures à la REL cible.",
+    "Ordena las ubicaciones guardadas como sitios receptores o de retransmisión según las horas con la REL objetivo.",
+    "Ordina le località salvate come siti di ricezione o ripetitori in base alle ore alla REL obiettivo.",
+    "Ordena os locais salvos como locais de recepção ou retransmissão pelas horas na REL alvo.",
+    "Ordnet gespeicherte Standorte als Empfangs- oder Relaisstandorte nach Stunden mit Ziel-REL.",
+    "등록된 지점을 수신 지점이나 중계 지점으로 보고 목표 REL에 도달하는 시간이 긴 순으로 나열합니다."
+  ],
+  "送信電力を10 Wから10 kWまで変えて計算し、時刻・周波数ごとに目標RELに届く最小の電力を示します。": [
+    "Calculates powers from 10 W to 10 kW and shows the smallest power that reaches the target REL for each time and frequency.",
+    "Calcule des puissances de 10 W à 10 kW et indique, par heure et fréquence, la plus petite puissance atteignant la REL cible.",
+    "Calcula potencias de 10 W a 10 kW y muestra, por hora y frecuencia, la menor potencia que alcanza la REL objetivo.",
+    "Calcola potenze da 10 W a 10 kW e mostra, per ora e frequenza, la potenza minima che raggiunge la REL obiettivo.",
+    "Calcula potências de 10 W a 10 kW e mostra, por hora e frequência, a menor potência que atinge a REL alvo.",
+    "Berechnet Leistungen von 10 W bis 10 kW und zeigt je Uhrzeit und Frequenz die kleinste Leistung mit Ziel-REL.",
+    "송신 전력을 10 W에서 10 kW까지 바꾸어 계산하고, 시각·주파수별로 목표 REL에 도달하는 최소 전력을 보여 줍니다."
+  ],
+  "1つの経路について12か月分を計算し、月×UTCのRELで季節による変化を示します。": [
+    "Calculates twelve months for one path and shows the seasonal change as REL by month × UTC.",
+    "Calcule douze mois pour un trajet et montre l’évolution saisonnière en REL par mois × UTC.",
+    "Calcula doce meses para un trayecto y muestra el cambio estacional como REL por mes × UTC.",
+    "Calcola dodici mesi per un percorso e mostra la variazione stagionale come REL per mese × UTC.",
+    "Calcula doze meses para um trajeto e mostra a variação sazonal como REL por mês × UTC.",
+    "Berechnet zwölf Monate für einen Pfad und zeigt die jahreszeitliche Änderung als REL nach Monat × UTC.",
+    "하나의 경로에 대해 12개월분을 계산하고, 월 × UTC별 REL로 계절 변화를 보여 줍니다."
+  ],
+  "24時間予測の下に、切替を抑えた時間帯ごとの使用周波数の表を表示します（CSV出力・印刷つき）。": [
+    "Shows, below the 24-hour prediction, a table of the frequency to use in each time block with few switches (with CSV export and printing).",
+    "Affiche sous la prévision sur 24 heures un tableau de la fréquence à utiliser par tranche horaire avec peu de changements (export CSV et impression).",
+    "Muestra bajo la predicción de 24 horas una tabla de la frecuencia a usar en cada franja con pocos cambios (con exportación CSV e impresión).",
+    "Mostra sotto la previsione di 24 ore una tabella della frequenza da usare in ogni fascia oraria con pochi cambi (con esportazione CSV e stampa).",
+    "Mostra abaixo da previsão de 24 horas uma tabela da frequência a usar em cada faixa horária com poucas trocas (com exportação CSV e impressão).",
+    "Zeigt unter der 24-Stunden-Prognose eine Tabelle der Frequenz je Zeitblock mit wenigen Wechseln (mit CSV-Export und Druck).",
+    "24시간 예측 아래에 전환을 줄인 시간대별 사용 주파수 표를 표시합니다(CSV 출력·인쇄 포함)."
+  ],
+  "メッシュの中継到達性": [
+    "Mesh relay reachability",
+    "Accessibilité par relais du maillage",
+    "Alcance por retransmisión de la malla",
+    "Raggiungibilità via ripetitore della rete",
+    "Alcance por retransmissão da malha",
+    "Erreichbarkeit über Relais im Netz",
+    "메시 중계 도달성"
+  ],
+  "直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ結果に示します。": [
+    "Shows in the mesh result the routes that reach a pair of stations through one or two relays when the direct path does not.",
+    "Indique dans le résultat du maillage les routes qui relient deux stations par un ou deux relais lorsque le trajet direct échoue.",
+    "Muestra en el resultado de la malla las rutas que conectan dos estaciones mediante uno o dos repetidores cuando el trayecto directo no llega.",
+    "Mostra nel risultato della rete i percorsi che collegano due stazioni tramite uno o due ripetitori quando il collegamento diretto non arriva.",
+    "Mostra no resultado da malha as rotas que ligam duas estações por um ou dois retransmissores quando o trajeto direto não chega.",
+    "Zeigt im Netzergebnis die Wege, die zwei Stationen über ein oder zwei Relais verbinden, wenn der direkte Pfad nicht reicht.",
+    "직통으로는 닿지 않는 거점 쌍도 1단 또는 2단 중계로 닿는 경로를 메시 결과에 보여 줍니다."
+  ],
+  "新しい機能が{count}件あります。": [
+    "{count} new feature(s) are available.",
+    "{count} nouvelle(s) fonction(s) disponible(s).",
+    "Hay {count} función(es) nueva(s).",
+    "Sono disponibili {count} nuove funzioni.",
+    "Há {count} recurso(s) novo(s).",
+    "{count} neue Funktion(en) verfügbar.",
+    "새 기능이 {count}건 있습니다."
+  ],
+  "全画面の8言語対応": [
+    "Every screen in eight languages",
+    "Tous les écrans en huit langues",
+    "Todas las pantallas en ocho idiomas",
+    "Tutte le schermate in otto lingue",
+    "Todas as telas em oito idiomas",
+    "Alle Bildschirme in acht Sprachen",
+    "모든 화면 8개 언어 지원"
+  ],
+  "地図の凡例やサーバーからのメッセージを含め、画面の文字をすべて8言語で表示できるようにしました。": [
+    "All on-screen text, including the map legend and server messages, can now be shown in eight languages.",
+    "Tout le texte affiché, y compris la légende de la carte et les messages du serveur, est disponible en huit langues.",
+    "Todo el texto en pantalla, incluida la leyenda del mapa y los mensajes del servidor, puede mostrarse en ocho idiomas.",
+    "Tutto il testo a schermo, compresi la legenda della mappa e i messaggi del server, è disponibile in otto lingue.",
+    "Todo o texto na tela, incluindo a legenda do mapa e as mensagens do servidor, pode ser exibido em oito idiomas.",
+    "Alle Texte auf dem Bildschirm, einschließlich Kartenlegende und Servermeldungen, sind in acht Sprachen verfügbar.",
+    "지도 범례와 서버 메시지를 포함해 화면의 모든 문자를 8개 언어로 표시할 수 있게 했습니다."
+  ],
+  "2〜8拠点の全組を両方向で計算し、TX×RXのRELマトリックスで表示します。拠点ごとに電力・送受信アンテナ・雑音を設定できます。": [
+    "Calculates every pair of 2–8 stations in both directions and shows REL as a TX × RX matrix, with per-station power, transmit and receive antennas and noise.",
+    "Calcule toutes les paires de 2 à 8 stations dans les deux sens et affiche la REL en matrice TX × RX, avec puissance, antennes d’émission et de réception et bruit par station.",
+    "Calcula todos los pares de 2 a 8 estaciones en ambos sentidos y muestra la REL como matriz TX × RX, con potencia, antenas de transmisión y recepción y ruido por estación.",
+    "Calcola tutte le coppie di 2–8 stazioni in entrambe le direzioni e mostra la REL come matrice TX × RX, con potenza, antenne di trasmissione e ricezione e rumore per stazione.",
+    "Calcula todos os pares de 2 a 8 estações nos dois sentidos e mostra a REL como matriz TX × RX, com potência, antenas de transmissão e recepção e ruído por estação.",
+    "Berechnet alle Paare von 2–8 Stationen in beiden Richtungen und zeigt die REL als TX × RX-Matrix, mit Leistung, Sende- und Empfangsantenne und Rauschen je Station.",
+    "2~8개 거점의 모든 쌍을 양방향으로 계산하고 TX×RX REL 매트릭스로 표시합니다. 거점마다 전력·송수신 안테나·잡음을 설정할 수 있습니다."
+  ],
+  "実効SSN": [
+    "Effective SSN",
+    "SSN effective",
+    "SSN efectiva",
+    "SSN effettiva",
+    "SSN efetiva",
+    "Effektive SSN",
+    "실효 SSN"
+  ],
+  "観測局のfoF2から現在の電離圏に合うSSNを逆算し、計算に使えるようにしました（任意）。": [
+    "An SSN matching the current ionosphere can be derived from observed ionosonde foF2 and used for calculation (optional).",
+    "Une SSN adaptée à l’ionosphère actuelle peut être déduite du foF2 observé et utilisée pour le calcul (facultatif).",
+    "Puede obtenerse una SSN acorde con la ionosfera actual a partir del foF2 observado y usarse en el cálculo (opcional).",
+    "Si può ricavare dal foF2 osservato una SSN adatta alla ionosfera attuale e usarla nel calcolo (facoltativo).",
+    "Pode-se obter do foF2 observado uma SSN adequada à ionosfera atual e usá-la no cálculo (opcional).",
+    "Aus beobachtetem foF2 kann eine zur aktuellen Ionosphäre passende SSN ermittelt und für die Berechnung genutzt werden (optional).",
+    "관측국의 foF2로부터 현재 전리층에 맞는 SSN을 역산해 계산에 쓸 수 있게 했습니다(선택)."
+  ],
+  "指向性アンテナの拡充": [
+    "More directional antennas",
+    "Plus d’antennes directives",
+    "Más antenas directivas",
+    "Più antenne direttive",
+    "Mais antenas diretivas",
+    "Mehr Richtantennen",
+    "지향성 안테나 확충"
+  ],
+  "主放射方向を相手局へ自動で向ける設定と、ログペリオディック・逆L・傾斜ロングワイヤーの参照モデルを追加しました。": [
+    "Added a setting that aims the main beam at the other station, and log-periodic, inverted-L and sloping long-wire reference models.",
+    "Ajout d’un réglage qui oriente le lobe principal vers l’autre station, et de modèles de référence log-périodique, en L inversé et long fil incliné.",
+    "Se añadió un ajuste que orienta el lóbulo principal hacia la otra estación, y modelos de referencia log-periódica, L invertida e hilo largo inclinado.",
+    "Aggiunta un’impostazione che orienta il lobo principale verso l’altra stazione e modelli di riferimento log-periodica, L rovesciata e filo lungo inclinato.",
+    "Adicionada uma configuração que aponta o lóbulo principal para a outra estação e modelos de referência log-periódica, L invertido e fio longo inclinado.",
+    "Neue Einstellung, die die Hauptkeule auf die Gegenstation richtet, sowie Referenzmodelle Log-Periodic, Inverted-L und schräger Langdraht.",
+    "주 방사 방향을 상대국으로 자동으로 향하게 하는 설정과 로그 주기·역L·경사 롱와이어 참조 모델을 추가했습니다."
+  ],
+  "電波型式の選択": [
+    "Emission designations",
+    "Classes d’émission",
+    "Clases de emisión",
+    "Classi di emissione",
+    "Classes de emissão",
+    "Sendearten",
+    "전파 형식 선택"
+  ],
+  "電波型式と占有帯域幅を選べるようにし、既定値を送信電力1000 W・周波数2〜20 MHzにしました。": [
+    "Emission designation and occupied bandwidth can be selected; the defaults are now 1000 W and 2–20 MHz.",
+    "La classe d’émission et la largeur de bande occupée sont sélectionnables ; les valeurs par défaut sont 1000 W et 2–20 MHz.",
+    "Pueden elegirse la clase de emisión y el ancho de banda ocupado; los valores por defecto son 1000 W y 2–20 MHz.",
+    "Si possono scegliere classe di emissione e larghezza di banda occupata; i valori predefiniti sono 1000 W e 2–20 MHz.",
+    "É possível escolher a classe de emissão e a largura de banda ocupada; os padrões passam a ser 1000 W e 2–20 MHz.",
+    "Sendeart und belegte Bandbreite sind wählbar; Standard sind jetzt 1000 W und 2–20 MHz.",
+    "전파 형식과 점유 대역폭을 선택할 수 있게 하고, 기본값을 송신 전력 1000 W·주파수 2~20 MHz로 했습니다."
+  ],
+  "タッチ操作の地図拡大": [
+    "Touch map zoom",
+    "Zoom tactile de la carte",
+    "Zoom táctil del mapa",
+    "Zoom della mappa al tocco",
+    "Zoom do mapa por toque",
+    "Kartenzoom per Touch",
+    "터치 지도 확대"
+  ],
+  "タッチ画面でのピンチ操作と「＋」「−」ボタンで地図を拡大・縮小できるようにしました。": [
+    "The map can be zoomed with a pinch on touch screens and with the + and − buttons.",
+    "La carte se zoome par pincement sur écran tactile et avec les boutons + et −.",
+    "El mapa se amplía con el gesto de pellizco en pantallas táctiles y con los botones + y −.",
+    "La mappa si ingrandisce con il pizzico sugli schermi touch e con i pulsanti + e −.",
+    "O mapa pode ser ampliado com o gesto de pinça em telas sensíveis ao toque e com os botões + e −.",
+    "Die Karte lässt sich auf Touchscreens per Zwei-Finger-Geste und mit den Tasten + und − zoomen.",
+    "터치 화면의 핀치 조작과 '＋'·'−' 버튼으로 지도를 확대·축소할 수 있게 했습니다."
+  ],
+  "公開版": [
+    "Public edition",
+    "Édition publique",
+    "Edición pública",
+    "Edizione pubblica",
+    "Edição pública",
+    "Öffentliche Ausgabe",
+    "공개판"
+  ],
+  "インストールせずに誰でも使える公開サイトを用意しました。計算回数に上限があり、履歴と自分の地点・アンテナ1件はブラウザに保存します。": [
+    "A public site that anyone can use without installing. Calculations are rate-limited; history, your own locations and one antenna stay in your browser.",
+    "Un site public utilisable par tous sans installation. Les calculs sont limités ; l’historique, vos lieux et une antenne restent dans votre navigateur.",
+    "Un sitio público que cualquiera puede usar sin instalar. Los cálculos tienen límite; el historial, sus ubicaciones y una antena quedan en su navegador.",
+    "Un sito pubblico utilizzabile da chiunque senza installazione. I calcoli sono limitati; cronologia, località e un’antenna restano nel browser.",
+    "Um site público que qualquer pessoa pode usar sem instalar. Os cálculos têm limite; o histórico, seus locais e uma antena ficam no navegador.",
+    "Eine öffentliche Website, die alle ohne Installation nutzen können. Berechnungen sind begrenzt; Verlauf, eigene Standorte und eine Antenne bleiben im Browser.",
+    "설치 없이 누구나 쓸 수 있는 공개 사이트를 마련했습니다. 계산 횟수에 상한이 있으며, 이력과 자신의 지점·안테나 1개는 브라우저에 저장합니다."
+  ],
+  "CHUCKへの改称と操作要領": [
+    "Renamed CHUCK, with an operation manual",
+    "Renommé CHUCK, avec un manuel d’utilisation",
+    "Renombrado CHUCK, con manual de operación",
+    "Rinominato CHUCK, con manuale operativo",
+    "Renomeado CHUCK, com manual de operação",
+    "In CHUCK umbenannt, mit Bedienungsanleitung",
+    "CHUCK으로 개칭, 조작 요령"
+  ],
+  "名称をCHUCKに改め、画面図入りの日本語操作要領（PDF・Word）を用意しました。": [
+    "The application is now called CHUCK, with an illustrated Japanese operation manual (PDF and Word).",
+    "L’application s’appelle désormais CHUCK, avec un manuel d’utilisation illustré en japonais (PDF et Word).",
+    "La aplicación se llama ahora CHUCK, con un manual de operación ilustrado en japonés (PDF y Word).",
+    "L’applicazione si chiama ora CHUCK, con un manuale operativo illustrato in giapponese (PDF e Word).",
+    "O aplicativo passou a se chamar CHUCK, com um manual de operação ilustrado em japonês (PDF e Word).",
+    "Die Anwendung heißt jetzt CHUCK, mit bebilderter japanischer Bedienungsanleitung (PDF und Word).",
+    "명칭을 CHUCK으로 바꾸고, 화면 그림이 들어간 일본어 조작 요령(PDF·Word)을 마련했습니다."
+  ],
+  "アンテナ資料のAI読み取り": [
+    "AI reading of antenna documents",
+    "Lecture IA des documents d’antenne",
+    "Lectura con IA de documentos de antena",
+    "Lettura IA dei documenti d’antenna",
+    "Leitura por IA de documentos de antena",
+    "KI-Auslesen von Antennenunterlagen",
+    "안테나 자료 AI 판독"
+  ],
+  "カタログや仕様書（PDF・画像）を生成AIで読み取り、根拠を確認してアンテナプリセットに登録できます。OpenAI・Claude・Gemini・ローカルLLMを選べます。": [
+    "Catalogs and specifications (PDF or images) can be read with generative AI and, after checking the evidence, saved as antenna presets. OpenAI, Claude, Gemini or a local LLM can be used.",
+    "Les catalogues et fiches techniques (PDF ou images) peuvent être lus par IA générative puis, après vérification, enregistrés comme préréglages d’antenne. OpenAI, Claude, Gemini ou un LLM local sont possibles.",
+    "Los catálogos y especificaciones (PDF o imágenes) pueden leerse con IA generativa y, tras comprobar la evidencia, guardarse como preajustes de antena. Se puede usar OpenAI, Claude, Gemini o un LLM local.",
+    "Cataloghi e specifiche (PDF o immagini) possono essere letti con IA generativa e, dopo la verifica, salvati come preset d’antenna. Si possono usare OpenAI, Claude, Gemini o un LLM locale.",
+    "Catálogos e especificações (PDF ou imagens) podem ser lidos com IA generativa e, após conferir as evidências, salvos como predefinições de antena. É possível usar OpenAI, Claude, Gemini ou um LLM local.",
+    "Kataloge und Datenblätter (PDF oder Bilder) können mit generativer KI ausgelesen und nach Prüfung als Antennenvorlagen gespeichert werden. OpenAI, Claude, Gemini oder ein lokales LLM sind möglich.",
+    "카탈로그나 사양서(PDF·이미지)를 생성형 AI로 판독하고 근거를 확인해 안테나 프리셋에 등록할 수 있습니다. OpenAI·Claude·Gemini·로컬 LLM을 선택할 수 있습니다."
+  ],
+  "寸法付きアンテナとPropagation Chart": [
+    "Dimensioned antennas and the Propagation Chart",
+    "Antennes dimensionnées et Propagation Chart",
+    "Antenas con dimensiones y Propagation Chart",
+    "Antenne dimensionate e Propagation Chart",
+    "Antenas dimensionadas e Propagation Chart",
+    "Bemaßte Antennen und Propagation Chart",
+    "치수 있는 안테나와 Propagation Chart"
+  ],
+  "寸法付きのホイップ・ダイポールと出典付きアンテナカタログ、UTC×周波数のPropagation Chart（SVG保存）を追加しました。": [
+    "Added dimensioned whips and dipoles, a sourced antenna catalog and the UTC × frequency Propagation Chart (saved as SVG).",
+    "Ajout de fouets et dipôles dimensionnés, d’un catalogue d’antennes sourcé et du Propagation Chart UTC × fréquence (enregistrable en SVG).",
+    "Se añadieron látigos y dipolos con dimensiones, un catálogo de antenas con fuentes y el Propagation Chart UTC × frecuencia (guardable en SVG).",
+    "Aggiunti stili e dipoli dimensionati, un catalogo d’antenne con fonti e il Propagation Chart UTC × frequenza (salvabile in SVG).",
+    "Adicionados chicotes e dipolos dimensionados, um catálogo de antenas com fontes e o Propagation Chart UTC × frequência (salvo em SVG).",
+    "Bemaßte Peitschen und Dipole, ein Antennenkatalog mit Quellen und das Propagation Chart UTC × Frequenz (als SVG speicherbar) kamen hinzu.",
+    "치수가 있는 휩·다이폴과 출처가 있는 안테나 카탈로그, UTC×주파수 Propagation Chart(SVG 저장)를 추가했습니다."
+  ],
+  "送受信地点の画面とプリセット": [
+    "Station workspace and presets",
+    "Espace des stations et préréglages",
+    "Espacio de estaciones y preajustes",
+    "Area stazioni e preset",
+    "Área de estações e predefinições",
+    "Stationsbereich und Vorlagen",
+    "송수신 지점 화면과 프리셋"
+  ],
+  "地図とTX・RXの選択画面、地点・アンテナのプリセット、電波型式・偏波の条件、8言語の切替を備えた画面にしました。": [
+    "A workspace with the map, TX and RX selection, location and antenna presets, emission and polarization conditions, and eight languages.",
+    "Un espace de travail avec la carte, le choix des TX et RX, les préréglages de lieux et d’antennes, les conditions d’émission et de polarisation, et huit langues.",
+    "Un espacio de trabajo con el mapa, la selección de TX y RX, preajustes de ubicación y antena, condiciones de emisión y polarización, y ocho idiomas.",
+    "Un’area di lavoro con mappa, scelta di TX e RX, preset di località e antenne, condizioni di emissione e polarizzazione e otto lingue.",
+    "Uma área de trabalho com o mapa, a escolha de TX e RX, predefinições de local e antena, condições de emissão e polarização e oito idiomas.",
+    "Ein Arbeitsbereich mit Karte, TX- und RX-Auswahl, Standort- und Antennenvorlagen, Sendeart- und Polarisationsbedingungen und acht Sprachen.",
+    "지도와 TX·RX 선택 화면, 지점·안테나 프리셋, 전파 형식·편파 조건, 8개 언어 전환을 갖춘 화면으로 했습니다."
+  ],
+  "移動局の位置ゲートウェイ": [
+    "Mobile station position gateway",
+    "Passerelle de position des stations mobiles",
+    "Pasarela de posición de estaciones móviles",
+    "Gateway di posizione delle stazioni mobili",
+    "Gateway de posição de estações móveis",
+    "Positions-Gateway für Mobilstationen",
+    "이동국 위치 게이트웨이"
+  ],
+  "船舶・航空機などの位置を独立したゲートウェイで受信し、最新位置で計算できるようにしました。": [
+    "Positions of ships, aircraft and other mobile stations are received by a separate gateway and the latest position can be used for calculation.",
+    "Les positions de navires, d’aéronefs et d’autres stations mobiles sont reçues par une passerelle séparée et la dernière position peut servir au calcul.",
+    "Las posiciones de barcos, aeronaves y otras estaciones móviles se reciben en una pasarela independiente y la última posición puede usarse en el cálculo.",
+    "Le posizioni di navi, aeromobili e altre stazioni mobili sono ricevute da un gateway separato e l’ultima posizione può essere usata nel calcolo.",
+    "As posições de navios, aeronaves e outras estações móveis são recebidas por um gateway separado e a posição mais recente pode ser usada no cálculo.",
+    "Positionen von Schiffen, Flugzeugen und anderen Mobilstationen werden über ein eigenes Gateway empfangen; die neueste Position kann für die Berechnung genutzt werden.",
+    "선박·항공기 등의 위치를 독립된 게이트웨이로 수신하고, 최신 위치로 계산할 수 있게 했습니다."
+  ],
+  "最大8か所の受信地点を同時に計算し、最良サイトと理論範囲を比較できるようにしました。": [
+    "Up to eight receive sites are calculated together to compare the best site and the theoretical bounds.",
+    "Jusqu’à huit sites de réception sont calculés ensemble pour comparer le meilleur site et les bornes théoriques.",
+    "Se calculan juntos hasta ocho sitios receptores para comparar el mejor sitio y los límites teóricos.",
+    "Fino a otto siti di ricezione vengono calcolati insieme per confrontare il sito migliore e i limiti teorici.",
+    "Até oito locais de recepção são calculados juntos para comparar o melhor local e os limites teóricos.",
+    "Bis zu acht Empfangsstandorte werden gemeinsam berechnet, um den besten Standort und die theoretischen Grenzen zu vergleichen.",
+    "최대 8곳의 수신 지점을 함께 계산해 최적 사이트와 이론 범위를 비교할 수 있게 했습니다."
+  ],
+  "宇宙天気と電離圏観測": [
+    "Space weather and ionosonde observations",
+    "Météo spatiale et observations ionosphériques",
+    "Clima espacial y observaciones ionosféricas",
+    "Meteo spaziale e osservazioni ionosferiche",
+    "Clima espacial e observações ionosféricas",
+    "Weltraumwetter und Ionosonden-Beobachtungen",
+    "우주 기상과 전리층 관측"
+  ],
+  "NOAAの月別平滑SSNの自動取得、D-RAP吸収の地図表示、国内（NICT）・海外（GIRO）の観測局データを追加しました。": [
+    "Added automatic NOAA monthly smoothed SSN, the D-RAP absorption map overlay, and domestic (NICT) and overseas (GIRO) ionosonde data.",
+    "Ajout de la SSN lissée mensuelle NOAA automatique, de la couche D-RAP d’absorption sur la carte, et des données ionosphériques nationales (NICT) et étrangères (GIRO).",
+    "Se añadieron la SSN suavizada mensual de NOAA automática, la capa D-RAP de absorción en el mapa y datos de ionosondas nacionales (NICT) y extranjeras (GIRO).",
+    "Aggiunti la SSN livellata mensile NOAA automatica, il livello D-RAP di assorbimento sulla mappa e i dati delle ionosonde nazionali (NICT) ed estere (GIRO).",
+    "Adicionados a SSN suavizada mensal da NOAA automática, a camada D-RAP de absorção no mapa e dados de ionossondas nacionais (NICT) e estrangeiras (GIRO).",
+    "Automatische geglättete Monats-SSN von NOAA, D-RAP-Absorptionsebene auf der Karte sowie Ionosondendaten aus Japan (NICT) und dem Ausland (GIRO) kamen hinzu.",
+    "NOAA 월별 평활 SSN 자동 취득, D-RAP 흡수 지도 표시, 국내(NICT)·해외(GIRO) 관측국 데이터를 추가했습니다."
+  ],
+  "初期リリース": [
+    "Initial release",
+    "Première version",
+    "Versión inicial",
+    "Prima versione",
+    "Versão inicial",
+    "Erste Version",
+    "초기 릴리스"
+  ],
+  "VOACAP（voacapl）による24時間の地点間予測、信頼度ヒートマップ、推奨周波数、地域カバー範囲、計算履歴とCSV・JSON出力を、Dockerで起動するWebアプリとして公開しました。": [
+    "Released as a Docker web application: 24-hour point-to-point prediction with VOACAP (voacapl), reliability heatmap, recommended frequency, regional coverage, calculation history and CSV/JSON export.",
+    "Publiée comme application web Docker : prévision point à point sur 24 heures avec VOACAP (voacapl), carte de fiabilité, fréquence recommandée, couverture régionale, historique et export CSV/JSON.",
+    "Publicada como aplicación web Docker: predicción punto a punto de 24 horas con VOACAP (voacapl), mapa de calor de fiabilidad, frecuencia recomendada, cobertura regional, historial y exportación CSV/JSON.",
+    "Pubblicata come applicazione web Docker: previsione punto-punto di 24 ore con VOACAP (voacapl), mappa di affidabilità, frequenza consigliata, copertura regionale, cronologia ed esportazione CSV/JSON.",
+    "Lançada como aplicativo web Docker: previsão ponto a ponto de 24 horas com VOACAP (voacapl), mapa de calor de confiabilidade, frequência recomendada, cobertura regional, histórico e exportação CSV/JSON.",
+    "Als Docker-Webanwendung veröffentlicht: 24-Stunden-Punkt-zu-Punkt-Prognose mit VOACAP (voacapl), Zuverlässigkeits-Heatmap, empfohlene Frequenz, regionale Abdeckung, Verlauf und CSV/JSON-Export.",
+    "Docker로 실행하는 웹 앱으로 공개: VOACAP(voacapl)에 의한 24시간 지점 간 예측, 신뢰도 히트맵, 추천 주파수, 지역 커버 범위, 계산 이력과 CSV·JSON 출력."
   ]
 };

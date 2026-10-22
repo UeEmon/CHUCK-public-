@@ -70,6 +70,7 @@ Gateway connection checks: the app uses internal port 8001, independent of publi
 - Site candidates ranks up to 10 saved locations as receive sites (TX→candidate) or relay sites (TX→candidate→RX1) by the hours they reach the target REL. See [site candidates](docs/SITES.md).
 - Scheduled recalculation reruns saved point-to-point results with the latest NOAA smoothed SSN (every 24 hours by default, `HF_WATCH_INTERVAL_HOURS`) and shows a notice when the hours at the target REL decrease. Not available to visitors of the public edition. See [scheduled recalculation](docs/WATCH.md).
 - “Print report” on a single-link result opens one printable page with the conditions, hourly recommended frequency, heatmap and 24-hour frequency plan (save as PDF from the print dialog). See [report](docs/REPORT.md).
+- New features are announced in the app: a banner and dots on the tabs mark features added since your last visit, and “What’s new” lists them all. See [what’s new](docs/WHATS_NEW.md).
 - VOACAP is a monthly statistical model. Instantaneous ionospheric changes, storms, terrain and installation effects are not fully represented. Recommendations do not grant frequency assignments or operating authorization.
 
 ## Network access and development

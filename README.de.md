@@ -48,6 +48,7 @@ Verlauf und Vorlagen bleiben bei normalen Stopps/Neubauten im Volume `hf-data`. 
 - Standortkandidaten ordnet bis zu 10 gespeicherte Standorte als Empfangs- (TX→Kandidat) oder Relaisstandorte (TX→Kandidat→RX1) nach Stunden mit Ziel-REL. Siehe [Standortkandidaten](docs/SITES.md).
 - Die geplante Neuberechnung rechnet gespeicherte Punkt-zu-Punkt-Ergebnisse mit der neuesten geglätteten NOAA-SSN neu (standardmäßig alle 24 Stunden, `HF_WATCH_INTERVAL_HOURS`) und zeigt einen Hinweis, wenn die Stunden mit Ziel-REL abnehmen. Für Besucher der öffentlichen Ausgabe nicht verfügbar. Siehe [geplante Neuberechnung](docs/WATCH.md).
 - „Bericht drucken“ bei einem Ergebnis mit einem RX öffnet eine druckbare Seite mit Bedingungen, empfohlener Frequenz je Stunde, Heatmap und 24-Stunden-Frequenzplan (im Druckdialog als PDF speicherbar). Siehe [Bericht](docs/REPORT.md).
+- Neue Funktionen werden in der App angekündigt: ein Hinweisbalken und Punkte auf den Reitern markieren Neues seit dem letzten Besuch, „Neuigkeiten“ listet alles auf. Siehe [Neuigkeiten](docs/WHATS_NEW.md).
 - Language bietet Japanisch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Deutsch und Koreanisch, ohne eigene Namen zu ändern.
 
 Geänderte Eingaben berechnen vorhandene Ergebnisse nicht neu. Berechnung erneut starten. Jeweils bis zu 200 Standorte und Antennen; gleichzeitige Bearbeitung wird auf Konflikte geprüft.

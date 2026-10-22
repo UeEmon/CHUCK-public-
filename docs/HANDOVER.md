@@ -286,3 +286,7 @@ GitHub操作は通常の認証済みGit環境で行う。前の作業環境で�
 | 試験と配布 | `docs/VALIDATION.md`、`docs/REDISTRIBUTION.md` |
 
 次の担当者への指示例：本書と現在のmainを基準にCHUCKを再開する。最初にDocker Desktop／Apple Siliconでclean buildと本体・ゲートウェイの実接続を確認し、結果を残す。実装済み機能を新規仕様として作り直さず、未検証・未実装の区別を維持する。
+
+## 新機能のお知らせ
+
+利用者向けの新機能を追加したら、`app/static/whats-new.json` の先頭に1件と、その翻訳を追加する。手順は[WHATS_NEW.md](WHATS_NEW.md)。

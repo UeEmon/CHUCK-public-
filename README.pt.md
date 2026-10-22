@@ -48,6 +48,7 @@ Histórico e predefinições permanecem no volume `hf-data`. `docker compose dow
 - Locais candidatos ordena até 10 locais salvos como locais de recepção (TX→candidato) ou retransmissão (TX→candidato→RX1) pelas horas na REL alvo. Veja [locais candidatos](docs/SITES.md).
 - O recálculo programado refaz os resultados ponto a ponto salvos com a última SSN suavizada da NOAA (a cada 24 horas por padrão, `HF_WATCH_INTERVAL_HOURS`) e mostra um aviso se as horas na REL alvo diminuírem. Indisponível para visitantes da edição pública. Veja [recálculo programado](docs/WATCH.md).
 - “Imprimir relatório” num resultado de um RX abre uma página imprimível com as condições, a frequência recomendada por hora, o mapa de calor e o plano de frequências de 24 horas (pode ser salvo em PDF pela janela de impressão). Veja [relatório](docs/REPORT.md).
+- Os novos recursos são anunciados no aplicativo: um aviso e pontos nas abas marcam o que foi adicionado desde a última visita, e “Novidades” lista tudo. Veja [novidades](docs/WHATS_NEW.md).
 - Em Language, escolha japonês, inglês, francês, espanhol, italiano, português, alemão ou coreano sem alterar nomes cadastrados.
 
 Alterar entradas não recalcula resultados existentes: execute novamente. Até 200 locais e 200 antenas, com detecção de conflitos de edição.
