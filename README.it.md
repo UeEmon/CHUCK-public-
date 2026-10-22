@@ -47,6 +47,7 @@ Cronologia e preset restano nel volume `hf-data` dopo arresti e ricompilazioni n
 - La potenza necessaria calcola TX→RX1 con dieci livelli 1-2-5 da 10 W a 10 kW e mostra, per UTC e frequenza, la potenza minima che raggiunge la REL obiettivo. Vedere [potenza necessaria](docs/POWER.md).
 - Siti candidati ordina fino a 10 località salvate come siti di ricezione (TX→candidato) o ripetitori (TX→candidato→RX1) per ore alla REL obiettivo. Vedere [siti candidati](docs/SITES.md).
 - Il ricalcolo programmato riesegue i risultati punto-punto salvati con l’ultima SSN livellata NOAA (ogni 24 ore per impostazione predefinita, `HF_WATCH_INTERVAL_HOURS`) e mostra un avviso se le ore alla REL obiettivo diminuiscono. Non disponibile ai visitatori dell’edizione pubblica. Vedere [ricalcolo programmato](docs/WATCH.md).
+- «Stampa rapporto» su un risultato con un solo RX apre una pagina stampabile con condizioni, frequenza consigliata per ora, mappa di affidabilità e piano di frequenze di 24 ore (salvabile in PDF dalla finestra di stampa). Vedere [rapporto](docs/REPORT.md).
 - Con Language scegliere giapponese, inglese, francese, spagnolo, italiano, portoghese, tedesco o coreano senza alterare i nomi inseriti.
 
 Le modifiche agli ingressi non ricalcolano i risultati: avviare un nuovo calcolo. Limite di 200 luoghi e 200 antenne, con rilevamento dei conflitti di modifica.

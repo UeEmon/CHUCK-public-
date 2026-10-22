@@ -7911,5 +7911,167 @@ const HF_MESSAGES={
     "As condições ponto a ponto salvas são recalculadas periodicamente com a última SSN suavizada da NOAA. O primeiro resultado após o registro é a referência; um aviso aparece quando as horas na REL alvo ficam abaixo dela. Condições calculadas com SSN manual ou efetiva também são recalculadas com a SSN suavizada da NOAA. As posições de estações móveis ficam com os valores do registro. A REL é uma estatística mensal e não reflete a ionosfera de um dia específico.",
     "Gespeicherte Punkt-zu-Punkt-Bedingungen werden regelmäßig mit der neuesten geglätteten NOAA-SSN neu berechnet. Das erste Ergebnis nach der Registrierung ist die Basis; ein Hinweis erscheint, wenn die Stunden mit Ziel-REL darunter fallen. Mit manueller oder effektiver SSN berechnete Bedingungen werden ebenfalls mit der geglätteten NOAA-SSN neu berechnet. Positionen mobiler Stationen bleiben auf dem Stand der Registrierung. REL ist eine Monatsstatistik und spiegelt nicht die Ionosphäre eines bestimmten Tages wider.",
     "저장한 지점 간 예측 조건을 정기적으로 NOAA의 최신 평활 SSN으로 재계산합니다. 등록 후 첫 결과를 기준으로 하며, 목표 REL 이상 시간 수가 기준보다 줄면 화면에 알립니다. 수동 SSN·실효 SSN으로 계산한 조건도 NOAA 평활 SSN으로 재계산합니다. 이동국 위치는 등록 시의 값으로 고정합니다. REL은 월간 통계이며 당일의 전리층 상태는 반영하지 않습니다."
+  ],
+  "報告書を印刷": [
+    "Print report",
+    "Imprimer le rapport",
+    "Imprimir informe",
+    "Stampa rapporto",
+    "Imprimir relatório",
+    "Bericht drucken",
+    "보고서 인쇄"
+  ],
+  "伝搬予測報告書": [
+    "Propagation prediction report",
+    "Rapport de prévision de propagation",
+    "Informe de predicción de propagación",
+    "Rapporto di previsione di propagazione",
+    "Relatório de previsão de propagação",
+    "Bericht zur Ausbreitungsprognose",
+    "전파 예측 보고서"
+  ],
+  "作成": [
+    "Created",
+    "Créé",
+    "Creado",
+    "Creato",
+    "Criado",
+    "Erstellt",
+    "작성"
+  ],
+  "計算": [
+    "Calculated",
+    "Calculé",
+    "Calculado",
+    "Calcolato",
+    "Calculado",
+    "Berechnet",
+    "계산"
+  ],
+  "条件": [
+    "Conditions",
+    "Conditions",
+    "Condiciones",
+    "Condizioni",
+    "Condições",
+    "Bedingungen",
+    "조건"
+  ],
+  "座標": [
+    "Coordinates",
+    "Coordonnées",
+    "Coordenadas",
+    "Coordinate",
+    "Coordenadas",
+    "Koordinaten",
+    "좌표"
+  ],
+  "回線距離・方位": [
+    "Distance and bearing",
+    "Distance et azimut",
+    "Distancia y rumbo",
+    "Distanza e azimut",
+    "Distância e azimute",
+    "Entfernung und Richtung",
+    "회선 거리·방위"
+  ],
+  "対象年月": [
+    "Month",
+    "Mois",
+    "Mes",
+    "Mese",
+    "Mês",
+    "Monat",
+    "대상 연월"
+  ],
+  "送信電力": [
+    "Transmit power",
+    "Puissance d’émission",
+    "Potencia de transmisión",
+    "Potenza di trasmissione",
+    "Potência de transmissão",
+    "Sendeleistung",
+    "송신 전력"
+  ],
+  "TXアンテナ": [
+    "TX antenna",
+    "Antenne TX",
+    "Antena TX",
+    "Antenna TX",
+    "Antena TX",
+    "TX-Antenne",
+    "TX 안테나"
+  ],
+  "RXアンテナ": [
+    "RX antenna",
+    "Antenne RX",
+    "Antena RX",
+    "Antenna RX",
+    "Antena RX",
+    "RX-Antenne",
+    "RX 안테나"
+  ],
+  "雑音": [
+    "Noise",
+    "Bruit",
+    "Ruido",
+    "Rumore",
+    "Ruído",
+    "Rauschen",
+    "잡음"
+  ],
+  "要求SNR・目標REL": [
+    "Required SNR / target REL",
+    "SNR requis / REL cible",
+    "SNR requerida / REL objetivo",
+    "SNR richiesto / REL obiettivo",
+    "SNR exigida / REL alvo",
+    "Erforderliche SNR / Ziel-REL",
+    "요구 SNR·목표 REL"
+  ],
+  "電波型式・偏波": [
+    "Emission and polarization",
+    "Classe d’émission et polarisation",
+    "Clase de emisión y polarización",
+    "Classe di emissione e polarizzazione",
+    "Classe de emissão e polarização",
+    "Sendeart und Polarisation",
+    "전파 형식·편파"
+  ],
+  "時刻別の推奨周波数": [
+    "Recommended frequency by hour",
+    "Fréquence recommandée par heure",
+    "Frecuencia recomendada por hora",
+    "Frequenza consigliata per ora",
+    "Frequência recomendada por hora",
+    "Empfohlene Frequenz je Stunde",
+    "시각별 추천 주파수"
+  ],
+  "目標RELに届く周波数がない時間は「—」とし、最もRELの高い周波数の値を赤で示します（{count}時間）。": [
+    "Hours with no frequency at the target REL show “—”, with the values of the highest-REL frequency in red ({count} h).",
+    "Les heures sans fréquence à la REL cible affichent « — », avec les valeurs de la fréquence de REL la plus haute en rouge ({count} h).",
+    "Las horas sin frecuencia con la REL objetivo muestran «—», con los valores de la frecuencia de mayor REL en rojo ({count} h).",
+    "Le ore senza frequenza alla REL obiettivo mostrano «—», con i valori della frequenza a REL più alta in rosso ({count} h).",
+    "As horas sem frequência na REL alvo mostram “—”, com os valores da frequência de maior REL em vermelho ({count} h).",
+    "Stunden ohne Frequenz mit Ziel-REL zeigen „—“, die Werte der Frequenz mit der höchsten REL in Rot ({count} h).",
+    "목표 REL에 도달하는 주파수가 없는 시간은 '—'로 하고, REL이 가장 높은 주파수의 값을 빨간색으로 표시합니다({count}시간)."
+  ],
+  "すべての時間で目標RELに届く周波数があります。": [
+    "Every hour has a frequency at the target REL.",
+    "Chaque heure a une fréquence à la REL cible.",
+    "Todas las horas tienen una frecuencia con la REL objetivo.",
+    "Ogni ora ha una frequenza alla REL obiettivo.",
+    "Todas as horas têm uma frequência na REL alvo.",
+    "Jede Stunde hat eine Frequenz mit Ziel-REL.",
+    "모든 시간에 목표 REL에 도달하는 주파수가 있습니다."
+  ],
+  "信頼度ヒートマップ（REL %）": [
+    "Reliability heatmap (REL %)",
+    "Carte de fiabilité (REL %)",
+    "Mapa de calor de fiabilidad (REL %)",
+    "Mappa di affidabilità (REL %)",
+    "Mapa de calor de confiabilidade (REL %)",
+    "Zuverlässigkeits-Heatmap (REL %)",
+    "신뢰도 히트맵(REL %)"
   ]
 };
