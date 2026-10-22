@@ -45,6 +45,7 @@ Histórico e predefinições permanecem no volume `hf-data`. `docker compose dow
 - Abaixo da previsão de 24 horas, o plano de frequências de operação de 24 h transforma as frequências calculadas em faixas horárias com o menor número de trocas (ou a melhor a cada hora), com exportação CSV e impressão. Veja [plano de frequências](docs/FREQUENCY_PLAN.md).
 - A perspectiva de 12 meses calcula TX→RX1 por doze meses a partir do mês escolhido e mostra a REL como tabela mês × UTC (uma SSN manual para todos os meses ou a SSN suavizada da NOAA de cada mês). Veja [perspectiva](docs/ANNUAL.md).
 - A potência necessária calcula TX→RX1 em dez degraus 1-2-5 de 10 W a 10 kW e mostra, por UTC e frequência, a menor potência que atinge a REL alvo. Veja [potência necessária](docs/POWER.md).
+- Locais candidatos ordena até 10 locais salvos como locais de recepção (TX→candidato) ou retransmissão (TX→candidato→RX1) pelas horas na REL alvo. Veja [locais candidatos](docs/SITES.md).
 - Em Language, escolha japonês, inglês, francês, espanhol, italiano, português, alemão ou coreano sem alterar nomes cadastrados.
 
 Alterar entradas não recalcula resultados existentes: execute novamente. Até 200 locais e 200 antenas, com detecção de conflitos de edição.

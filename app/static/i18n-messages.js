@@ -7425,5 +7425,230 @@ const HF_MESSAGES={
     "A potência varia em degraus 1-2-5 de 10 W a 10 kW e é mostrado o menor degrau que atinge a REL alvo. Potências intermediárias não são calculadas. As condições além da potência (antenas, ruído, SNR exigida, perda de polarização) mantêm os valores do momento do cálculo. A REL é uma estatística mensal, não o sucesso de um enlace num dado instante.",
     "Die Leistung wird in 1-2-5-Stufen von 10 W bis 10 kW variiert, und die kleinste Stufe mit Ziel-REL wird angezeigt. Zwischenwerte werden nicht berechnet. Andere Bedingungen als die Leistung (Antennen, Rauschen, erforderliche SNR, Polarisationsverlust) behalten ihre Werte zum Berechnungszeitpunkt. REL ist eine Monatsstatistik, nicht der Erfolg einer Verbindung zu einem bestimmten Zeitpunkt.",
     "송신 전력을 10 W에서 10 kW까지 1-2-5 단계로 바꾸어 목표 REL 이상이 되는 최소 단계를 표시합니다. 단계 사이의 전력은 계산하지 않습니다. 전력 이외의 조건(안테나, 잡음, 요구 SNR, 편파 손실)은 계산 시점의 값을 유지합니다. REL은 월간 통계이며 순간적인 통신 가능 여부가 아닙니다."
+  ],
+  "拠点の候補": [
+    "Site candidates",
+    "Sites candidats",
+    "Sitios candidatos",
+    "Siti candidati",
+    "Locais candidatos",
+    "Standortkandidaten",
+    "거점 후보"
+  ],
+  "拠点の候補 · 目標REL以上の時間数で順位付け": [
+    "Site candidates · ranked by hours at the target REL",
+    "Sites candidats · classés par heures à la REL cible",
+    "Sitios candidatos · ordenados por horas con la REL objetivo",
+    "Siti candidati · ordinati per ore alla REL obiettivo",
+    "Locais candidatos · ordenados por horas na REL alvo",
+    "Standortkandidaten · nach Stunden mit Ziel-REL geordnet",
+    "거점 후보 · 목표 REL 이상 시간 수로 순위"
+  ],
+  "候補の役割": [
+    "Candidate role",
+    "Rôle du candidat",
+    "Función del candidato",
+    "Ruolo del candidato",
+    "Função do candidato",
+    "Rolle des Kandidaten",
+    "후보의 역할"
+  ],
+  "受信地点（TX→候補）": [
+    "Receive site (TX→candidate)",
+    "Site de réception (TX→candidat)",
+    "Sitio receptor (TX→candidato)",
+    "Sito di ricezione (TX→candidato)",
+    "Local de recepção (TX→candidato)",
+    "Empfangsstandort (TX→Kandidat)",
+    "수신 지점(TX→후보)"
+  ],
+  "中継地点（TX→候補→RX1）": [
+    "Relay site (TX→candidate→RX1)",
+    "Site relais (TX→candidat→RX1)",
+    "Sitio de retransmisión (TX→candidato→RX1)",
+    "Sito di ripetizione (TX→candidato→RX1)",
+    "Local de retransmissão (TX→candidato→RX1)",
+    "Relaisstandort (TX→Kandidat→RX1)",
+    "중계 지점(TX→후보→RX1)"
+  ],
+  "候補を比較": [
+    "Compare candidates",
+    "Comparer les candidats",
+    "Comparar candidatos",
+    "Confronta i candidati",
+    "Comparar candidatos",
+    "Kandidaten vergleichen",
+    "후보 비교"
+  ],
+  "登録済みの地点プリセットから候補を最大10か所選びます。受信地点では候補ごとにエンジンを1回、中継地点では2回実行します。候補地点にはRX1のアンテナ・雑音を使い、中継地点はTXのアンテナと送信電力で再送信すると仮定します。": [
+    "Choose up to 10 candidates from the saved location presets. The engine runs once per candidate for receive sites and twice for relay sites. Candidates use RX1’s antenna and noise; a relay is assumed to retransmit with the TX antenna and power.",
+    "Choisissez jusqu’à 10 candidats parmi les préréglages de lieux. Le moteur s’exécute une fois par candidat pour un site de réception et deux fois pour un relais. Les candidats utilisent l’antenne et le bruit de RX1 ; un relais est supposé réémettre avec l’antenne et la puissance du TX.",
+    "Elija hasta 10 candidatos entre los preajustes de ubicación guardados. El motor se ejecuta una vez por candidato para sitios receptores y dos veces para retransmisión. Los candidatos usan la antena y el ruido de RX1; se supone que el repetidor retransmite con la antena y la potencia del TX.",
+    "Scegliete fino a 10 candidati tra i preset di località salvati. Il motore viene eseguito una volta per candidato per i siti di ricezione e due volte per i ripetitori. I candidati usano antenna e rumore di RX1; si assume che il ripetitore ritrasmetta con antenna e potenza del TX.",
+    "Escolha até 10 candidatos entre as predefinições de local salvas. O motor é executado uma vez por candidato para locais de recepção e duas vezes para retransmissão. Os candidatos usam a antena e o ruído do RX1; supõe-se que o retransmissor reenvie com a antena e a potência do TX.",
+    "Wählen Sie bis zu 10 Kandidaten aus den gespeicherten Standortvorlagen. Die Engine läuft je Kandidat einmal für Empfangsstandorte und zweimal für Relais. Kandidaten verwenden Antenne und Rauschen von RX1; ein Relais sendet annahmegemäß mit Antenne und Leistung des TX weiter.",
+    "등록된 지점 프리셋에서 후보를 최대 10곳 고릅니다. 수신 지점은 후보마다 엔진을 1회, 중계 지점은 2회 실행합니다. 후보 지점에는 RX1의 안테나·잡음을 쓰며, 중계 지점은 TX의 안테나와 송신 전력으로 재송신한다고 가정합니다."
+  ],
+  "比較結果 · 候補 × UTC のREL（%）": [
+    "Comparison · REL by candidate × UTC (%)",
+    "Comparaison · REL par candidat × UTC (%)",
+    "Comparación · REL por candidato × UTC (%)",
+    "Confronto · REL per candidato × UTC (%)",
+    "Comparação · REL por candidato × UTC (%)",
+    "Vergleich · REL nach Kandidat × UTC (%)",
+    "비교 결과 · 후보 × UTC별 REL(%)"
+  ],
+  "計算後に、候補地点を目標REL以上の時間数の多い順に表示します。": [
+    "After calculation, candidates are listed by hours at the target REL, most first.",
+    "Après le calcul, les candidats sont classés par nombre d’heures à la REL cible, du plus grand au plus petit.",
+    "Tras el cálculo, los candidatos se ordenan por horas con la REL objetivo, de más a menos.",
+    "Dopo il calcolo, i candidati sono ordinati per ore alla REL obiettivo, dal maggiore.",
+    "Após o cálculo, os candidatos são ordenados por horas na REL alvo, do maior para o menor.",
+    "Nach der Berechnung werden die Kandidaten nach Stunden mit Ziel-REL absteigend aufgeführt.",
+    "계산 후 목표 REL 이상 시간 수가 많은 순으로 후보 지점을 표시합니다."
+  ],
+  "中継地点のRELは、その時刻の2区間の最良RELのうち低い方です。点は目標REL以上です。": [
+    "For a relay site, REL is the lower of the two legs’ best REL at that hour. A dot marks the target REL or above.",
+    "Pour un relais, la REL est la plus faible des meilleures REL des deux tronçons à cette heure. Un point signale la REL cible ou plus.",
+    "Para un sitio de retransmisión, la REL es la menor de las mejores REL de los dos tramos a esa hora. Un punto indica la REL objetivo o más.",
+    "Per un ripetitore, la REL è la minore tra le REL migliori delle due tratte in quell’ora. Un punto indica la REL obiettivo o superiore.",
+    "Para um local de retransmissão, a REL é a menor entre as melhores REL dos dois trechos nessa hora. Um ponto indica a REL alvo ou acima.",
+    "Bei einem Relaisstandort ist die REL der kleinere der besten REL-Werte beider Teilstrecken zu dieser Stunde. Ein Punkt markiert die Ziel-REL oder mehr.",
+    "중계 지점의 REL은 그 시각 두 구간의 최고 REL 중 낮은 쪽입니다. 점은 목표 REL 이상입니다."
+  ],
+  "{count} / {max} か所を選択": [
+    "{count} / {max} selected",
+    "{count} / {max} sélectionnés",
+    "{count} / {max} seleccionados",
+    "{count} / {max} selezionati",
+    "{count} / {max} selecionados",
+    "{count} / {max} ausgewählt",
+    "{count} / {max}곳 선택"
+  ],
+  "中継地点": [
+    "Relay site",
+    "Site relais",
+    "Sitio de retransmisión",
+    "Sito di ripetizione",
+    "Local de retransmissão",
+    "Relaisstandort",
+    "중계 지점"
+  ],
+  "受信地点": [
+    "Receive site",
+    "Site de réception",
+    "Sitio receptor",
+    "Sito di ricezione",
+    "Local de recepção",
+    "Empfangsstandort",
+    "수신 지점"
+  ],
+  "{label} · {date} · SSN {ssn} · {power} W · 目標REL {rel}%": [
+    "{label} · {date} · SSN {ssn} · {power} W · Target REL {rel}%",
+    "{label} · {date} · SSN {ssn} · {power} W · REL cible {rel}%",
+    "{label} · {date} · SSN {ssn} · {power} W · REL objetivo {rel}%",
+    "{label} · {date} · SSN {ssn} · {power} W · REL obiettivo {rel}%",
+    "{label} · {date} · SSN {ssn} · {power} W · REL alvo {rel}%",
+    "{label} · {date} · SSN {ssn} · {power} W · Ziel-REL {rel}%",
+    "{label} · {date} · SSN {ssn} · {power} W · 목표 REL {rel}%"
+  ],
+  "順位": [
+    "Rank",
+    "Rang",
+    "Puesto",
+    "Posizione",
+    "Posição",
+    "Rang",
+    "순위"
+  ],
+  "平均REL %": [
+    "Mean REL %",
+    "REL moyenne %",
+    "REL media %",
+    "REL media %",
+    "REL média %",
+    "Mittlere REL %",
+    "평균 REL %"
+  ],
+  "拠点の候補は単一RXの経路で計算します。メッシュを外してください。": [
+    "Site candidates are calculated for a single TX→RX path. Turn off mesh mode.",
+    "Les sites candidats se calculent sur un seul trajet TX→RX. Désactivez le maillage.",
+    "Los sitios candidatos se calculan para un único trayecto TX→RX. Desactive la malla.",
+    "I siti candidati si calcolano su un solo percorso TX→RX. Disattivate la rete.",
+    "Os locais candidatos são calculados para um único trajeto TX→RX. Desative a malha.",
+    "Standortkandidaten werden für einen einzelnen TX→RX-Pfad berechnet. Schalten Sie das Netz aus.",
+    "거점 후보는 단일 TX→RX 경로로 계산합니다. 메시를 해제하세요."
+  ],
+  "候補の地点を1か所以上選んでください。": [
+    "Choose at least one candidate location.",
+    "Choisissez au moins un lieu candidat.",
+    "Elija al menos una ubicación candidata.",
+    "Scegliete almeno una località candidata.",
+    "Escolha pelo menos um local candidato.",
+    "Wählen Sie mindestens einen Kandidatenstandort.",
+    "후보 지점을 1곳 이상 고르세요."
+  ],
+  "候補地点を比較しています。エンジンを{count}回実行するため、完了までお待ちください…": [
+    "Comparing candidates. The engine runs {count} times, so please wait…",
+    "Comparaison des candidats. Le moteur s’exécute {count} fois, veuillez patienter…",
+    "Comparando candidatos. El motor se ejecuta {count} veces; espere…",
+    "Confronto dei candidati in corso. Il motore viene eseguito {count} volte, attendere…",
+    "Comparando candidatos. O motor é executado {count} vezes; aguarde…",
+    "Kandidaten werden verglichen. Die Engine läuft {count}-mal, bitte warten…",
+    "후보 지점을 비교하고 있습니다. 엔진을 {count}회 실행하므로 완료될 때까지 기다려 주세요…"
+  ],
+  "候補地点は1〜{count}か所で指定してください": [
+    "Specify 1–{count} candidate locations",
+    "Indiquez de 1 à {count} lieux candidats",
+    "Indique de 1 a {count} ubicaciones candidatas",
+    "Indicate da 1 a {count} località candidate",
+    "Indique de 1 a {count} locais candidatos",
+    "Geben Sie 1–{count} Kandidatenstandorte an",
+    "후보 지점은 1~{count}곳으로 지정하세요"
+  ],
+  "候補地点の形式が不正です": [
+    "Invalid candidate location format",
+    "Format de lieu candidat non valide",
+    "Formato de ubicación candidata no válido",
+    "Formato della località candidata non valido",
+    "Formato de local candidato inválido",
+    "Ungültiges Format des Kandidatenstandorts",
+    "후보 지점 형식이 올바르지 않습니다"
+  ],
+  "候補地点の名称は1〜40文字で指定してください": [
+    "Candidate names must be 1–40 characters",
+    "Le nom d’un candidat doit comporter 1 à 40 caractères",
+    "El nombre del candidato debe tener de 1 a 40 caracteres",
+    "Il nome del candidato deve avere da 1 a 40 caratteri",
+    "O nome do candidato deve ter de 1 a 40 caracteres",
+    "Kandidatennamen müssen 1–40 Zeichen lang sein",
+    "후보 지점 이름은 1~40자로 지정하세요"
+  ],
+  "候補地点の緯度・経度が範囲外です": [
+    "Candidate latitude or longitude is out of range",
+    "Latitude ou longitude du candidat hors limites",
+    "Latitud o longitud del candidato fuera de rango",
+    "Latitudine o longitudine del candidato fuori intervallo",
+    "Latitude ou longitude do candidato fora do intervalo",
+    "Breite oder Länge des Kandidaten außerhalb des Bereichs",
+    "후보 지점의 위도·경도가 범위를 벗어났습니다"
+  ],
+  "TXまたはRX1と同じ地点のため計算しません": [
+    "Not calculated: same place as TX or RX1",
+    "Non calculé : même lieu que TX ou RX1",
+    "No se calcula: mismo lugar que TX o RX1",
+    "Non calcolato: stesso luogo di TX o RX1",
+    "Não calculado: mesmo local que TX ou RX1",
+    "Nicht berechnet: gleicher Ort wie TX oder RX1",
+    "TX 또는 RX1과 같은 지점이므로 계산하지 않습니다"
+  ],
+  "候補地点ごとに独立した地点間予測を計算し、目標REL以上になる時間数の多い順に並べます（同数なら平均RELの高い順）。受信地点ではRX1のアンテナ・雑音を候補地点に置いた場合を計算します。中継地点ではTX→候補地点と候補地点→RX1の両区間を計算し、同じ時刻に両区間とも目標REL以上なら中継できるとします。中継局はRX1のアンテナで受信し、TXのアンテナと送信電力で再送信すると仮定します。中継の遅延・送受信切替・混信、地形や設置条件は考慮しません。": [
+    "Each candidate is calculated as an independent point-to-point prediction and listed by hours at the target REL, most first (ties by higher mean REL). Receive sites use RX1’s antenna and noise at the candidate. Relay sites calculate TX→candidate and candidate→RX1 and count an hour as relayable when both legs reach the target REL in that hour. The relay is assumed to receive with RX1’s antenna and retransmit with the TX antenna and power. Relay delay, transmit/receive switching, interference, terrain and installation are not considered.",
+    "Chaque candidat est calculé comme une prévision point à point indépendante et classé par heures à la REL cible, du plus grand au plus petit (à égalité, REL moyenne la plus haute). Les sites de réception utilisent l’antenne et le bruit de RX1 au lieu candidat. Pour un relais, TX→candidat et candidat→RX1 sont calculés et une heure compte comme relayable si les deux tronçons atteignent la REL cible à cette heure. Le relais est supposé recevoir avec l’antenne de RX1 et réémettre avec l’antenne et la puissance du TX. Le délai du relais, la commutation émission/réception, le brouillage, le relief et l’installation ne sont pas pris en compte.",
+    "Cada candidato se calcula como una predicción punto a punto independiente y se ordena por horas con la REL objetivo, de más a menos (en empate, mayor REL media). Los sitios receptores usan la antena y el ruido de RX1 en el candidato. Para retransmisión se calculan TX→candidato y candidato→RX1, y una hora cuenta como retransmisible si ambos tramos alcanzan la REL objetivo a esa hora. Se supone que el repetidor recibe con la antena de RX1 y retransmite con la antena y potencia del TX. No se consideran el retardo, la conmutación emisión/recepción, la interferencia, el terreno ni la instalación.",
+    "Ogni candidato è calcolato come previsione punto-punto indipendente e ordinato per ore alla REL obiettivo, dal maggiore (a parità, REL media più alta). I siti di ricezione usano antenna e rumore di RX1 nel candidato. Per i ripetitori si calcolano TX→candidato e candidato→RX1 e un’ora conta come ripetibile se entrambe le tratte raggiungono la REL obiettivo in quell’ora. Si assume che il ripetitore riceva con l’antenna di RX1 e ritrasmetta con antenna e potenza del TX. Ritardo, commutazione trasmissione/ricezione, interferenze, terreno e installazione non sono considerati.",
+    "Cada candidato é calculado como uma previsão ponto a ponto independente e ordenado por horas na REL alvo, do maior para o menor (em empate, maior REL média). Locais de recepção usam a antena e o ruído do RX1 no candidato. Para retransmissão, calculam-se TX→candidato e candidato→RX1, e uma hora conta como retransmissível se ambos os trechos atingirem a REL alvo nessa hora. Supõe-se que o retransmissor receba com a antena do RX1 e reenvie com a antena e a potência do TX. Atraso, comutação transmissão/recepção, interferência, terreno e instalação não são considerados.",
+    "Jeder Kandidat wird als unabhängige Punkt-zu-Punkt-Prognose berechnet und nach Stunden mit Ziel-REL absteigend geordnet (bei Gleichstand höhere mittlere REL). Empfangsstandorte verwenden Antenne und Rauschen von RX1 am Kandidaten. Bei Relais werden TX→Kandidat und Kandidat→RX1 berechnet; eine Stunde gilt als weiterleitbar, wenn beide Teilstrecken in dieser Stunde die Ziel-REL erreichen. Das Relais empfängt annahmegemäß mit der Antenne von RX1 und sendet mit Antenne und Leistung des TX weiter. Relaisverzögerung, Sende-/Empfangsumschaltung, Störungen, Gelände und Aufbau werden nicht berücksichtigt.",
+    "후보 지점마다 독립된 지점 간 예측을 계산하고, 목표 REL 이상 시간 수가 많은 순으로 나열합니다(같으면 평균 REL이 높은 순). 수신 지점은 RX1의 안테나·잡음을 후보 지점에 둔 경우를 계산합니다. 중계 지점은 TX→후보 지점과 후보 지점→RX1 두 구간을 계산하고, 같은 시각에 두 구간 모두 목표 REL 이상이면 중계 가능으로 봅니다. 중계국은 RX1의 안테나로 수신하고 TX의 안테나와 송신 전력으로 재송신한다고 가정합니다. 중계 지연·송수신 전환·혼신, 지형과 설치 조건은 고려하지 않습니다."
   ]
 };

@@ -55,3 +55,9 @@ main{display:block;max-width:1800px}
 .power-steps td{min-width:30px;text-align:center;font-size:11px}
 .power-steps td:last-child{color:var(--muted);background:transparent;white-space:nowrap}
 .power-steps tr.selected th{color:var(--accent)}
+.site-candidates{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:4px 12px;max-height:220px;overflow:auto;padding:4px 0}
+.site-candidates label{display:flex;flex-direction:row;justify-content:flex-start;gap:6px;align-items:center;font-size:13px;margin:0}
+.site-candidates input{width:auto;margin:0;flex:none}
+.sites-matrix td{min-width:28px;text-align:center;font-size:11px}
+.sites-matrix tr>th:nth-child(2){text-align:left;min-width:120px}
+.sites-matrix tr>td:nth-last-child(-n+2),.sites-matrix tr>td:nth-child(1),.sites-matrix tr>td:nth-child(3){color:var(--muted);background:transparent;white-space:nowrap}

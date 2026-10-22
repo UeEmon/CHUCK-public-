@@ -198,6 +198,20 @@ note、engine/engine_commit、履歴id/created。生出力・入力カードは�
 その時刻・周波数の最小電力（minimum_power_W、届かなければ空欄）を収録します。
 エンジンは10回逐次実行、各回60秒まで。公開版では回数制限のコストが4です。詳細は[POWER.md](POWER.md)。
 
+## 拠点の候補
+
+`POST /api/sites`：`/api/predict` と同じ入力に、candidates（1〜10件。各要素はid・name［1〜40文字］・lat・lon）と
+site_mode（receive［既定］またはrelay）を加えます。receiveはTX→候補（RX1のアンテナ・雑音）、
+relayはTX→候補と候補→RX1（候補はTXのアンテナ・送信電力で再送信）を計算します。
+
+応答：kind=sites、parameters、site_mode、candidates（順位順。rank、id、name、lat、lon、distance_tx_km、relayではdistance_rx_km、
+hours［hour_utc、reliability、frequencies（区間ごとの最良周波数）］、hours_meeting、mean_reliability。
+TX・RX1から1 km未満の候補はskippedと空のhours、rank=null）、note、engine/engine_commit、履歴id/created。
+生出力・入力カードは保存しないため、raw/input出力はありません。
+
+履歴kind=sites。CSVは候補×UTCの行で、順位、地点、距離、時間数、平均REL、REL、区間ごとの周波数、目標REL以上かどうかを収録します。
+エンジンは最大20回逐次実行、各回60秒まで。公開版では回数制限のコストが5です。詳細は[SITES.md](SITES.md)。
+
 ## 宇宙天気API
 
 `GET /api/space-weather?year=2026&month=10`
