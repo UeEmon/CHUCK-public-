@@ -4627,14 +4627,14 @@ const HF_MESSAGES={
     "Im Mesh-Modus wird jedes Stationspaar in beide Richtungen berechnet. Zeilen sind sendende, Spalten empfangende Stationen.",
     "메시를 선택하면 모든 거점 조합을 양방향으로 계산합니다. 행은 송신 거점, 열은 수신 거점입니다."
   ],
-  "RELは月間統計であり、瞬時の受信可否ではありません。中継（多段ホップ）・同時送信の干渉・チャネル割当は評価しません。": [
-    "REL is a monthly statistic, not instantaneous reception. Relaying (multi-hop), simultaneous-transmission interference and channel assignment are not evaluated.",
-    "La REL est une statistique mensuelle, pas une réception instantanée. Le relais (multi-sauts), les interférences d’émissions simultanées et l’attribution des canaux ne sont pas évalués.",
-    "REL es una estadística mensual, no la recepción instantánea. No se evalúan el relevo (multisalto), la interferencia por transmisiones simultáneas ni la asignación de canales.",
-    "La REL è una statistica mensile, non la ricezione istantanea. Il relay (multi-hop), l’interferenza da trasmissioni simultanee e l’assegnazione dei canali non sono valutati.",
-    "REL é uma estatística mensal, não a recepção instantânea. Retransmissão (multissalto), interferência de transmissões simultâneas e atribuição de canais não são avaliadas.",
-    "REL ist eine Monatsstatistik, kein momentaner Empfang. Weiterleitung (Multi-Hop), Störungen durch gleichzeitiges Senden und Kanalzuteilung werden nicht bewertet.",
-    "REL은 월간 통계이며 순간 수신 여부가 아닙니다. 중계(다중 홉), 동시 송신 간섭, 채널 할당은 평가하지 않습니다."
+  "RELは月間統計であり、瞬時の受信可否ではありません。中継は各区間が目標REL以上かどうかだけで判定し、同時送信の干渉・チャネル割当は評価しません。": [
+    "REL is a monthly statistic, not instantaneous reception. Relays are judged only by whether every hop meets the target REL; simultaneous-transmission interference and channel assignment are not evaluated.",
+    "La REL est une statistique mensuelle, pas une réception instantanée. Les relais sont jugés uniquement selon que chaque saut atteint la REL cible ; les interférences d’émissions simultanées et l’attribution des canaux ne sont pas évaluées.",
+    "REL es una estadística mensual, no la recepción instantánea. Los relevos se evalúan solo según si cada salto cumple la REL objetivo; no se evalúan la interferencia por transmisiones simultáneas ni la asignación de canales.",
+    "La REL è una statistica mensile, non la ricezione istantanea. I relay sono valutati solo in base al fatto che ogni tratta raggiunga la REL obiettivo; l’interferenza da trasmissioni simultanee e l’assegnazione dei canali non sono valutate.",
+    "REL é uma estatística mensal, não a recepção instantânea. As retransmissões são avaliadas apenas pelo fato de cada salto atingir a REL alvo; interferência de transmissões simultâneas e atribuição de canais não são avaliadas.",
+    "REL ist eine Monatsstatistik, kein momentaner Empfang. Relais werden nur danach beurteilt, ob jeder Abschnitt die Ziel-REL erreicht; Störungen durch gleichzeitiges Senden und Kanalzuteilung werden nicht bewertet.",
+    "REL은 월간 통계이며 순간 수신 여부가 아닙니다. 중계는 모든 구간이 목표 REL 이상인지로만 판정하며, 동시 송신 간섭과 채널 할당은 평가하지 않습니다."
   ],
   "計算後に、各UTC・周波数の拠点間RELを表示します。": [
     "After calculation, REL between stations is shown for each UTC hour and frequency.",
@@ -6921,5 +6921,113 @@ const HF_MESSAGES={
     "index.html não tem a estrutura esperada",
     "index.html hat nicht den erwarteten Aufbau",
     "index.html의 구성이 예상과 다릅니다"
+  ],
+  "中継": [
+    "Relay",
+    "Relais",
+    "Relevo",
+    "Relay",
+    "Retransmissão",
+    "Relais",
+    "중계"
+  ],
+  "直通のみ": [
+    "Direct only",
+    "Direct uniquement",
+    "Solo directo",
+    "Solo diretto",
+    "Somente direto",
+    "Nur direkt",
+    "직접만"
+  ],
+  "1段まで": [
+    "Up to 1 relay",
+    "Jusqu’à 1 relais",
+    "Hasta 1 relevo",
+    "Fino a 1 relay",
+    "Até 1 retransmissão",
+    "Bis 1 Relais",
+    "1단까지"
+  ],
+  "2段まで": [
+    "Up to 2 relays",
+    "Jusqu’à 2 relais",
+    "Hasta 2 relevos",
+    "Fino a 2 relay",
+    "Até 2 retransmissões",
+    "Bis 2 Relais",
+    "2단까지"
+  ],
+  "↻の付いたセルは、直通では目標RELに届かないものの、他の拠点で中継すれば各区間が目標REL以上になる経路です（数字は中継の段数）。中継局での転送遅延・同時送信の干渉は考慮しません。": [
+    "Cells marked ↻ miss the target REL directly but can be reached through other stations with every hop at or above the target REL (the number is the relay count). Forwarding delay at relays and simultaneous-transmission interference are not considered.",
+    "Les cellules marquées ↻ n’atteignent pas la REL cible en direct, mais peuvent être atteintes via d’autres stations avec chaque saut au moins à la REL cible (le nombre indique les relais). Le délai de retransmission et les interférences d’émissions simultanées ne sont pas pris en compte.",
+    "Las celdas con ↻ no alcanzan la REL objetivo en directo, pero se alcanzan a través de otras estaciones con cada salto igual o superior a la REL objetivo (el número es la cantidad de relevos). No se consideran el retardo de reenvío ni la interferencia por transmisiones simultáneas.",
+    "Le celle con ↻ non raggiungono la REL obiettivo in diretta, ma sono raggiungibili tramite altre stazioni con ogni tratta pari o superiore alla REL obiettivo (il numero indica i relay). Ritardo di inoltro e interferenza da trasmissioni simultanee non sono considerati.",
+    "As células com ↻ não atingem a REL alvo diretamente, mas são alcançadas por outras estações com cada salto igual ou acima da REL alvo (o número é a quantidade de retransmissões). Atraso de encaminhamento e interferência de transmissões simultâneas não são considerados.",
+    "Mit ↻ markierte Zellen verfehlen die Ziel-REL direkt, sind aber über andere Stationen erreichbar, wobei jeder Abschnitt die Ziel-REL erreicht (die Zahl ist die Anzahl der Relais). Weiterleitungsverzögerung und Störungen durch gleichzeitiges Senden werden nicht berücksichtigt.",
+    "↻ 표시 셀은 직접으로는 목표 REL에 못 미치지만, 다른 거점을 중계하면 모든 구간이 목표 REL 이상이 되는 경로입니다(숫자는 중계 단수). 중계국의 전달 지연과 동시 송신 간섭은 고려하지 않습니다."
+  ],
+  "中継で到達: {count} 経路 · 到達不可: {none} 経路（{hops}段まで）": [
+    "Reachable via relay: {count} links · Unreachable: {none} links (up to {hops} relays)",
+    "Accessibles par relais : {count} liaisons · Inaccessibles : {none} liaisons (jusqu’à {hops} relais)",
+    "Alcanzables por relevo: {count} enlaces · Inalcanzables: {none} enlaces (hasta {hops} relevos)",
+    "Raggiungibili via relay: {count} collegamenti · Non raggiungibili: {none} collegamenti (fino a {hops} relay)",
+    "Alcançáveis por retransmissão: {count} enlaces · Inalcançáveis: {none} enlaces (até {hops} retransmissões)",
+    "Über Relais erreichbar: {count} Verbindungen · Nicht erreichbar: {none} Verbindungen (bis {hops} Relais)",
+    "중계로 도달: {count} 경로 · 도달 불가: {none} 경로({hops}단까지)"
+  ],
+  "{link} / 中継{count}段: {route}": [
+    "{link} / {count} relay(s): {route}",
+    "{link} / {count} relais : {route}",
+    "{link} / {count} relevo(s): {route}",
+    "{link} / {count} relay: {route}",
+    "{link} / {count} retransmissão(ões): {route}",
+    "{link} / {count} Relais: {route}",
+    "{link} / 중계 {count}단: {route}"
+  ],
+  "直通で目標RELを満たします": [
+    "Meets the target REL directly",
+    "Atteint la REL cible en direct",
+    "Cumple la REL objetivo en directo",
+    "Raggiunge la REL obiettivo in diretta",
+    "Atinge a REL alvo diretamente",
+    "Erreicht die Ziel-REL direkt",
+    "직접으로 목표 REL을 충족합니다"
+  ],
+  "{hops}段までの中継でも目標RELを満たす経路はありません": [
+    "No route meets the target REL even with up to {hops} relays",
+    "Aucun itinéraire n’atteint la REL cible, même avec jusqu’à {hops} relais",
+    "Ninguna ruta cumple la REL objetivo ni con hasta {hops} relevos",
+    "Nessun percorso raggiunge la REL obiettivo nemmeno con fino a {hops} relay",
+    "Nenhuma rota atinge a REL alvo mesmo com até {hops} retransmissões",
+    "Keine Route erreicht die Ziel-REL, auch nicht mit bis zu {hops} Relais",
+    "{hops}단까지 중계해도 목표 REL을 충족하는 경로가 없습니다"
+  ],
+  "中継経路（{count}段）:": [
+    "Relay route ({count} relay(s)):",
+    "Itinéraire de relais ({count}) :",
+    "Ruta de relevo ({count}):",
+    "Percorso relay ({count}):",
+    "Rota de retransmissão ({count}):",
+    "Relaisroute ({count}):",
+    "중계 경로({count}단):"
+  ],
+  "· 区間REL {rels}% · {freqs} MHz": [
+    "· Hop REL {rels}% · {freqs} MHz",
+    "· REL par saut {rels}% · {freqs} MHz",
+    "· REL por salto {rels}% · {freqs} MHz",
+    "· REL per tratta {rels}% · {freqs} MHz",
+    "· REL por salto {rels}% · {freqs} MHz",
+    "· Abschnitts-REL {rels}% · {freqs} MHz",
+    "· 구간 REL {rels}% · {freqs} MHz"
+  ],
+  "RELは各経路・UTC・周波数の月間統計です。VOACAPは送受信を入れ替えるとアンテナ・送信電力・受信雑音が変わるため、行（TX）と列（RX）の有向経路を別々に計算します。中継（最大2段）は各区間が目標REL以上かどうかだけで判定し、区間をまとめた通しのREL・中継の遅延・同時送信の干渉・チャネル割当・経路間の相関はモデル化していません。経路ごとの生出力は保存しません。必要な場合は単一RXで再計算してください。": [
+    "REL is a monthly statistic per link, UTC hour and frequency. Swapping TX and RX changes antennas, transmit power and receiver noise in VOACAP, so each directed link (row TX, column RX) is calculated separately. Relays (up to 2) are judged only by whether every hop meets the target REL; an end-to-end REL across hops, relay delay, simultaneous-transmission interference, channel assignment and correlation between links are not modelled. Raw output per link is not stored; recalculate as a single RX if needed.",
+    "La REL est une statistique mensuelle par liaison, heure UTC et fréquence. Inverser TX et RX change antennes, puissance d’émission et bruit de réception dans VOACAP ; chaque liaison orientée (ligne TX, colonne RX) est donc calculée séparément. Les relais (jusqu’à 2) sont jugés uniquement selon que chaque saut atteint la REL cible ; la REL de bout en bout, le délai des relais, les interférences d’émissions simultanées, l’attribution des canaux et la corrélation entre liaisons ne sont pas modélisés. La sortie brute par liaison n’est pas conservée ; recalculez en RX unique si besoin.",
+    "REL es una estadística mensual por enlace, hora UTC y frecuencia. Intercambiar TX y RX cambia antenas, potencia de transmisión y ruido de recepción en VOACAP, por lo que cada enlace dirigido (fila TX, columna RX) se calcula por separado. Los relevos (hasta 2) se evalúan solo según si cada salto cumple la REL objetivo; no se modelan la REL de extremo a extremo, el retardo de los relevos, la interferencia por transmisiones simultáneas, la asignación de canales ni la correlación entre enlaces. No se guarda la salida bruta por enlace; recalcule con un solo RX si la necesita.",
+    "La REL è una statistica mensile per collegamento, ora UTC e frequenza. Scambiando TX e RX cambiano in VOACAP antenne, potenza di trasmissione e rumore di ricezione, quindi ogni collegamento orientato (riga TX, colonna RX) è calcolato separatamente. I relay (fino a 2) sono valutati solo in base al fatto che ogni tratta raggiunga la REL obiettivo; REL complessiva, ritardo dei relay, interferenza da trasmissioni simultanee, assegnazione dei canali e correlazione tra collegamenti non sono modellati. L’output grezzo per collegamento non viene salvato; ricalcola con un solo RX se serve.",
+    "REL é uma estatística mensal por enlace, hora UTC e frequência. Trocar TX e RX muda antenas, potência de transmissão e ruído de recepção no VOACAP, por isso cada enlace direcionado (linha TX, coluna RX) é calculado separadamente. As retransmissões (até 2) são avaliadas apenas pelo fato de cada salto atingir a REL alvo; REL ponta a ponta, atraso das retransmissões, interferência de transmissões simultâneas, atribuição de canais e correlação entre enlaces não são modelados. A saída bruta por enlace não é salva; recalcule com um único RX se necessário.",
+    "REL ist eine Monatsstatistik je Verbindung, UTC-Stunde und Frequenz. Das Vertauschen von TX und RX ändert in VOACAP Antennen, Sendeleistung und Empfangsrauschen, daher wird jede gerichtete Verbindung (Zeile TX, Spalte RX) getrennt berechnet. Relais (bis zu 2) werden nur danach beurteilt, ob jeder Abschnitt die Ziel-REL erreicht; eine durchgehende REL, Relaisverzögerung, Störungen durch gleichzeitiges Senden, Kanalzuteilung und Korrelation zwischen Verbindungen werden nicht modelliert. Rohausgaben je Verbindung werden nicht gespeichert; bei Bedarf als einzelnen RX neu berechnen.",
+    "REL은 경로·UTC 시각·주파수별 월간 통계입니다. VOACAP에서는 송수신을 바꾸면 안테나·송신 전력·수신 잡음이 달라지므로 행(TX)과 열(RX)의 방향별 경로를 따로 계산합니다. 중계(최대 2단)는 모든 구간이 목표 REL 이상인지로만 판정하며, 구간을 합친 종단 간 REL, 중계 지연, 동시 송신 간섭, 채널 할당, 경로 간 상관은 모델링하지 않습니다. 경로별 원시 출력은 저장하지 않으며, 필요하면 단일 RX로 다시 계산하세요."
   ]
 };

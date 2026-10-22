@@ -63,7 +63,7 @@ Gateway connection checks: the app uses internal port 8001, independent of publi
 - Modulation names alone do not establish decoding performance. Enter the required SNR for your modem, bandwidth, rate and BER. Polarization labels do not automatically model mismatch or Faraday rotation; an optional user-assumed 0–30 dB extra loss is only a sensitivity analysis.
 - Antenna dimension approximations are not measured aircraft/ship installation patterns. Reference-only entries cannot be used for calculation until suitable modeling information is supplied.
 - Diversity results compare sites and show theoretical bounds with unknown correlation; an independence-based estimate is optional. No waveform combining or real receiver switching is performed. See [diversity](docs/RX_DIVERSITY.md).
-- Mesh mode calculates every pair of 2–8 stations in both directions and shows REL per frequency as a TX × RX matrix, with a UTC slider and per-station power, antenna and noise. Relaying and interference are not modelled. See [mesh](docs/MESH.md).
+- Mesh mode calculates every pair of 2–8 stations in both directions and shows REL per frequency as a TX × RX matrix, with a UTC slider and per-station power, antenna and noise. Cells marked ↻ are reachable through 1–2 relay stations with every hop at or above the target REL; relay delay and interference are not modelled. See [mesh](docs/MESH.md).
 - VOACAP is a monthly statistical model. Instantaneous ionospheric changes, storms, terrain and installation effects are not fully represented. Recommendations do not grant frequency assignments or operating authorization.
 
 ## Network access and development

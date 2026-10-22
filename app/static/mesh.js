@@ -9,6 +9,20 @@ function meshBest(rows){
  let best=null;for(const r of rows){if(r.reliability===null||r.reliability===undefined)continue;if(!best||r.reliability>best.reliability||(r.reliability===best.reliability&&(r.snr_db_hz??-Infinity)>(best.snr_db_hz??-Infinity)))best=r;}return best;
 }
 function meshRow(link,hour,frequency){const h=link.hours.find(h=>h.hour_utc===hour);if(!h)return null;return frequency==='best'?meshBest(h.rows):h.rows.find(r=>r.frequency_mhz===Number(frequency))??null;}
+function meshRelayRoute(hour,frequency,tx,rx,relays){
+ // Shortest chain of hops that each meet the target REL at this UTC (fewest relays, then highest weakest hop).
+ // Each hop uses the chosen frequency, or its own best frequency; nothing is combined into an end-to-end REL.
+ const target=meshResult.parameters.reliability,hop=(a,b)=>{const v=meshRow(meshLink(a,b),hour,frequency);return v&&v.reliability!==null&&v.reliability!==undefined&&v.reliability>=target?v:null;};
+ let best=null;
+ const walk=(path,rows)=>{
+  const last=path[path.length-1],v=hop(last,rx);
+  if(v){const all=[...rows,v],weakest=Math.min(...all.map(r=>r.reliability));if(!best||all.length<best.rows.length||(all.length===best.rows.length&&weakest>best.weakest))best={ids:[...path,rx],rows:all,weakest};}
+  if(path.length>relays)return;
+  for(const s of meshResult.sites){if(path.includes(s.id)||s.id===rx)continue;const w=hop(last,s.id);if(w)walk([...path,s.id],[...rows,w]);}
+ };
+ walk([tx],[]);return best;
+}
+function meshRouteText(route){return route.ids.map(id=>meshSite(id).name).join(' → ');}
 function meshName(id){const th=cell('th',meshSite(id).name);th.dataset.userContent='true';return th;}
 function meshPaint(td,rel){td.style.background=color(rel);td.style.color=(rel??0)>55?'#062b25':'#d6e7f1';}
 function showMesh(){
@@ -21,10 +35,10 @@ function showMesh(){
  renderMeshMatrix();drawMap();
 }
 function renderMeshMatrix(){
- const r=meshResult;if(!r)return;const hour=Number($('mesh-hour').value),frequency=$('mesh-frequency').value,target=r.parameters.reliability;
+ const r=meshResult;if(!r)return;const hour=Number($('mesh-hour').value),frequency=$('mesh-frequency').value,target=r.parameters.reliability,relays=Number($('mesh-relays').value);
  $('mesh-hour-label').textContent=meshPad(hour)+' UTC';
  const table=document.createElement('table');table.className='heat mesh-matrix';const head=document.createElement('tr');head.append(cell('th','TX ＼ RX'));for(const s of r.sites)head.append(meshName(s.id));table.append(head);
- let meeting=0,both=0;
+ let meeting=0,both=0,relayed=0;
  for(const tx of r.sites){
   const tr=document.createElement('tr');tr.append(meshName(tx.id));
   for(const rx of r.sites){
@@ -34,6 +48,8 @@ function renderMeshMatrix(){
    if(rel!==null&&rel>=target){meeting++;const back=meshRow(meshLink(rx.id,tx.id),hour,frequency)?.reliability;if(back!==null&&back!==undefined&&back>=target)both++;}
    if(frequency==='best'&&v)button.append(cell('small',v.frequency_mhz.toFixed(1)));
    button.title=`${tx.name} → ${rx.name} / ${hour}:00 UTC / ${v?v.frequency_mhz+' MHz':'—'} / REL ${fmt(rel)}% / SNR ${fmt(v?.snr_db_hz)} dB·Hz`;
+   const route=relays&&!(rel>=target)?meshRelayRoute(hour,frequency,tx.id,rx.id,relays):null;
+   if(route){relayed++;td.classList.add('mesh-relay');button.append(cell('i','↻'+(route.ids.length-2)));button.title=`${button.title} / 中継${route.ids.length-2}段: ${meshRouteText(route)}`;}
    button.onclick=()=>{meshSelected={tx:tx.id,rx:rx.id};renderMeshMatrix();};
    meshPaint(td,rel);td.classList.toggle('selected',meshSelected?.tx===tx.id&&meshSelected?.rx===rx.id);td.append(button);tr.append(td);
   }
@@ -42,6 +58,7 @@ function renderMeshMatrix(){
  $('mesh-matrix').replaceChildren(table);
  const n=r.sites.length;
  $('mesh-summary').textContent=`目標REL ${target}% 以上: ${meeting} / ${n*(n-1)} 経路 · 双方向とも: ${both/2} / ${n*(n-1)/2} 組`;
+ $('mesh-relay-summary').hidden=!relays;$('mesh-relay-summary').textContent=`中継で到達: ${relayed} 経路 · 到達不可: ${n*(n-1)-meeting-relayed} 経路（${relays}段まで）`;
  renderMeshLink();
 }
 function renderMeshLink(){
@@ -55,10 +72,22 @@ function renderMeshLink(){
   table.append(tr);
  }
  $('mesh-link-heatmap').replaceChildren(table);
+ renderMeshRelay(link,hour,frequency);
+}
+function renderMeshRelay(link,hour,frequency){
+ // The chain for the selected pair at the matrix time; names stay untranslated.
+ const out=$('mesh-relay-route'),relays=Number($('mesh-relays').value),target=meshResult.parameters.reliability;out.replaceChildren();out.hidden=!relays;if(!relays)return;
+ const direct=meshRow(link,hour,frequency)?.reliability;
+ if(direct!==null&&direct!==undefined&&direct>=target){out.append(cell('span','直通で目標RELを満たします'));return;}
+ const route=meshRelayRoute(hour,frequency,link.tx_id,link.rx_id,relays);
+ if(!route){out.append(cell('span',`${relays}段までの中継でも目標RELを満たす経路はありません`));return;}
+ out.append(cell('span',`中継経路（${route.ids.length-2}段）:`),' ');
+ route.ids.forEach((id,i)=>{if(i)out.append(' → ');const name=cell('span',meshSite(id).name);name.dataset.userContent='true';out.append(name);});
+ out.append(cell('span',` · 区間REL ${route.rows.map(v=>Math.round(v.reliability)).join(' / ')}% · ${route.rows.map(v=>v.frequency_mhz.toFixed(1)).join(' / ')} MHz`));
 }
 function stopMeshPlay(){if(meshTimer){clearInterval(meshTimer);meshTimer=null;}$('mesh-play').textContent='▶ 再生';}
 $('mesh-play').onclick=()=>{if(meshTimer){stopMeshPlay();return;}if(!meshResult)return;$('mesh-play').textContent='■ 停止';meshTimer=setInterval(()=>{if($('mesh').hidden){stopMeshPlay();return;}$('mesh-hour').value=(Number($('mesh-hour').value)+1)%24;renderMeshMatrix();},800);};
 $('mesh-hour').value=new Date().getUTCHours();
-$('mesh-hour').oninput=renderMeshMatrix;$('mesh-frequency').onchange=renderMeshMatrix;
+$('mesh-hour').oninput=renderMeshMatrix;$('mesh-frequency').onchange=renderMeshMatrix;$('mesh-relays').onchange=renderMeshMatrix;
 $('mesh-reverse').onclick=()=>{if(meshSelected){meshSelected={tx:meshSelected.rx,rx:meshSelected.tx};renderMeshMatrix();}};
 function openMesh(r){meshResult=r;meshSelected=null;coverageResult=null;tab('mesh');showMesh();}

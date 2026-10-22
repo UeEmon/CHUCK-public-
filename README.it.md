@@ -41,7 +41,7 @@ Cronologia e preset restano nel volume `hf-data` dopo arresti e ricompilazioni n
 - Impostare mese, numero smussato di macchie solari (SSN), potenza, fino a 11 frequenze fra 2 e 30 MHz, antenna, rumore, SNR e affidabilità richiesti.
 - Le schede sotto la mappa mostrano previsioni su 24 ore (CCIR/Method 30), diversità e copertura regionale (massimo 35 punti indipendenti). Selezionare una cella per dettagli UTC e frequenze consigliate.
 - Propagation Chart: REL/SNR, MUF per percorso, scelta RX ed esportazione SVG. Disponibili cronologia SQLite, CSV/JSON e ingresso/uscita VOACAP originali.
-- La modalità mesh calcola tutte le coppie di 2–8 stazioni in entrambe le direzioni e mostra la REL per frequenza come matrice TX × RX, con cursore UTC e potenza, antenna e rumore per stazione. Relay e interferenze non sono modellati. Vedere [mesh](docs/MESH.md).
+- La modalità mesh calcola tutte le coppie di 2–8 stazioni in entrambe le direzioni e mostra la REL per frequenza come matrice TX × RX, con cursore UTC e potenza, antenna e rumore per stazione. Le celle con ↻ sono raggiungibili tramite 1–2 stazioni relay con ogni tratta pari o superiore alla REL obiettivo; ritardo dei relay e interferenze non sono modellati. Vedere [mesh](docs/MESH.md).
 - Con Language scegliere giapponese, inglese, francese, spagnolo, italiano, portoghese, tedesco o coreano senza alterare i nomi inseriti.
 
 Le modifiche agli ingressi non ricalcolano i risultati: avviare un nuovo calcolo. Limite di 200 luoghi e 200 antenne, con rilevamento dei conflitti di modifica.
