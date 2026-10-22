@@ -7155,5 +7155,158 @@ const HF_MESSAGES={
     "Não foi possível abrir a janela de impressão. Verifique se os pop-ups estão permitidos.",
     "Das Druckfenster konnte nicht geöffnet werden. Prüfen Sie, ob Pop-ups erlaubt sind.",
     "인쇄 창을 열 수 없습니다. 팝업이 허용되어 있는지 확인하세요."
+  ],
+  "12か月の見通し": [
+    "12-month outlook",
+    "Perspective sur 12 mois",
+    "Perspectiva de 12 meses",
+    "Prospettiva a 12 mesi",
+    "Perspectiva de 12 meses",
+    "12-Monats-Ausblick",
+    "12개월 전망"
+  ],
+  "12か月の見通し · 月 × UTC のREL（%）": [
+    "12-month outlook · REL by month × UTC (%)",
+    "Perspective sur 12 mois · REL par mois × UTC (%)",
+    "Perspectiva de 12 meses · REL por mes × UTC (%)",
+    "Prospettiva a 12 mesi · REL per mese × UTC (%)",
+    "Perspectiva de 12 meses · REL por mês × UTC (%)",
+    "12-Monats-Ausblick · REL nach Monat × UTC (%)",
+    "12개월 전망 · 월 × UTC별 REL(%)"
+  ],
+  "12か月を計算": [
+    "Calculate 12 months",
+    "Calculer 12 mois",
+    "Calcular 12 meses",
+    "Calcola 12 mesi",
+    "Calcular 12 meses",
+    "12 Monate berechnen",
+    "12개월 계산"
+  ],
+  "右側のTXとRX1の経路について、予察条件の年月から12か月分の24時間予測を計算します（エンジン12回）。SSNは手動入力なら全月に同じ値、NOAAなら月ごとの平滑SSNを使います。実効SSNは使えません。": [
+    "For the path from TX to RX1 on the right, calculates 24-hour predictions for 12 months starting from the month in the prediction conditions (12 engine runs). A manual SSN is used for every month; NOAA uses each month’s smoothed SSN. The effective SSN cannot be used.",
+    "Pour le trajet du TX vers RX1 à droite, calcule les prévisions sur 24 heures de 12 mois à partir du mois des conditions de prévision (12 exécutions du moteur). Une SSN manuelle sert pour tous les mois ; NOAA utilise la SSN lissée de chaque mois. La SSN effective n’est pas utilisable.",
+    "Para el trayecto del TX al RX1 de la derecha, calcula predicciones de 24 horas de 12 meses a partir del mes de las condiciones de predicción (12 ejecuciones del motor). Una SSN manual se usa en todos los meses; NOAA usa la SSN suavizada de cada mes. No se puede usar la SSN efectiva.",
+    "Per il percorso dal TX all’RX1 a destra, calcola previsioni di 24 ore per 12 mesi a partire dal mese delle condizioni di previsione (12 esecuzioni del motore). Una SSN manuale vale per tutti i mesi; NOAA usa la SSN livellata di ogni mese. La SSN effettiva non è utilizzabile.",
+    "Para o trajeto do TX ao RX1 à direita, calcula previsões de 24 horas de 12 meses a partir do mês das condições de previsão (12 execuções do motor). Uma SSN manual vale para todos os meses; a NOAA usa a SSN suavizada de cada mês. A SSN efetiva não pode ser usada.",
+    "Berechnet für den Pfad von TX zu RX1 rechts 24-Stunden-Prognosen für 12 Monate ab dem Monat der Prognosebedingungen (12 Engine-Läufe). Eine manuelle SSN gilt für alle Monate; NOAA verwendet die geglättete SSN jedes Monats. Die effektive SSN ist nicht verwendbar.",
+    "오른쪽 TX에서 RX1까지의 경로에 대해 예측 조건의 연월부터 12개월분의 24시간 예측을 계산합니다(엔진 12회). 수동 SSN은 모든 달에 같은 값을, NOAA는 달마다의 평활 SSN을 사용합니다. 실효 SSN은 사용할 수 없습니다."
+  ],
+  "計算後に、月ごと・UTCごとのRELを表示します。": [
+    "After calculation, REL is shown by month and UTC hour.",
+    "Après le calcul, la REL s’affiche par mois et par heure UTC.",
+    "Tras el cálculo se muestra la REL por mes y hora UTC.",
+    "Dopo il calcolo, la REL viene mostrata per mese e ora UTC.",
+    "Após o cálculo, a REL é exibida por mês e hora UTC.",
+    "Nach der Berechnung wird die REL nach Monat und UTC-Stunde angezeigt.",
+    "계산 후 월별·UTC별 REL을 표시합니다."
+  ],
+  "最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は目標REL以上、灰色は欠測です。右端は目標REL以上の時間数です。セルを選ぶと下にその月の周波数別の24時間を表示します。": [
+    "With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks the target REL or above; grey is missing data. The right column counts hours at or above the target REL. Select a cell to show that month’s 24 hours per frequency below.",
+    "Avec Meilleure fréquence, la ligne inférieure de chaque cellule indique la fréquence (MHz) de REL maximale. Un point marque la REL cible ou plus ; le gris indique des données manquantes. La colonne de droite compte les heures à la REL cible ou plus. Sélectionnez une cellule pour afficher en dessous les 24 heures de ce mois par fréquence.",
+    "Con Mejor frecuencia, la línea inferior de cada celda muestra la frecuencia (MHz) de mayor REL. Un punto marca la REL objetivo o superior; el gris indica datos ausentes. La columna derecha cuenta las horas en la REL objetivo o superior. Seleccione una celda para ver debajo las 24 horas de ese mes por frecuencia.",
+    "Con Frequenza migliore, la riga inferiore di ogni cella mostra la frequenza (MHz) con la REL più alta. Un punto indica la REL obiettivo o superiore; il grigio indica dati mancanti. La colonna di destra conta le ore pari o superiori alla REL obiettivo. Seleziona una cella per mostrare sotto le 24 ore di quel mese per frequenza.",
+    "Com Melhor frequência, a linha inferior de cada célula mostra a frequência (MHz) de maior REL. Um ponto marca a REL alvo ou acima; o cinza indica dados ausentes. A coluna da direita conta as horas na REL alvo ou acima. Selecione uma célula para ver abaixo as 24 horas desse mês por frequência.",
+    "Bei Beste Frequenz zeigt die untere Zeile jeder Zelle die Frequenz (MHz) mit der höchsten REL. Ein Punkt markiert die Ziel-REL oder mehr; Grau bedeutet fehlende Daten. Die rechte Spalte zählt die Stunden auf oder über der Ziel-REL. Eine Zelle wählen, um unten die 24 Stunden dieses Monats je Frequenz anzuzeigen.",
+    "최적 주파수에서는 셀 아래쪽에 REL이 가장 높은 주파수(MHz)를 표시합니다. 점은 목표 REL 이상, 회색은 결측입니다. 오른쪽 끝은 목표 REL 이상인 시간 수입니다. 셀을 선택하면 아래에 그 달의 주파수별 24시간을 표시합니다."
+  ],
+  "月の詳細 · 周波数 × UTC": [
+    "Month detail · frequency × UTC",
+    "Détail du mois · fréquence × UTC",
+    "Detalle del mes · frecuencia × UTC",
+    "Dettaglio del mese · frequenza × UTC",
+    "Detalhe do mês · frequência × UTC",
+    "Monatsdetail · Frequenz × UTC",
+    "월 상세 · 주파수 × UTC"
+  ],
+  "各月のRELはその月の月間統計です。手動SSNでは12か月すべてに同じSSNを使います。NOAAの平滑SSNでは月ごとの値を使い、新鮮な値がない月は計算しません。実際の太陽活動・季節変化の年ごとの違いは反映しません。各月の生出力・入力カードは保存しません。必要な月は単一RXで再計算してください。": [
+    "Each month’s REL is that month’s monthly statistic. With a manual SSN the same SSN is used for all 12 months; with NOAA’s smoothed SSN each month uses its own value, and months without a fresh value are not calculated. Year-to-year differences in actual solar activity and seasons are not reflected. Raw output and input cards per month are not stored; recalculate a month as a single RX if needed.",
+    "La REL de chaque mois est la statistique mensuelle de ce mois. Avec une SSN manuelle, la même SSN sert pour les 12 mois ; avec la SSN lissée NOAA, chaque mois utilise sa propre valeur et les mois sans valeur récente ne sont pas calculés. Les différences d’une année à l’autre de l’activité solaire réelle et des saisons ne sont pas prises en compte. La sortie brute et les cartes d’entrée par mois ne sont pas conservées ; recalculez un mois en RX unique si besoin.",
+    "La REL de cada mes es la estadística mensual de ese mes. Con SSN manual se usa la misma SSN en los 12 meses; con la SSN suavizada de NOAA cada mes usa su propio valor y los meses sin un valor reciente no se calculan. No se reflejan las diferencias interanuales de la actividad solar real ni de las estaciones. No se guardan la salida bruta ni las tarjetas de entrada por mes; recalcule un mes con un solo RX si lo necesita.",
+    "La REL di ogni mese è la statistica mensile di quel mese. Con una SSN manuale si usa la stessa SSN per tutti i 12 mesi; con la SSN livellata NOAA ogni mese usa il proprio valore e i mesi senza un valore recente non vengono calcolati. Le differenze tra un anno e l’altro dell’attività solare reale e delle stagioni non sono considerate. Output grezzo e schede di input per mese non vengono salvati; ricalcola un mese con un solo RX se serve.",
+    "A REL de cada mês é a estatística mensal desse mês. Com SSN manual, a mesma SSN é usada nos 12 meses; com a SSN suavizada da NOAA, cada mês usa o próprio valor e os meses sem valor recente não são calculados. Diferenças de um ano para outro na atividade solar real e nas estações não são refletidas. A saída bruta e os cartões de entrada por mês não são salvos; recalcule um mês com um único RX se necessário.",
+    "Die REL jedes Monats ist die Monatsstatistik dieses Monats. Mit manueller SSN gilt dieselbe SSN für alle 12 Monate; mit der geglätteten NOAA-SSN verwendet jeder Monat seinen eigenen Wert, und Monate ohne aktuellen Wert werden nicht berechnet. Jährliche Unterschiede der tatsächlichen Sonnenaktivität und der Jahreszeiten werden nicht berücksichtigt. Rohausgaben und Eingabekarten je Monat werden nicht gespeichert; einen Monat bei Bedarf als einzelnen RX neu berechnen.",
+    "각 달의 REL은 그 달의 월간 통계입니다. 수동 SSN에서는 12개월 모두 같은 SSN을, NOAA 평활 SSN에서는 달마다의 값을 사용하며 최신 값이 없는 달은 계산하지 않습니다. 실제 태양 활동과 계절의 해마다의 차이는 반영하지 않습니다. 달별 원시 출력·입력 카드는 저장하지 않으며, 필요한 달은 단일 RX로 다시 계산하세요."
+  ],
+  "12か月のどの月にも使えるSSNがありません": [
+    "No usable SSN for any of the 12 months",
+    "Aucune SSN utilisable pour l’un des 12 mois",
+    "Ninguno de los 12 meses tiene una SSN utilizable",
+    "Nessuna SSN utilizzabile per nessuno dei 12 mesi",
+    "Nenhum dos 12 meses tem SSN utilizável",
+    "Für keinen der 12 Monate ist eine verwendbare SSN vorhanden",
+    "12개월 중 사용할 수 있는 SSN이 있는 달이 없습니다"
+  ],
+  "12か月の見通しでは実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。": [
+    "The effective SSN cannot be used for the 12-month outlook. Choose manual input or NOAA smoothed SSN.",
+    "La SSN effective n’est pas utilisable pour la perspective sur 12 mois. Choisissez la saisie manuelle ou la SSN lissée NOAA.",
+    "No se puede usar la SSN efectiva en la perspectiva de 12 meses. Elija entrada manual o la SSN suavizada de NOAA.",
+    "La SSN effettiva non è utilizzabile per la prospettiva a 12 mesi. Scegli l’inserimento manuale o la SSN livellata NOAA.",
+    "A SSN efetiva não pode ser usada na perspectiva de 12 meses. Escolha entrada manual ou a SSN suavizada da NOAA.",
+    "Die effektive SSN ist für den 12-Monats-Ausblick nicht verwendbar. Manuelle Eingabe oder geglättete NOAA-SSN wählen.",
+    "12개월 전망에서는 실효 SSN을 사용할 수 없습니다. 수동 입력이나 NOAA 평활 SSN을 선택하세요."
+  ],
+  "NOAAの新鮮な平滑SSNがありません": [
+    "No fresh NOAA smoothed SSN",
+    "Pas de SSN lissée NOAA récente",
+    "No hay SSN suavizada reciente de NOAA",
+    "Nessuna SSN livellata NOAA recente",
+    "Sem SSN suavizada recente da NOAA",
+    "Keine aktuelle geglättete NOAA-SSN",
+    "최신 NOAA 평활 SSN이 없습니다"
+  ],
+  "{span} · NOAAの月ごとの平滑SSN · {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}%": [
+    "{span} · NOAA smoothed SSN per month · {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}%",
+    "{span} · SSN lissée NOAA par mois · {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}%",
+    "{span} · SSN suavizada de NOAA por mes · {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}%",
+    "{span} · SSN livellata NOAA per mese · {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}%",
+    "{span} · SSN suavizada da NOAA por mês · {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}%",
+    "{span} · Geglättete NOAA-SSN je Monat · {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}%",
+    "{span} · 월별 NOAA 평활 SSN · {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}%"
+  ],
+  "{span} · SSN {ssn}（全月共通） · {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}%": [
+    "{span} · SSN {ssn} (all months) · {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}%",
+    "{span} · SSN {ssn} (tous les mois) · {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}%",
+    "{span} · SSN {ssn} (todos los meses) · {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}%",
+    "{span} · SSN {ssn} (tutti i mesi) · {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}%",
+    "{span} · SSN {ssn} (todos os meses) · {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}%",
+    "{span} · SSN {ssn} (alle Monate) · {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}%",
+    "{span} · SSN {ssn}(전 월 공통) · {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}%"
+  ],
+  "月 / UTC": [
+    "Month / UTC",
+    "Mois / UTC",
+    "Mes / UTC",
+    "Mese / UTC",
+    "Mês / UTC",
+    "Monat / UTC",
+    "월 / UTC"
+  ],
+  "目標REL以上（時間）": [
+    "At target REL (h)",
+    "REL cible atteinte (h)",
+    "En REL objetivo (h)",
+    "REL obiettivo raggiunta (h)",
+    "Na REL alvo (h)",
+    "Ziel-REL erreicht (h)",
+    "목표 REL 이상(시간)"
+  ],
+  "12か月の見通しは単一RXの経路で計算します。メッシュを外してください。": [
+    "The 12-month outlook is calculated for a single TX→RX path. Turn off mesh.",
+    "La perspective sur 12 mois se calcule pour un trajet TX→RX unique. Désactivez le maillage.",
+    "La perspectiva de 12 meses se calcula para un único trayecto TX→RX. Desactive la malla.",
+    "La prospettiva a 12 mesi si calcola per un singolo percorso TX→RX. Disattiva la mesh.",
+    "A perspectiva de 12 meses é calculada para um único trajeto TX→RX. Desative a malha.",
+    "Der 12-Monats-Ausblick wird für einen einzelnen TX→RX-Pfad berechnet. Mesh ausschalten.",
+    "12개월 전망은 단일 TX→RX 경로로 계산합니다. 메시를 해제하세요."
+  ],
+  "12か月分を計算しています。エンジンを12回実行するため、完了までお待ちください…": [
+    "Calculating 12 months. The engine runs 12 times, so please wait…",
+    "Calcul de 12 mois. Le moteur s’exécute 12 fois, veuillez patienter…",
+    "Calculando 12 meses. El motor se ejecuta 12 veces; espere…",
+    "Calcolo di 12 mesi in corso. Il motore viene eseguito 12 volte, attendere…",
+    "Calculando 12 meses. O motor é executado 12 vezes; aguarde…",
+    "12 Monate werden berechnet. Die Engine läuft 12-mal, bitte warten…",
+    "12개월분을 계산하고 있습니다. 엔진을 12회 실행하므로 완료될 때까지 기다려 주세요…"
   ]
 };

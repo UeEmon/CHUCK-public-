@@ -170,6 +170,20 @@ linksはTXの入力順、RXの入力順に並び、自己経路は含みませ�
 エンジンはN×(N−1)回逐次実行、各回60秒まで。失敗時は部分結果を保存しません。
 公開版では回数制限のコストが8です。詳細は[MESH.md](MESH.md)。
 
+## 12か月の見通し
+
+`POST /api/annual`：`/api/predict` と同じ入力で、year/monthから始まる12か月の24時間予測を計算します。
+ssn_sourceはmanual（全月同じSSN）またはnoaa（月ごとの平滑SSN、新鮮な値がない月は計算しない）。
+effectiveは400で拒否します。開始月にNOAAの値がない場合は `/api/predict` と同じく503です。
+
+応答：kind=annual、parameters、distance_km、bearing_deg、months（year、month、ssn、hours。NOAAではssn_detail、
+SSNのない月はssn=null・missing・空のhours）、note、engine/engine_commit、履歴id/created。
+月ごとの生出力・入力カードは保存しないため、raw/input出力はありません。
+
+履歴kind=annual。CSVは月×UTC×周波数の行で、year/month/SSN、REL/SNR/信号/打上げ角/MUF、
+目標REL以上かどうか（meets_target）を収録します。SSNのない月は空欄の1行です。
+エンジンは最大12回逐次実行、各回60秒まで。公開版では回数制限のコストが4です。詳細は[ANNUAL.md](ANNUAL.md)。
+
 ## 宇宙天気API
 
 `GET /api/space-weather?year=2026&month=10`

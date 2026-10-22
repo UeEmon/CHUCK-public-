@@ -65,6 +65,7 @@ Gateway connection checks: the app uses internal port 8001, independent of publi
 - Diversity results compare sites and show theoretical bounds with unknown correlation; an independence-based estimate is optional. No waveform combining or real receiver switching is performed. See [diversity](docs/RX_DIVERSITY.md).
 - Mesh mode calculates every pair of 2–8 stations in both directions and shows REL per frequency as a TX × RX matrix, with a UTC slider and per-station power, antenna and noise. Cells marked ↻ are reachable through 1–2 relay stations with every hop at or above the target REL; relay delay and interference are not modelled. See [mesh](docs/MESH.md).
 - Below the 24-hour prediction, the 24-hour operating frequency plan turns the calculated frequencies into time blocks with the fewest switches (or the best each hour), with CSV export and printing. See [frequency plan](docs/FREQUENCY_PLAN.md).
+- The 12-month outlook calculates TX→RX1 for twelve months from the selected month and shows REL as a month × UTC table (one manual SSN for all months, or NOAA smoothed SSN per month). See [outlook](docs/ANNUAL.md).
 - VOACAP is a monthly statistical model. Instantaneous ionospheric changes, storms, terrain and installation effects are not fully represented. Recommendations do not grant frequency assignments or operating authorization.
 
 ## Network access and development

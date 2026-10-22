@@ -19,6 +19,7 @@ from observations import Observations, GIRO_STATIONS
 from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
 import mesh
+import annual
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
 from antenna_ocr import DocumentStore, OCRError, OCRBusy, config as ocr_config, MAX_FILE
@@ -55,6 +56,14 @@ def load(identifier):
         row=c.execute('SELECT result FROM predictions WHERE id=?',(identifier,)).fetchone()
     if not row: raise InputError('指定された履歴がありません')
     return json.loads(row[0])
+
+def annual_ssn(p, year, month):
+    """SSN for one month of the outlook: the manual value, or that month's fresh NOAA smoothed SSN."""
+    if p.get('ssn_source')!='noaa': return p['ssn'],None
+    try: ssn=SPACE_WEATHER.snapshot(year,month)['ssn']
+    except Exception: ssn=None
+    if not ssn or ssn['stale']: return None,'NOAAの新鮮な平滑SSNがありません'
+    return ssn['value'],dict(kind=ssn['kind'],month=ssn['month'])
 
 def coverage(p, extra):
     # A regional sample grid, not interpolated coverage contours.
@@ -168,6 +177,15 @@ class Handler(BaseHTTPRequestHandler):
                                     for v in h['rows']:
                                         rel=v.get('reliability')
                                         w.writerow([h['hour_utc'],v['frequency_mhz'],link['tx_id'],names[link['tx_id']],link['rx_id'],names[link['rx_id']],rel,v.get('snr_db_hz'),v.get('signal_dbw'),v.get('takeoff_deg'),h['muf_mhz'],link['distance_km'],rel is not None and rel>=r['parameters']['reliability']])
+                        elif r.get('kind') == 'annual':
+                            w.writerow(['# annual_note',r['note']])
+                            w.writerow(['year','month','SSN','UTC','MHz','REL_percent','SNR_dBHz','S_dBW','TOA_deg','MUF_MHz','meets_target'])
+                            for m in r['months']:
+                                if m['ssn'] is None: w.writerow([m['year'],m['month'],'','','','','','','','',''])
+                                for h in m['hours']:
+                                    for v in h['rows']:
+                                        rel=v.get('reliability')
+                                        w.writerow([m['year'],m['month'],m['ssn'],h['hour_utc'],v['frequency_mhz'],rel,v.get('snr_db_hz'),v.get('signal_dbw'),v.get('takeoff_deg'),h['muf_mhz'],rel is not None and rel>=r['parameters']['reliability']])
                         elif 'hours' in r:
                             w.writerow(['UTC','MHz','REL_percent','SNR_dBHz','S_dBW','TOA_deg','MUF_MHz'])
                             for h in r['hours']:
@@ -195,7 +213,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/position-stations': return self.configure_position_station()
         if path=='/api/presets': return self.edit_presets()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
-        if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh'): return self.json(404,{'error':'見つかりません'})
+        if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
         origin=self.headers.get('Origin')
         if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
@@ -225,6 +243,8 @@ class Handler(BaseHTTPRequestHandler):
                 data=dict(data,**mesh.endpoint(nodes[0],data,'tx'),**mesh.endpoint(nodes[1],data,'rx'),power_w=nodes[0]['power_w'],noise=nodes[1]['noise'])
             p=validate(dict(data,ssn=0) if data.get('ssn_source') in ('noaa','effective') else data)
             weather=effective=None
+            if path=='/api/annual' and data.get('ssn_source')=='effective':
+                raise InputError('12か月の見通しでは実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。')
             if data.get('ssn_source')=='effective':
                 prepared,effective=EFFECTIVE_SSN.calculation_input(dict(data,year=p['year'],month=p['month']))
             else:
@@ -237,12 +257,12 @@ class Handler(BaseHTTPRequestHandler):
             if not locked: return self.json(409,{'error':'別の計算を実行中です。完了後に再実行してください。'})
             if any(datetime.fromisoformat(v['expires_at']) < datetime.now(timezone.utc) for v in position_inputs.values()):
                 raise InputError('採用した位置情報が準備中に期限切れになりました。再計算してください。')
-            r=mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
+            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
             if weather is not None: r['space_weather']=weather
             if effective is not None: r['effective_ssn']=effective
             if position_inputs: r['position_inputs']=position_inputs
             if isinstance(data.get('ui_selection'),dict): r['ui_selection']=data['ui_selection']
-            self.json(200,save(r,'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
+            self.json(200,save(r,'annual' if path=='/api/annual' else 'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except (EngineError,SpaceWeatherError,EffectiveSSNError) as e: self.json(503,{'error':str(e)})
         except Exception:

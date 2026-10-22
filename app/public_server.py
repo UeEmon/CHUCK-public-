@@ -29,9 +29,9 @@ import donations
 import server
 
 ADMIN_HEADER='X-Chuck-Admin'
-CALCULATIONS=('/api/predict','/api/coverage','/api/diversity','/api/mesh')
-# Coverage runs 35 engine passes, diversity up to 8 and a mesh up to 56, so they cost more.
-COST={'/api/predict':1,'/api/coverage':5,'/api/diversity':3,'/api/mesh':8}
+CALCULATIONS=('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual')
+# Coverage runs 35 engine passes, diversity up to 8, an annual outlook 12 and a mesh up to 56, so they cost more.
+COST={'/api/predict':1,'/api/coverage':5,'/api/diversity':3,'/api/annual':4,'/api/mesh':8}
 ADMIN_GET=('/api/ai-settings','/api/antenna-imports','/api/positions')
 ADMIN_POST=('/api/ai-settings','/api/position-stations','/api/presets','/api/antenna-imports')
 WEBHOOK='/api/sponsors/webhook'

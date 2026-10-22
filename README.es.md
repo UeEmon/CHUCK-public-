@@ -43,6 +43,7 @@ El historial y los preajustes se conservan en `hf-data`. `docker compose down -v
 - Propagation Chart muestra REL/SNR y MUF por trayecto, selección de RX y exportación SVG. Incluye historial SQLite, CSV/JSON y entrada/salida VOACAP sin procesar.
 - El modo malla calcula todos los pares de 2 a 8 estaciones en ambos sentidos y muestra la REL por frecuencia como matriz TX × RX, con control UTC y potencia, antena y ruido por estación. Las celdas con ↻ se alcanzan mediante 1–2 estaciones de relevo con cada salto igual o superior a la REL objetivo; no modela el retardo de relevo ni las interferencias. Véase [malla](docs/MESH.md).
 - Bajo la predicción de 24 horas, el plan de frecuencias de operación de 24 h convierte las frecuencias calculadas en franjas horarias con el menor número de cambios (o la mejor cada hora), con exportación CSV e impresión. Véase [plan de frecuencias](docs/FREQUENCY_PLAN.md).
+- La perspectiva de 12 meses calcula TX→RX1 durante doce meses desde el mes elegido y muestra la REL como tabla mes × UTC (una SSN manual para todos los meses o la SSN suavizada de NOAA de cada mes). Véase [perspectiva](docs/ANNUAL.md).
 - Language permite elegir japonés, inglés, francés, español, italiano, portugués, alemán o coreano sin cambiar los nombres introducidos.
 
 Cambiar las entradas no recalcula los resultados existentes. Ejecute de nuevo el cálculo. Se admiten hasta 200 ubicaciones y 200 antenas, con detección de conflictos de edición.
