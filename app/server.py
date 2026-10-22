@@ -20,6 +20,7 @@ from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
 import mesh
 import annual
+import power
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
 from antenna_ocr import DocumentStore, OCRError, OCRBusy, config as ocr_config, MAX_FILE
@@ -186,6 +187,15 @@ class Handler(BaseHTTPRequestHandler):
                                     for v in h['rows']:
                                         rel=v.get('reliability')
                                         w.writerow([m['year'],m['month'],m['ssn'],h['hour_utc'],v['frequency_mhz'],rel,v.get('snr_db_hz'),v.get('signal_dbw'),v.get('takeoff_deg'),h['muf_mhz'],rel is not None and rel>=r['parameters']['reliability']])
+                        elif r.get('kind') == 'power':
+                            w.writerow(['# power_note',r['note']])
+                            w.writerow(['power_W','UTC','MHz','REL_percent','SNR_dBHz','MUF_MHz','meets_target','minimum_power_W'])
+                            least={(h['hour_utc'],v['frequency_mhz']):v['power_w'] for h in r['minimum'] for v in h['rows']}
+                            for step in r['steps']:
+                                for h in step['hours']:
+                                    for v in h['rows']:
+                                        rel=v.get('reliability')
+                                        w.writerow([step['power_w'],h['hour_utc'],v['frequency_mhz'],rel,v.get('snr_db_hz'),h['muf_mhz'],rel is not None and rel>=r['parameters']['reliability'],least[(h['hour_utc'],v['frequency_mhz'])]])
                         elif 'hours' in r:
                             w.writerow(['UTC','MHz','REL_percent','SNR_dBHz','S_dBW','TOA_deg','MUF_MHz'])
                             for h in r['hours']:
@@ -213,7 +223,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/position-stations': return self.configure_position_station()
         if path=='/api/presets': return self.edit_presets()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
-        if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual'): return self.json(404,{'error':'見つかりません'})
+        if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual','/api/power'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
         origin=self.headers.get('Origin')
         if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
@@ -257,12 +267,12 @@ class Handler(BaseHTTPRequestHandler):
             if not locked: return self.json(409,{'error':'別の計算を実行中です。完了後に再実行してください。'})
             if any(datetime.fromisoformat(v['expires_at']) < datetime.now(timezone.utc) for v in position_inputs.values()):
                 raise InputError('採用した位置情報が準備中に期限切れになりました。再計算してください。')
-            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
+            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else power.predict(ENGINE,p) if path=='/api/power' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
             if weather is not None: r['space_weather']=weather
             if effective is not None: r['effective_ssn']=effective
             if position_inputs: r['position_inputs']=position_inputs
             if isinstance(data.get('ui_selection'),dict): r['ui_selection']=data['ui_selection']
-            self.json(200,save(r,'annual' if path=='/api/annual' else 'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
+            self.json(200,save(r,'annual' if path=='/api/annual' else 'power' if path=='/api/power' else 'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except (EngineError,SpaceWeatherError,EffectiveSSNError) as e: self.json(503,{'error':str(e)})
         except Exception:

@@ -184,6 +184,20 @@ SSNのない月はssn=null・missing・空のhours）、note、engine/engine_com
 目標REL以上かどうか（meets_target）を収録します。SSNのない月は空欄の1行です。
 エンジンは最大12回逐次実行、各回60秒まで。公開版では回数制限のコストが4です。詳細は[ANNUAL.md](ANNUAL.md)。
 
+## 必要な送信電力
+
+`POST /api/power`：`/api/predict` と同じ入力で、送信電力を10・20・50・100・200・500・1000・2000・5000・10000 Wに変えて24時間予測を計算します。
+入力のpower_wは計算に使わず、parametersにそのまま残します。
+
+応答：kind=power、parameters、ladder（電力の段階）、distance_km、bearing_deg、
+steps（power_w、hours_meeting、hours。hoursの各行はfrequency_mhz・reliability・snr_db_hz）、
+minimum（hour_utc、rows［frequency_mhz、power_w。届かなければnull］、best［最小電力の周波数・電力・REL。届かなければnull］）、
+note、engine/engine_commit、履歴id/created。生出力・入力カードは保存しないため、raw/input出力はありません。
+
+履歴kind=power。CSVは電力×UTC×周波数の行で、REL/SNR/MUF、目標REL以上かどうか（meets_target）、
+その時刻・周波数の最小電力（minimum_power_W、届かなければ空欄）を収録します。
+エンジンは10回逐次実行、各回60秒まで。公開版では回数制限のコストが4です。詳細は[POWER.md](POWER.md)。
+
 ## 宇宙天気API
 
 `GET /api/space-weather?year=2026&month=10`

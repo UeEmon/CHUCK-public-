@@ -44,6 +44,7 @@ Cronologia e preset restano nel volume `hf-data` dopo arresti e ricompilazioni n
 - La modalità mesh calcola tutte le coppie di 2–8 stazioni in entrambe le direzioni e mostra la REL per frequenza come matrice TX × RX, con cursore UTC e potenza, antenna e rumore per stazione. Le celle con ↻ sono raggiungibili tramite 1–2 stazioni relay con ogni tratta pari o superiore alla REL obiettivo; ritardo dei relay e interferenze non sono modellati. Vedere [mesh](docs/MESH.md).
 - Sotto la previsione di 24 ore, il piano delle frequenze operative sulle 24 ore trasforma le frequenze calcolate in fasce orarie con il minor numero di cambi (o la migliore ogni ora), con esportazione CSV e stampa. Vedere [piano delle frequenze](docs/FREQUENCY_PLAN.md).
 - La prospettiva a 12 mesi calcola TX→RX1 per dodici mesi dal mese scelto e mostra la REL come tabella mese × UTC (una SSN manuale per tutti i mesi o la SSN livellata NOAA di ogni mese). Vedere [prospettiva](docs/ANNUAL.md).
+- La potenza necessaria calcola TX→RX1 con dieci livelli 1-2-5 da 10 W a 10 kW e mostra, per UTC e frequenza, la potenza minima che raggiunge la REL obiettivo. Vedere [potenza necessaria](docs/POWER.md).
 - Con Language scegliere giapponese, inglese, francese, spagnolo, italiano, portoghese, tedesco o coreano senza alterare i nomi inseriti.
 
 Le modifiche agli ingressi non ricalcolano i risultati: avviare un nuovo calcolo. Limite di 200 luoghi e 200 antenne, con rilevamento dei conflitti di modifica.

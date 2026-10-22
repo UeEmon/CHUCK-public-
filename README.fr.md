@@ -44,6 +44,7 @@ L'historique et les préréglages sont conservés dans le volume `hf-data`. Atte
 - Le mode maillé calcule toutes les paires de 2 à 8 stations dans les deux sens et affiche la REL par fréquence sous forme de matrice TX × RX, avec curseur UTC et puissance, antenne et bruit propres à chaque station. Les cellules marquées ↻ sont accessibles via 1 ou 2 stations relais avec chaque saut au moins à la REL cible ; le délai des relais et les interférences ne sont pas modélisés. Voir [maillage](docs/MESH.md).
 - Sous la prévision sur 24 heures, le plan de fréquences d’exploitation sur 24 h transforme les fréquences calculées en plages horaires avec le moins de changements (ou la meilleure chaque heure), avec export CSV et impression. Voir [plan de fréquences](docs/FREQUENCY_PLAN.md).
 - La perspective sur 12 mois calcule TX→RX1 sur douze mois à partir du mois choisi et affiche la REL en tableau mois × UTC (une SSN manuelle pour tous les mois ou la SSN lissée NOAA de chaque mois). Voir [perspective](docs/ANNUAL.md).
+- La puissance nécessaire calcule TX→RX1 pour dix paliers 1-2-5 de 10 W à 10 kW et indique, par UTC et fréquence, la plus petite puissance atteignant la REL cible. Voir [puissance nécessaire](docs/POWER.md).
 - Language permet de choisir japonais, anglais, français, espagnol, italien, portugais, allemand ou coréen, sans modifier les noms saisis.
 
 Une modification des entrées ne recalcule pas les résultats existants : relancez le calcul. Les préréglages sont limités à 200 lieux et 200 antennes ; les conflits d'édition sont détectés.

@@ -49,3 +49,9 @@ main{display:block;max-width:1800px}
 .ocr-panel{margin:18px 0;padding:14px;border:1px solid var(--line);border-radius:10px}.ocr-panel summary{cursor:pointer;font-weight:700}.ocr-check{display:block;margin:12px 0}.ocr-check input[type=checkbox]{width:auto;display:inline}.ocr-document{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0}.ocr-document span{overflow-wrap:anywhere;flex:1;min-width:150px}.ocr-candidate{padding:12px 0;border-top:1px solid var(--line)}.ocr-candidate td{white-space:normal;overflow-wrap:anywhere;max-width:400px}#ocr-review{grid-column:1/-1}
 .language-control{margin:0 0 0 auto;font-size:10px}.language-control select{padding:5px;margin:0;width:130px}.badge{margin-left:0}
 @media(max-width:760px){.station-setup{position:static;max-height:none;grid-row:1}.language-control select{width:100px}header{flex-wrap:wrap}}
+.power-matrix td{min-width:34px;text-align:center;font-size:11px}
+.power-matrix small{display:block;font-size:8px;opacity:.8}
+.power-matrix .power-best th,.power-matrix .power-best td{border-bottom:2px solid var(--line)}
+.power-steps td{min-width:30px;text-align:center;font-size:11px}
+.power-steps td:last-child{color:var(--muted);background:transparent;white-space:nowrap}
+.power-steps tr.selected th{color:var(--accent)}

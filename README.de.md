@@ -44,6 +44,7 @@ Verlauf und Vorlagen bleiben bei normalen Stopps/Neubauten im Volume `hf-data`. 
 - Der Mesh-Modus berechnet alle Paare von 2–8 Stationen in beide Richtungen und zeigt die REL je Frequenz als TX × RX-Matrix, mit UTC-Schieberegler sowie Leistung, Antenne und Rauschen je Station. Mit ↻ markierte Zellen sind über 1–2 Relaisstationen erreichbar, wenn jeder Abschnitt die Ziel-REL erreicht; Relaisverzögerung und Störungen werden nicht modelliert. Siehe [Mesh](docs/MESH.md).
 - Unter der 24-Stunden-Prognose erstellt der 24-Stunden-Betriebsfrequenzplan aus den berechneten Frequenzen Zeitblöcke mit wenigen Wechseln (oder jede Stunde die beste), mit CSV-Export und Druck. Siehe [Frequenzplan](docs/FREQUENCY_PLAN.md).
 - Der 12-Monats-Ausblick berechnet für TX→RX1 zwölf Monate ab dem gewählten Monat und zeigt die REL als Monat × UTC-Tabelle (manuelle SSN für alle Monate oder geglättete NOAA-SSN je Monat). Siehe [Ausblick](docs/ANNUAL.md).
+- Die benötigte Leistung berechnet TX→RX1 mit zehn 1-2-5-Stufen von 10 W bis 10 kW und zeigt je UTC und Frequenz die kleinste Leistung mit Ziel-REL. Siehe [benötigte Leistung](docs/POWER.md).
 - Language bietet Japanisch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Deutsch und Koreanisch, ohne eigene Namen zu ändern.
 
 Geänderte Eingaben berechnen vorhandene Ergebnisse nicht neu. Berechnung erneut starten. Jeweils bis zu 200 Standorte und Antennen; gleichzeitige Bearbeitung wird auf Konflikte geprüft.

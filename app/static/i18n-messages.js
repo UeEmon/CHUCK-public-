@@ -7308,5 +7308,122 @@ const HF_MESSAGES={
     "Calculando 12 meses. O motor é executado 12 vezes; aguarde…",
     "12 Monate werden berechnet. Die Engine läuft 12-mal, bitte warten…",
     "12개월분을 계산하고 있습니다. 엔진을 12회 실행하므로 완료될 때까지 기다려 주세요…"
+  ],
+  "必要な送信電力": [
+    "Required power",
+    "Puissance nécessaire",
+    "Potencia necesaria",
+    "Potenza necessaria",
+    "Potência necessária",
+    "Benötigte Leistung",
+    "필요 송신 전력"
+  ],
+  "必要な送信電力 · 周波数 × UTC の最小電力（W）": [
+    "Required power · minimum power by frequency × UTC (W)",
+    "Puissance nécessaire · puissance minimale par fréquence × UTC (W)",
+    "Potencia necesaria · potencia mínima por frecuencia × UTC (W)",
+    "Potenza necessaria · potenza minima per frequenza × UTC (W)",
+    "Potência necessária · potência mínima por frequência × UTC (W)",
+    "Benötigte Leistung · Mindestleistung nach Frequenz × UTC (W)",
+    "필요 송신 전력 · 주파수 × UTC별 최소 전력(W)"
+  ],
+  "送信電力を逆算": [
+    "Find required power",
+    "Calculer la puissance nécessaire",
+    "Calcular la potencia necesaria",
+    "Calcola la potenza necessaria",
+    "Calcular a potência necessária",
+    "Benötigte Leistung ermitteln",
+    "필요 전력 역산"
+  ],
+  "右側のTXとRX1の経路について、送信電力を10 Wから10 kWまで1-2-5の10段階で変えて24時間予測を計算し、目標REL以上になる最小の電力を示します（エンジン10回）。": [
+    "For the path from TX to RX1 on the right, calculates the 24-hour prediction at ten 1-2-5 power steps from 10 W to 10 kW and shows the smallest power that reaches the target REL (10 engine runs).",
+    "Pour le trajet du TX vers RX1 à droite, calcule la prévision sur 24 heures pour dix paliers de puissance 1-2-5 de 10 W à 10 kW et indique la plus petite puissance atteignant la REL cible (10 exécutions du moteur).",
+    "Para el trayecto del TX al RX1 de la derecha, calcula la predicción de 24 horas en diez pasos de potencia 1-2-5 de 10 W a 10 kW y muestra la menor potencia que alcanza la REL objetivo (10 ejecuciones del motor).",
+    "Per il percorso dal TX all’RX1 a destra, calcola la previsione di 24 ore con dieci livelli di potenza 1-2-5 da 10 W a 10 kW e mostra la potenza minima che raggiunge la REL obiettivo (10 esecuzioni del motore).",
+    "Para o trajeto do TX ao RX1 à direita, calcula a previsão de 24 horas em dez degraus de potência 1-2-5 de 10 W a 10 kW e mostra a menor potência que atinge a REL alvo (10 execuções do motor).",
+    "Berechnet für den Pfad von TX zu RX1 rechts die 24-Stunden-Prognose mit zehn Leistungsstufen (1-2-5) von 10 W bis 10 kW und zeigt die kleinste Leistung, die die Ziel-REL erreicht (10 Engine-Läufe).",
+    "오른쪽 TX에서 RX1까지의 경로에 대해 송신 전력을 10 W에서 10 kW까지 1-2-5의 10단계로 바꾸어 24시간 예측을 계산하고, 목표 REL 이상이 되는 최소 전력을 표시합니다(엔진 10회)."
+  ],
+  "計算後に、時刻・周波数ごとの最小電力を表示します。": [
+    "After calculation, the minimum power for each time and frequency is shown.",
+    "Après le calcul, la puissance minimale par heure et fréquence s’affiche.",
+    "Tras el cálculo se muestra la potencia mínima por hora y frecuencia.",
+    "Dopo il calcolo viene mostrata la potenza minima per ora e frequenza.",
+    "Após o cálculo, é mostrada a potência mínima por hora e frequência.",
+    "Nach der Berechnung wird die Mindestleistung je Uhrzeit und Frequenz angezeigt.",
+    "계산 후 시각·주파수별 최소 전력을 표시합니다."
+  ],
+  "最上段は、その時刻に最も小さい電力で済む周波数（下段）と電力です。「>10k」は10 kWでも目標RELに届かないことを示します。色が明るいほど小さい電力で届きます。": [
+    "The top row shows, for each hour, the power and (below it) the frequency that needs the least power. “>10k” means the target REL is not reached even at 10 kW. Brighter cells need less power.",
+    "La première ligne indique, pour chaque heure, la puissance et (en dessous) la fréquence qui demande le moins de puissance. « >10k » signifie que la REL cible n’est pas atteinte même à 10 kW. Plus la case est claire, moins il faut de puissance.",
+    "La primera fila muestra, para cada hora, la potencia y (debajo) la frecuencia que requiere menos potencia. «>10k» indica que no se alcanza la REL objetivo ni con 10 kW. Cuanto más clara la celda, menos potencia se necesita.",
+    "La prima riga mostra, per ogni ora, la potenza e (sotto) la frequenza che richiede meno potenza. «>10k» indica che la REL obiettivo non è raggiunta nemmeno a 10 kW. Più la cella è chiara, meno potenza serve.",
+    "A primeira linha mostra, para cada hora, a potência e (abaixo) a frequência que exige menos potência. “>10k” indica que a REL alvo não é atingida nem com 10 kW. Quanto mais clara a célula, menos potência é necessária.",
+    "Die oberste Zeile zeigt je Stunde die Leistung und (darunter) die Frequenz mit dem geringsten Leistungsbedarf. „>10k“ bedeutet, dass die Ziel-REL selbst mit 10 kW nicht erreicht wird. Je heller die Zelle, desto weniger Leistung ist nötig.",
+    "맨 윗줄은 각 시각에 가장 작은 전력으로 충분한 주파수(아래)와 전력입니다. '>10k'는 10 kW로도 목표 REL에 도달하지 못함을 뜻합니다. 색이 밝을수록 작은 전력으로 도달합니다."
+  ],
+  "電力ごとの最良REL · 電力 × UTC": [
+    "Best REL per power · power × UTC",
+    "Meilleure REL par puissance · puissance × UTC",
+    "Mejor REL por potencia · potencia × UTC",
+    "REL migliore per potenza · potenza × UTC",
+    "Melhor REL por potência · potência × UTC",
+    "Beste REL je Leistung · Leistung × UTC",
+    "전력별 최고 REL · 전력 × UTC"
+  ],
+  "各電力で、時刻ごとに最も高いRELを示します。点は目標REL以上です。右端は目標REL以上になる時間数です。": [
+    "For each power, shows the highest REL at each hour. A dot marks the target REL or above. The last column is the number of hours at or above the target REL.",
+    "Pour chaque puissance, indique la REL la plus élevée à chaque heure. Un point signale la REL cible ou plus. La dernière colonne donne le nombre d’heures à la REL cible ou plus.",
+    "Para cada potencia, muestra la REL más alta en cada hora. Un punto indica la REL objetivo o más. La última columna es el número de horas con la REL objetivo o más.",
+    "Per ogni potenza, mostra la REL più alta in ogni ora. Un punto indica la REL obiettivo o superiore. L’ultima colonna è il numero di ore alla REL obiettivo o superiore.",
+    "Para cada potência, mostra a REL mais alta em cada hora. Um ponto indica a REL alvo ou acima. A última coluna é o número de horas na REL alvo ou acima.",
+    "Zeigt für jede Leistung die höchste REL je Stunde. Ein Punkt markiert die Ziel-REL oder mehr. Die letzte Spalte ist die Anzahl der Stunden mit Ziel-REL oder mehr.",
+    "각 전력에서 시각별 가장 높은 REL을 표시합니다. 점은 목표 REL 이상입니다. 오른쪽 끝은 목표 REL 이상이 되는 시간 수입니다."
+  ],
+  "{date} · SSN {ssn} · 現在の設定 {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}%": [
+    "{date} · SSN {ssn} · Current setting {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}%",
+    "{date} · SSN {ssn} · Réglage actuel {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}%",
+    "{date} · SSN {ssn} · Ajuste actual {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}%",
+    "{date} · SSN {ssn} · Impostazione attuale {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}%",
+    "{date} · SSN {ssn} · Configuração atual {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}%",
+    "{date} · SSN {ssn} · Aktuelle Einstellung {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}%",
+    "{date} · SSN {ssn} · 현재 설정 {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}%"
+  ],
+  "最小電力": [
+    "Minimum power",
+    "Puissance minimale",
+    "Potencia mínima",
+    "Potenza minima",
+    "Potência mínima",
+    "Mindestleistung",
+    "최소 전력"
+  ],
+  "必要な送信電力は単一RXの経路で計算します。メッシュを外してください。": [
+    "The required power is calculated for a single TX→RX path. Turn off mesh mode.",
+    "La puissance nécessaire se calcule sur un seul trajet TX→RX. Désactivez le maillage.",
+    "La potencia necesaria se calcula para un único trayecto TX→RX. Desactive la malla.",
+    "La potenza necessaria si calcola su un solo percorso TX→RX. Disattivate la rete.",
+    "A potência necessária é calculada para um único trajeto TX→RX. Desative a malha.",
+    "Die benötigte Leistung wird für einen einzelnen TX→RX-Pfad berechnet. Schalten Sie das Netz aus.",
+    "필요 송신 전력은 단일 TX→RX 경로로 계산합니다. 메시를 해제하세요."
+  ],
+  "送信電力を10段階で計算しています。エンジンを10回実行するため、完了までお待ちください…": [
+    "Calculating ten power steps. The engine runs 10 times, so please wait…",
+    "Calcul de dix paliers de puissance. Le moteur s’exécute 10 fois, veuillez patienter…",
+    "Calculando diez pasos de potencia. El motor se ejecuta 10 veces; espere…",
+    "Calcolo di dieci livelli di potenza in corso. Il motore viene eseguito 10 volte, attendere…",
+    "Calculando dez degraus de potência. O motor é executado 10 vezes; aguarde…",
+    "Zehn Leistungsstufen werden berechnet. Die Engine läuft 10-mal, bitte warten…",
+    "송신 전력을 10단계로 계산하고 있습니다. 엔진을 10회 실행하므로 완료될 때까지 기다려 주세요…"
+  ],
+  "送信電力を10 Wから10 kWまで1-2-5の段階で変えて計算し、目標REL以上になる最小の段階を示します。段階の間の電力は計算しません。電力以外の条件（アンテナ、雑音、要求SNR、偏波損失）は計算時点の値のままです。RELは月間統計で、瞬時の通信可否ではありません。": [
+    "The power is varied in 1-2-5 steps from 10 W to 10 kW and the smallest step that reaches the target REL is shown. Powers between steps are not calculated. Conditions other than power (antennas, noise, required SNR, polarization loss) keep their values at calculation time. REL is a monthly statistic, not whether a contact succeeds at a given moment.",
+    "La puissance varie par paliers 1-2-5 de 10 W à 10 kW et le plus petit palier atteignant la REL cible est indiqué. Les puissances intermédiaires ne sont pas calculées. Les conditions autres que la puissance (antennes, bruit, SNR requis, perte de polarisation) gardent leurs valeurs au moment du calcul. La REL est une statistique mensuelle, pas la réussite d’une liaison à un instant donné.",
+    "La potencia varía en pasos 1-2-5 de 10 W a 10 kW y se muestra el menor paso que alcanza la REL objetivo. No se calculan potencias intermedias. Las condiciones distintas de la potencia (antenas, ruido, SNR requerida, pérdida de polarización) mantienen sus valores del momento del cálculo. La REL es una estadística mensual, no el éxito de un enlace en un instante.",
+    "La potenza varia a livelli 1-2-5 da 10 W a 10 kW e viene mostrato il livello minimo che raggiunge la REL obiettivo. Le potenze intermedie non sono calcolate. Le condizioni diverse dalla potenza (antenne, rumore, SNR richiesto, perdita di polarizzazione) mantengono i valori al momento del calcolo. La REL è una statistica mensile, non il successo di un collegamento in un dato istante.",
+    "A potência varia em degraus 1-2-5 de 10 W a 10 kW e é mostrado o menor degrau que atinge a REL alvo. Potências intermediárias não são calculadas. As condições além da potência (antenas, ruído, SNR exigida, perda de polarização) mantêm os valores do momento do cálculo. A REL é uma estatística mensal, não o sucesso de um enlace num dado instante.",
+    "Die Leistung wird in 1-2-5-Stufen von 10 W bis 10 kW variiert, und die kleinste Stufe mit Ziel-REL wird angezeigt. Zwischenwerte werden nicht berechnet. Andere Bedingungen als die Leistung (Antennen, Rauschen, erforderliche SNR, Polarisationsverlust) behalten ihre Werte zum Berechnungszeitpunkt. REL ist eine Monatsstatistik, nicht der Erfolg einer Verbindung zu einem bestimmten Zeitpunkt.",
+    "송신 전력을 10 W에서 10 kW까지 1-2-5 단계로 바꾸어 목표 REL 이상이 되는 최소 단계를 표시합니다. 단계 사이의 전력은 계산하지 않습니다. 전력 이외의 조건(안테나, 잡음, 요구 SNR, 편파 손실)은 계산 시점의 값을 유지합니다. REL은 월간 통계이며 순간적인 통신 가능 여부가 아닙니다."
   ]
 };
