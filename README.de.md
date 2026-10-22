@@ -46,6 +46,7 @@ Verlauf und Vorlagen bleiben bei normalen Stopps/Neubauten im Volume `hf-data`. 
 - Der 12-Monats-Ausblick berechnet für TX→RX1 zwölf Monate ab dem gewählten Monat und zeigt die REL als Monat × UTC-Tabelle (manuelle SSN für alle Monate oder geglättete NOAA-SSN je Monat). Siehe [Ausblick](docs/ANNUAL.md).
 - Die benötigte Leistung berechnet TX→RX1 mit zehn 1-2-5-Stufen von 10 W bis 10 kW und zeigt je UTC und Frequenz die kleinste Leistung mit Ziel-REL. Siehe [benötigte Leistung](docs/POWER.md).
 - Standortkandidaten ordnet bis zu 10 gespeicherte Standorte als Empfangs- (TX→Kandidat) oder Relaisstandorte (TX→Kandidat→RX1) nach Stunden mit Ziel-REL. Siehe [Standortkandidaten](docs/SITES.md).
+- Die geplante Neuberechnung rechnet gespeicherte Punkt-zu-Punkt-Ergebnisse mit der neuesten geglätteten NOAA-SSN neu (standardmäßig alle 24 Stunden, `HF_WATCH_INTERVAL_HOURS`) und zeigt einen Hinweis, wenn die Stunden mit Ziel-REL abnehmen. Für Besucher der öffentlichen Ausgabe nicht verfügbar. Siehe [geplante Neuberechnung](docs/WATCH.md).
 - Language bietet Japanisch, Englisch, Französisch, Spanisch, Italienisch, Portugiesisch, Deutsch und Koreanisch, ohne eigene Namen zu ändern.
 
 Geänderte Eingaben berechnen vorhandene Ergebnisse nicht neu. Berechnung erneut starten. Jeweils bis zu 200 Standorte und Antennen; gleichzeitige Bearbeitung wird auf Konflikte geprüft.

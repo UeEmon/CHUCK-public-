@@ -7650,5 +7650,266 @@ const HF_MESSAGES={
     "Cada candidato é calculado como uma previsão ponto a ponto independente e ordenado por horas na REL alvo, do maior para o menor (em empate, maior REL média). Locais de recepção usam a antena e o ruído do RX1 no candidato. Para retransmissão, calculam-se TX→candidato e candidato→RX1, e uma hora conta como retransmissível se ambos os trechos atingirem a REL alvo nessa hora. Supõe-se que o retransmissor receba com a antena do RX1 e reenvie com a antena e a potência do TX. Atraso, comutação transmissão/recepção, interferência, terreno e instalação não são considerados.",
     "Jeder Kandidat wird als unabhängige Punkt-zu-Punkt-Prognose berechnet und nach Stunden mit Ziel-REL absteigend geordnet (bei Gleichstand höhere mittlere REL). Empfangsstandorte verwenden Antenne und Rauschen von RX1 am Kandidaten. Bei Relais werden TX→Kandidat und Kandidat→RX1 berechnet; eine Stunde gilt als weiterleitbar, wenn beide Teilstrecken in dieser Stunde die Ziel-REL erreichen. Das Relais empfängt annahmegemäß mit der Antenne von RX1 und sendet mit Antenne und Leistung des TX weiter. Relaisverzögerung, Sende-/Empfangsumschaltung, Störungen, Gelände und Aufbau werden nicht berücksichtigt.",
     "후보 지점마다 독립된 지점 간 예측을 계산하고, 목표 REL 이상 시간 수가 많은 순으로 나열합니다(같으면 평균 REL이 높은 순). 수신 지점은 RX1의 안테나·잡음을 후보 지점에 둔 경우를 계산합니다. 중계 지점은 TX→후보 지점과 후보 지점→RX1 두 구간을 계산하고, 같은 시각에 두 구간 모두 목표 REL 이상이면 중계 가능으로 봅니다. 중계국은 RX1의 안테나로 수신하고 TX의 안테나와 송신 전력으로 재송신한다고 가정합니다. 중계 지연·송수신 전환·혼신, 지형과 설치 조건은 고려하지 않습니다."
+  ],
+  "確認する": [
+    "Review",
+    "Consulter",
+    "Revisar",
+    "Controlla",
+    "Verificar",
+    "Ansehen",
+    "확인하기"
+  ],
+  "定時の再計算": [
+    "Scheduled recalculation",
+    "Recalcul programmé",
+    "Recálculo programado",
+    "Ricalcolo programmato",
+    "Recálculo programado",
+    "Geplante Neuberechnung",
+    "정기 재계산"
+  ],
+  "保存された計算のうち地点間予測は「定時の再計算に追加」で登録できます。最初の再計算の結果を基準にし、目標REL以上の時間数が減ると画面上部に通知します。": [
+    "Saved point-to-point predictions can be added with “Add to scheduled recalculation”. The first recalculation is the baseline; a notice appears at the top of the page when the hours at the target REL decrease.",
+    "Les prévisions point à point enregistrées s’ajoutent avec « Ajouter au recalcul programmé ». Le premier recalcul sert de référence ; un avis s’affiche en haut de la page lorsque les heures à la REL cible diminuent.",
+    "Las predicciones punto a punto guardadas se añaden con «Añadir al recálculo programado». El primer recálculo es la referencia; aparece un aviso arriba de la página cuando disminuyen las horas con la REL objetivo.",
+    "Le previsioni punto-punto salvate si aggiungono con «Aggiungi al ricalcolo programmato». Il primo ricalcolo è il riferimento; in cima alla pagina compare un avviso quando le ore alla REL obiettivo diminuiscono.",
+    "As previsões ponto a ponto salvas são adicionadas com “Adicionar ao recálculo programado”. O primeiro recálculo é a referência; um aviso aparece no topo da página quando as horas na REL alvo diminuem.",
+    "Gespeicherte Punkt-zu-Punkt-Prognosen werden mit „Zur geplanten Neuberechnung hinzufügen“ registriert. Die erste Neuberechnung ist die Basis; oben auf der Seite erscheint ein Hinweis, wenn die Stunden mit Ziel-REL abnehmen.",
+    "저장된 계산 중 지점 간 예측은 '정기 재계산에 추가'로 등록할 수 있습니다. 첫 재계산 결과를 기준으로 하며, 목표 REL 이상 시간 수가 줄면 화면 위쪽에 알립니다."
+  ],
+  "未確認": [
+    "Not checked yet",
+    "Pas encore vérifié",
+    "Aún sin comprobar",
+    "Non ancora verificato",
+    "Ainda não verificado",
+    "Noch nicht geprüft",
+    "미확인"
+  ],
+  "変化なし": [
+    "No change",
+    "Inchangé",
+    "Sin cambios",
+    "Nessuna variazione",
+    "Sem alteração",
+    "Unverändert",
+    "변화 없음"
+  ],
+  "増加": [
+    "Increased",
+    "En hausse",
+    "Aumentó",
+    "Aumentato",
+    "Aumentou",
+    "Gestiegen",
+    "증가"
+  ],
+  "減少": [
+    "Decreased",
+    "En baisse",
+    "Disminuyó",
+    "Diminuito",
+    "Diminuiu",
+    "Gesunken",
+    "감소"
+  ],
+  "定時の再計算に追加": [
+    "Add to scheduled recalculation",
+    "Ajouter au recalcul programmé",
+    "Añadir al recálculo programado",
+    "Aggiungi al ricalcolo programmato",
+    "Adicionar ao recálculo programado",
+    "Zur geplanten Neuberechnung hinzufügen",
+    "정기 재계산에 추가"
+  ],
+  "登録済み": [
+    "Added",
+    "Ajouté",
+    "Añadido",
+    "Aggiunto",
+    "Adicionado",
+    "Hinzugefügt",
+    "등록됨"
+  ],
+  "定時の再計算に登録しました。": [
+    "Added to scheduled recalculation.",
+    "Ajouté au recalcul programmé.",
+    "Añadido al recálculo programado.",
+    "Aggiunto al ricalcolo programmato.",
+    "Adicionado ao recálculo programado.",
+    "Zur geplanten Neuberechnung hinzugefügt.",
+    "정기 재계산에 등록했습니다."
+  ],
+  "{hours}時間ごとに、登録した条件をNOAAの最新の平滑SSNで再計算します（最大{max}件）。": [
+    "Every {hours} hours, the registered conditions are recalculated with the latest NOAA smoothed SSN (up to {max}).",
+    "Toutes les {hours} heures, les conditions enregistrées sont recalculées avec la dernière SSN lissée NOAA (jusqu’à {max}).",
+    "Cada {hours} horas se recalculan las condiciones registradas con la última SSN suavizada de NOAA (hasta {max}).",
+    "Ogni {hours} ore le condizioni registrate vengono ricalcolate con l’ultima SSN livellata NOAA (fino a {max}).",
+    "A cada {hours} horas, as condições registradas são recalculadas com a última SSN suavizada da NOAA (até {max}).",
+    "Alle {hours} Stunden werden die registrierten Bedingungen mit der neuesten geglätteten NOAA-SSN neu berechnet (bis zu {max}).",
+    "{hours}시간마다 등록한 조건을 NOAA의 최신 평활 SSN으로 재계산합니다(최대 {max}건)."
+  ],
+  "定時の再計算は停止しています（HF_WATCH_INTERVAL_HOURS=0）。「今すぐ再計算」で手動実行できます。": [
+    "Scheduled recalculation is off (HF_WATCH_INTERVAL_HOURS=0). Use “Recalculate now” to run it manually.",
+    "Le recalcul programmé est désactivé (HF_WATCH_INTERVAL_HOURS=0). Utilisez « Recalculer maintenant » pour le lancer manuellement.",
+    "El recálculo programado está desactivado (HF_WATCH_INTERVAL_HOURS=0). Use «Recalcular ahora» para ejecutarlo manualmente.",
+    "Il ricalcolo programmato è disattivato (HF_WATCH_INTERVAL_HOURS=0). Usate «Ricalcola ora» per eseguirlo manualmente.",
+    "O recálculo programado está desativado (HF_WATCH_INTERVAL_HOURS=0). Use “Recalcular agora” para executá-lo manualmente.",
+    "Die geplante Neuberechnung ist aus (HF_WATCH_INTERVAL_HOURS=0). Mit „Jetzt neu berechnen“ manuell ausführen.",
+    "정기 재계산이 꺼져 있습니다(HF_WATCH_INTERVAL_HOURS=0). '지금 재계산'으로 수동 실행할 수 있습니다."
+  ],
+  "定時の再計算で、目標REL以上の時間数が減った条件が{count}件あります。": [
+    "Scheduled recalculation: {count} condition(s) now have fewer hours at the target REL.",
+    "Recalcul programmé : {count} condition(s) ont désormais moins d’heures à la REL cible.",
+    "Recálculo programado: {count} condición(es) tienen ahora menos horas con la REL objetivo.",
+    "Ricalcolo programmato: {count} condizione/i hanno ora meno ore alla REL obiettivo.",
+    "Recálculo programado: {count} condição(ões) agora têm menos horas na REL alvo.",
+    "Geplante Neuberechnung: {count} Bedingung(en) haben jetzt weniger Stunden mit Ziel-REL.",
+    "정기 재계산에서 목표 REL 이상 시간 수가 줄어든 조건이 {count}건 있습니다."
+  ],
+  "登録された条件はありません。": [
+    "No conditions are registered.",
+    "Aucune condition enregistrée.",
+    "No hay condiciones registradas.",
+    "Nessuna condizione registrata.",
+    "Não há condições registradas.",
+    "Keine Bedingungen registriert.",
+    "등록된 조건이 없습니다."
+  ],
+  "経路": [
+    "Path",
+    "Trajet",
+    "Trayecto",
+    "Percorso",
+    "Trajeto",
+    "Pfad",
+    "경로"
+  ],
+  "年月": [
+    "Month",
+    "Mois",
+    "Mes",
+    "Mese",
+    "Mês",
+    "Monat",
+    "연월"
+  ],
+  "最終確認": [
+    "Last check",
+    "Dernière vérification",
+    "Última comprobación",
+    "Ultima verifica",
+    "Última verificação",
+    "Letzte Prüfung",
+    "마지막 확인"
+  ],
+  "目標REL以上（基準 → 最新）": [
+    "At target REL (baseline → latest)",
+    "À la REL cible (référence → dernier)",
+    "Con REL objetivo (referencia → último)",
+    "Alla REL obiettivo (riferimento → ultimo)",
+    "Na REL alvo (referência → último)",
+    "Mit Ziel-REL (Basis → neueste)",
+    "목표 REL 이상(기준 → 최신)"
+  ],
+  "{base} → {latest} 時間": [
+    "{base} → {latest} h",
+    "{base} → {latest} h",
+    "{base} → {latest} h",
+    "{base} → {latest} h",
+    "{base} → {latest} h",
+    "{base} → {latest} h",
+    "{base} → {latest}시간"
+  ],
+  "今すぐ再計算": [
+    "Recalculate now",
+    "Recalculer maintenant",
+    "Recalcular ahora",
+    "Ricalcola ora",
+    "Recalcular agora",
+    "Jetzt neu berechnen",
+    "지금 재계산"
+  ],
+  "確認済みにする": [
+    "Mark as reviewed",
+    "Marquer comme vu",
+    "Marcar como revisado",
+    "Segna come visto",
+    "Marcar como revisado",
+    "Als gesehen markieren",
+    "확인함으로 표시"
+  ],
+  "再計算しています…": [
+    "Recalculating…",
+    "Recalcul en cours…",
+    "Recalculando…",
+    "Ricalcolo in corso…",
+    "Recalculando…",
+    "Neuberechnung läuft…",
+    "재계산하고 있습니다…"
+  ],
+  "再計算しました。": [
+    "Recalculated.",
+    "Recalculé.",
+    "Recalculado.",
+    "Ricalcolato.",
+    "Recalculado.",
+    "Neu berechnet.",
+    "재계산했습니다."
+  ],
+  "指定された監視条件がありません": [
+    "The specified condition is not registered",
+    "La condition indiquée n’est pas enregistrée",
+    "La condición indicada no está registrada",
+    "La condizione indicata non è registrata",
+    "A condição indicada não está registrada",
+    "Die angegebene Bedingung ist nicht registriert",
+    "지정한 조건이 등록되어 있지 않습니다"
+  ],
+  "定時の再計算に登録できるのは地点間予測（単一RX）の結果だけです": [
+    "Only point-to-point (single RX) results can be added to scheduled recalculation",
+    "Seuls les résultats point à point (un seul RX) peuvent être ajoutés au recalcul programmé",
+    "Solo los resultados punto a punto (un RX) pueden añadirse al recálculo programado",
+    "Solo i risultati punto-punto (un solo RX) possono essere aggiunti al ricalcolo programmato",
+    "Somente resultados ponto a ponto (um RX) podem ser adicionados ao recálculo programado",
+    "Nur Punkt-zu-Punkt-Ergebnisse (ein RX) können zur geplanten Neuberechnung hinzugefügt werden",
+    "정기 재계산에는 지점 간 예측(단일 RX) 결과만 등록할 수 있습니다"
+  ],
+  "定時の再計算に登録できるのは{count}件までです": [
+    "Up to {count} conditions can be added to scheduled recalculation",
+    "Jusqu’à {count} conditions peuvent être ajoutées au recalcul programmé",
+    "Se pueden añadir hasta {count} condiciones al recálculo programado",
+    "Si possono aggiungere fino a {count} condizioni al ricalcolo programmato",
+    "É possível adicionar até {count} condições ao recálculo programado",
+    "Bis zu {count} Bedingungen können zur geplanten Neuberechnung hinzugefügt werden",
+    "정기 재계산에는 {count}건까지 등록할 수 있습니다"
+  ],
+  "操作が不正です": [
+    "Invalid action",
+    "Action non valide",
+    "Acción no válida",
+    "Azione non valida",
+    "Ação inválida",
+    "Ungültige Aktion",
+    "잘못된 조작입니다"
+  ],
+  "定時の再計算を更新できません": [
+    "Could not update scheduled recalculation",
+    "Impossible de mettre à jour le recalcul programmé",
+    "No se pudo actualizar el recálculo programado",
+    "Impossibile aggiornare il ricalcolo programmato",
+    "Não foi possível atualizar o recálculo programado",
+    "Geplante Neuberechnung konnte nicht aktualisiert werden",
+    "정기 재계산을 갱신할 수 없습니다"
+  ],
+  "保存した地点間予測の条件を、定期的にNOAAの最新の平滑SSNで再計算します。登録時の最初の結果を基準とし、目標REL以上になる時間数が基準より減ったら画面に通知します。手動SSN・実効SSNで計算した条件もNOAAの平滑SSNで再計算します。移動局の位置は登録時の値で固定します。RELは月間統計で、当日の電離圏の状態は反映しません。": [
+    "Saved point-to-point conditions are recalculated periodically with the latest NOAA smoothed SSN. The first result after registration is the baseline; a notice appears when the hours at the target REL fall below it. Conditions calculated with a manual or effective SSN are also recalculated with the NOAA smoothed SSN. Mobile station positions stay at their values at registration. REL is a monthly statistic and does not reflect the ionosphere on a given day.",
+    "Les conditions point à point enregistrées sont recalculées périodiquement avec la dernière SSN lissée NOAA. Le premier résultat après l’enregistrement sert de référence ; un avis s’affiche lorsque les heures à la REL cible passent en dessous. Les conditions calculées avec une SSN manuelle ou effective sont aussi recalculées avec la SSN lissée NOAA. Les positions des stations mobiles restent celles de l’enregistrement. La REL est une statistique mensuelle et ne reflète pas l’ionosphère d’un jour donné.",
+    "Las condiciones punto a punto guardadas se recalculan periódicamente con la última SSN suavizada de NOAA. El primer resultado tras el registro es la referencia; aparece un aviso cuando las horas con la REL objetivo bajan de ella. Las condiciones calculadas con SSN manual o efectiva también se recalculan con la SSN suavizada de NOAA. Las posiciones de estaciones móviles se mantienen como en el registro. La REL es una estadística mensual y no refleja la ionosfera de un día concreto.",
+    "Le condizioni punto-punto salvate vengono ricalcolate periodicamente con l’ultima SSN livellata NOAA. Il primo risultato dopo la registrazione è il riferimento; compare un avviso quando le ore alla REL obiettivo scendono sotto di esso. Anche le condizioni calcolate con SSN manuale o effettiva vengono ricalcolate con la SSN livellata NOAA. Le posizioni delle stazioni mobili restano quelle della registrazione. La REL è una statistica mensile e non riflette la ionosfera di un dato giorno.",
+    "As condições ponto a ponto salvas são recalculadas periodicamente com a última SSN suavizada da NOAA. O primeiro resultado após o registro é a referência; um aviso aparece quando as horas na REL alvo ficam abaixo dela. Condições calculadas com SSN manual ou efetiva também são recalculadas com a SSN suavizada da NOAA. As posições de estações móveis ficam com os valores do registro. A REL é uma estatística mensal e não reflete a ionosfera de um dia específico.",
+    "Gespeicherte Punkt-zu-Punkt-Bedingungen werden regelmäßig mit der neuesten geglätteten NOAA-SSN neu berechnet. Das erste Ergebnis nach der Registrierung ist die Basis; ein Hinweis erscheint, wenn die Stunden mit Ziel-REL darunter fallen. Mit manueller oder effektiver SSN berechnete Bedingungen werden ebenfalls mit der geglätteten NOAA-SSN neu berechnet. Positionen mobiler Stationen bleiben auf dem Stand der Registrierung. REL ist eine Monatsstatistik und spiegelt nicht die Ionosphäre eines bestimmten Tages wider.",
+    "저장한 지점 간 예측 조건을 정기적으로 NOAA의 최신 평활 SSN으로 재계산합니다. 등록 후 첫 결과를 기준으로 하며, 목표 REL 이상 시간 수가 기준보다 줄면 화면에 알립니다. 수동 SSN·실효 SSN으로 계산한 조건도 NOAA 평활 SSN으로 재계산합니다. 이동국 위치는 등록 시의 값으로 고정합니다. REL은 월간 통계이며 당일의 전리층 상태는 반영하지 않습니다."
   ]
 };

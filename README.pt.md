@@ -46,6 +46,7 @@ Histórico e predefinições permanecem no volume `hf-data`. `docker compose dow
 - A perspectiva de 12 meses calcula TX→RX1 por doze meses a partir do mês escolhido e mostra a REL como tabela mês × UTC (uma SSN manual para todos os meses ou a SSN suavizada da NOAA de cada mês). Veja [perspectiva](docs/ANNUAL.md).
 - A potência necessária calcula TX→RX1 em dez degraus 1-2-5 de 10 W a 10 kW e mostra, por UTC e frequência, a menor potência que atinge a REL alvo. Veja [potência necessária](docs/POWER.md).
 - Locais candidatos ordena até 10 locais salvos como locais de recepção (TX→candidato) ou retransmissão (TX→candidato→RX1) pelas horas na REL alvo. Veja [locais candidatos](docs/SITES.md).
+- O recálculo programado refaz os resultados ponto a ponto salvos com a última SSN suavizada da NOAA (a cada 24 horas por padrão, `HF_WATCH_INTERVAL_HOURS`) e mostra um aviso se as horas na REL alvo diminuírem. Indisponível para visitantes da edição pública. Veja [recálculo programado](docs/WATCH.md).
 - Em Language, escolha japonês, inglês, francês, espanhol, italiano, português, alemão ou coreano sem alterar nomes cadastrados.
 
 Alterar entradas não recalcula resultados existentes: execute novamente. Até 200 locais e 200 antenas, com detecção de conflitos de edição.

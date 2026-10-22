@@ -32,8 +32,8 @@ ADMIN_HEADER='X-Chuck-Admin'
 CALCULATIONS=('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites')
 # Coverage runs 35 engine passes, diversity up to 8, a power search 10, an annual outlook 12, a site search up to 20 and a mesh up to 56, so they cost more.
 COST={'/api/predict':1,'/api/coverage':5,'/api/diversity':3,'/api/power':4,'/api/annual':4,'/api/sites':5,'/api/mesh':8}
-ADMIN_GET=('/api/ai-settings','/api/antenna-imports','/api/positions')
-ADMIN_POST=('/api/ai-settings','/api/position-stations','/api/presets','/api/antenna-imports')
+ADMIN_GET=('/api/ai-settings','/api/antenna-imports','/api/positions','/api/watches')
+ADMIN_POST=('/api/ai-settings','/api/position-stations','/api/presets','/api/antenna-imports','/api/watches')
 WEBHOOK='/api/sponsors/webhook'
 
 
@@ -277,6 +277,7 @@ class PublicHandler(server.Handler):
 
 if __name__=='__main__':
     server.connection().close()
+    server.start_watcher()
     if not admin_secret():print('CHUCK_ADMIN_SECRET is unset or shorter than 32 characters: admin functions are disabled',flush=True)
     print('CHUCK public mode: http://localhost:18082',flush=True)
     ThreadingHTTPServer(('0.0.0.0',8000),PublicHandler).serve_forever()

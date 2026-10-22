@@ -212,6 +212,19 @@ TX・RX1から1 km未満の候補はskippedと空のhours、rank=null）、note�
 履歴kind=sites。CSVは候補×UTCの行で、順位、地点、距離、時間数、平均REL、REL、区間ごとの周波数、目標REL以上かどうかを収録します。
 エンジンは最大20回逐次実行、各回60秒まで。公開版では回数制限のコストが5です。詳細は[SITES.md](SITES.md)。
 
+## 定時の再計算
+
+`GET /api/watches`：interval_hours、max、note、watches（登録順）を返します。
+各watchはid、created、result_id、label、parameters、baseline、latest（checked、ssn、ssn_detail、hours_meeting、
+best［hour_utc、frequency_mhz、reliability］。失敗時はchecked・error）、基準がまだない場合のlast_error、acknowledged、
+status（pending／same／better／worse／error）、notify（worseで未確認ならtrue）です。
+
+`POST /api/watches`（同一オリジン、application/json）：
+`{"action":"add","result_id":"…"}` は単一RXの地点間予測の履歴を登録し、すぐに1回再計算します（最大20件）。
+`{"action":"run","id":"…"}` は今すぐ再計算します（他の計算中は409）。
+`{"action":"acknowledge","id":"…"}` は最新の減少を確認済みにし、`{"action":"delete","id":"…"}` は削除します。
+応答はGETと同じ形です。公開版では管理者だけが使えます。詳細は[WATCH.md](WATCH.md)。
+
 ## 宇宙天気API
 
 `GET /api/space-weather?year=2026&month=10`

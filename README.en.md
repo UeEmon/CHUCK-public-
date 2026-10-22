@@ -68,6 +68,7 @@ Gateway connection checks: the app uses internal port 8001, independent of publi
 - The 12-month outlook calculates TX→RX1 for twelve months from the selected month and shows REL as a month × UTC table (one manual SSN for all months, or NOAA smoothed SSN per month). See [outlook](docs/ANNUAL.md).
 - The required power search calculates TX→RX1 at ten 1-2-5 power steps from 10 W to 10 kW and shows the smallest power that reaches the target REL per UTC and frequency. See [required power](docs/POWER.md).
 - Site candidates ranks up to 10 saved locations as receive sites (TX→candidate) or relay sites (TX→candidate→RX1) by the hours they reach the target REL. See [site candidates](docs/SITES.md).
+- Scheduled recalculation reruns saved point-to-point results with the latest NOAA smoothed SSN (every 24 hours by default, `HF_WATCH_INTERVAL_HOURS`) and shows a notice when the hours at the target REL decrease. Not available to visitors of the public edition. See [scheduled recalculation](docs/WATCH.md).
 - VOACAP is a monthly statistical model. Instantaneous ionospheric changes, storms, terrain and installation effects are not fully represented. Recommendations do not grant frequency assignments or operating authorization.
 
 ## Network access and development

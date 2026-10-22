@@ -46,6 +46,7 @@ L'historique et les préréglages sont conservés dans le volume `hf-data`. Atte
 - La perspective sur 12 mois calcule TX→RX1 sur douze mois à partir du mois choisi et affiche la REL en tableau mois × UTC (une SSN manuelle pour tous les mois ou la SSN lissée NOAA de chaque mois). Voir [perspective](docs/ANNUAL.md).
 - La puissance nécessaire calcule TX→RX1 pour dix paliers 1-2-5 de 10 W à 10 kW et indique, par UTC et fréquence, la plus petite puissance atteignant la REL cible. Voir [puissance nécessaire](docs/POWER.md).
 - Les sites candidats classent jusqu’à 10 lieux enregistrés comme sites de réception (TX→candidat) ou relais (TX→candidat→RX1) selon les heures à la REL cible. Voir [sites candidats](docs/SITES.md).
+- Le recalcul programmé relance les résultats point à point enregistrés avec la dernière SSN lissée NOAA (toutes les 24 heures par défaut, `HF_WATCH_INTERVAL_HOURS`) et affiche un avis si les heures à la REL cible diminuent. Non disponible pour les visiteurs de l’édition publique. Voir [recalcul programmé](docs/WATCH.md).
 - Language permet de choisir japonais, anglais, français, espagnol, italien, portugais, allemand ou coréen, sans modifier les noms saisis.
 
 Une modification des entrées ne recalcule pas les résultats existants : relancez le calcul. Les préréglages sont limités à 200 lieux et 200 antennes ; les conflits d'édition sont détectés.

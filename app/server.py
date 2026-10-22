@@ -22,6 +22,7 @@ import mesh
 import annual
 import power
 import site_search
+import watch
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
 from antenna_ocr import DocumentStore, OCRError, OCRBusy, config as ocr_config, MAX_FILE
@@ -45,6 +46,9 @@ def connection():
 POSITIONS=GatewayClient()
 PRESETS=PresetStore(connection)
 ANTENNA_DOCUMENTS=DocumentStore(connection)
+WATCHES=watch.WatchStore(connection)
+try: WATCH_INTERVAL_HOURS=max(0.0,float(os.environ.get('HF_WATCH_INTERVAL_HOURS','24')))
+except ValueError: WATCH_INTERVAL_HOURS=24.0
 
 def save(result,kind='point'):
     result['id']=uuid.uuid4().hex
@@ -62,10 +66,37 @@ def load(identifier):
 def annual_ssn(p, year, month):
     """SSN for one month of the outlook: the manual value, or that month's fresh NOAA smoothed SSN."""
     if p.get('ssn_source')!='noaa': return p['ssn'],None
+    return noaa_ssn(year,month)
+
+def noaa_ssn(year, month):
+    """A fresh NOAA smoothed SSN for the month, or None with the reason."""
     try: ssn=SPACE_WEATHER.snapshot(year,month)['ssn']
     except Exception: ssn=None
     if not ssn or ssn['stale']: return None,'NOAAの新鮮な平滑SSNがありません'
     return ssn['value'],dict(kind=ssn['kind'],month=ssn['month'])
+
+def run_watch(identifier, blocking=False):
+    """Recalculate one watched condition; False when another calculation holds the engine."""
+    w=WATCHES.get(identifier)
+    if not RUN_LOCK.acquire(blocking=blocking): return False
+    try:
+        try: result=watch.check(ENGINE,w['parameters'],noaa_ssn)
+        except (InputError,ValueError,EngineError) as e: result=dict(checked=datetime.now(timezone.utc).isoformat(),error=str(e))
+        WATCHES.record(identifier,result)
+    finally: RUN_LOCK.release()
+    return True
+
+def watcher():
+    # Checks every minute for watches whose last check is older than the interval; never runs two calculations at once.
+    while True:
+        __import__('time').sleep(60)
+        try:
+            for identifier in WATCHES.due(WATCH_INTERVAL_HOURS):
+                if not run_watch(identifier): break
+        except Exception: __import__('traceback').print_exc()
+
+def start_watcher():
+    if WATCH_INTERVAL_HOURS>0: threading.Thread(target=watcher,daemon=True).start()
 
 def coverage(p, extra):
     # A regional sample grid, not interpolated coverage contours.
@@ -137,6 +168,8 @@ class Handler(BaseHTTPRequestHandler):
                 year=number(date,'year',1900,2100,integer=True)
                 month=number(date,'month',1,12,integer=True)
                 return self.json(200,EFFECTIVE_SSN.snapshot(year,month,force=query.get('refresh')==['1']))
+            if path=='/api/watches':
+                return self.json(200,dict(interval_hours=WATCH_INTERVAL_HOURS,max=watch.MAX_WATCHES,note=watch.NOTE,watches=WATCHES.list()))
             if path=='/api/history':
                 with connection() as c: rows=c.execute('SELECT id,created,kind,json_extract(result,\'$.parameters\') FROM predictions ORDER BY created DESC LIMIT 100').fetchall()
                 return self.json(200,[dict(id=r[0],created=r[1],kind=r[2],parameters=json.loads(r[3])) for r in rows])
@@ -234,6 +267,7 @@ class Handler(BaseHTTPRequestHandler):
             return self.json(410,{'error':'外部位置入力は位置ゲートウェイ（既定ポート18083）へ送信してください'})
         if path=='/api/position-stations': return self.configure_position_station()
         if path=='/api/presets': return self.edit_presets()
+        if path=='/api/watches': return self.edit_watches()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
         if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
@@ -333,6 +367,32 @@ class Handler(BaseHTTPRequestHandler):
         except Exception:
             __import__('traceback').print_exc();self.json(500,dict(error='資料の取り込みに失敗しました'))
 
+    def edit_watches(self):
+        if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
+            return self.json(403,{'error':'同一オリジンの画面から操作してください'})
+        if not self.headers.get('Content-Type','').startswith('application/json'):
+            return self.json(415,{'error':'application/jsonが必要です'})
+        try:
+            length=int(self.headers.get('Content-Length','0'))
+            if not 0<length<=1024: raise InputError('リクエストサイズが不正です')
+            data=json.loads(self.rfile.read(length))
+            if not isinstance(data,dict): raise InputError('JSONオブジェクトが必要です')
+            action,identifier=data.get('action'),data.get('id')
+            if action=='add':
+                w=WATCHES.add(load(str(data.get('result_id',''))))
+                run_watch(w['id'])
+            elif action in ('run','acknowledge','delete'):
+                if not isinstance(identifier,str): raise InputError('指定された監視条件がありません')
+                WATCHES.get(identifier)
+                if action=='run' and not run_watch(identifier): return self.json(409,{'error':'別の計算を実行中です。完了後に再実行してください。'})
+                if action=='acknowledge': WATCHES.acknowledge(identifier)
+                if action=='delete': WATCHES.delete(identifier)
+            else: raise InputError('操作が不正です')
+            self.json(200,dict(interval_hours=WATCH_INTERVAL_HOURS,max=watch.MAX_WATCHES,note=watch.NOTE,watches=WATCHES.list()))
+        except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
+        except Exception:
+            __import__('traceback').print_exc();self.json(500,{'error':'定時の再計算を更新できません'})
+
     def edit_presets(self):
         origin=self.headers.get('Origin')
         if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
@@ -372,5 +432,6 @@ class Handler(BaseHTTPRequestHandler):
 
 if __name__=='__main__':
     connection().close()
+    start_watcher()
     print('HF Propagation JP: http://localhost:18082',flush=True)
     ThreadingHTTPServer(('0.0.0.0',8000),Handler).serve_forever()
