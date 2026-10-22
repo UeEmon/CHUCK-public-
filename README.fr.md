@@ -42,6 +42,7 @@ L'historique et les préréglages sont conservés dans le volume `hf-data`. Atte
 - Les résultats sur 24 heures (CCIR/Method 30) figurent sous la carte, par onglets : fiabilité, diversité, couverture régionale (35 points indépendants au maximum). Une cellule affiche les détails UTC et les fréquences recommandées.
 - Le Propagation Chart affiche REL/SNR et MUF par trajet, avec sélection du RX et export SVG. Historique SQLite, export CSV/JSON et entrées/sorties VOACAP sont disponibles.
 - Le mode maillé calcule toutes les paires de 2 à 8 stations dans les deux sens et affiche la REL par fréquence sous forme de matrice TX × RX, avec curseur UTC et puissance, antenne et bruit propres à chaque station. Les cellules marquées ↻ sont accessibles via 1 ou 2 stations relais avec chaque saut au moins à la REL cible ; le délai des relais et les interférences ne sont pas modélisés. Voir [maillage](docs/MESH.md).
+- Sous la prévision sur 24 heures, le plan de fréquences d’exploitation sur 24 h transforme les fréquences calculées en plages horaires avec le moins de changements (ou la meilleure chaque heure), avec export CSV et impression. Voir [plan de fréquences](docs/FREQUENCY_PLAN.md).
 - Language permet de choisir japonais, anglais, français, espagnol, italien, portugais, allemand ou coréen, sans modifier les noms saisis.
 
 Une modification des entrées ne recalcule pas les résultats existants : relancez le calcul. Les préréglages sont limités à 200 lieux et 200 antennes ; les conflits d'édition sont détectés.

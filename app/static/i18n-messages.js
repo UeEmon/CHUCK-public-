@@ -7029,5 +7029,131 @@ const HF_MESSAGES={
     "REL é uma estatística mensal por enlace, hora UTC e frequência. Trocar TX e RX muda antenas, potência de transmissão e ruído de recepção no VOACAP, por isso cada enlace direcionado (linha TX, coluna RX) é calculado separadamente. As retransmissões (até 2) são avaliadas apenas pelo fato de cada salto atingir a REL alvo; REL ponta a ponta, atraso das retransmissões, interferência de transmissões simultâneas, atribuição de canais e correlação entre enlaces não são modelados. A saída bruta por enlace não é salva; recalcule com um único RX se necessário.",
     "REL ist eine Monatsstatistik je Verbindung, UTC-Stunde und Frequenz. Das Vertauschen von TX und RX ändert in VOACAP Antennen, Sendeleistung und Empfangsrauschen, daher wird jede gerichtete Verbindung (Zeile TX, Spalte RX) getrennt berechnet. Relais (bis zu 2) werden nur danach beurteilt, ob jeder Abschnitt die Ziel-REL erreicht; eine durchgehende REL, Relaisverzögerung, Störungen durch gleichzeitiges Senden, Kanalzuteilung und Korrelation zwischen Verbindungen werden nicht modelliert. Rohausgaben je Verbindung werden nicht gespeichert; bei Bedarf als einzelnen RX neu berechnen.",
     "REL은 경로·UTC 시각·주파수별 월간 통계입니다. VOACAP에서는 송수신을 바꾸면 안테나·송신 전력·수신 잡음이 달라지므로 행(TX)과 열(RX)의 방향별 경로를 따로 계산합니다. 중계(최대 2단)는 모든 구간이 목표 REL 이상인지로만 판정하며, 구간을 합친 종단 간 REL, 중계 지연, 동시 송신 간섭, 채널 할당, 경로 간 상관은 모델링하지 않습니다. 경로별 원시 출력은 저장하지 않으며, 필요하면 단일 RX로 다시 계산하세요."
+  ],
+  "運用周波数の24時間計画": [
+    "24-hour operating frequency plan",
+    "Plan de fréquences d’exploitation sur 24 h",
+    "Plan de frecuencias de operación de 24 h",
+    "Piano delle frequenze operative sulle 24 ore",
+    "Plano de frequências de operação de 24 h",
+    "24-Stunden-Betriebsfrequenzplan",
+    "24시간 운용 주파수 계획"
+  ],
+  "方針": [
+    "Policy",
+    "Stratégie",
+    "Criterio",
+    "Criterio",
+    "Critério",
+    "Strategie",
+    "방침"
+  ],
+  "切替を抑える": [
+    "Fewest switches",
+    "Moins de changements",
+    "Menos cambios",
+    "Meno cambi",
+    "Menos trocas",
+    "Wenige Wechsel",
+    "전환 최소화"
+  ],
+  "毎時最良": [
+    "Best each hour",
+    "Meilleure chaque heure",
+    "Mejor cada hora",
+    "Migliore ogni ora",
+    "Melhor a cada hora",
+    "Jede Stunde die beste",
+    "매시 최적"
+  ],
+  "印刷": [
+    "Print",
+    "Imprimer",
+    "Imprimir",
+    "Stampa",
+    "Imprimir",
+    "Drucken",
+    "인쇄"
+  ],
+  "計算した周波数を割当周波数とみなし、時間帯ごとに使う周波数を決めます。「切替を抑える」は、目標REL以上の時間を毎時最良と同じだけ確保したうえで、切替回数が最も少なくなるように選びます（23時から0時への切替も数えます）。": [
+    "The calculated frequencies are treated as the assigned set, and one frequency is chosen for each time block. “Fewest switches” keeps as many hours at or above the target REL as “Best each hour”, then chooses the fewest frequency changes (the 23:00→00:00 change is counted too).",
+    "Les fréquences calculées sont considérées comme les fréquences attribuées, et une fréquence est choisie pour chaque plage horaire. « Moins de changements » conserve autant d’heures à la REL cible ou plus que « Meilleure chaque heure », puis choisit le moins de changements (le passage de 23:00 à 00:00 est compté).",
+    "Las frecuencias calculadas se consideran las frecuencias asignadas y se elige una frecuencia para cada franja horaria. «Menos cambios» mantiene tantas horas en la REL objetivo o por encima como «Mejor cada hora» y luego elige el menor número de cambios (también se cuenta el cambio de 23:00 a 00:00).",
+    "Le frequenze calcolate sono considerate le frequenze assegnate e per ogni fascia oraria viene scelta una frequenza. «Meno cambi» mantiene tante ore pari o superiori alla REL obiettivo quante «Migliore ogni ora», poi sceglie il minor numero di cambi (si conta anche il cambio dalle 23:00 alle 00:00).",
+    "As frequências calculadas são tratadas como as frequências atribuídas, e uma frequência é escolhida para cada faixa horária. “Menos trocas” mantém tantas horas na REL alvo ou acima quanto “Melhor a cada hora” e depois escolhe o menor número de trocas (a troca das 23:00 para 00:00 também conta).",
+    "Die berechneten Frequenzen gelten als zugeteilte Frequenzen, und für jeden Zeitblock wird eine Frequenz gewählt. „Wenige Wechsel“ hält so viele Stunden auf oder über der Ziel-REL wie „Jede Stunde die beste“ und wählt dann die wenigsten Wechsel (der Wechsel von 23:00 auf 00:00 zählt mit).",
+    "계산한 주파수를 할당 주파수로 보고 시간대마다 사용할 주파수를 정합니다. '전환 최소화'는 목표 REL 이상인 시간을 '매시 최적'과 같은 만큼 확보한 뒤 전환 횟수가 가장 적도록 고릅니다(23시에서 0시로의 전환도 셉니다)."
+  ],
+  "計算後に運用周波数の計画を表示します": [
+    "The operating frequency plan appears after calculation",
+    "Le plan de fréquences s’affiche après le calcul",
+    "El plan de frecuencias aparece tras el cálculo",
+    "Il piano delle frequenze appare dopo il calcolo",
+    "O plano de frequências aparece após o cálculo",
+    "Der Frequenzplan erscheint nach der Berechnung",
+    "계산 후 운용 주파수 계획을 표시합니다"
+  ],
+  "{date} · SSN {ssn} · 目標REL {rel}% · {distance} km · 割当 {count} 波": [
+    "{date} · SSN {ssn} · Target REL {rel}% · {distance} km · {count} assigned frequencies",
+    "{date} · SSN {ssn} · REL cible {rel}% · {distance} km · {count} fréquences attribuées",
+    "{date} · SSN {ssn} · REL objetivo {rel}% · {distance} km · {count} frecuencias asignadas",
+    "{date} · SSN {ssn} · REL obiettivo {rel}% · {distance} km · {count} frequenze assegnate",
+    "{date} · SSN {ssn} · REL alvo {rel}% · {distance} km · {count} frequências atribuídas",
+    "{date} · SSN {ssn} · Ziel-REL {rel}% · {distance} km · {count} zugeteilte Frequenzen",
+    "{date} · SSN {ssn} · 목표 REL {rel}% · {distance} km · 할당 {count}파"
+  ],
+  "切替 {count} 回 · 目標REL以上 {met} / {total} 時間 · 方針: {label}": [
+    "{count} switches · At or above target REL: {met} / {total} hours · Policy: {label}",
+    "{count} changements · REL cible atteinte : {met} / {total} heures · Stratégie : {label}",
+    "{count} cambios · En la REL objetivo o más: {met} / {total} horas · Criterio: {label}",
+    "{count} cambi · REL obiettivo raggiunta: {met} / {total} ore · Criterio: {label}",
+    "{count} trocas · Na REL alvo ou acima: {met} / {total} horas · Critério: {label}",
+    "{count} Wechsel · Ziel-REL erreicht: {met} / {total} Stunden · Strategie: {label}",
+    "전환 {count}회 · 목표 REL 이상: {met} / {total}시간 · 방침: {label}"
+  ],
+  "時間帯 UTC": [
+    "Time block UTC",
+    "Plage UTC",
+    "Franja UTC",
+    "Fascia UTC",
+    "Faixa UTC",
+    "Zeitblock UTC",
+    "시간대 UTC"
+  ],
+  "最低SNR dB·Hz": [
+    "Lowest SNR dB·Hz",
+    "SNR minimal dB·Hz",
+    "SNR mínima dB·Hz",
+    "SNR minimo dB·Hz",
+    "SNR mínima dB·Hz",
+    "Niedrigste SNR dB·Hz",
+    "최저 SNR dB·Hz"
+  ],
+  "目標REL未達": [
+    "Below target REL",
+    "Sous la REL cible",
+    "Por debajo de la REL objetivo",
+    "Sotto la REL obiettivo",
+    "Abaixo da REL alvo",
+    "Unter Ziel-REL",
+    "목표 REL 미달"
+  ],
+  "{n} 時間": [
+    "{n} h",
+    "{n} h",
+    "{n} h",
+    "{n} h",
+    "{n} h",
+    "{n} h",
+    "{n}시간"
+  ],
+  "印刷用のウィンドウを開けませんでした。ポップアップの許可を確認してください。": [
+    "Could not open the print window. Check that pop-ups are allowed.",
+    "Impossible d’ouvrir la fenêtre d’impression. Vérifiez que les fenêtres contextuelles sont autorisées.",
+    "No se pudo abrir la ventana de impresión. Compruebe que las ventanas emergentes están permitidas.",
+    "Impossibile aprire la finestra di stampa. Verifica che i pop-up siano consentiti.",
+    "Não foi possível abrir a janela de impressão. Verifique se os pop-ups estão permitidos.",
+    "Das Druckfenster konnte nicht geöffnet werden. Prüfen Sie, ob Pop-ups erlaubt sind.",
+    "인쇄 창을 열 수 없습니다. 팝업이 허용되어 있는지 확인하세요."
   ]
 };

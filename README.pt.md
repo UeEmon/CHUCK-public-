@@ -42,6 +42,7 @@ Histórico e predefinições permanecem no volume `hf-data`. `docker compose dow
 - As abas abaixo do mapa apresentam previsões de 24 horas (CCIR/Method 30), diversidade e cobertura regional (até 35 pontos independentes). Selecione uma célula para detalhes UTC e frequências recomendadas.
 - Propagation Chart com REL/SNR, MUF por percurso, seleção de RX e exportação SVG. Histórico SQLite, CSV/JSON e entrada/saída original VOACAP disponíveis.
 - O modo malha calcula todos os pares de 2 a 8 estações nos dois sentidos e mostra a REL por frequência como matriz TX × RX, com controle UTC e potência, antena e ruído por estação. As células com ↻ são alcançáveis por 1–2 estações de retransmissão com cada salto igual ou acima da REL alvo; atraso de retransmissão e interferência não são modelados. Veja [malha](docs/MESH.md).
+- Abaixo da previsão de 24 horas, o plano de frequências de operação de 24 h transforma as frequências calculadas em faixas horárias com o menor número de trocas (ou a melhor a cada hora), com exportação CSV e impressão. Veja [plano de frequências](docs/FREQUENCY_PLAN.md).
 - Em Language, escolha japonês, inglês, francês, espanhol, italiano, português, alemão ou coreano sem alterar nomes cadastrados.
 
 Alterar entradas não recalcula resultados existentes: execute novamente. Até 200 locais e 200 antenas, com detecção de conflitos de edição.
