@@ -93,7 +93,12 @@
   "PDF・PNG・JPEG・WebPのいずれかを送ってください":["Send a PDF, PNG, JPEG or WebP file","Envoyez un fichier PDF, PNG, JPEG ou WebP","Envíe un archivo PDF, PNG, JPEG o WebP","Invia un file PDF, PNG, JPEG o WebP","Envie um arquivo PDF, PNG, JPEG ou WebP","Senden Sie eine PDF-, PNG-, JPEG- oder WebP-Datei","PDF·PNG·JPEG·WebP 중 하나를 보내 주세요"],
   "未処理の資料が多いため受付を一時停止しています。時間をおいて送ってください":["We have too many documents waiting for review and have paused submissions. Please try again later.","Trop de documents en attente : les envois sont suspendus. Réessayez plus tard.","Hay demasiados documentos pendientes y los envíos están en pausa. Inténtelo más tarde.","Troppi documenti in attesa: gli invii sono sospesi. Riprova più tardi.","Há muitos documentos pendentes e os envios estão pausados. Tente mais tarde.","Zu viele Dokumente warten auf Prüfung; Einsendungen sind pausiert. Bitte später erneut versuchen.","처리 대기 자료가 많아 접수를 일시 중지했습니다. 잠시 후 보내 주세요"],
   "寄付と資料の管理":["Donations and documents","Dons et documents","Donaciones y documentos","Donazioni e documenti","Doações e documentos","Spenden und Unterlagen","후원 및 자료 관리"],
-  "送信内容が不正です":["Invalid submission","Envoi invalide","Envío no válido","Invio non valido","Envio inválido","Ungültige Einsendung","전송 내용이 올바르지 않습니다"]
+  "送信内容が不正です":["Invalid submission","Envoi invalide","Envío no válido","Invio non valido","Envio inválido","Ungültige Einsendung","전송 내용이 올바르지 않습니다"],
+  "{label}は{min}〜{max}の範囲で指定してください":["{label} must be between {min} and {max}", "{label} doit être compris entre {min} et {max}", "{label} debe estar entre {min} y {max}", "{label} deve essere compreso tra {min} e {max}", "{label} deve estar entre {min} e {max}", "{label} muss zwischen {min} und {max} liegen", "{label}은(는) {min}~{max} 범위로 지정하세요"],
+  "マイ地点":["My locations", "Mes lieux", "Mis ubicaciones", "Le mie località", "Meus locais", "Meine Standorte", "내 지점"],
+  "このブラウザに保存できるのは{count}件までです":["This browser can store up to {count} entries", "Ce navigateur peut enregistrer {count} éléments au maximum", "Este navegador puede guardar hasta {count} elementos", "Questo browser può salvare al massimo {count} elementi", "Este navegador pode salvar até {count} itens", "Dieser Browser kann höchstens {count} Einträge speichern", "이 브라우저에 저장할 수 있는 것은 {count}건까지입니다"],
+  "緯度":["Latitude", "Latitude", "Latitud", "Latitudine", "Latitude", "Breite", "위도"],
+  "経度":["Longitude", "Longitude", "Longitud", "Longitudine", "Longitude", "Länge", "경도"]
  };
  // Upstream keys win so a merge never changes its existing wording.
  for(const [key,values]of Object.entries(messages))if(!(key in HF_MESSAGES))HF_MESSAGES[key]=values;

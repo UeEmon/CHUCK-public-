@@ -34,7 +34,9 @@ def build():
     md += ['', 'この文書は app/static/data-licenses.json から scripts/build_data_notices.py で生成します。原文の代替ではありません。', '']
     head='<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+title+'</title><style>body{font:16px/1.8 system-ui,sans-serif;max-width:1000px;margin:32px auto;padding:0 20px;color:#e6eef5;background:#09121d}h1{font-size:1.6rem}h2{font-size:1.25rem}section{border-top:1px solid #375269;margin-top:32px;padding-top:12px}a{color:#75dfbc;overflow-wrap:anywhere}li{margin-bottom:10px}p{overflow-wrap:anywhere}</style><body><nav><a href="/">アプリへ戻る</a></nav>'
     (ROOT/'DATA_LICENSES.md').write_text('\n'.join(md))
-    (ROOT/'app/static/data-licenses.html').write_text(head+'\n'.join(page)+'</body></html>\n')
+    # Same local translations as the app; the page follows the language chosen there.
+    scripts='<script src="i18n-messages.js"></script><script src="data-licenses-messages.js"></script><script src="i18n.js"></script>'
+    (ROOT/'app/static/data-licenses.html').write_text(head+'\n'.join(page)+scripts+'</body></html>\n')
 
 if __name__=='__main__':
     build()

@@ -2656,15 +2656,6 @@ const HF_MESSAGES={
     "{count} Pfadpunkte: maximale HAF {max} MHz, {missing} fehlend. Nur Vertikalindikator, keine Pfaddämpfung oder Nutzfrequenzentscheidung.",
     "경로 {count}점: 최대 HAF {max} MHz, 결측 {missing}점. 수직 전파 지표이며 경로 손실·사용 가능 주파수 판정이 아닙니다."
   ],
-  "国内観測: {value}": [
-    "Japan observations: {value}",
-    "Observations au Japon : {value}",
-    "Observaciones de Japón: {value}",
-    "Osservazioni del Giappone: {value}",
-    "Observações do Japão: {value}",
-    "Japanische Messungen: {value}",
-    "일본 관측: {value}"
-  ],
   "RELは各UTC・周波数の月間統計です。推奨サイトはREL最大（同値ならSNR最大）。少なくとも1サイト受信の上下限は各サイトRELを周辺確率とみなした理論範囲で、実測可用性ではありません。サイト間相関・共通障害・中継回線・切替遅延・受信機故障はモデル化していません。距離だけで独立とは判断しません。波形合成や合成SNR、リアルタイム切替制御は行いません。": [
     "REL is a monthly statistic for each UTC hour and frequency. Site choice maximizes REL, then SNR. Bounds for reception at one or more sites use site REL values as marginal probabilities; they are not measured availability. Site correlation, common outages, backhaul, switching delay and receiver failures are not modeled. Distance does not establish independence. No waveform/SNR combining or real-time switching is performed.",
     "REL est une statistique mensuelle par heure UTC et fréquence. Le choix maximise REL puis SNR. Les bornes pour au moins un site utilisent les REL comme probabilités marginales, pas comme disponibilité mesurée. Corrélations, pannes communes, collecte, délais de commutation et défaillances des récepteurs ne sont pas modélisés. La distance ne prouve pas l’indépendance. Aucune combinaison de signaux/SNR ni commutation en temps réel.",
@@ -4923,5 +4914,2012 @@ const HF_MESSAGES={
     "Antena de recepção salva",
     "Gespeicherte Empfangsantenne",
     "저장된 수신 안테나"
+  ],
+  "世界全体を表示": [
+    "Show the whole world",
+    "Afficher le monde entier",
+    "Mostrar el mundo entero",
+    "Mostra il mondo intero",
+    "Mostrar o mundo inteiro",
+    "Ganze Welt anzeigen",
+    "전 세계 표시"
+  ],
+  "表示内容": [
+    "Display",
+    "Affichage",
+    "Visualización",
+    "Visualizzazione",
+    "Exibição",
+    "Anzeige",
+    "표시 내용"
+  ],
+  "例 3K00、2K40、500H": [
+    "e.g. 3K00, 2K40, 500H",
+    "ex. 3K00, 2K40, 500H",
+    "p. ej. 3K00, 2K40, 500H",
+    "es. 3K00, 2K40, 500H",
+    "ex. 3K00, 2K40, 500H",
+    "z. B. 3K00, 2K40, 500H",
+    "예: 3K00, 2K40, 500H"
+  ],
+  "全方向": [
+    "Omnidirectional",
+    "Omnidirectionnelle",
+    "Omnidireccional",
+    "Omnidirezionale",
+    "Omnidirecional",
+    "Rundstrahlend",
+    "무지향성"
+  ],
+  "→ 相手局": [
+    "→ other station",
+    "→ station distante",
+    "→ estación remota",
+    "→ stazione remota",
+    "→ estação remota",
+    "→ Gegenstation",
+    "→ 상대국"
+  ],
+  "水平ダイポール 全長10 m": [
+    "Horizontal dipole, 10 m total length",
+    "Dipôle horizontal, longueur totale 10 m",
+    "Dipolo horizontal, longitud total 10 m",
+    "Dipolo orizzontale, lunghezza totale 10 m",
+    "Dipolo horizontal, comprimento total 10 m",
+    "Horizontaler Dipol, Gesamtlänge 10 m",
+    "수평 다이폴 전체 길이 10 m"
+  ],
+  "水平ダイポール 全長20 m": [
+    "Horizontal dipole, 20 m total length",
+    "Dipôle horizontal, longueur totale 20 m",
+    "Dipolo horizontal, longitud total 20 m",
+    "Dipolo orizzontale, lunghezza totale 20 m",
+    "Dipolo horizontal, comprimento total 20 m",
+    "Horizontaler Dipol, Gesamtlänge 20 m",
+    "수평 다이폴 전체 길이 20 m"
+  ],
+  "水平ダイポール 全長40 m": [
+    "Horizontal dipole, 40 m total length",
+    "Dipôle horizontal, longueur totale 40 m",
+    "Dipolo horizontal, longitud total 40 m",
+    "Dipolo orizzontale, lunghezza totale 40 m",
+    "Dipolo horizontal, comprimento total 40 m",
+    "Horizontaler Dipol, Gesamtlänge 40 m",
+    "수평 다이폴 전체 길이 40 m"
+  ],
+  "垂直ダイポール 全長10 m": [
+    "Vertical dipole, 10 m total length",
+    "Dipôle vertical, longueur totale 10 m",
+    "Dipolo vertical, longitud total 10 m",
+    "Dipolo verticale, lunghezza totale 10 m",
+    "Dipolo vertical, comprimento total 10 m",
+    "Vertikaler Dipol, Gesamtlänge 10 m",
+    "수직 다이폴 전체 길이 10 m"
+  ],
+  "垂直ダイポール 全長20 m": [
+    "Vertical dipole, 20 m total length",
+    "Dipôle vertical, longueur totale 20 m",
+    "Dipolo vertical, longitud total 20 m",
+    "Dipolo verticale, lunghezza totale 20 m",
+    "Dipolo vertical, comprimento total 20 m",
+    "Vertikaler Dipol, Gesamtlänge 20 m",
+    "수직 다이폴 전체 길이 20 m"
+  ],
+  "水平ログペリ 最長25 m・16素子": [
+    "Horizontal log-periodic, longest element 25 m, 16 elements",
+    "Log-périodique horizontale, élément le plus long 25 m, 16 éléments",
+    "Log-periódica horizontal, elemento más largo 25 m, 16 elementos",
+    "Log-periodica orizzontale, elemento più lungo 25 m, 16 elementi",
+    "Log-periódica horizontal, elemento mais longo 25 m, 16 elementos",
+    "Horizontale Logperiodische, längstes Element 25 m, 16 Elemente",
+    "수평 로그 주기 최장 25 m·16소자"
+  ],
+  "逆L 水平部30 m・垂直部12 m": [
+    "Inverted L, 30 m horizontal, 12 m vertical",
+    "L inversé, 30 m horizontal, 12 m vertical",
+    "L invertida, 30 m horizontal, 12 m vertical",
+    "L rovesciata, 30 m orizzontale, 12 m verticale",
+    "L invertido, 30 m horizontal, 12 m vertical",
+    "Inverted-L, 30 m horizontal, 12 m vertikal",
+    "역L 수평부 30 m·수직부 12 m"
+  ],
+  "スローパー 40 m・傾斜15°": [
+    "Sloper, 40 m, 15° slope",
+    "Sloper, 40 m, inclinaison 15°",
+    "Sloper, 40 m, inclinación 15°",
+    "Sloper, 40 m, inclinazione 15°",
+    "Sloper, 40 m, inclinação 15°",
+    "Sloper, 40 m, 15° Neigung",
+    "슬로퍼 40 m·경사 15°"
+  ],
+  "USN AS-2537C/SR（寸法近似）": [
+    "USN AS-2537C/SR (dimensional approximation)",
+    "USN AS-2537C/SR (approximation dimensionnelle)",
+    "USN AS-2537C/SR (aproximación dimensional)",
+    "USN AS-2537C/SR (approssimazione dimensionale)",
+    "USN AS-2537C/SR (aproximação dimensional)",
+    "USN AS-2537C/SR (Maßnäherung)",
+    "USN AS-2537C/SR(치수 근사)"
+  ],
+  "艦船 Comrod AT100D（寸法近似）": [
+    "Shipboard Comrod AT100D (dimensional approximation)",
+    "Navire Comrod AT100D (approximation dimensionnelle)",
+    "Buque Comrod AT100D (aproximación dimensional)",
+    "Nave Comrod AT100D (approssimazione dimensionale)",
+    "Navio Comrod AT100D (aproximação dimensional)",
+    "Schiff Comrod AT100D (Maßnäherung)",
+    "함정 Comrod AT100D(치수 근사)"
+  ],
+  "艦船 Comrod AT83（寸法近似）": [
+    "Shipboard Comrod AT83 (dimensional approximation)",
+    "Navire Comrod AT83 (approximation dimensionnelle)",
+    "Buque Comrod AT83 (aproximación dimensional)",
+    "Nave Comrod AT83 (approssimazione dimensionale)",
+    "Navio Comrod AT83 (aproximação dimensional)",
+    "Schiff Comrod AT83 (Maßnäherung)",
+    "함정 Comrod AT83(치수 근사)"
+  ],
+  "航空機 Chelton 455（参考資料）": [
+    "Aircraft Chelton 455 (reference only)",
+    "Aéronef Chelton 455 (référence)",
+    "Aeronave Chelton 455 (solo referencia)",
+    "Aeromobile Chelton 455 (solo riferimento)",
+    "Aeronave Chelton 455 (apenas referência)",
+    "Luftfahrzeug Chelton 455 (nur Referenz)",
+    "항공기 Chelton 455(참고 자료)"
+  ],
+  "P-3 HFロングワイヤー（参考資料）": [
+    "P-3 HF long wire (reference only)",
+    "Long fil HF du P-3 (référence)",
+    "Hilo largo HF del P-3 (solo referencia)",
+    "Filo lungo HF del P-3 (solo riferimento)",
+    "Fio longo HF do P-3 (apenas referência)",
+    "P-3-HF-Langdraht (nur Referenz)",
+    "P-3 HF 롱와이어(참고 자료)"
+  ],
+  "米海軍使用はメーカー公表。35 ft全高を単一モノポール長として近似。実放射素子長・基部・整合器・艦体・効率・実測利得は再現しない。地面定数は利用者の仮定。": [
+    "US Navy use is per the manufacturer. The 35 ft overall height is approximated as a single monopole length. Actual radiator length, base, matching unit, hull, efficiency and measured gain are not reproduced. Ground constants are the user's assumption.",
+    "Usage par l’US Navy selon le fabricant. La hauteur totale de 35 ft est approximée par une seule longueur de monopôle. La longueur rayonnante réelle, l’embase, la boîte d’accord, la coque, le rendement et le gain mesuré ne sont pas reproduits. Les constantes du sol sont une hypothèse de l’utilisateur.",
+    "El uso por la US Navy consta según el fabricante. La altura total de 35 ft se aproxima como una única longitud de monopolo. No se reproducen la longitud radiante real, la base, el acoplador, el casco, la eficiencia ni la ganancia medida. Las constantes del suelo son una suposición del usuario.",
+    "L’uso da parte della US Navy è dichiarato dal produttore. L’altezza totale di 35 ft è approssimata come un’unica lunghezza di monopolo. Lunghezza radiante reale, base, accordatore, scafo, efficienza e guadagno misurato non sono riprodotti. Le costanti del suolo sono un’ipotesi dell’utente.",
+    "O uso pela US Navy é informado pelo fabricante. A altura total de 35 ft é aproximada como um único comprimento de monopolo. O comprimento radiante real, a base, o acoplador, o casco, a eficiência e o ganho medido não são reproduzidos. As constantes do solo são uma suposição do usuário.",
+    "Einsatz bei der US Navy laut Hersteller. Die Gesamthöhe von 35 ft wird als eine Monopollänge angenähert. Tatsächliche Strahlerlänge, Fuß, Anpassgerät, Schiffsrumpf, Wirkungsgrad und gemessener Gewinn werden nicht nachgebildet. Bodenkonstanten sind Annahmen des Nutzers.",
+    "미 해군 사용은 제조사 공표 기준. 전고 35 ft를 단일 모노폴 길이로 근사. 실제 방사 소자 길이·기부·정합기·선체·효율·실측 이득은 재현하지 않음. 지면 상수는 사용자의 가정."
+  ],
+  "メーカー公表の甲板設置HFモノポール、全高10 mを近似に使用。1.6–30 MHz。艦体・整合器・損失・実測パターンは未再現。特定国への採用は未確認。": [
+    "Deck-mounted HF monopole per the manufacturer; its 10 m overall height is used for the approximation. 1.6–30 MHz. Hull, matching unit, losses and measured pattern are not reproduced. Adoption by any particular country is unconfirmed.",
+    "Monopôle HF de pont selon le fabricant ; sa hauteur totale de 10 m sert à l’approximation. 1,6–30 MHz. Coque, boîte d’accord, pertes et diagramme mesuré non reproduits. Adoption par un pays donné non confirmée.",
+    "Monopolo HF de cubierta según el fabricante; se usa su altura total de 10 m para la aproximación. 1,6–30 MHz. No se reproducen el casco, el acoplador, las pérdidas ni el diagrama medido. No se ha confirmado su adopción por ningún país.",
+    "Monopolo HF da ponte secondo il produttore; l’altezza totale di 10 m è usata per l’approssimazione. 1,6–30 MHz. Scafo, accordatore, perdite e diagramma misurato non riprodotti. Adozione da parte di specifici paesi non confermata.",
+    "Monopolo HF de convés segundo o fabricante; a altura total de 10 m é usada na aproximação. 1,6–30 MHz. Casco, acoplador, perdas e diagrama medido não reproduzidos. Adoção por algum país não confirmada.",
+    "Deckmontierter HF-Monopol laut Hersteller; die Gesamthöhe von 10 m dient der Näherung. 1,6–30 MHz. Rumpf, Anpassgerät, Verluste und gemessenes Diagramm nicht nachgebildet. Einsatz in bestimmten Ländern unbestätigt.",
+    "제조사 공표 갑판 설치 HF 모노폴, 전고 10 m를 근사에 사용. 1.6–30 MHz. 선체·정합기·손실·실측 패턴은 재현하지 않음. 특정 국가의 채택은 미확인."
+  ],
+  "メーカー公表のHF艦船ホイップ。物理全高8 m（電気長7.5 mとは区別）をモノポール近似に使用。1.6–30 MHz。艦体・整合器・給電方式・損失・実測パターンは未再現。特定国への採用は未確認。": [
+    "Shipboard HF whip per the manufacturer. Its 8 m physical height (distinct from the 7.5 m electrical length) is used for the monopole approximation. 1.6–30 MHz. Hull, matching unit, feed, losses and measured pattern are not reproduced. Adoption by any particular country is unconfirmed.",
+    "Fouet HF de navire selon le fabricant. Sa hauteur physique de 8 m (distincte de la longueur électrique de 7,5 m) sert à l’approximation monopôle. 1,6–30 MHz. Coque, boîte d’accord, alimentation, pertes et diagramme mesuré non reproduits. Adoption par un pays donné non confirmée.",
+    "Látigo HF naval según el fabricante. Se usa su altura física de 8 m (distinta de la longitud eléctrica de 7,5 m) para la aproximación de monopolo. 1,6–30 MHz. No se reproducen el casco, el acoplador, la alimentación, las pérdidas ni el diagrama medido. No se ha confirmado su adopción por ningún país.",
+    "Stilo HF navale secondo il produttore. L’altezza fisica di 8 m (distinta dalla lunghezza elettrica di 7,5 m) è usata per l’approssimazione a monopolo. 1,6–30 MHz. Scafo, accordatore, alimentazione, perdite e diagramma misurato non riprodotti. Adozione da parte di specifici paesi non confermata.",
+    "Chicote HF naval segundo o fabricante. A altura física de 8 m (distinta do comprimento elétrico de 7,5 m) é usada na aproximação de monopolo. 1,6–30 MHz. Casco, acoplador, alimentação, perdas e diagrama medido não reproduzidos. Adoção por algum país não confirmada.",
+    "HF-Schiffspeitsche laut Hersteller. Die physische Höhe von 8 m (nicht die elektrische Länge von 7,5 m) dient der Monopolnäherung. 1,6–30 MHz. Rumpf, Anpassgerät, Speisung, Verluste und gemessenes Diagramm nicht nachgebildet. Einsatz in bestimmten Ländern unbestätigt.",
+    "제조사 공표 HF 함정 휩. 물리적 전고 8 m(전기적 길이 7.5 m와 구별)를 모노폴 근사에 사용. 1.6–30 MHz. 선체·정합기·급전 방식·손실·실측 패턴은 재현하지 않음. 특정 국가의 채택은 미확인."
+  ],
+  "固定翼・回転翼用HFタオルレール型、2–30 MHz。効率・偏波・放射パターンは取付けと機体に依存。共通の全長・機体込みパターン未取得のため計算選択不可。特定国・機種への採用は未確認。": [
+    "HF towel-rail antenna for fixed- and rotary-wing aircraft, 2–30 MHz. Efficiency, polarization and radiation pattern depend on the installation and airframe. No common length or installed pattern is available, so it cannot be selected for calculation. Adoption by any particular country or aircraft type is unconfirmed.",
+    "Antenne HF type « towel rail » pour voilures fixes et tournantes, 2–30 MHz. Rendement, polarisation et diagramme dépendent de l’installation et de l’appareil. Faute de longueur commune et de diagramme installé, elle ne peut pas être choisie pour le calcul. Adoption par un pays ou un type d’appareil non confirmée.",
+    "Antena HF tipo «towel rail» para ala fija y rotatoria, 2–30 MHz. La eficiencia, la polarización y el diagrama dependen de la instalación y la aeronave. Sin longitud común ni diagrama instalado, no se puede seleccionar para el cálculo. No se ha confirmado su adopción por ningún país ni modelo.",
+    "Antenna HF «towel rail» per ala fissa e rotante, 2–30 MHz. Efficienza, polarizzazione e diagramma dipendono dall’installazione e dal velivolo. Senza lunghezza comune né diagramma installato non è selezionabile per il calcolo. Adozione da parte di paesi o modelli non confermata.",
+    "Antena HF tipo «towel rail» para asa fixa e rotativa, 2–30 MHz. Eficiência, polarização e diagrama dependem da instalação e da aeronave. Sem comprimento comum nem diagrama instalado, não pode ser selecionada para o cálculo. Adoção por algum país ou modelo não confirmada.",
+    "HF-Towel-Rail-Antenne für Flächen- und Drehflügler, 2–30 MHz. Wirkungsgrad, Polarisation und Strahlungsdiagramm hängen von Einbau und Luftfahrzeug ab. Ohne gemeinsame Länge und Einbaudiagramm nicht für die Berechnung wählbar. Einsatz in bestimmten Ländern oder Mustern unbestätigt.",
+    "고정익·회전익용 HF 타월 레일형, 2–30 MHz. 효율·편파·방사 패턴은 설치와 기체에 따라 다름. 공통 전장·기체 포함 패턴이 없어 계산에 선택 불가. 특정 국가·기종의 채택은 미확인."
+  ],
+  "メーカーのP-3用シャント改修説明で従来の2本式HFロングワイヤーを確認。全長・給電条件・機体込み実測指向性は未確認。2本を1本の全長として合算しない。各派生機の仕様や現在の搭載状態は断定しない。計算選択不可。": [
+    "The manufacturer's P-3 shunt-antenna retrofit description confirms the former dual HF long wires. Length, feed conditions and measured installed directivity are unconfirmed. The two wires are not added together as one length. The specification of each variant and its current fit are not asserted. Cannot be selected for calculation.",
+    "La description du fabricant de la modification shunt du P-3 confirme les anciens doubles longs fils HF. Longueur, alimentation et directivité installée mesurée non confirmées. Les deux fils ne sont pas additionnés en une seule longueur. La configuration de chaque variante et l’équipement actuel ne sont pas affirmés. Non sélectionnable pour le calcul.",
+    "La descripción del fabricante de la modificación shunt del P-3 confirma los antiguos dos hilos largos HF. No se han confirmado la longitud, la alimentación ni la directividad instalada medida. Los dos hilos no se suman como una sola longitud. No se afirman la especificación de cada variante ni su equipamiento actual. No se puede seleccionar para el cálculo.",
+    "La descrizione del produttore della modifica shunt del P-3 conferma i precedenti due fili lunghi HF. Lunghezza, alimentazione e direttività installata misurata non confermate. I due fili non vengono sommati in un’unica lunghezza. Specifiche delle varianti e dotazione attuale non sono affermate. Non selezionabile per il calcolo.",
+    "A descrição do fabricante da modificação shunt do P-3 confirma os antigos dois fios longos HF. Comprimento, alimentação e diretividade instalada medida não confirmados. Os dois fios não são somados como um único comprimento. A especificação de cada variante e a instalação atual não são afirmadas. Não pode ser selecionada para o cálculo.",
+    "Die Herstellerbeschreibung der P-3-Shunt-Umrüstung bestätigt die früheren zwei HF-Langdrähte. Länge, Speisung und gemessene Einbaurichtwirkung unbestätigt. Die zwei Drähte werden nicht zu einer Länge addiert. Ausstattung der einzelnen Varianten und aktueller Einbau werden nicht behauptet. Nicht für die Berechnung wählbar.",
+    "제조사의 P-3용 션트 개조 설명에서 기존 2선식 HF 롱와이어를 확인. 전장·급전 조건·기체 포함 실측 지향성은 미확인. 2선을 하나의 전장으로 합산하지 않음. 각 파생형의 사양과 현재 탑재 상태는 단정하지 않음. 계산에 선택 불가."
+  ],
+  "参考資料のアンテナは計算に使用できません。": [
+    "Reference-only antennas cannot be used for calculation.",
+    "Les antennes de référence ne peuvent pas servir au calcul.",
+    "Las antenas de referencia no se pueden usar para el cálculo.",
+    "Le antenne di solo riferimento non possono essere usate per il calcolo.",
+    "Antenas apenas de referência não podem ser usadas no cálculo.",
+    "Reine Referenzantennen können nicht berechnet werden.",
+    "참고 자료 안테나는 계산에 사용할 수 없습니다."
+  ],
+  "保存された地点・アンテナ設定が不正です": [
+    "The saved location or antenna settings are invalid",
+    "Les lieux ou antennes enregistrés sont invalides",
+    "La configuración guardada de ubicación o antena no es válida",
+    "Le impostazioni salvate di località o antenna non sono valide",
+    "As configurações salvas de local ou antena são inválidas",
+    "Gespeicherte Standort- oder Antenneneinstellungen sind ungültig",
+    "저장된 지점·안테나 설정이 올바르지 않습니다"
+  ],
+  "稚内": [
+    "Wakkanai",
+    "Wakkanai",
+    "Wakkanai",
+    "Wakkanai",
+    "Wakkanai",
+    "Wakkanai",
+    "왓카나이"
+  ],
+  "国分寺": [
+    "Kokubunji",
+    "Kokubunji",
+    "Kokubunji",
+    "Kokubunji",
+    "Kokubunji",
+    "Kokubunji",
+    "고쿠분지"
+  ],
+  "山川": [
+    "Yamagawa",
+    "Yamagawa",
+    "Yamagawa",
+    "Yamagawa",
+    "Yamagawa",
+    "Yamagawa",
+    "야마가와"
+  ],
+  "大宜味": [
+    "Ogimi",
+    "Ogimi",
+    "Ogimi",
+    "Ogimi",
+    "Ogimi",
+    "Ogimi",
+    "오기미"
+  ],
+  "国内観測: {count}局。": [
+    "Japan observations: {count} stations.",
+    "Observations japonaises : {count} stations.",
+    "Observaciones de Japón: {count} estaciones.",
+    "Osservazioni del Giappone: {count} stazioni.",
+    "Observações do Japão: {count} estações.",
+    "Japanische Messungen: {count} Stationen.",
+    "일본 관측: {count}개소."
+  ],
+  "国内観測: {count}局 [古い／取得失敗]。": [
+    "Japan observations: {count} stations [stale / fetch failed].",
+    "Observations japonaises : {count} stations [ancien / échec du chargement].",
+    "Observaciones de Japón: {count} estaciones [antiguo / error de obtención].",
+    "Osservazioni del Giappone: {count} stazioni [obsoleto / scaricamento fallito].",
+    "Observações do Japão: {count} estações [antigo / falha na obtenção].",
+    "Japanische Messungen: {count} Stationen [veraltet / Abruf fehlgeschlagen].",
+    "일본 관측: {count}개소 [오래됨·가져오기 실패]."
+  ],
+  "国内観測: 欠測。": [
+    "Japan observations: missing.",
+    "Observations japonaises : manquantes.",
+    "Observaciones de Japón: sin datos.",
+    "Osservazioni del Giappone: mancanti.",
+    "Observações do Japão: ausentes.",
+    "Japanische Messungen: fehlend.",
+    "일본 관측: 결측."
+  ],
+  "国内観測: 欠測 [古い／取得失敗]。": [
+    "Japan observations: missing [stale / fetch failed].",
+    "Observations japonaises : manquantes [ancien / échec du chargement].",
+    "Observaciones de Japón: sin datos [antiguo / error de obtención].",
+    "Osservazioni del Giappone: mancanti [obsoleto / scaricamento fallito].",
+    "Observações do Japão: ausentes [antigo / falha na obtenção].",
+    "Japanische Messungen: fehlend [veraltet / Abruf fehlgeschlagen].",
+    "일본 관측: 결측 [오래됨·가져오기 실패]."
+  ],
+  "VOACAP回線予測（別条件の参考値）：{year}/{month}、{hour}:00 UTC、距離 {distance} km、MUF {muf} MHz。NICT観測の時刻・距離・場所とは一致しません。": [
+    "VOACAP link forecast (reference under different conditions): {year}/{month}, {hour}:00 UTC, distance {distance} km, MUF {muf} MHz. Time, distance and place differ from the NICT observations.",
+    "Prévision VOACAP de la liaison (référence dans d’autres conditions) : {year}/{month}, {hour}:00 UTC, distance {distance} km, MUF {muf} MHz. Heure, distance et lieu diffèrent des observations NICT.",
+    "Predicción VOACAP del enlace (referencia en otras condiciones): {year}/{month}, {hour}:00 UTC, distancia {distance} km, MUF {muf} MHz. La hora, la distancia y el lugar no coinciden con las observaciones NICT.",
+    "Previsione VOACAP del collegamento (riferimento in altre condizioni): {year}/{month}, {hour}:00 UTC, distanza {distance} km, MUF {muf} MHz. Ora, distanza e luogo non coincidono con le osservazioni NICT.",
+    "Previsão VOACAP do enlace (referência em outras condições): {year}/{month}, {hour}:00 UTC, distância {distance} km, MUF {muf} MHz. Horário, distância e local diferem das observações NICT.",
+    "VOACAP-Verbindungsprognose (Referenz unter anderen Bedingungen): {year}/{month}, {hour}:00 UTC, Entfernung {distance} km, MUF {muf} MHz. Zeit, Entfernung und Ort weichen von den NICT-Messungen ab.",
+    "VOACAP 경로 예측(다른 조건의 참고값): {year}/{month}, {hour}:00 UTC, 거리 {distance} km, MUF {muf} MHz. NICT 관측의 시각·거리·장소와 일치하지 않습니다."
+  ],
+  "海外観測局の過去2時間のfoF2（MHz）。欠測や15分を超える間隔は接続しません。": [
+    "foF2 (MHz) at the overseas station over the last 2 hours. Gaps and intervals over 15 minutes are not joined.",
+    "foF2 (MHz) de la station étrangère sur les 2 dernières heures. Les lacunes et intervalles de plus de 15 minutes ne sont pas reliés.",
+    "foF2 (MHz) de la estación extranjera en las últimas 2 horas. No se unen los huecos ni los intervalos de más de 15 minutos.",
+    "foF2 (MHz) della stazione estera nelle ultime 2 ore. Dati mancanti e intervalli oltre 15 minuti non vengono collegati.",
+    "foF2 (MHz) da estação estrangeira nas últimas 2 horas. Lacunas e intervalos acima de 15 minutos não são ligados.",
+    "foF2 (MHz) der Auslandsstation in den letzten 2 Stunden. Lücken und Abstände über 15 Minuten werden nicht verbunden.",
+    "해외 관측소의 최근 2시간 foF2(MHz). 결측이나 15분을 넘는 간격은 연결하지 않습니다."
+  ],
+  "D-RAP {time} / 古い（観測時刻から1時間超または時刻不正）": [
+    "D-RAP {time} / stale (over 1 hour since observation, or invalid time)",
+    "D-RAP {time} / ancien (plus d’1 heure depuis l’observation, ou heure invalide)",
+    "D-RAP {time} / antiguo (más de 1 hora desde la observación o tiempo no válido)",
+    "D-RAP {time} / obsoleto (oltre 1 ora dall’osservazione o orario non valido)",
+    "D-RAP {time} / antigo (mais de 1 hora desde a observação ou horário inválido)",
+    "D-RAP {time} / veraltet (über 1 Stunde seit der Messung oder ungültige Zeit)",
+    "D-RAP {time} / 오래됨(관측 시각에서 1시간 초과 또는 시각 오류)"
+  ],
+  "{station} {time} / 古い観測値。再取得してください。": [
+    "{station} {time} / stale observation. Please fetch again.",
+    "{station} {time} / observation ancienne. Rechargez-la.",
+    "{station} {time} / observación antigua. Vuelva a obtenerla.",
+    "{station} {time} / osservazione obsoleta. Scaricala di nuovo.",
+    "{station} {time} / observação antiga. Obtenha novamente.",
+    "{station} {time} / veraltete Messung. Bitte erneut abrufen.",
+    "{station} {time} / 오래된 관측값입니다. 다시 가져오세요."
+  ],
+  "HAF: 垂直伝搬で1 dB吸収の影響を受ける最高周波数（MHz）": [
+    "HAF: highest frequency affected by 1 dB absorption on vertical propagation (MHz)",
+    "HAF : fréquence maximale affectée par 1 dB d’absorption en propagation verticale (MHz)",
+    "HAF: máxima frecuencia afectada por 1 dB de absorción en propagación vertical (MHz)",
+    "HAF: massima frequenza interessata da 1 dB di assorbimento in propagazione verticale (MHz)",
+    "HAF: maior frequência afetada por 1 dB de absorção na propagação vertical (MHz)",
+    "HAF: höchste bei vertikaler Ausbreitung von 1 dB Absorption betroffene Frequenz (MHz)",
+    "HAF: 수직 전파에서 1 dB 흡수 영향을 받는 최고 주파수(MHz)"
+  ],
+  "経路全体の損失やMUFではありません。0は吸収影響周波数0 MHz、欠測はnull。": [
+    "Not total path loss or MUF. 0 means 0 MHz affected by absorption; missing is null.",
+    "Ni perte totale du trajet ni MUF. 0 = 0 MHz affecté par l’absorption ; manquant = null.",
+    "No es pérdida total del trayecto ni MUF. 0 = 0 MHz afectados por absorción; sin datos = null.",
+    "Non è perdita totale del percorso né MUF. 0 = 0 MHz interessati dall’assorbimento; mancante = null.",
+    "Não é perda total do percurso nem MUF. 0 = 0 MHz afetado por absorção; ausente = null.",
+    "Weder Gesamtpfaddämpfung noch MUF. 0 = 0 MHz von Absorption betroffen; fehlend = null.",
+    "경로 전체 손실이나 MUF가 아닙니다. 0은 흡수 영향 주파수 0 MHz, 결측은 null."
+  ],
+  "F領域のみ。距離別LUF/MUFは観測地点上空の垂直観測から導出した参考値で、指定回線の実測値ではありません。": [
+    "F region only. LUF/MUF by distance are reference values derived from vertical soundings above each station, not measurements of your link.",
+    "Région F uniquement. Les LUF/MUF par distance sont des valeurs de référence issues des sondages verticaux au-dessus de chaque station, pas des mesures de votre liaison.",
+    "Solo región F. Los LUF/MUF por distancia son valores de referencia derivados de sondeos verticales sobre cada estación, no mediciones de su enlace.",
+    "Solo regione F. LUF/MUF per distanza sono valori di riferimento ricavati da sondaggi verticali sopra ogni stazione, non misure del tuo collegamento.",
+    "Somente região F. LUF/MUF por distância são valores de referência derivados de sondagens verticais sobre cada estação, não medições do seu enlace.",
+    "Nur F-Region. LUF/MUF nach Entfernung sind aus Vertikallotungen über jeder Station abgeleitete Referenzwerte, keine Messungen Ihrer Verbindung.",
+    "F 영역만. 거리별 LUF/MUF는 관측 지점 상공의 수직 관측에서 도출한 참고값이며 지정 경로의 실측값이 아닙니다."
+  ],
+  "自動読取・垂直観測からの推定": [
+    "Auto-scaled, estimated from vertical soundings",
+    "Lecture automatique, estimée à partir de sondages verticaux",
+    "Lectura automática, estimada a partir de sondeos verticales",
+    "Lettura automatica, stimata da sondaggi verticali",
+    "Leitura automática, estimada a partir de sondagens verticais",
+    "Automatisch ausgewertet, aus Vertikallotungen geschätzt",
+    "자동 판독·수직 관측에서 추정"
+  ],
+  "取得再試行待ち／通信またはデータ形式を確認してください": [
+    "Waiting to retry the fetch; check the connection or data format",
+    "En attente de nouvel essai ; vérifiez la connexion ou le format des données",
+    "Esperando para reintentar; compruebe la conexión o el formato de datos",
+    "In attesa di riprovare; controlla la connessione o il formato dei dati",
+    "Aguardando nova tentativa; verifique a conexão ou o formato dos dados",
+    "Warte auf erneuten Abruf; Verbindung oder Datenformat prüfen",
+    "가져오기 재시도 대기 중 / 통신 또는 데이터 형식을 확인하세요"
+  ],
+  "観測・障害情報は現在の状況。SSN取得方法で実効SSNを選んだ計算だけ、foF2観測からSSNを求めて使います。それ以外は月間VOACAP結果の信頼度・SNR・MUFを変更しません。": [
+    "Observations and disturbance information show current conditions. Only calculations whose SSN source is effective SSN derive the SSN from foF2 observations. Otherwise they do not change the reliability, SNR or MUF of the monthly VOACAP results.",
+    "Les observations et perturbations reflètent la situation actuelle. Seuls les calculs dont la source SSN est le SSN effectif dérivent le SSN des observations foF2. Sinon, la fiabilité, le SNR et la MUF des résultats VOACAP mensuels ne changent pas.",
+    "Las observaciones y perturbaciones muestran la situación actual. Solo los cálculos cuya fuente de SSN es el SSN efectivo obtienen el SSN de las observaciones foF2. En los demás casos no cambian la fiabilidad, el SNR ni la MUF de los resultados VOACAP mensuales.",
+    "Osservazioni e disturbi mostrano la situazione attuale. Solo i calcoli con fonte SSN effettivo ricavano l’SSN dalle osservazioni foF2. Negli altri casi affidabilità, SNR e MUF dei risultati VOACAP mensili non cambiano.",
+    "Observações e perturbações mostram a situação atual. Somente cálculos com fonte de SSN efetivo derivam o SSN das observações foF2. Nos demais, a confiabilidade, o SNR e a MUF dos resultados VOACAP mensais não mudam.",
+    "Messungen und Störungsmeldungen zeigen die aktuelle Lage. Nur Berechnungen mit effektiver SSN als SSN-Quelle leiten die SSN aus foF2-Messungen ab. Sonst bleiben Zuverlässigkeit, SNR und MUF der monatlichen VOACAP-Ergebnisse unverändert.",
+    "관측·장애 정보는 현재 상황입니다. SSN 취득 방법으로 실효 SSN을 선택한 계산만 foF2 관측에서 SSN을 구해 사용합니다. 그 외에는 월간 VOACAP 결과의 신뢰도·SNR·MUF를 변경하지 않습니다."
+  ],
+  "海外観測局が不正です": [
+    "Invalid overseas station",
+    "Station étrangère invalide",
+    "Estación extranjera no válida",
+    "Stazione estera non valida",
+    "Estação estrangeira inválida",
+    "Ungültige Auslandsstation",
+    "해외 관측소가 올바르지 않습니다"
+  ],
+  "GIRO利用条件に適合する環境でHF_GIRO_ENABLED=1を設定してください。": [
+    "Set HF_GIRO_ENABLED=1 in an environment that meets the GIRO terms of use.",
+    "Définissez HF_GIRO_ENABLED=1 dans un environnement conforme aux conditions GIRO.",
+    "Configure HF_GIRO_ENABLED=1 en un entorno que cumpla las condiciones de GIRO.",
+    "Imposta HF_GIRO_ENABLED=1 in un ambiente conforme alle condizioni GIRO.",
+    "Defina HF_GIRO_ENABLED=1 em um ambiente que atenda às condições do GIRO.",
+    "HF_GIRO_ENABLED=1 in einer Umgebung setzen, die die GIRO-Nutzungsbedingungen erfüllt.",
+    "GIRO 이용 조건에 맞는 환경에서 HF_GIRO_ENABLED=1을 설정하세요."
+  ],
+  "SSNのみ計算入力に使用。F10.7・R/S/Gは参考表示です。瞬時の電離圏・磁気嵐による補正は行いません。NOAA公表SSNを無変換で使用し、旧VOACAP係数との尺度校正は未検証です。": [
+    "Only SSN is used as calculation input. F10.7 and R/S/G are for reference. No correction is made for the instantaneous ionosphere or geomagnetic storms. The NOAA SSN is used unconverted; scale calibration against the older VOACAP coefficients is unverified.",
+    "Seul le SSN sert d’entrée au calcul. F10.7 et R/S/G sont indicatifs. Aucune correction pour l’ionosphère instantanée ni les orages géomagnétiques. Le SSN NOAA est utilisé tel quel ; l’étalonnage par rapport aux anciens coefficients VOACAP n’est pas vérifié.",
+    "Solo el SSN se usa como entrada del cálculo. F10.7 y R/S/G son de referencia. No se corrige por la ionosfera instantánea ni por tormentas geomagnéticas. El SSN de NOAA se usa sin convertir; la calibración de escala con los antiguos coeficientes VOACAP no está verificada.",
+    "Solo l’SSN è usato come input del calcolo. F10.7 e R/S/G sono indicativi. Nessuna correzione per la ionosfera istantanea o le tempeste geomagnetiche. L’SSN NOAA è usato senza conversione; la calibrazione di scala con i vecchi coefficienti VOACAP non è verificata.",
+    "Somente o SSN é usado como entrada do cálculo. F10.7 e R/S/G são de referência. Não há correção para a ionosfera instantânea nem tempestades geomagnéticas. O SSN da NOAA é usado sem conversão; a calibração de escala com os antigos coeficientes VOACAP não foi verificada.",
+    "Nur die SSN fließt in die Berechnung ein. F10.7 und R/S/G sind Referenzwerte. Keine Korrektur für momentane Ionosphäre oder geomagnetische Stürme. Die NOAA-SSN wird unverändert verwendet; die Skalenkalibrierung gegen ältere VOACAP-Koeffizienten ist ungeprüft.",
+    "SSN만 계산 입력에 사용합니다. F10.7·R/S/G는 참고 표시입니다. 순간 전리권·자기 폭풍에 의한 보정은 하지 않습니다. NOAA 공표 SSN을 변환 없이 사용하며 구 VOACAP 계수와의 척도 교정은 미검증입니다."
+  ],
+  "取得を再試行待ちです": [
+    "Waiting to retry the fetch",
+    "En attente de nouvel essai",
+    "Esperando para reintentar",
+    "In attesa di riprovare",
+    "Aguardando nova tentativa",
+    "Warte auf erneuten Abruf",
+    "가져오기 재시도 대기 중입니다"
+  ],
+  "SSN取得方法が不正です": [
+    "Invalid SSN source",
+    "Source SSN invalide",
+    "Fuente de SSN no válida",
+    "Fonte SSN non valida",
+    "Fonte de SSN inválida",
+    "Ungültige SSN-Quelle",
+    "SSN 취득 방법이 올바르지 않습니다"
+  ],
+  "対象年月の新鮮な平滑SSNを取得できません。年月を確認するか手動入力に切り替えてください。": [
+    "Cannot fetch a current smoothed SSN for the target month. Check the year and month or switch to manual input.",
+    "Impossible d’obtenir un SSN lissé récent pour le mois visé. Vérifiez l’année et le mois ou passez en saisie manuelle.",
+    "No se puede obtener un SSN suavizado actual para el mes objetivo. Compruebe el año y el mes o cambie a entrada manual.",
+    "Impossibile ottenere un SSN livellato aggiornato per il mese scelto. Controlla anno e mese o passa all’inserimento manuale.",
+    "Não foi possível obter um SSN suavizado atual para o mês alvo. Verifique ano e mês ou mude para entrada manual.",
+    "Keine aktuelle geglättete SSN für den Zielmonat abrufbar. Jahr und Monat prüfen oder auf manuelle Eingabe umstellen.",
+    "대상 연월의 최신 평활 SSN을 가져올 수 없습니다. 연월을 확인하거나 수동 입력으로 전환하세요."
+  ],
+  "NOAAデータを取得できませんでした": [
+    "Could not fetch NOAA data",
+    "Impossible d’obtenir les données NOAA",
+    "No se pudieron obtener los datos de NOAA",
+    "Impossibile scaricare i dati NOAA",
+    "Não foi possível obter os dados da NOAA",
+    "NOAA-Daten konnten nicht abgerufen werden",
+    "NOAA 데이터를 가져오지 못했습니다"
+  ],
+  "観測地点上空のfoF2に、VOACAP（CCIR係数）の同じ地点・月・時刻のfoF2が一致するSSNを局ごとに求め、中央値を計算に使います。観測時点の電離圏を月間予察へ当てはめる近似で、磁気嵐中の急変や観測局から遠い経路の差は補正しません。対象年月が現在の月のときだけ使えます。": [
+    "For each station, the SSN at which VOACAP (CCIR coefficients) gives the observed foF2 for the same place, month and time is found, and the median is used. This approximates the monthly forecast with the ionosphere at observation time and does not correct for sudden changes during storms or for paths far from the stations. Available only when the target month is the current month.",
+    "Pour chaque station, on cherche le SSN pour lequel VOACAP (coefficients CCIR) donne la foF2 observée au même lieu, mois et heure, puis on utilise la médiane. Cette approximation applique l’ionosphère du moment à la prévision mensuelle et ne corrige ni les variations brusques pendant les orages ni les trajets éloignés des stations. Disponible uniquement si le mois visé est le mois en cours.",
+    "Para cada estación se busca el SSN con el que VOACAP (coeficientes CCIR) da la foF2 observada en el mismo lugar, mes y hora, y se usa la mediana. Es una aproximación que aplica la ionosfera del momento a la predicción mensual y no corrige cambios bruscos durante tormentas ni trayectos lejanos a las estaciones. Solo disponible cuando el mes objetivo es el actual.",
+    "Per ogni stazione si cerca l’SSN con cui VOACAP (coefficienti CCIR) restituisce la foF2 osservata nello stesso luogo, mese e ora, e se ne usa la mediana. È un’approssimazione che applica la ionosfera del momento alla previsione mensile e non corregge variazioni improvvise durante le tempeste né percorsi lontani dalle stazioni. Disponibile solo se il mese scelto è quello corrente.",
+    "Para cada estação, procura-se o SSN com o qual o VOACAP (coeficientes CCIR) fornece a foF2 observada no mesmo local, mês e horário, e usa-se a mediana. É uma aproximação que aplica a ionosfera do momento à previsão mensal e não corrige mudanças bruscas durante tempestades nem percursos distantes das estações. Disponível apenas quando o mês alvo é o atual.",
+    "Für jede Station wird die SSN gesucht, bei der VOACAP (CCIR-Koeffizienten) die gemessene foF2 für Ort, Monat und Uhrzeit liefert; verwendet wird der Median. Diese Näherung überträgt die aktuelle Ionosphäre auf die Monatsprognose und korrigiert weder Sprünge bei Stürmen noch Pfade fern der Stationen. Nur verfügbar, wenn der Zielmonat der aktuelle Monat ist.",
+    "관측 지점 상공의 foF2에 대해, VOACAP(CCIR 계수)의 같은 지점·월·시각 foF2가 일치하는 SSN을 관측소별로 구하고 중앙값을 계산에 사용합니다. 관측 시점의 전리권을 월간 예측에 적용하는 근사이며, 자기 폭풍 중 급변이나 관측소에서 먼 경로의 차이는 보정하지 않습니다. 대상 연월이 현재 월일 때만 사용할 수 있습니다."
+  ],
+  "VOACAPの電離層出力を解釈できません": [
+    "Cannot parse the VOACAP ionosphere output",
+    "Impossible d’interpréter la sortie ionosphérique de VOACAP",
+    "No se puede interpretar la salida ionosférica de VOACAP",
+    "Impossibile interpretare l’output ionosferico di VOACAP",
+    "Não foi possível interpretar a saída ionosférica do VOACAP",
+    "VOACAP-Ionosphärenausgabe nicht auswertbar",
+    "VOACAP 전리층 출력을 해석할 수 없습니다"
+  ],
+  "実効SSNは現在の月（UTC）の計算にだけ使えます。対象年月を今月にするか、別のSSN取得方法を選んでください。": [
+    "Effective SSN can be used only for the current month (UTC). Set the target to this month or choose another SSN source.",
+    "Le SSN effectif ne sert qu’au mois en cours (UTC). Choisissez ce mois ou une autre source SSN.",
+    "El SSN efectivo solo sirve para el mes actual (UTC). Elija este mes u otra fuente de SSN.",
+    "L’SSN effettivo vale solo per il mese corrente (UTC). Scegli questo mese o un’altra fonte SSN.",
+    "O SSN efetivo só pode ser usado no mês atual (UTC). Escolha este mês ou outra fonte de SSN.",
+    "Effektive SSN gilt nur für den aktuellen Monat (UTC). Diesen Monat oder eine andere SSN-Quelle wählen.",
+    "실효 SSN은 현재 월(UTC) 계산에만 사용할 수 있습니다. 대상 연월을 이번 달로 하거나 다른 SSN 취득 방법을 선택하세요."
+  ],
+  "新しいfoF2観測が{min}局以上そろいません（使用可能 {count}局）。観測データを更新するか、別のSSN取得方法を選んでください。": [
+    "Fewer than {min} recent foF2 observations are available (usable: {count}). Update the observations or choose another SSN source.",
+    "Moins de {min} observations foF2 récentes disponibles (utilisables : {count}). Mettez à jour les observations ou choisissez une autre source SSN.",
+    "Hay menos de {min} observaciones foF2 recientes (utilizables: {count}). Actualice las observaciones o elija otra fuente de SSN.",
+    "Meno di {min} osservazioni foF2 recenti disponibili (utilizzabili: {count}). Aggiorna le osservazioni o scegli un’altra fonte SSN.",
+    "Menos de {min} observações foF2 recentes disponíveis (utilizáveis: {count}). Atualize as observações ou escolha outra fonte de SSN.",
+    "Weniger als {min} aktuelle foF2-Messungen (nutzbar: {count}). Messungen aktualisieren oder andere SSN-Quelle wählen.",
+    "새 foF2 관측이 {min}개소 이상 모이지 않았습니다(사용 가능 {count}개소). 관측 데이터를 갱신하거나 다른 SSN 취득 방법을 선택하세요."
+  ],
+  "この地点・時刻ではfoF2がSSNに比例しないため除外": [
+    "Excluded: foF2 does not scale with SSN at this place and time",
+    "Exclu : la foF2 ne varie pas avec le SSN à ce lieu et cette heure",
+    "Excluido: la foF2 no varía con el SSN en este lugar y hora",
+    "Escluso: la foF2 non varia con l’SSN in questo luogo e ora",
+    "Excluído: a foF2 não varia com o SSN neste local e horário",
+    "Ausgeschlossen: foF2 skaliert hier und zu dieser Zeit nicht mit der SSN",
+    "이 지점·시각에서는 foF2가 SSN에 비례하지 않아 제외"
+  ],
+  "太陽活動の範囲外の値（自動読取の誤りの可能性）のため除外": [
+    "Excluded: value outside the solar-activity range (possible auto-scaling error)",
+    "Exclu : valeur hors de la plage d’activité solaire (erreur de lecture automatique possible)",
+    "Excluido: valor fuera del rango de actividad solar (posible error de lectura automática)",
+    "Escluso: valore fuori dall’intervallo di attività solare (possibile errore di lettura automatica)",
+    "Excluído: valor fora da faixa de atividade solar (possível erro de leitura automática)",
+    "Ausgeschlossen: Wert außerhalb der Sonnenaktivität (möglicher Auswertungsfehler)",
+    "태양 활동 범위 밖의 값(자동 판독 오류 가능성)이라 제외"
+  ],
+  "bandwidth: 範囲外です": [
+    "bandwidth: out of range",
+    "bandwidth : hors plage",
+    "bandwidth: fuera de rango",
+    "bandwidth: fuori intervallo",
+    "bandwidth: fora do intervalo",
+    "bandwidth: außerhalb des Bereichs",
+    "bandwidth: 범위를 벗어났습니다"
+  ],
+  "modulation: 電波型式は3文字（例 J3E）で指定してください": [
+    "modulation: enter the emission class as 3 characters (e.g. J3E)",
+    "modulation : saisissez la classe d’émission en 3 caractères (ex. J3E)",
+    "modulation: indique la clase de emisión con 3 caracteres (p. ej. J3E)",
+    "modulation: indica la classe di emissione con 3 caratteri (es. J3E)",
+    "modulation: informe a classe de emissão com 3 caracteres (ex. J3E)",
+    "modulation: Sendeart mit 3 Zeichen angeben (z. B. J3E)",
+    "modulation: 전파 형식은 3문자(예: J3E)로 지정하세요"
+  ],
+  "bandwidth: 占有帯域幅は表記法（例 3K00、500H）で指定してください": [
+    "bandwidth: enter the occupied bandwidth in designator form (e.g. 3K00, 500H)",
+    "bandwidth : saisissez la largeur de bande occupée au format normalisé (ex. 3K00, 500H)",
+    "bandwidth: indique el ancho de banda ocupado en notación normalizada (p. ej. 3K00, 500H)",
+    "bandwidth: indica la larghezza di banda occupata in notazione normalizzata (es. 3K00, 500H)",
+    "bandwidth: informe a largura de banda ocupada na notação padrão (ex. 3K00, 500H)",
+    "bandwidth: belegte Bandbreite in Normschreibweise angeben (z. B. 3K00, 500H)",
+    "bandwidth: 점유 대역폭은 표기법(예: 3K00, 500H)으로 지정하세요"
+  ],
+  "bandwidth: 占有帯域幅を指定してください": [
+    "bandwidth: enter the occupied bandwidth",
+    "bandwidth : saisissez la largeur de bande occupée",
+    "bandwidth: indique el ancho de banda ocupado",
+    "bandwidth: indica la larghezza di banda occupata",
+    "bandwidth: informe a largura de banda ocupada",
+    "bandwidth: belegte Bandbreite angeben",
+    "bandwidth: 점유 대역폭을 지정하세요"
+  ],
+  "azimuth_mode: fixed/pathで指定してください": [
+    "azimuth_mode: use fixed or path",
+    "azimuth_mode : utilisez fixed ou path",
+    "azimuth_mode: use fixed o path",
+    "azimuth_mode: usa fixed o path",
+    "azimuth_mode: use fixed ou path",
+    "azimuth_mode: fixed oder path angeben",
+    "azimuth_mode: fixed/path로 지정하세요"
+  ],
+  "ログペリの給電点高は0.1 m以上です": [
+    "A log-periodic feed point must be at least 0.1 m high",
+    "Le point d’alimentation d’une log-périodique doit être à au moins 0,1 m",
+    "El punto de alimentación de una log-periódica debe estar a 0,1 m o más",
+    "Il punto di alimentazione di una log-periodica deve essere ad almeno 0,1 m",
+    "O ponto de alimentação de uma log-periódica deve ter pelo menos 0,1 m",
+    "Der Speisepunkt einer Logperiodischen muss mindestens 0,1 m hoch sein",
+    "로그 주기의 급전점 높이는 0.1 m 이상입니다"
+  ],
+  "逆Lの垂直部の高さは0.1 m以上です": [
+    "The vertical section of an inverted L must be at least 0.1 m high",
+    "La partie verticale d’un L inversé doit mesurer au moins 0,1 m",
+    "La parte vertical de una L invertida debe medir 0,1 m o más",
+    "La parte verticale di una L rovesciata deve essere alta almeno 0,1 m",
+    "A parte vertical de um L invertido deve ter pelo menos 0,1 m",
+    "Der vertikale Teil einer Inverted-L muss mindestens 0,1 m hoch sein",
+    "역L의 수직부 높이는 0.1 m 이상입니다"
+  ],
+  "水平ダイポールの地上高は0.1 m以上です": [
+    "A horizontal dipole must be at least 0.1 m above ground",
+    "Un dipôle horizontal doit être à au moins 0,1 m du sol",
+    "Un dipolo horizontal debe estar a 0,1 m o más del suelo",
+    "Un dipolo orizzontale deve essere ad almeno 0,1 m dal suolo",
+    "Um dipolo horizontal deve estar a pelo menos 0,1 m do solo",
+    "Ein horizontaler Dipol muss mindestens 0,1 m über dem Boden sein",
+    "수평 다이폴의 지상고는 0.1 m 이상입니다"
+  ],
+  "JSONオブジェクトが必要です": [
+    "A JSON object is required",
+    "Un objet JSON est requis",
+    "Se requiere un objeto JSON",
+    "È richiesto un oggetto JSON",
+    "É necessário um objeto JSON",
+    "JSON-Objekt erforderlich",
+    "JSON 객체가 필요합니다"
+  ],
+  "送信電力・ログペリ利得補正・偏波損失の組合せが計算範囲外です": [
+    "The combination of transmit power, log-periodic gain correction and polarization loss is outside the calculation range",
+    "La combinaison puissance d’émission, correction de gain log-périodique et perte de polarisation est hors plage de calcul",
+    "La combinación de potencia de transmisión, corrección de ganancia log-periódica y pérdida de polarización está fuera del rango de cálculo",
+    "La combinazione di potenza, correzione del guadagno log-periodico e perdita di polarizzazione è fuori dall’intervallo di calcolo",
+    "A combinação de potência de transmissão, correção de ganho log-periódico e perda de polarização está fora da faixa de cálculo",
+    "Die Kombination aus Sendeleistung, Logper-Gewinnkorrektur und Polarisationsverlust liegt außerhalb des Rechenbereichs",
+    "송신 전력·로그 주기 이득 보정·편파 손실의 조합이 계산 범위를 벗어났습니다"
+  ],
+  "周波数は1〜11個で指定してください": [
+    "Enter 1 to 11 frequencies",
+    "Indiquez 1 à 11 fréquences",
+    "Indique de 1 a 11 frecuencias",
+    "Indica da 1 a 11 frequenze",
+    "Informe de 1 a 11 frequências",
+    "1 bis 11 Frequenzen angeben",
+    "주파수는 1~11개로 지정하세요"
+  ],
+  "VOACAP出力を解釈できません。生出力とエンジン設定を確認してください。": [
+    "Cannot parse the VOACAP output. Check the raw output and engine settings.",
+    "Impossible d’interpréter la sortie VOACAP. Vérifiez la sortie brute et la configuration du moteur.",
+    "No se puede interpretar la salida de VOACAP. Revise la salida bruta y la configuración del motor.",
+    "Impossibile interpretare l’output VOACAP. Controlla l’output grezzo e le impostazioni del motore.",
+    "Não foi possível interpretar a saída do VOACAP. Verifique a saída bruta e a configuração do motor.",
+    "VOACAP-Ausgabe nicht auswertbar. Rohausgabe und Engine-Einstellungen prüfen.",
+    "VOACAP 출력을 해석할 수 없습니다. 원시 출력과 엔진 설정을 확인하세요."
+  ],
+  "アンテナが不正です": [
+    "Invalid antenna",
+    "Antenne invalide",
+    "Antena no válida",
+    "Antenna non valida",
+    "Antena inválida",
+    "Ungültige Antenne",
+    "안테나가 올바르지 않습니다"
+  ],
+  "計算エンジンが準備されていません。docker compose up --build で起動してください。": [
+    "The calculation engine is not ready. Start it with docker compose up --build.",
+    "Le moteur de calcul n’est pas prêt. Lancez-le avec docker compose up --build.",
+    "El motor de cálculo no está listo. Inícielo con docker compose up --build.",
+    "Il motore di calcolo non è pronto. Avvialo con docker compose up --build.",
+    "O motor de cálculo não está pronto. Inicie-o com docker compose up --build.",
+    "Die Rechen-Engine ist nicht bereit. Mit docker compose up --build starten.",
+    "계산 엔진이 준비되지 않았습니다. docker compose up --build로 시작하세요."
+  ],
+  "24時間の結果が揃いません（{count}時間）": [
+    "The 24-hour results are incomplete ({count} hours)",
+    "Les résultats sur 24 heures sont incomplets ({count} heures)",
+    "Los resultados de 24 horas están incompletos ({count} horas)",
+    "I risultati delle 24 ore sono incompleti ({count} ore)",
+    "Os resultados de 24 horas estão incompletos ({count} horas)",
+    "Die 24-Stunden-Ergebnisse sind unvollständig ({count} Stunden)",
+    "24시간 결과가 갖춰지지 않았습니다({count}시간)"
+  ],
+  "{field}: 設定値が不正です": [
+    "{field}: invalid setting",
+    "{field} : réglage invalide",
+    "{field}: valor no válido",
+    "{field}: valore non valido",
+    "{field}: valor inválido",
+    "{field}: ungültige Einstellung",
+    "{field}: 설정값이 올바르지 않습니다"
+  ],
+  "計算が60秒を超えました。条件を見直してください。": [
+    "The calculation took longer than 60 seconds. Review the conditions.",
+    "Le calcul a dépassé 60 secondes. Revoyez les conditions.",
+    "El cálculo superó los 60 segundos. Revise las condiciones.",
+    "Il calcolo ha superato i 60 secondi. Rivedi le condizioni.",
+    "O cálculo passou de 60 segundos. Revise as condições.",
+    "Die Berechnung dauerte über 60 Sekunden. Bedingungen prüfen.",
+    "계산이 60초를 넘었습니다. 조건을 재검토하세요."
+  ],
+  "VOACAP計算に失敗しました: {detail}": [
+    "VOACAP calculation failed: {detail}",
+    "Échec du calcul VOACAP : {detail}",
+    "Falló el cálculo de VOACAP: {detail}",
+    "Calcolo VOACAP non riuscito: {detail}",
+    "O cálculo do VOACAP falhou: {detail}",
+    "VOACAP-Berechnung fehlgeschlagen: {detail}",
+    "VOACAP 계산에 실패했습니다: {detail}"
+  ],
+  "計算に失敗しました。サーバーログを確認してください。": [
+    "Calculation failed. Check the server log.",
+    "Échec du calcul. Consultez le journal du serveur.",
+    "Falló el cálculo. Revise el registro del servidor.",
+    "Calcolo non riuscito. Controlla il log del server.",
+    "O cálculo falhou. Verifique o log do servidor.",
+    "Berechnung fehlgeschlagen. Serverprotokoll prüfen.",
+    "계산에 실패했습니다. 서버 로그를 확인하세요."
+  ],
+  "読み込みに失敗しました。サーバーログを確認してください。": [
+    "Loading failed. Check the server log.",
+    "Échec du chargement. Consultez le journal du serveur.",
+    "Falló la carga. Revise el registro del servidor.",
+    "Caricamento non riuscito. Controlla il log del server.",
+    "O carregamento falhou. Verifique o log do servidor.",
+    "Laden fehlgeschlagen. Serverprotokoll prüfen.",
+    "불러오기에 실패했습니다. 서버 로그를 확인하세요."
+  ],
+  "mesh_sites: 拠点を2〜{count}地点指定してください": [
+    "mesh_sites: specify 2 to {count} stations",
+    "mesh_sites : indiquez 2 à {count} stations",
+    "mesh_sites: indique de 2 a {count} estaciones",
+    "mesh_sites: indica da 2 a {count} stazioni",
+    "mesh_sites: informe de 2 a {count} estações",
+    "mesh_sites: 2 bis {count} Stationen angeben",
+    "mesh_sites: 거점을 2~{count}곳 지정하세요"
+  ],
+  "拠点はJSONオブジェクトで指定してください": [
+    "Specify each station as a JSON object",
+    "Indiquez chaque station sous forme d’objet JSON",
+    "Indique cada estación como objeto JSON",
+    "Indica ogni stazione come oggetto JSON",
+    "Informe cada estação como objeto JSON",
+    "Jede Station als JSON-Objekt angeben",
+    "거점은 JSON 객체로 지정하세요"
+  ],
+  "拠点名は制御文字を含まない1〜40文字で指定してください": [
+    "Station names must be 1–40 characters without control characters",
+    "Le nom de station doit compter 1 à 40 caractères sans caractère de contrôle",
+    "El nombre de la estación debe tener de 1 a 40 caracteres sin caracteres de control",
+    "Il nome della stazione deve avere da 1 a 40 caratteri senza caratteri di controllo",
+    "O nome da estação deve ter de 1 a 40 caracteres, sem caracteres de controle",
+    "Stationsnamen müssen 1–40 Zeichen ohne Steuerzeichen haben",
+    "거점 이름은 제어 문자를 포함하지 않는 1~40자로 지정하세요"
+  ],
+  "拠点名は重複しないように指定してください": [
+    "Station names must be unique",
+    "Les noms de station doivent être uniques",
+    "Los nombres de estación deben ser únicos",
+    "I nomi delle stazioni devono essere univoci",
+    "Os nomes das estações devem ser únicos",
+    "Stationsnamen müssen eindeutig sein",
+    "거점 이름이 중복되지 않게 지정하세요"
+  ],
+  "拠点を1 km以上離してください: {a} / {b}": [
+    "Stations must be at least 1 km apart: {a} / {b}",
+    "Les stations doivent être à au moins 1 km l’une de l’autre : {a} / {b}",
+    "Las estaciones deben estar a 1 km o más: {a} / {b}",
+    "Le stazioni devono distare almeno 1 km: {a} / {b}",
+    "As estações devem estar a pelo menos 1 km: {a} / {b}",
+    "Stationen müssen mindestens 1 km auseinanderliegen: {a} / {b}",
+    "거점을 1 km 이상 떨어뜨리세요: {a} / {b}"
+  ],
+  "{name}: receiveはJSONオブジェクトで指定してください": [
+    "{name}: receive must be a JSON object",
+    "{name} : receive doit être un objet JSON",
+    "{name}: receive debe ser un objeto JSON",
+    "{name}: receive deve essere un oggetto JSON",
+    "{name}: receive deve ser um objeto JSON",
+    "{name}: receive muss ein JSON-Objekt sein",
+    "{name}: receive는 JSON 객체로 지정하세요"
+  ],
+  "rx_sites: RXサイトを2〜8地点指定してください": [
+    "rx_sites: specify 2 to 8 RX sites",
+    "rx_sites : indiquez 2 à 8 sites RX",
+    "rx_sites: indique de 2 a 8 sitios RX",
+    "rx_sites: indica da 2 a 8 siti RX",
+    "rx_sites: informe de 2 a 8 locais RX",
+    "rx_sites: 2 bis 8 RX-Standorte angeben",
+    "rx_sites: RX 사이트를 2~8곳 지정하세요"
+  ],
+  "independence_assumption: true/falseを指定してください": [
+    "independence_assumption: use true or false",
+    "independence_assumption : utilisez true ou false",
+    "independence_assumption: use true o false",
+    "independence_assumption: usa true o false",
+    "independence_assumption: use true ou false",
+    "independence_assumption: true oder false angeben",
+    "independence_assumption: true/false를 지정하세요"
+  ],
+  "RXサイトはJSONオブジェクトで指定してください": [
+    "Specify each RX site as a JSON object",
+    "Indiquez chaque site RX sous forme d’objet JSON",
+    "Indique cada sitio RX como objeto JSON",
+    "Indica ogni sito RX come oggetto JSON",
+    "Informe cada local RX como objeto JSON",
+    "Jeden RX-Standort als JSON-Objekt angeben",
+    "RX 사이트는 JSON 객체로 지정하세요"
+  ],
+  "サイト名は制御文字を含まない1〜40文字で指定してください": [
+    "Site names must be 1–40 characters without control characters",
+    "Le nom de site doit compter 1 à 40 caractères sans caractère de contrôle",
+    "El nombre del sitio debe tener de 1 a 40 caracteres sin caracteres de control",
+    "Il nome del sito deve avere da 1 a 40 caratteri senza caratteri di controllo",
+    "O nome do local deve ter de 1 a 40 caracteres, sem caracteres de controle",
+    "Standortnamen müssen 1–40 Zeichen ohne Steuerzeichen haben",
+    "사이트 이름은 제어 문자를 포함하지 않는 1~40자로 지정하세요"
+  ],
+  "サイト名は重複しないように指定してください": [
+    "Site names must be unique",
+    "Les noms de site doivent être uniques",
+    "Los nombres de sitio deben ser únicos",
+    "I nomi dei siti devono essere univoci",
+    "Os nomes dos locais devem ser únicos",
+    "Standortnamen müssen eindeutig sein",
+    "사이트 이름이 중복되지 않게 지정하세요"
+  ],
+  "presetオブジェクトが必要です": [
+    "A preset object is required",
+    "Un objet preset est requis",
+    "Se requiere un objeto preset",
+    "È richiesto un oggetto preset",
+    "É necessário um objeto preset",
+    "Preset-Objekt erforderlich",
+    "preset 객체가 필요합니다"
+  ],
+  "局名は表示可能な1〜40文字で指定してください": [
+    "Station names must be 1–40 printable characters",
+    "Le nom de station doit compter 1 à 40 caractères affichables",
+    "El nombre de la estación debe tener de 1 a 40 caracteres imprimibles",
+    "Il nome della stazione deve avere da 1 a 40 caratteri stampabili",
+    "O nome da estação deve ter de 1 a 40 caracteres imprimíveis",
+    "Stationsnamen müssen 1–40 druckbare Zeichen haben",
+    "국명은 표시 가능한 1~40자로 지정하세요"
+  ],
+  "地点種別はfixed/mobileです": [
+    "Location type must be fixed or mobile",
+    "Le type de lieu doit être fixed ou mobile",
+    "El tipo de ubicación debe ser fixed o mobile",
+    "Il tipo di località deve essere fixed o mobile",
+    "O tipo de local deve ser fixed ou mobile",
+    "Standorttyp muss fixed oder mobile sein",
+    "지점 종별은 fixed/mobile입니다"
+  ],
+  "地域名が不正です": [
+    "Invalid region name",
+    "Nom de région invalide",
+    "Nombre de región no válido",
+    "Nome della regione non valido",
+    "Nome de região inválido",
+    "Ungültiger Regionsname",
+    "지역명이 올바르지 않습니다"
+  ],
+  "基準アンテナモデルが不正です": [
+    "Invalid base antenna model",
+    "Modèle d’antenne de base invalide",
+    "Modelo de antena base no válido",
+    "Modello di antenna di base non valido",
+    "Modelo de antena base inválido",
+    "Ungültiges Basis-Antennenmodell",
+    "기준 안테나 모델이 올바르지 않습니다"
+  ],
+  "reference_onlyはtrue/falseです": [
+    "reference_only must be true or false",
+    "reference_only doit être true ou false",
+    "reference_only debe ser true o false",
+    "reference_only deve essere true o false",
+    "reference_only deve ser true ou false",
+    "reference_only muss true oder false sein",
+    "reference_only는 true/false입니다"
+  ],
+  "移動局には受信局のposition_refが必要です": [
+    "A mobile station needs the position_ref of a receiving station",
+    "Une station mobile nécessite le position_ref d’une station reçue",
+    "Una estación móvil necesita el position_ref de una estación recibida",
+    "Una stazione mobile richiede il position_ref di una stazione ricevuta",
+    "Uma estação móvel precisa do position_ref de uma estação recebida",
+    "Eine mobile Station braucht die position_ref einer empfangenen Station",
+    "이동국에는 수신국의 position_ref가 필요합니다"
+  ],
+  "取得したrevision整数が必要です": [
+    "The fetched revision integer is required",
+    "L’entier revision obtenu est requis",
+    "Se requiere el entero revision obtenido",
+    "È richiesto l’intero revision ottenuto",
+    "É necessário o inteiro revision obtido",
+    "Die abgerufene revision-Ganzzahl ist erforderlich",
+    "가져온 revision 정수가 필요합니다"
+  ],
+  "collectionが不正です": [
+    "Invalid collection",
+    "collection invalide",
+    "collection no válida",
+    "collection non valida",
+    "collection inválida",
+    "Ungültige collection",
+    "collection이 올바르지 않습니다"
+  ],
+  "actionはsave/deleteです": [
+    "action must be save or delete",
+    "action doit être save ou delete",
+    "action debe ser save o delete",
+    "action deve essere save o delete",
+    "action deve ser save ou delete",
+    "action muss save oder delete sein",
+    "action은 save/delete입니다"
+  ],
+  "OCRの原本・単位・数値の確認が必要です": [
+    "Confirm the OCR source, units and values",
+    "Confirmez l’original, les unités et les valeurs de l’OCR",
+    "Confirme el original, las unidades y los valores del OCR",
+    "Conferma originale, unità e valori dell’OCR",
+    "Confirme o original, as unidades e os valores do OCR",
+    "OCR-Original, Einheiten und Werte bestätigen",
+    "OCR 원본·단위·수치의 확인이 필요합니다"
+  ],
+  "document_refが不正です": [
+    "Invalid document_ref",
+    "document_ref invalide",
+    "document_ref no válido",
+    "document_ref non valido",
+    "document_ref inválido",
+    "Ungültige document_ref",
+    "document_ref가 올바르지 않습니다"
+  ],
+  "実機特性ではなく近似モデルであることの確認が必要です": [
+    "Confirm that this is an approximate model, not measured hardware characteristics",
+    "Confirmez qu’il s’agit d’un modèle approché et non des caractéristiques réelles",
+    "Confirme que es un modelo aproximado y no las características reales del equipo",
+    "Conferma che si tratta di un modello approssimato e non delle caratteristiche reali",
+    "Confirme que é um modelo aproximado, não as características reais do equipamento",
+    "Bestätigen, dass dies ein Näherungsmodell und keine gemessene Hardwarecharakteristik ist",
+    "실기 특성이 아닌 근사 모델임을 확인해야 합니다"
+  ],
+  "referenceが不正です": [
+    "Invalid reference",
+    "reference invalide",
+    "reference no válida",
+    "reference non valido",
+    "reference inválida",
+    "Ungültige reference",
+    "reference가 올바르지 않습니다"
+  ],
+  "reference.{field}が不正です": [
+    "Invalid reference.{field}",
+    "reference.{field} invalide",
+    "reference.{field} no válido",
+    "reference.{field} non valido",
+    "reference.{field} inválido",
+    "Ungültiges reference.{field}",
+    "reference.{field}가 올바르지 않습니다"
+  ],
+  "source URLが必要です": [
+    "A source URL is required",
+    "Une URL source est requise",
+    "Se requiere una URL de fuente",
+    "È richiesto un URL di origine",
+    "É necessária uma URL de origem",
+    "Quell-URL erforderlich",
+    "source URL이 필요합니다"
+  ],
+  "source URLが不正です": [
+    "Invalid source URL",
+    "URL source invalide",
+    "URL de fuente no válida",
+    "URL di origine non valido",
+    "URL de origem inválida",
+    "Ungültige Quell-URL",
+    "source URL이 올바르지 않습니다"
+  ],
+  "source URLはHTTPSです": [
+    "The source URL must use HTTPS",
+    "L’URL source doit utiliser HTTPS",
+    "La URL de fuente debe usar HTTPS",
+    "L’URL di origine deve usare HTTPS",
+    "A URL de origem deve usar HTTPS",
+    "Die Quell-URL muss HTTPS verwenden",
+    "source URL은 HTTPS여야 합니다"
+  ],
+  "各プリセットは最大200件です": [
+    "Each preset list holds up to 200 entries",
+    "Chaque liste de préréglages compte au plus 200 entrées",
+    "Cada lista de preajustes admite hasta 200 entradas",
+    "Ogni elenco di preset contiene al massimo 200 voci",
+    "Cada lista de predefinições comporta até 200 itens",
+    "Jede Vorlagenliste umfasst höchstens 200 Einträge",
+    "각 프리셋은 최대 200건입니다"
+  ],
+  "指定されたプリセットがありません": [
+    "The specified preset does not exist",
+    "Le préréglage indiqué n’existe pas",
+    "El preajuste indicado no existe",
+    "Il preset indicato non esiste",
+    "A predefinição indicada não existe",
+    "Die angegebene Vorlage existiert nicht",
+    "지정된 프리셋이 없습니다"
+  ],
+  "取込資料がありません": [
+    "The imported document does not exist",
+    "Le document importé n’existe pas",
+    "El documento importado no existe",
+    "Il documento importato non esiste",
+    "O documento importado não existe",
+    "Das importierte Dokument existiert nicht",
+    "가져온 자료가 없습니다"
+  ],
+  "取込資料の候補がありません": [
+    "The imported document has no such candidate",
+    "Le document importé n’a pas ce candidat",
+    "El documento importado no tiene ese candidato",
+    "Il documento importato non ha questo candidato",
+    "O documento importado não tem esse candidato",
+    "Das importierte Dokument hat keinen solchen Kandidaten",
+    "가져온 자료의 후보가 없습니다"
+  ],
+  "プリセット要求の上限は8 KiBです": [
+    "Preset requests are limited to 8 KiB",
+    "Les requêtes de préréglage sont limitées à 8 Kio",
+    "Las solicitudes de preajuste se limitan a 8 KiB",
+    "Le richieste di preset sono limitate a 8 KiB",
+    "As solicitações de predefinição são limitadas a 8 KiB",
+    "Vorlagenanfragen sind auf 8 KiB begrenzt",
+    "프리셋 요청 상한은 8 KiB입니다"
+  ],
+  "プリセットを保存できません": [
+    "Cannot save the preset",
+    "Impossible d’enregistrer le préréglage",
+    "No se puede guardar el preajuste",
+    "Impossibile salvare il preset",
+    "Não foi possível salvar a predefinição",
+    "Vorlage kann nicht gespeichert werden",
+    "프리셋을 저장할 수 없습니다"
+  ],
+  "異なるオリジンからの保存は受け付けません": [
+    "Saves from a different origin are not accepted",
+    "Les enregistrements depuis une autre origine sont refusés",
+    "No se aceptan guardados desde otro origen",
+    "Non si accettano salvataggi da un’altra origine",
+    "Não são aceitos salvamentos de outra origem",
+    "Speichern von einem anderen Ursprung wird nicht angenommen",
+    "다른 출처에서의 저장은 받지 않습니다"
+  ],
+  "見つかりません": [
+    "Not found",
+    "Introuvable",
+    "No encontrado",
+    "Non trovato",
+    "Não encontrado",
+    "Nicht gefunden",
+    "찾을 수 없습니다"
+  ],
+  "指定された履歴がありません": [
+    "The specified history entry does not exist",
+    "L’entrée d’historique indiquée n’existe pas",
+    "La entrada de historial indicada no existe",
+    "La voce di cronologia indicata non esiste",
+    "A entrada de histórico indicada não existe",
+    "Der angegebene Verlaufseintrag existiert nicht",
+    "지정된 이력이 없습니다"
+  ],
+  "出力形式がありません": [
+    "No such output format",
+    "Format de sortie inexistant",
+    "Formato de salida inexistente",
+    "Formato di output inesistente",
+    "Formato de saída inexistente",
+    "Kein solches Ausgabeformat",
+    "출력 형식이 없습니다"
+  ],
+  "リクエストサイズが不正です": [
+    "Invalid request size",
+    "Taille de requête invalide",
+    "Tamaño de solicitud no válido",
+    "Dimensione della richiesta non valida",
+    "Tamanho de solicitação inválido",
+    "Ungültige Anfragegröße",
+    "요청 크기가 올바르지 않습니다"
+  ],
+  "Content-Typeが不正です": [
+    "Invalid Content-Type",
+    "Content-Type invalide",
+    "Content-Type no válido",
+    "Content-Type non valido",
+    "Content-Type inválido",
+    "Ungültiger Content-Type",
+    "Content-Type이 올바르지 않습니다"
+  ],
+  "application/jsonが必要です": [
+    "application/json is required",
+    "application/json est requis",
+    "Se requiere application/json",
+    "È richiesto application/json",
+    "application/json é necessário",
+    "application/json erforderlich",
+    "application/json이 필요합니다"
+  ],
+  "application/json が必要です": [
+    "application/json is required",
+    "application/json est requis",
+    "Se requiere application/json",
+    "È richiesto application/json",
+    "application/json é necessário",
+    "application/json erforderlich",
+    "application/json이 필요합니다"
+  ],
+  "JSONが不正です": [
+    "Invalid JSON",
+    "JSON invalide",
+    "JSON no válido",
+    "JSON non valido",
+    "JSON inválido",
+    "Ungültiges JSON",
+    "JSON이 올바르지 않습니다"
+  ],
+  "異なるオリジンからの計算要求は受け付けません": [
+    "Calculation requests from a different origin are not accepted",
+    "Les demandes de calcul depuis une autre origine sont refusées",
+    "No se aceptan solicitudes de cálculo desde otro origen",
+    "Non si accettano richieste di calcolo da un’altra origine",
+    "Não são aceitas solicitações de cálculo de outra origem",
+    "Rechenanfragen von einem anderen Ursprung werden nicht angenommen",
+    "다른 출처에서의 계산 요청은 받지 않습니다"
+  ],
+  "同一オリジンの画面から操作してください": [
+    "Use the app page on the same origin",
+    "Utilisez la page de l’application sur la même origine",
+    "Use la página de la aplicación en el mismo origen",
+    "Usa la pagina dell’app sulla stessa origine",
+    "Use a página do aplicativo na mesma origem",
+    "Bitte die App-Seite desselben Ursprungs verwenden",
+    "같은 출처의 화면에서 조작하세요"
+  ],
+  "同一オリジンの画面から送ってください": [
+    "Submit from the app page on the same origin",
+    "Envoyez depuis la page de l’application sur la même origine",
+    "Envíe desde la página de la aplicación en el mismo origen",
+    "Invia dalla pagina dell’app sulla stessa origine",
+    "Envie pela página do aplicativo na mesma origem",
+    "Bitte von der App-Seite desselben Ursprungs senden",
+    "같은 출처의 화면에서 보내세요"
+  ],
+  "採用した位置情報が準備中に期限切れになりました。再計算してください。": [
+    "The selected position expired while preparing. Calculate again.",
+    "La position retenue a expiré pendant la préparation. Relancez le calcul.",
+    "La posición elegida caducó durante la preparación. Vuelva a calcular.",
+    "La posizione scelta è scaduta durante la preparazione. Ricalcola.",
+    "A posição escolhida expirou durante a preparação. Calcule novamente.",
+    "Die gewählte Position ist während der Vorbereitung abgelaufen. Erneut berechnen.",
+    "채택한 위치 정보가 준비 중에 만료되었습니다. 다시 계산하세요."
+  ],
+  "外部位置入力は位置ゲートウェイ（既定ポート18083）へ送信してください": [
+    "Send external position input to the position gateway (default port 18083)",
+    "Envoyez les positions externes à la passerelle de position (port 18083 par défaut)",
+    "Envíe las posiciones externas a la pasarela de posiciones (puerto predeterminado 18083)",
+    "Invia le posizioni esterne al gateway di posizione (porta predefinita 18083)",
+    "Envie as posições externas ao gateway de posição (porta padrão 18083)",
+    "Externe Positionen an das Positions-Gateway senden (Standardport 18083)",
+    "외부 위치 입력은 위치 게이트웨이(기본 포트 18083)로 보내세요"
+  ],
+  "局設定は同一オリジンの画面または認証済みクライアントから行ってください": [
+    "Change station settings from the app page on the same origin or an authenticated client",
+    "Modifiez les stations depuis la page de l’application sur la même origine ou un client authentifié",
+    "Cambie la configuración de estaciones desde la página de la aplicación en el mismo origen o un cliente autenticado",
+    "Modifica le stazioni dalla pagina dell’app sulla stessa origine o da un client autenticato",
+    "Altere as estações pela página do aplicativo na mesma origem ou por um cliente autenticado",
+    "Stationseinstellungen über die App-Seite desselben Ursprungs oder einen authentifizierten Client ändern",
+    "국 설정은 같은 출처의 화면 또는 인증된 클라이언트에서 하세요"
+  ],
+  "局設定の上限は4 KiBです": [
+    "Station settings are limited to 4 KiB",
+    "Les réglages de station sont limités à 4 Kio",
+    "La configuración de estación se limita a 4 KiB",
+    "Le impostazioni della stazione sono limitate a 4 KiB",
+    "As configurações de estação são limitadas a 4 KiB",
+    "Stationseinstellungen sind auf 4 KiB begrenzt",
+    "국 설정 상한은 4 KiB입니다"
+  ],
+  "局設定の保存に失敗しました": [
+    "Failed to save the station settings",
+    "Échec de l’enregistrement de la station",
+    "No se pudo guardar la configuración de la estación",
+    "Salvataggio della stazione non riuscito",
+    "Falha ao salvar a configuração da estação",
+    "Stationseinstellungen konnten nicht gespeichert werden",
+    "국 설정 저장에 실패했습니다"
+  ],
+  "APIキーを設定してください": [
+    "Set an API key",
+    "Définissez une clé API",
+    "Configure una clave de API",
+    "Imposta una chiave API",
+    "Defina uma chave de API",
+    "API-Schlüssel festlegen",
+    "API 키를 설정하세요"
+  ],
+  "AIの読取りが完了しませんでした": [
+    "The AI reading did not complete",
+    "La lecture par l’IA n’a pas abouti",
+    "La lectura por IA no se completó",
+    "La lettura con IA non è stata completata",
+    "A leitura por IA não foi concluída",
+    "Die KI-Auswertung wurde nicht abgeschlossen",
+    "AI 판독이 완료되지 않았습니다"
+  ],
+  "AIの読取結果が不正です": [
+    "The AI reading result is invalid",
+    "Le résultat de lecture de l’IA est invalide",
+    "El resultado de lectura de la IA no es válido",
+    "Il risultato della lettura con IA non è valido",
+    "O resultado da leitura por IA é inválido",
+    "Das KI-Auswertungsergebnis ist ungültig",
+    "AI 판독 결과가 올바르지 않습니다"
+  ],
+  "ローカルLLMにはPDFをページ画像に変換して取り込んでください": [
+    "For a local LLM, convert the PDF to page images before importing",
+    "Pour un LLM local, convertissez le PDF en images de pages avant l’import",
+    "Para un LLM local, convierta el PDF en imágenes de página antes de importarlo",
+    "Per un LLM locale, converti il PDF in immagini di pagina prima di importarlo",
+    "Para um LLM local, converta o PDF em imagens de página antes de importar",
+    "Für ein lokales LLM das PDF vor dem Import in Seitenbilder umwandeln",
+    "로컬 LLM에는 PDF를 페이지 이미지로 변환해 가져오세요"
+  ],
+  "資料の外部送信確認が必要です": [
+    "Confirm sending the document to an external service",
+    "Confirmez l’envoi du document à un service externe",
+    "Confirme el envío del documento a un servicio externo",
+    "Conferma l’invio del documento a un servizio esterno",
+    "Confirme o envio do documento a um serviço externo",
+    "Senden des Dokuments an einen externen Dienst bestätigen",
+    "자료의 외부 전송 확인이 필요합니다"
+  ],
+  "PDF / PNG / JPEG / WebPを指定してください": [
+    "Choose a PDF, PNG, JPEG or WebP file",
+    "Choisissez un fichier PDF, PNG, JPEG ou WebP",
+    "Elija un archivo PDF, PNG, JPEG o WebP",
+    "Scegli un file PDF, PNG, JPEG o WebP",
+    "Escolha um arquivo PDF, PNG, JPEG ou WebP",
+    "PDF-, PNG-, JPEG- oder WebP-Datei wählen",
+    "PDF / PNG / JPEG / WebP를 지정하세요"
+  ],
+  "資料の内容と形式が一致しません": [
+    "The document content does not match its format",
+    "Le contenu du document ne correspond pas à son format",
+    "El contenido del documento no coincide con su formato",
+    "Il contenuto del documento non corrisponde al formato",
+    "O conteúdo do documento não corresponde ao formato",
+    "Dokumentinhalt passt nicht zum Format",
+    "자료 내용과 형식이 일치하지 않습니다"
+  ],
+  "資料が見つかりません": [
+    "Document not found",
+    "Document introuvable",
+    "Documento no encontrado",
+    "Documento non trovato",
+    "Documento não encontrado",
+    "Dokument nicht gefunden",
+    "자료를 찾을 수 없습니다"
+  ],
+  "別の資料を読取り中です": [
+    "Another document is being read",
+    "Un autre document est en cours de lecture",
+    "Se está leyendo otro documento",
+    "È in corso la lettura di un altro documento",
+    "Outro documento está sendo lido",
+    "Ein anderes Dokument wird gerade ausgewertet",
+    "다른 자료를 판독 중입니다"
+  ],
+  "保存資料の上限は50件です。不要な資料を削除してください": [
+    "Up to 50 documents can be stored. Delete documents you no longer need",
+    "50 documents au maximum peuvent être conservés. Supprimez ceux qui ne servent plus",
+    "Se pueden guardar hasta 50 documentos. Elimine los que ya no necesite",
+    "Si possono conservare al massimo 50 documenti. Elimina quelli non necessari",
+    "É possível guardar até 50 documentos. Exclua os que não precisa mais",
+    "Höchstens 50 Dokumente speicherbar. Nicht mehr benötigte löschen",
+    "저장 자료 상한은 50건입니다. 불필요한 자료를 삭제하세요"
+  ],
+  "AI設定を保存できませんでした": [
+    "Could not save the AI settings",
+    "Impossible d’enregistrer les réglages IA",
+    "No se pudo guardar la configuración de IA",
+    "Impossibile salvare le impostazioni IA",
+    "Não foi possível salvar as configurações de IA",
+    "KI-Einstellungen konnten nicht gespeichert werden",
+    "AI 설정을 저장하지 못했습니다"
+  ],
+  "資料の取り込みに失敗しました": [
+    "Failed to import the document",
+    "Échec de l’import du document",
+    "No se pudo importar el documento",
+    "Importazione del documento non riuscita",
+    "Falha ao importar o documento",
+    "Dokumentimport fehlgeschlagen",
+    "자료 가져오기에 실패했습니다"
+  ],
+  "タイムゾーン付きISO日時が必要です": [
+    "An ISO date-time with a time zone is required",
+    "Une date-heure ISO avec fuseau horaire est requise",
+    "Se requiere una fecha y hora ISO con zona horaria",
+    "È richiesta una data-ora ISO con fuso orario",
+    "É necessária uma data-hora ISO com fuso horário",
+    "ISO-Zeitstempel mit Zeitzone erforderlich",
+    "시간대가 있는 ISO 일시가 필요합니다"
+  ],
+  "タイムゾーン付きISO日時が不正です": [
+    "Invalid ISO date-time with time zone",
+    "Date-heure ISO avec fuseau horaire invalide",
+    "Fecha y hora ISO con zona horaria no válida",
+    "Data-ora ISO con fuso orario non valida",
+    "Data-hora ISO com fuso horário inválida",
+    "Ungültiger ISO-Zeitstempel mit Zeitzone",
+    "시간대가 있는 ISO 일시가 올바르지 않습니다"
+  ],
+  "未対応の位置連接スキーマ版です": [
+    "Unsupported position link schema version",
+    "Version de schéma de liaison de position non prise en charge",
+    "Versión de esquema de enlace de posiciones no compatible",
+    "Versione dello schema di collegamento posizioni non supportata",
+    "Versão do esquema de ligação de posição não suportada",
+    "Nicht unterstützte Version des Positionsschemas",
+    "지원하지 않는 위치 연계 스키마 버전입니다"
+  ],
+  "位置有効期限の設定が不正です": [
+    "Invalid position expiry setting",
+    "Réglage d’expiration de position invalide",
+    "Configuración de caducidad de posición no válida",
+    "Impostazione di scadenza della posizione non valida",
+    "Configuração de validade da posição inválida",
+    "Ungültige Ablaufeinstellung für Positionen",
+    "위치 유효 기한 설정이 올바르지 않습니다"
+  ],
+  "受信状態が不正です": [
+    "Invalid reception status",
+    "État de réception invalide",
+    "Estado de recepción no válido",
+    "Stato di ricezione non valido",
+    "Estado de recepção inválido",
+    "Ungültiger Empfangsstatus",
+    "수신 상태가 올바르지 않습니다"
+  ],
+  "{field}: 半角英数字と _ . : - の1〜64文字で指定してください": [
+    "{field}: use 1–64 ASCII letters, digits or _ . : -",
+    "{field} : utilisez 1 à 64 caractères ASCII (lettres, chiffres ou _ . : -)",
+    "{field}: use de 1 a 64 caracteres ASCII (letras, dígitos o _ . : -)",
+    "{field}: usa da 1 a 64 caratteri ASCII (lettere, cifre o _ . : -)",
+    "{field}: use de 1 a 64 caracteres ASCII (letras, dígitos ou _ . : -)",
+    "{field}: 1–64 ASCII-Buchstaben, Ziffern oder _ . : - verwenden",
+    "{field}: 반각 영숫자와 _ . : - 의 1~64자로 지정하세요"
+  ],
+  "{field}: 有限の数値を指定してください（{min}〜{max}）": [
+    "{field}: enter a finite number ({min} to {max})",
+    "{field} : saisissez un nombre fini ({min} à {max})",
+    "{field}: indique un número finito ({min} a {max})",
+    "{field}: inserisci un numero finito (da {min} a {max})",
+    "{field}: informe um número finito ({min} a {max})",
+    "{field}: endliche Zahl angeben ({min} bis {max})",
+    "{field}: 유한한 수치를 지정하세요({min}~{max})"
+  ],
+  "{field}: 表示可能な文字列が必要です": [
+    "{field}: printable text is required",
+    "{field} : texte affichable requis",
+    "{field}: se requiere texto imprimible",
+    "{field}: è richiesto testo stampabile",
+    "{field}: é necessário texto imprimível",
+    "{field}: druckbarer Text erforderlich",
+    "{field}: 표시 가능한 문자열이 필요합니다"
+  ],
+  "共通位置一覧が不正です": [
+    "Invalid shared position list",
+    "Liste de positions partagée invalide",
+    "Lista de posiciones compartida no válida",
+    "Elenco di posizioni condiviso non valido",
+    "Lista de posições compartilhada inválida",
+    "Ungültige gemeinsame Positionsliste",
+    "공통 위치 목록이 올바르지 않습니다"
+  ],
+  "共通位置レコードが不正です": [
+    "Invalid shared position record",
+    "Enregistrement de position partagé invalide",
+    "Registro de posición compartido no válido",
+    "Record di posizione condiviso non valido",
+    "Registro de posição compartilhado inválido",
+    "Ungültiger gemeinsamer Positionsdatensatz",
+    "공통 위치 레코드가 올바르지 않습니다"
+  ],
+  "共通位置レコードの識別子が重複しています": [
+    "Duplicate shared position record identifier",
+    "Identifiant d’enregistrement de position en double",
+    "Identificador de registro de posición duplicado",
+    "Identificatore del record di posizione duplicato",
+    "Identificador de registro de posição duplicado",
+    "Doppelte Kennung im gemeinsamen Positionsdatensatz",
+    "공통 위치 레코드의 식별자가 중복되었습니다"
+  ],
+  "共通位置フィールドが不足しています: {field}": [
+    "Missing shared position field: {field}",
+    "Champ de position partagé manquant : {field}",
+    "Falta un campo de posición compartido: {field}",
+    "Campo di posizione condiviso mancante: {field}",
+    "Campo de posição compartilhado ausente: {field}",
+    "Fehlendes Feld im gemeinsamen Positionsdatensatz: {field}",
+    "공통 위치 필드가 부족합니다: {field}"
+  ],
+  "局種別が不正です": [
+    "Invalid station type",
+    "Type de station invalide",
+    "Tipo de estación no válido",
+    "Tipo di stazione non valido",
+    "Tipo de estação inválido",
+    "Ungültiger Stationstyp",
+    "국 종별이 올바르지 않습니다"
+  ],
+  "針路は360未満です": [
+    "Course must be less than 360",
+    "Le cap doit être inférieur à 360",
+    "El rumbo debe ser menor que 360",
+    "La rotta deve essere inferiore a 360",
+    "O rumo deve ser menor que 360",
+    "Kurs muss unter 360 liegen",
+    "침로는 360 미만입니다"
+  ],
+  "高度基準が不正です": [
+    "Invalid altitude reference",
+    "Référence d’altitude invalide",
+    "Referencia de altitud no válida",
+    "Riferimento di quota non valido",
+    "Referência de altitude inválida",
+    "Ungültiger Höhenbezug",
+    "고도 기준이 올바르지 않습니다"
+  ],
+  "観測時刻と有効期限が一致しません": [
+    "Observation time and expiry do not match",
+    "L’heure d’observation et l’expiration ne concordent pas",
+    "La hora de observación y la caducidad no coinciden",
+    "Ora di osservazione e scadenza non coincidono",
+    "Horário de observação e validade não coincidem",
+    "Messzeit und Ablauf passen nicht zusammen",
+    "관측 시각과 유효 기한이 일치하지 않습니다"
+  ],
+  "位置品質の状態が不正です": [
+    "Invalid position quality status",
+    "État de qualité de position invalide",
+    "Estado de calidad de posición no válido",
+    "Stato di qualità della posizione non valido",
+    "Estado de qualidade da posição inválido",
+    "Ungültiger Positionsqualitätsstatus",
+    "위치 품질 상태가 올바르지 않습니다"
+  ],
+  "予測緯度範囲の判定が不正です": [
+    "Invalid forecast latitude range check",
+    "Contrôle de plage de latitude de prévision invalide",
+    "Comprobación del rango de latitud de predicción no válida",
+    "Controllo dell’intervallo di latitudine non valido",
+    "Verificação da faixa de latitude da previsão inválida",
+    "Ungültige Prüfung des Prognose-Breitenbereichs",
+    "예측 위도 범위 판정이 올바르지 않습니다"
+  ],
+  "局設定が不正です": [
+    "Invalid station settings",
+    "Réglages de station invalides",
+    "Configuración de estación no válida",
+    "Impostazioni della stazione non valide",
+    "Configuração de estação inválida",
+    "Ungültige Stationseinstellungen",
+    "국 설정이 올바르지 않습니다"
+  ],
+  "局設定の種別・状態が不正です": [
+    "Invalid station setting type or status",
+    "Type ou état de réglage de station invalide",
+    "Tipo o estado de configuración de estación no válido",
+    "Tipo o stato delle impostazioni della stazione non valido",
+    "Tipo ou estado de configuração de estação inválido",
+    "Ungültiger Typ oder Status der Stationseinstellung",
+    "국 설정의 종별·상태가 올바르지 않습니다"
+  ],
+  "位置参照はsource/idオブジェクトで指定してください": [
+    "Specify the position reference as a source/id object",
+    "Indiquez la référence de position sous forme d’objet source/id",
+    "Indique la referencia de posición como objeto source/id",
+    "Indica il riferimento di posizione come oggetto source/id",
+    "Informe a referência de posição como objeto source/id",
+    "Positionsreferenz als source/id-Objekt angeben",
+    "위치 참조는 source/id 객체로 지정하세요"
+  ],
+  "位置情報がありません: {ref}": [
+    "No position available: {ref}",
+    "Aucune position disponible : {ref}",
+    "No hay posición disponible: {ref}",
+    "Nessuna posizione disponibile: {ref}",
+    "Nenhuma posição disponível: {ref}",
+    "Keine Position vorhanden: {ref}",
+    "위치 정보가 없습니다: {ref}"
+  ],
+  "位置情報が期限切れです: {ref}": [
+    "Position has expired: {ref}",
+    "Position expirée : {ref}",
+    "La posición ha caducado: {ref}",
+    "Posizione scaduta: {ref}",
+    "A posição expirou: {ref}",
+    "Position abgelaufen: {ref}",
+    "위치 정보가 만료되었습니다: {ref}"
+  ],
+  "予測エンジンの緯度範囲±89°を超えています": [
+    "Outside the forecast engine latitude range of ±89°",
+    "Hors de la plage de latitude du moteur (±89°)",
+    "Fuera del rango de latitud del motor (±89°)",
+    "Fuori dall’intervallo di latitudine del motore (±89°)",
+    "Fora da faixa de latitude do motor (±89°)",
+    "Außerhalb des Breitenbereichs der Engine (±89°)",
+    "예측 엔진의 위도 범위 ±89°를 넘었습니다"
+  ],
+  "WGS84以外の座標参照系指定には対応していません": [
+    "Coordinate reference systems other than WGS84 are not supported",
+    "Seul le système de référence WGS84 est pris en charge",
+    "Solo se admite el sistema de referencia WGS84",
+    "È supportato solo il sistema di riferimento WGS84",
+    "Somente o sistema de referência WGS84 é suportado",
+    "Nur das Bezugssystem WGS84 wird unterstützt",
+    "WGS84 이외의 좌표 참조계 지정에는 대응하지 않습니다"
+  ],
+  "positionsは1〜100個です": [
+    "positions must contain 1 to 100 items",
+    "positions doit contenir 1 à 100 éléments",
+    "positions debe contener de 1 a 100 elementos",
+    "positions deve contenere da 1 a 100 elementi",
+    "positions deve conter de 1 a 100 itens",
+    "positions muss 1 bis 100 Einträge enthalten",
+    "positions는 1~100개입니다"
+  ],
+  "featuresは1〜100個です": [
+    "features must contain 1 to 100 items",
+    "features doit contenir 1 à 100 éléments",
+    "features debe contener de 1 a 100 elementos",
+    "features deve contenere da 1 a 100 elementi",
+    "features deve conter de 1 a 100 itens",
+    "features muss 1 bis 100 Einträge enthalten",
+    "features는 1~100개입니다"
+  ],
+  "チェックサム付きのRMCセンテンスを1行指定してください": [
+    "Enter one RMC sentence with a checksum",
+    "Saisissez une phrase RMC avec somme de contrôle",
+    "Indique una sentencia RMC con suma de comprobación",
+    "Inserisci una frase RMC con checksum",
+    "Informe uma sentença RMC com checksum",
+    "Einen RMC-Satz mit Prüfsumme angeben",
+    "체크섬이 있는 RMC 문장을 1행 지정하세요"
+  ],
+  "NMEAチェックサムが一致しません": [
+    "NMEA checksum mismatch",
+    "Somme de contrôle NMEA incorrecte",
+    "La suma de comprobación NMEA no coincide",
+    "Checksum NMEA non corrispondente",
+    "Checksum NMEA não confere",
+    "NMEA-Prüfsumme stimmt nicht",
+    "NMEA 체크섬이 일치하지 않습니다"
+  ],
+  "有効なRMC位置（status=A）が必要です": [
+    "A valid RMC position (status=A) is required",
+    "Une position RMC valide (status=A) est requise",
+    "Se requiere una posición RMC válida (status=A)",
+    "È richiesta una posizione RMC valida (status=A)",
+    "É necessária uma posição RMC válida (status=A)",
+    "Gültige RMC-Position (status=A) erforderlich",
+    "유효한 RMC 위치(status=A)가 필요합니다"
+  ],
+  "RMCの推測・手動・無効・シミュレーション位置は使用しません": [
+    "Estimated, manual, invalid and simulated RMC positions are not used",
+    "Les positions RMC estimées, manuelles, invalides ou simulées ne sont pas utilisées",
+    "No se usan posiciones RMC estimadas, manuales, no válidas ni simuladas",
+    "Le posizioni RMC stimate, manuali, non valide o simulate non sono usate",
+    "Posições RMC estimadas, manuais, inválidas ou simuladas não são usadas",
+    "Geschätzte, manuelle, ungültige und simulierte RMC-Positionen werden nicht verwendet",
+    "RMC의 추측·수동·무효·시뮬레이션 위치는 사용하지 않습니다"
+  ],
+  "RMC Nav Statusが有効ではありません": [
+    "RMC Nav Status is not valid",
+    "RMC Nav Status n’est pas valide",
+    "RMC Nav Status no es válido",
+    "RMC Nav Status non è valido",
+    "RMC Nav Status não é válido",
+    "RMC Nav Status ist nicht gültig",
+    "RMC Nav Status가 유효하지 않습니다"
+  ],
+  "RMC日時が不正です": [
+    "Invalid RMC date and time",
+    "Date et heure RMC invalides",
+    "Fecha y hora RMC no válidas",
+    "Data e ora RMC non valide",
+    "Data e hora RMC inválidas",
+    "Ungültiges RMC-Datum/-Uhrzeit",
+    "RMC 일시가 올바르지 않습니다"
+  ],
+  "各位置はJSONオブジェクトで指定してください": [
+    "Specify each position as a JSON object",
+    "Indiquez chaque position sous forme d’objet JSON",
+    "Indique cada posición como objeto JSON",
+    "Indica ogni posizione come oggetto JSON",
+    "Informe cada posição como objeto JSON",
+    "Jede Position als JSON-Objekt angeben",
+    "각 위치는 JSON 객체로 지정하세요"
+  ],
+  "同じバッチ内でidが重複しています": [
+    "Duplicate id in the same batch",
+    "id en double dans le même lot",
+    "id duplicado en el mismo lote",
+    "id duplicato nello stesso lotto",
+    "id duplicado no mesmo lote",
+    "Doppelte id im selben Stapel",
+    "같은 배치 안에서 id가 중복되었습니다"
+  ],
+  "kindはvessel / aircraft / vehicleです": [
+    "kind must be vessel, aircraft or vehicle",
+    "kind doit être vessel, aircraft ou vehicle",
+    "kind debe ser vessel, aircraft o vehicle",
+    "kind deve essere vessel, aircraft o vehicle",
+    "kind deve ser vessel, aircraft ou vehicle",
+    "kind muss vessel, aircraft oder vehicle sein",
+    "kind는 vessel / aircraft / vehicle입니다"
+  ],
+  "nameは表示可能な1〜80文字で指定してください": [
+    "name must be 1–80 printable characters",
+    "name doit compter 1 à 80 caractères affichables",
+    "name debe tener de 1 a 80 caracteres imprimibles",
+    "name deve avere da 1 a 80 caratteri stampabili",
+    "name deve ter de 1 a 80 caracteres imprimíveis",
+    "name muss 1–80 druckbare Zeichen haben",
+    "name은 표시 가능한 1~80자로 지정하세요"
+  ],
+  "観測時刻は過去24時間〜未来60秒の範囲で指定してください": [
+    "Observation time must be within the past 24 hours and 60 seconds into the future",
+    "L’heure d’observation doit être comprise entre 24 heures dans le passé et 60 secondes dans le futur",
+    "La hora de observación debe estar entre 24 horas antes y 60 segundos después",
+    "L’ora di osservazione deve essere tra 24 ore fa e 60 secondi nel futuro",
+    "O horário de observação deve estar entre 24 horas atrás e 60 segundos à frente",
+    "Messzeit muss zwischen 24 Stunden in der Vergangenheit und 60 Sekunden in der Zukunft liegen",
+    "관측 시각은 과거 24시간~미래 60초 범위로 지정하세요"
+  ],
+  "course_degは360未満で指定してください": [
+    "course_deg must be less than 360",
+    "course_deg doit être inférieur à 360",
+    "course_deg debe ser menor que 360",
+    "course_deg deve essere inferiore a 360",
+    "course_deg deve ser menor que 360",
+    "course_deg muss unter 360 liegen",
+    "course_deg는 360 미만으로 지정하세요"
+  ],
+  "altitude_referenceが不正です": [
+    "Invalid altitude_reference",
+    "altitude_reference invalide",
+    "altitude_reference no válido",
+    "altitude_reference non valido",
+    "altitude_reference inválido",
+    "Ungültige altitude_reference",
+    "altitude_reference가 올바르지 않습니다"
+  ],
+  "NMEA緯経度の書式が不正です": [
+    "Invalid NMEA latitude/longitude format",
+    "Format de latitude/longitude NMEA invalide",
+    "Formato de latitud/longitud NMEA no válido",
+    "Formato di latitudine/longitudine NMEA non valido",
+    "Formato de latitude/longitude NMEA inválido",
+    "Ungültiges NMEA-Breiten-/Längenformat",
+    "NMEA 위경도 서식이 올바르지 않습니다"
+  ],
+  "NMEA緯経度が不正です": [
+    "Invalid NMEA latitude/longitude",
+    "Latitude/longitude NMEA invalide",
+    "Latitud/longitud NMEA no válida",
+    "Latitudine/longitudine NMEA non valida",
+    "Latitude/longitude NMEA inválida",
+    "Ungültige NMEA-Breite/-Länge",
+    "NMEA 위경도가 올바르지 않습니다"
+  ],
+  "NMEA緯経度の範囲が不正です": [
+    "NMEA latitude/longitude out of range",
+    "Latitude/longitude NMEA hors plage",
+    "Latitud/longitud NMEA fuera de rango",
+    "Latitudine/longitudine NMEA fuori intervallo",
+    "Latitude/longitude NMEA fora do intervalo",
+    "NMEA-Breite/-Länge außerhalb des Bereichs",
+    "NMEA 위경도의 범위가 올바르지 않습니다"
+  ],
+  "RMCの日時・速度・針路が不正です": [
+    "Invalid RMC date, speed or course",
+    "Date, vitesse ou cap RMC invalide",
+    "Fecha, velocidad o rumbo RMC no válidos",
+    "Data, velocità o rotta RMC non validi",
+    "Data, velocidade ou rumo RMC inválidos",
+    "Ungültiges RMC-Datum, Geschwindigkeit oder Kurs",
+    "RMC의 일시·속도·침로가 올바르지 않습니다"
+  ],
+  "局設定のJSONオブジェクトが必要です": [
+    "A station settings JSON object is required",
+    "Un objet JSON de réglages de station est requis",
+    "Se requiere un objeto JSON de configuración de estación",
+    "È richiesto un oggetto JSON di impostazioni della stazione",
+    "É necessário um objeto JSON de configuração de estação",
+    "JSON-Objekt mit Stationseinstellungen erforderlich",
+    "국 설정의 JSON 객체가 필요합니다"
+  ],
+  "局種別・プロトコル・有効設定が不正です": [
+    "Invalid station type, protocol or enabled setting",
+    "Type de station, protocole ou activation invalide",
+    "Tipo de estación, protocolo o activación no válidos",
+    "Tipo di stazione, protocollo o attivazione non validi",
+    "Tipo de estação, protocolo ou ativação inválidos",
+    "Ungültiger Stationstyp, Protokoll oder Aktivierung",
+    "국 종별·프로토콜·유효 설정이 올바르지 않습니다"
+  ],
+  "局名は表示可能な1〜80文字です": [
+    "Station names must be 1–80 printable characters",
+    "Le nom de station doit compter 1 à 80 caractères affichables",
+    "El nombre de la estación debe tener de 1 a 80 caracteres imprimibles",
+    "Il nome della stazione deve avere da 1 a 80 caratteri stampabili",
+    "O nome da estação deve ter de 1 a 80 caracteres imprimíveis",
+    "Stationsnamen müssen 1–80 druckbare Zeichen haben",
+    "국명은 표시 가능한 1~80자입니다"
+  ],
+  "NMEA局は先に登録してください": [
+    "Register the NMEA station first",
+    "Enregistrez d’abord la station NMEA",
+    "Registre primero la estación NMEA",
+    "Registra prima la stazione NMEA",
+    "Registre primeiro a estação NMEA",
+    "NMEA-Station zuerst registrieren",
+    "NMEA 국을 먼저 등록하세요"
+  ],
+  "Point Featureが必要です": [
+    "A Point Feature is required",
+    "Une Feature de type Point est requise",
+    "Se requiere una Feature de tipo Point",
+    "È richiesta una Feature di tipo Point",
+    "É necessária uma Feature do tipo Point",
+    "Point-Feature erforderlich",
+    "Point Feature가 필요합니다"
+  ],
+  "WGS84 Point geometryのみ受け付けます": [
+    "Only WGS84 Point geometry is accepted",
+    "Seule une géométrie Point WGS84 est acceptée",
+    "Solo se acepta geometría Point WGS84",
+    "È accettata solo la geometria Point WGS84",
+    "Somente geometria Point WGS84 é aceita",
+    "Nur WGS84-Point-Geometrie wird angenommen",
+    "WGS84 Point geometry만 받습니다"
+  ],
+  "coordinatesは[経度,緯度,任意の楕円体高m]です": [
+    "coordinates must be [longitude, latitude, optional ellipsoidal height m]",
+    "coordinates doit être [longitude, latitude, hauteur ellipsoïdale m facultative]",
+    "coordinates debe ser [longitud, latitud, altura elipsoidal m opcional]",
+    "coordinates deve essere [longitudine, latitudine, quota ellissoidica m facoltativa]",
+    "coordinates deve ser [longitude, latitude, altura elipsoidal m opcional]",
+    "coordinates muss [Länge, Breite, optionale Ellipsoidhöhe m] sein",
+    "coordinates는 [경도, 위도, 임의의 타원체고 m]입니다"
+  ],
+  "局設定の上限は2000件です": [
+    "Up to 2000 station settings are allowed",
+    "2000 réglages de station au maximum",
+    "Se permiten hasta 2000 configuraciones de estación",
+    "Sono consentite al massimo 2000 impostazioni di stazione",
+    "São permitidas até 2000 configurações de estação",
+    "Höchstens 2000 Stationseinstellungen erlaubt",
+    "국 설정 상한은 2000건입니다"
+  ],
+  "移動局の保持上限2000件を超えます": [
+    "Exceeds the limit of 2000 stored mobile stations",
+    "Dépasse la limite de 2000 stations mobiles conservées",
+    "Supera el límite de 2000 estaciones móviles guardadas",
+    "Supera il limite di 2000 stazioni mobili conservate",
+    "Excede o limite de 2000 estações móveis guardadas",
+    "Überschreitet die Grenze von 2000 gespeicherten mobilen Stationen",
+    "이동국 보존 상한 2000건을 넘습니다"
+  ],
+  "局の受信形式・種別・有効設定と一致しません: {id}": [
+    "Does not match the station input format, type or enabled setting: {id}",
+    "Ne correspond pas au format, au type ou à l’activation de la station : {id}",
+    "No coincide con el formato, tipo o activación de la estación: {id}",
+    "Non corrisponde a formato, tipo o attivazione della stazione: {id}",
+    "Não corresponde ao formato, tipo ou ativação da estação: {id}",
+    "Passt nicht zu Eingabeformat, Typ oder Aktivierung der Station: {id}",
+    "국의 수신 형식·종별·유효 설정과 일치하지 않습니다: {id}"
+  ],
+  "位置ゲートウェイURLの設定が不正です": [
+    "Invalid position gateway URL setting",
+    "URL de passerelle de position invalide",
+    "URL de la pasarela de posiciones no válida",
+    "URL del gateway di posizione non valido",
+    "URL do gateway de posição inválida",
+    "Ungültige URL-Einstellung des Positions-Gateways",
+    "위치 게이트웨이 URL 설정이 올바르지 않습니다"
+  ],
+  "32文字以上のHF_POSITION_GATEWAY_TOKENを設定してください": [
+    "Set an HF_POSITION_GATEWAY_TOKEN of at least 32 characters",
+    "Définissez un HF_POSITION_GATEWAY_TOKEN d’au moins 32 caractères",
+    "Configure un HF_POSITION_GATEWAY_TOKEN de al menos 32 caracteres",
+    "Imposta un HF_POSITION_GATEWAY_TOKEN di almeno 32 caratteri",
+    "Defina um HF_POSITION_GATEWAY_TOKEN com pelo menos 32 caracteres",
+    "HF_POSITION_GATEWAY_TOKEN mit mindestens 32 Zeichen festlegen",
+    "32자 이상의 HF_POSITION_GATEWAY_TOKEN을 설정하세요"
+  ],
+  "位置ゲートウェイに接続できないか、応答が不正です": [
+    "Cannot reach the position gateway, or its response is invalid",
+    "Passerelle de position injoignable ou réponse invalide",
+    "No se puede conectar con la pasarela de posiciones o su respuesta no es válida",
+    "Gateway di posizione irraggiungibile o risposta non valida",
+    "Não foi possível conectar ao gateway de posição ou a resposta é inválida",
+    "Positions-Gateway nicht erreichbar oder Antwort ungültig",
+    "위치 게이트웨이에 연결할 수 없거나 응답이 올바르지 않습니다"
+  ],
+  "位置ゲートウェイの応答形式が不正です": [
+    "Invalid position gateway response format",
+    "Format de réponse de la passerelle de position invalide",
+    "Formato de respuesta de la pasarela de posiciones no válido",
+    "Formato di risposta del gateway di posizione non valido",
+    "Formato de resposta do gateway de posição inválido",
+    "Ungültiges Antwortformat des Positions-Gateways",
+    "위치 게이트웨이의 응답 형식이 올바르지 않습니다"
+  ],
+  "位置ゲートウェイが局設定を拒否しました": [
+    "The position gateway rejected the station settings",
+    "La passerelle de position a refusé les réglages de station",
+    "La pasarela de posiciones rechazó la configuración de estación",
+    "Il gateway di posizione ha rifiutato le impostazioni della stazione",
+    "O gateway de posição recusou a configuração de estação",
+    "Das Positions-Gateway hat die Stationseinstellungen abgelehnt",
+    "위치 게이트웨이가 국 설정을 거부했습니다"
+  ],
+  "位置ゲートウェイとの認証・通信に失敗しました（HTTP {code}）": [
+    "Authentication or communication with the position gateway failed (HTTP {code})",
+    "Échec d’authentification ou de communication avec la passerelle de position (HTTP {code})",
+    "Falló la autenticación o la comunicación con la pasarela de posiciones (HTTP {code})",
+    "Autenticazione o comunicazione con il gateway di posizione non riuscita (HTTP {code})",
+    "Falha na autenticação ou comunicação com o gateway de posição (HTTP {code})",
+    "Authentifizierung oder Kommunikation mit dem Positions-Gateway fehlgeschlagen (HTTP {code})",
+    "위치 게이트웨이와의 인증·통신에 실패했습니다(HTTP {code})"
+  ],
+  "ゲートウェイの認証設定が未完了です": [
+    "Gateway authentication is not configured",
+    "L’authentification de la passerelle n’est pas configurée",
+    "La autenticación de la pasarela no está configurada",
+    "L’autenticazione del gateway non è configurata",
+    "A autenticação do gateway não está configurada",
+    "Gateway-Authentifizierung ist nicht eingerichtet",
+    "게이트웨이 인증 설정이 완료되지 않았습니다"
+  ],
+  "外部受信用と本体連携用には別のトークンを設定してください": [
+    "Use different tokens for external ingestion and the main app connection",
+    "Utilisez des jetons distincts pour la réception externe et la liaison avec l’application",
+    "Use tokens distintos para la recepción externa y la conexión con la aplicación",
+    "Usa token diversi per la ricezione esterna e il collegamento con l’app",
+    "Use tokens diferentes para a recepção externa e a conexão com o aplicativo",
+    "Für externen Empfang und App-Anbindung unterschiedliche Tokens verwenden",
+    "외부 수신용과 본체 연계용에는 다른 토큰을 설정하세요"
+  ],
+  "有効なBearerトークンが必要です": [
+    "A valid Bearer token is required",
+    "Un jeton Bearer valide est requis",
+    "Se requiere un token Bearer válido",
+    "È richiesto un token Bearer valido",
+    "É necessário um token Bearer válido",
+    "Gültiges Bearer-Token erforderlich",
+    "유효한 Bearer 토큰이 필요합니다"
+  ],
+  "位置ゲートウェイへのブラウザ直接アクセスは受け付けません": [
+    "Direct browser access to the position gateway is not accepted",
+    "L’accès direct du navigateur à la passerelle de position est refusé",
+    "No se acepta el acceso directo del navegador a la pasarela de posiciones",
+    "L’accesso diretto dal browser al gateway di posizione non è consentito",
+    "O acesso direto do navegador ao gateway de posição não é aceito",
+    "Direkter Browserzugriff auf das Positions-Gateway wird nicht angenommen",
+    "위치 게이트웨이로의 브라우저 직접 접근은 받지 않습니다"
+  ],
+  "ゲートウェイDBを読み込めません": [
+    "Cannot read the gateway database",
+    "Impossible de lire la base de la passerelle",
+    "No se puede leer la base de datos de la pasarela",
+    "Impossibile leggere il database del gateway",
+    "Não foi possível ler o banco de dados do gateway",
+    "Gateway-Datenbank kann nicht gelesen werden",
+    "게이트웨이 DB를 읽을 수 없습니다"
+  ],
+  "ゲートウェイDBに保存できません": [
+    "Cannot save to the gateway database",
+    "Impossible d’enregistrer dans la base de la passerelle",
+    "No se puede guardar en la base de datos de la pasarela",
+    "Impossibile salvare nel database del gateway",
+    "Não foi possível salvar no banco de dados do gateway",
+    "Speichern in der Gateway-Datenbank nicht möglich",
+    "게이트웨이 DB에 저장할 수 없습니다"
+  ],
+  "本体連接は{path}を使用してください": [
+    "Use {path} for the main app connection",
+    "Utilisez {path} pour la liaison avec l’application",
+    "Use {path} para la conexión con la aplicación",
+    "Usa {path} per il collegamento con l’app",
+    "Use {path} para a conexão com o aplicativo",
+    "Für die App-Anbindung {path} verwenden",
+    "본체 연계는 {path}를 사용하세요"
+  ],
+  "管理操作は同一オリジンから行ってください。": [
+    "Perform administration from the same origin.",
+    "Effectuez l’administration depuis la même origine.",
+    "Realice la administración desde el mismo origen.",
+    "Esegui l’amministrazione dalla stessa origine.",
+    "Faça a administração a partir da mesma origem.",
+    "Verwaltung bitte vom selben Ursprung aus durchführen.",
+    "관리 조작은 같은 출처에서 하세요."
+  ],
+  "管理操作に失敗しました。": [
+    "Administration failed.",
+    "Échec de l’opération d’administration.",
+    "Falló la operación de administración.",
+    "Operazione di amministrazione non riuscita.",
+    "A operação de administração falhou.",
+    "Verwaltungsvorgang fehlgeschlagen.",
+    "관리 조작에 실패했습니다."
+  ],
+  "署名が一致しません": [
+    "Signature mismatch",
+    "Signature incorrecte",
+    "La firma no coincide",
+    "Firma non corrispondente",
+    "A assinatura não confere",
+    "Signatur stimmt nicht",
+    "서명이 일치하지 않습니다"
+  ],
+  "source が必要です": [
+    "source is required",
+    "source est requis",
+    "Se requiere source",
+    "È richiesto source",
+    "source é necessário",
+    "source erforderlich",
+    "source가 필요합니다"
+  ],
+  "usd は0以上の金額にしてください": [
+    "usd must be an amount of 0 or more",
+    "usd doit être un montant positif ou nul",
+    "usd debe ser un importe de 0 o más",
+    "usd deve essere un importo pari o superiore a 0",
+    "usd deve ser um valor de 0 ou mais",
+    "usd muss ein Betrag ab 0 sein",
+    "usd는 0 이상의 금액으로 하세요"
+  ],
+  "状態が不正です": [
+    "Invalid status",
+    "État invalide",
+    "Estado no válido",
+    "Stato non valido",
+    "Estado inválido",
+    "Ungültiger Status",
+    "상태가 올바르지 않습니다"
+  ],
+  "1つのユーザー名で送れる資料は{count}件までです": [
+    "Up to {count} documents can be sent per user name",
+    "{count} documents au maximum par nom d’utilisateur",
+    "Se pueden enviar hasta {count} documentos por nombre de usuario",
+    "Si possono inviare al massimo {count} documenti per nome utente",
+    "É possível enviar até {count} documentos por nome de usuário",
+    "Pro Benutzername höchstens {count} Dokumente",
+    "하나의 사용자 이름으로 보낼 수 있는 자료는 {count}건까지입니다"
+  ],
+  "スポンサーが見つかりません": [
+    "Sponsor not found",
+    "Sponsor introuvable",
+    "Patrocinador no encontrado",
+    "Sponsor non trovato",
+    "Patrocinador não encontrado",
+    "Sponsor nicht gefunden",
+    "스폰서를 찾을 수 없습니다"
+  ],
+  "{id}の受信形式": [
+    "{id} input format",
+    "Format de réception de {id}",
+    "Formato de recepción de {id}",
+    "Formato di ricezione di {id}",
+    "Formato de recepção de {id}",
+    "Eingabeformat von {id}",
+    "{id}의 수신 형식"
+  ],
+  "{id}の受信有効": [
+    "{id} input enabled",
+    "Réception activée pour {id}",
+    "Recepción activada para {id}",
+    "Ricezione attiva per {id}",
+    "Recepção ativada para {id}",
+    "Empfang aktiv für {id}",
+    "{id}의 수신 유효"
+  ],
+  "垂直ホイップ 2.4 m": [
+    "Vertical whip 2.4 m",
+    "Fouet vertical 2,4 m",
+    "Látigo vertical 2,4 m",
+    "Stilo verticale 2,4 m",
+    "Chicote vertical 2,4 m",
+    "Vertikale Peitsche 2,4 m",
+    "수직 휩 2.4 m"
+  ],
+  "垂直ホイップ 5 m": [
+    "Vertical whip 5 m",
+    "Fouet vertical 5 m",
+    "Látigo vertical 5 m",
+    "Stilo verticale 5 m",
+    "Chicote vertical 5 m",
+    "Vertikale Peitsche 5 m",
+    "수직 휩 5 m"
+  ],
+  "垂直ホイップ 7 m": [
+    "Vertical whip 7 m",
+    "Fouet vertical 7 m",
+    "Látigo vertical 7 m",
+    "Stilo verticale 7 m",
+    "Chicote vertical 7 m",
+    "Vertikale Peitsche 7 m",
+    "수직 휩 7 m"
+  ],
+  "垂直ホイップ 10 m": [
+    "Vertical whip 10 m",
+    "Fouet vertical 10 m",
+    "Látigo vertical 10 m",
+    "Stilo verticale 10 m",
+    "Chicote vertical 10 m",
+    "Vertikale Peitsche 10 m",
+    "수직 휩 10 m"
+  ],
+  "グランドプレーン 5 m": [
+    "Ground plane 5 m",
+    "Ground plane 5 m",
+    "Plano de tierra 5 m",
+    "Ground plane 5 m",
+    "Plano de terra 5 m",
+    "Groundplane 5 m",
+    "그라운드 플레인 5 m"
+  ],
+  "index.htmlの構成が想定と異なります": [
+    "index.html does not have the expected structure",
+    "index.html n’a pas la structure attendue",
+    "index.html no tiene la estructura esperada",
+    "index.html non ha la struttura prevista",
+    "index.html não tem a estrutura esperada",
+    "index.html hat nicht den erwarteten Aufbau",
+    "index.html의 구성이 예상과 다릅니다"
   ]
 };

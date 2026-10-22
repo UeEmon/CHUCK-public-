@@ -69,7 +69,7 @@ $('observations-refresh').onclick=async()=>{
  const button=$('observations-refresh');button.disabled=true;$('observations-status').textContent='国内観測とD-RAPを取得中…';
  try{
   observationData=await api('/api/observations?refresh=1');const d=observationData.drap,n=observationData.nict;
-  $('observations-status').textContent=`国内観測: ${n.data?n.data.stations.length+'局':'欠測'}${n.stale?' [古い／取得失敗]':''}。${observationData.note}`;
+  $('observations-status').replaceChildren(`国内観測: ${n.data?n.data.stations.length+'局':'欠測'}${n.stale?' [古い／取得失敗]':''}。`,' ',document.createTextNode(observationData.note));
   $('drap-status').textContent=d.data?`D-RAP ${observedTime(d.data.observed_at)} / ${d.stale?'古い／取得失敗':'取得済'} / 取得 ${observedTime(d.fetched_at?new Date(d.fetched_at*1000).toISOString():null)}`:(d.error||'欠測');
   $('observation-map-legend').textContent=d.data?`D-RAP HAF: 黄＝低、赤＝高（0〜30 MHz以上）、透明＝0、灰＝欠測。${d.stale?'期限切れのため薄く表示。':''}観測局: 紫＝取得済、灰＝古い。`:'D-RAP未取得。観測局は紫＝取得済、灰＝古い。';
   $('observation-sources').replaceChildren();

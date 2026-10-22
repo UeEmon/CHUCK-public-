@@ -175,8 +175,9 @@ OCRはPDF・PNG・JPEG・WebP、1件8 MiB以下。ローカルは画像のみ。
 - 計算モデルはwhip、isotropic、monopole、dipole、vertical_dipole、log_periodic（Type 43）、inverted_l（Type 38）、sloping_long_wire（Type 41）。指向性はdipole・log_periodic・inverted_l・sloping_long_wireで、主放射方向は固定方位か相手局方向。寸法モデルは物理全長・設置高・主放射方位・地面定数を使用する。
 - P-3用ロングワイヤーや不明な機体・艦体込みパターンは参考資料のみ。公開装備の採用・寸法・近似範囲を出典なしで拡大しない。
 - `i18n-messages.js` が8言語の辞書、`i18n.js` がDOM翻訳・除外制御。利用者名、原文根拠、技術診断、ライセンス原文は安易に翻訳しない。
+- サーバーが返すエラー文・注記も同じ辞書で訳す。可変部分は `{field}` などのテンプレートにし、`{note}`・`{detail}`・`{label}`・`{state}`・`{error}` の値だけは再翻訳される。外部データ説明ページ（`data-licenses.html`）は `data-licenses-messages.js` で訳す。これは各提供元条件の要約の訳で、原文はリンク先のまま。
 
-新しい文言は全言語の値とプレースホルダーを揃え、`tests/test_i18n.py` と実ブラウザ試験を行う。UI初期化・フォームresetでhidden IDが残り、編集後の新規登録が既存行を上書きする不具合を再発させない。
+新しい文言は全言語の値とプレースホルダーを揃え、`tests/test_i18n.py` と実ブラウザ試験を行う。同テストは静的ページの文言・属性、`app/*.py` が画面へ返す日本語文、外部データ説明の各項目が辞書にあることを確認する。UI初期化・フォームresetでhidden IDが残り、編集後の新規登録が既存行を上書きする不具合を再発させない。
 
 ゲートウェイのセッションCookie名に残る `spark_gateway_session` は内部識別子で、CHUCK表示への改称時に互換性を維持した。改称だけを理由に保存データ・局ID・既存Cookie名まで一括置換しない。
 

@@ -14,7 +14,7 @@
  function translate(source){
   if(locale==='ja'||!source)return source;const index=locales.indexOf(locale)-1;
   if(HF_MESSAGES[source])return HF_MESSAGES[source][index];
-  for(const entry of templates){const match=source.match(entry.regex);if(match){const vars=Object.fromEntries(entry.names.map((name,i)=>[name,match[i+1]]));return entry.values[index].replace(/\{([a-z]+)\}/g,(_,key)=>['state','error'].includes(key)?translate(vars[key]):vars[key]);}}
+  for(const entry of templates){const match=source.match(entry.regex);if(match){const vars=Object.fromEntries(entry.names.map((name,i)=>[name,match[i+1]]));return entry.values[index].replace(/\{([a-z]+)\}/g,(_,key)=>['state','error','note','detail','label'].includes(key)?translate(vars[key]):vars[key]);}}
   return source.replace(fragmentRegex,key=>HF_MESSAGES[key][index]);
  }
  function excluded(element){return !element||element.closest('script,style,#language,[data-user-content],#positions-table td:nth-child(2),#position-stations td:nth-child(2),#map text,#map title,#diversity-detail td:first-child,#diversity-summary td:nth-child(2)');}
