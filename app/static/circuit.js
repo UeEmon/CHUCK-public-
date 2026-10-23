@@ -12,10 +12,10 @@ const modelFields={log_periodic:lpDefaults,sloping_long_wire:{lw_slope_deg:10}};
 const extraDefaults=Object.assign({},...Object.values(modelFields));
 const antennaFields=['length_m','height_m','azimuth_deg','ground_permittivity','ground_conductivity',...Object.keys(extraDefaults)];
 // Mirrors engine.DIRECTIONAL_ANTENNAS: only these use a main-beam direction.
-const directionalModels=['dipole','log_periodic','inverted_l','sloping_long_wire'];
+const directionalModels=['dipole','log_periodic','inverted_l','sloping_long_wire','pattern_table'];
 const isDirectional=a=>directionalModels.includes(a?.model);
-function antennaConfig(a){return {length_m:a?.length_m??null,height_m:a?.height_m??0,azimuth_deg:a?.azimuth_deg??0,azimuth_mode:a?.azimuth_mode??'fixed',ground_permittivity:a?.ground_permittivity??13,ground_conductivity:a?.ground_conductivity??.005,...Object.fromEntries(Object.keys(extraDefaults).map(k=>[k,a?.[k]??null]))};}
-function antennaSummary(a){return a.model+' / '+a.gain+' dB'+(a.length_m!=null?' / L '+a.length_m+' m':'')+(['dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire'].includes(a.model)?' / h '+a.height_m+' m':'')+(a.model==='log_periodic'?' / '+a.lp_elements+'el τ'+a.lp_tau:'')+(a.model==='sloping_long_wire'?' / '+a.lw_slope_deg+'°↗':'')+(isDirectional(a)?' / '+(a.azimuth_mode==='path'?'→ 相手局':a.azimuth_deg+'°'):'');}
+function antennaConfig(a){return {length_m:a?.length_m??null,height_m:a?.height_m??0,azimuth_deg:a?.azimuth_deg??0,azimuth_mode:a?.azimuth_mode??'fixed',ground_permittivity:a?.ground_permittivity??13,ground_conductivity:a?.ground_conductivity??.005,...Object.fromEntries(Object.keys(extraDefaults).map(k=>[k,a?.[k]??null])),pattern_id:a?.pattern_id??null};}
+function antennaSummary(a){return a.model+' / '+a.gain+' dB'+(a.length_m!=null?' / L '+a.length_m+' m':'')+(['dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire'].includes(a.model)?' / h '+a.height_m+' m':'')+(a.model==='log_periodic'?' / '+a.lp_elements+'el τ'+a.lp_tau:'')+(a.model==='sloping_long_wire'?' / '+a.lw_slope_deg+'°↗':'')+(a.model==='pattern_table'?' / table':'')+(isDirectional(a)?' / '+(a.azimuth_mode==='path'?'→ 相手局':a.azimuth_deg+'°'):'');}
 const transientLocations=[],transientAntennas=[];
 const allLocations=()=>[...catalog.presets,...transientLocations];
 const allAntennas=()=>[...catalog.antennas,...transientAntennas];
@@ -198,6 +198,8 @@ function updateAntennaEditor(){
  for(const label of f.querySelectorAll('.directional-only'))label.hidden=!isDirectional({model});
  for(const label of f.querySelectorAll('.lp-only'))label.hidden=model!=='log_periodic';
  for(const label of f.querySelectorAll('.lw-only'))label.hidden=model!=='sloping_long_wire';
+ for(const label of f.querySelectorAll('.pattern-only'))label.hidden=model!=='pattern_table';
+ f.elements.pattern_id.disabled=model!=='pattern_table';f.elements.pattern_id.required=model==='pattern_table';
 }
 $('antenna-editor').elements.model.onchange=()=>{const f=$('antenna-editor');for(const [key,value]of Object.entries(extraDefaults))if(!f.elements[key].value)f.elements[key].value=value;if(f.elements.model.value==='inverted_l'&&Number(f.elements.height_m.value)<=0)f.elements.height_m.value=12;if(f.elements.model.value==='log_periodic'){if(!f.elements.length_m.value)f.elements.length_m.value=25;if(Number(f.elements.height_m.value)<=0)f.elements.height_m.value=20;}if(!f.elements.length_m.value)f.elements.length_m.value=10;if(f.elements.model.value==='dipole'&&Number(f.elements.height_m.value)<=0)f.elements.height_m.value=10;if(f.elements.model.value==='vertical_dipole')f.elements.height_m.value=Math.max(Number(f.elements.height_m.value),Number(f.elements.length_m.value)/2+1);updateAntennaEditor();};
 $('antenna-editor').elements.azimuth_mode.onchange=updateAntennaEditor;

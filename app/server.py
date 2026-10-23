@@ -26,6 +26,7 @@ import watch
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
 from antenna_ocr import DocumentStore, OCRError, OCRBusy, config as ocr_config, MAX_FILE
+from patterns import PatternStore, MAX_CSV
 import ai_providers
 
 BASE=Path(__file__).parent
@@ -49,6 +50,8 @@ ANTENNA_DOCUMENTS=DocumentStore(connection)
 WATCHES=watch.WatchStore(connection)
 try: WATCH_INTERVAL_HOURS=max(0.0,float(os.environ.get('HF_WATCH_INTERVAL_HOURS','24')))
 except ValueError: WATCH_INTERVAL_HOURS=24.0
+PATTERNS=PatternStore(connection)
+ENGINE.patterns=PATTERNS.grid
 
 def save(result,kind='point'):
     result['id']=uuid.uuid4().hex
@@ -134,6 +137,7 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path=='/api/ai-settings':return self.json(200,ai_providers.SETTINGS.snapshot())
             if path=='/api/antenna-imports':return self.json(200,dict(ocr_config(),documents=ANTENNA_DOCUMENTS.list()))
+            if path=='/api/antenna-patterns':return self.json(200,dict(patterns=PATTERNS.list(),max_csv_bytes=MAX_CSV))
             if path.startswith('/api/antenna-imports/'):
                 parts=path.split('/')
                 item=ANTENNA_DOCUMENTS.get(parts[3],content=len(parts)==5 and parts[4]=='source')
@@ -269,6 +273,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/presets': return self.edit_presets()
         if path=='/api/watches': return self.edit_watches()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
+        if path=='/api/antenna-patterns' or path.startswith('/api/antenna-patterns/'):return self.edit_patterns(path)
         if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
         origin=self.headers.get('Origin')
@@ -392,6 +397,24 @@ class Handler(BaseHTTPRequestHandler):
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc();self.json(500,{'error':'定時の再計算を更新できません'})
+
+    def edit_patterns(self,path):
+        if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
+            return self.json(403,dict(error='同一オリジンの画面から操作してください'))
+        if self.headers.get('Content-Type','').split(';')[0].strip()!='application/json':return self.json(415,dict(error='application/jsonが必要です'))
+        try:
+            size=int(self.headers.get('Content-Length','0'))
+            # JSON escaping can grow the CSV text; the CSV itself is limited again after parsing.
+            if not 0<size<=(2*MAX_CSV+4096 if path=='/api/antenna-patterns' else 1024):raise InputError('利得表CSVは6 MiB以下です')
+            data=json.loads(self.rfile.read(size))
+            if path=='/api/antenna-patterns':return self.json(200,PATTERNS.import_csv(data))
+            parts=path.split('/')
+            if len(parts)==5 and parts[4]=='delete':
+                PATTERNS.delete(parts[3]);return self.json(200,dict(deleted=True))
+            return self.json(404,dict(error='見つかりません'))
+        except (InputError,ValueError,UnicodeError) as e:self.json(400,dict(error=str(e)))
+        except Exception:
+            __import__('traceback').print_exc();self.json(500,dict(error='利得表を保存できませんでした'))
 
     def edit_presets(self):
         origin=self.headers.get('Origin')

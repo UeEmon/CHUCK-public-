@@ -243,6 +243,9 @@ class PresetStore:
             current=c.execute('SELECT revision FROM station_presets_meta WHERE id=1').fetchone()[0]
             if current!=data['revision']: raise PresetConflict('別の画面で変更されています。一覧を再読込してから保存してください。')
             if action=='save':
+                if p.get('pattern_id'):
+                    if not c.execute("SELECT name FROM sqlite_master WHERE name='antenna_patterns'").fetchone() or not c.execute('SELECT 1 FROM antenna_patterns WHERE id=?',(p['pattern_id'],)).fetchone():
+                        raise InputError('指定された利得表がありません')
                 if p.get('document_ref'):
                     doc=p['document_ref']
                     if not c.execute("SELECT name FROM sqlite_master WHERE name='antenna_documents'").fetchone():raise InputError('取込資料がありません')

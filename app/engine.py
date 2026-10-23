@@ -1,6 +1,7 @@
 """VOACAP adapter. Fixed-width cards follow upstream decred.for/antcalc.for."""
 import math
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -9,10 +10,11 @@ import tempfile
 ENGINE_COMMIT = 'c12a98b348c39f36f2659b8b3aa97b86284c8a1d'
 ANTENNAS = {'isotropic':'samples/sample.00','whip':'default/swwhip.voa',
             'monopole':'samples/sample.22','dipole':'samples/sample.23','vertical_dipole':'samples/sample.35',
-            'log_periodic':'samples/sample.43','inverted_l':'samples/sample.38','sloping_long_wire':'samples/sample.41'}
+            'log_periodic':'samples/sample.43','inverted_l':'samples/sample.38','sloping_long_wire':'samples/sample.41',
+            'pattern_table':'samples/sample.14'}
 GEOMETRIC_ANTENNAS=('monopole','dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire')
 # Only these have a main-beam azimuth; the others are omnidirectional in azimuth.
-DIRECTIONAL_ANTENNAS=('dipole','log_periodic','inverted_l','sloping_long_wire')
+DIRECTIONAL_ANTENNAS=('dipole','log_periodic','inverted_l','sloping_long_wire','pattern_table')
 # HFMUFES models whose files have no gain-above-dipole slot (mufesint.for): parameter
 # numbers for length_m/height_m, and model-specific fields as number, range, default.
 # Type 43 log-periodic: length_m is the rear (longest) element and height_m the feed height.
@@ -26,7 +28,7 @@ MODEL_FIELDS={'log_periodic':{'lp_slope_deg':(8,0,90,90),'lp_impedance_ohm':(9,5
 # beam_main of the sloping long wire is the direction the wire rises toward; its strongest
 # low-angle lobe points the other way (toward the low feed end), so CHUCK's azimuth is offset.
 BEAM_OFFSET_DEG={'sloping_long_wire':180}
-ANTENNA_FIELDS=('length_m','height_m','azimuth_deg','azimuth_mode','ground_permittivity','ground_conductivity',
+ANTENNA_FIELDS=('length_m','height_m','azimuth_deg','azimuth_mode','ground_permittivity','ground_conductivity','pattern_id',
                 *(field for fields in MODEL_FIELDS.values() for field in fields))
 # 'path' aims the main beam at the other end of each circuit (VOACAP beam_main = path bearing).
 AZIMUTH_MODES=('fixed','path')
@@ -104,6 +106,12 @@ def antenna_parameters(data,model,prefix=''):
         for field,(_,lo,hi,default) in fields.items():
             key=prefix+field
             p[field]=number(data,key,lo,hi,default,integer=field=='lp_elements') if model==owner or data.get(key) is not None else None
+    # A user-supplied gain table (patterns.py); its azimuth is the reference heading (e.g. the nose).
+    key=prefix+'pattern_id'
+    p['pattern_id']=None
+    if model=='pattern_table' or data.get(key) is not None:
+        if not isinstance(data.get(key),str) or not re.fullmatch('[a-f0-9]{32}',data[key]):raise InputError('利得表アンテナには登録済みの利得表が必要です')
+        p['pattern_id']=data[key]
     if model=='log_periodic' and p['height_m']<.1:raise InputError('ログペリの給電点高は0.1 m以上です')
     if model=='inverted_l' and p['height_m']<.1:raise InputError('逆Lの垂直部の高さは0.1 m以上です')
     if model=='dipole' and p['height_m']<.1:raise InputError('水平ダイポールの地上高は0.1 m以上です')
@@ -191,6 +199,16 @@ def card_power_kw(p):
     extra=sum(p[q+'_gain'] for q in ('tx','rx') if p[q+'_antenna'] in NO_GAIN_SLOT)
     return p['power_w']/1000*10**((extra-p.get('polarization_loss_db',0))/10)
 
+def path_bearing(p,prefix):
+    own,other=(prefix,'rx' if prefix=='tx' else 'tx')
+    return bearing(p[own+'_lat'],p[own+'_lon'],p[other+'_lat'],p[other+'_lon'])
+
+def beam_azimuth(p,prefix):
+    """Main-beam (or reference heading) bearing in true degrees; 0 for omnidirectional models."""
+    if p[prefix+'_antenna'] not in DIRECTIONAL_ANTENNAS:return 0
+    if p.get(prefix+'_azimuth_mode')=='path':return round(path_bearing(p,prefix),1)%360
+    return p.get(prefix+'_azimuth_deg',0)
+
 def cards(p, hour=None):
     coords=''.join(f'{abs(p[k]):{w}.2f}{pos if p[k]>=0 else neg}' for k,w,pos,neg in [('tx_lat',5,'N','S'),('tx_lon',9,'E','W'),('rx_lat',9,'N','S'),('rx_lon',9,'E','W')])
     start,end = (1,24) if hour is None else (hour or 24,hour or 24)
@@ -200,11 +218,8 @@ def cards(p, hour=None):
         # A user-assumed extra path loss is equivalent to reducing launch power.
         # Polarization labels alone never synthesize a different antenna pattern.
         power=card_power_kw(p) if i==1 else 0
-        azimuth=p.get(prefix+'_azimuth_deg',0) if p[prefix+'_antenna'] in DIRECTIONAL_ANTENNAS else 0
-        if p[prefix+'_antenna'] in DIRECTIONAL_ANTENNAS and p.get(prefix+'_azimuth_mode')=='path':
-            own,other=('tx','rx') if i==1 else ('rx','tx')
-            azimuth=round(bearing(p[own+'_lat'],p[own+'_lon'],p[other+'_lat'],p[other+'_lon']),1)%360
-        azimuth=round((azimuth+BEAM_OFFSET_DEG.get(p[prefix+'_antenna'],0))%360,1)
+        # A pattern table is already sliced at the path azimuth, so its card bearing is 0.
+        azimuth=0 if p[prefix+'_antenna']=='pattern_table' else round((beam_azimuth(p,prefix)+BEAM_OFFSET_DEG.get(p[prefix+'_antenna'],0))%360,1)
         lines.append(f'ANTENNA   {i:5d}{i:5d}{2:5d}{30:5d}{(p[prefix+'_gain'] if p[prefix+'_antenna']=='isotropic' else 0.):10.3f}{ant}{azimuth:5.1f}{power:10.{max(0,min(6,8-len(str(int(power)))))}f}')
     lines+=['FREQUENCY $'+''.join(f'{f:6.3f}' for f in (p['frequencies']+[0]*11)[:11]),'METHOD       30    0','EXECUTE','QUIT']
     return '\n'.join(lines)+'\n'
@@ -243,6 +258,8 @@ class Engine:
     def __init__(self):
         self.binary=os.environ.get('VOACAP_BIN','/usr/local/bin/voacapl')
         self.model=Path(os.environ.get('VOACAP_MODEL','/usr/local/share/voacapl/itshfbc'))
+        # Resolver for pattern_table antennas: id -> (grid, sha256). Set by the server.
+        self.patterns=None
     def ready(self):
         return bool(shutil.which(self.binary)) and (self.model/'coeffs/coeff01.bin').exists()
     def execute(self,prepare):
@@ -272,12 +289,19 @@ class Engine:
     def run(self,p,hour=None):
         card=cards(p,hour)
         def antennas(root):
-            nonlocal card
+            nonlocal card,p
             for prefix in ('tx','rx'):
                 source=root/'antennas'/ANTENNAS[p[prefix+'_antenna']]
                 # Separate files allow independent TX/RX gain even for same model.
                 target=root/'antennas'/('tx.voa' if prefix=='tx' else 'rx.voa')
-                target.write_text(antenna_file(p,prefix,source.read_text()))
+                if p[prefix+'_antenna']=='pattern_table':
+                    import patterns
+                    if self.patterns is None:raise EngineError('利得表を読み込めません')
+                    grid,digest=self.patterns(p[prefix+'_pattern_id'])
+                    offset=round((path_bearing(p,prefix)-beam_azimuth(p,prefix))%360,1)%360
+                    target.write_text(patterns.type14_file(grid,offset,p[prefix+'_gain'],'CHUCK '+prefix.upper()),encoding='ascii')
+                    p=dict(p,**{prefix+'_pattern_sha256':digest,prefix+'_pattern_offset_deg':offset})
+                else:target.write_text(antenna_file(p,prefix,source.read_text()))
             card=card.replace(ANTENNAS[p['tx_antenna']].ljust(21),'tx.voa'.ljust(21),1)
             # Replacement of RX must occur only on RX card.
             card='\n'.join(line.replace(ANTENNAS[p['rx_antenna']].ljust(21),'rx.voa'.ljust(21)) if line.startswith('ANTENNA       2') else line for line in card.splitlines())+'\n'

@@ -55,7 +55,7 @@ class PublicModeTests(unittest.TestCase):
     def test_admin_functions_are_closed_to_visitors(self):
         for path in ('/api/ai-settings','/api/antenna-imports','/api/antenna-imports/'+'0'*32,'/api/positions'):
             self.assertEqual(self.request(path)[0],403,path)
-        for path in ('/api/ai-settings','/api/position-stations','/api/presets','/api/antenna-imports'):
+        for path in ('/api/ai-settings','/api/position-stations','/api/presets','/api/antenna-imports','/api/antenna-patterns','/api/antenna-patterns/'+'0'*32+'/delete'):
             self.assertEqual(self.request(path,{})[0],403,path)
         self.assertNotEqual(self.request('/api/ai-settings',admin=True)[0],403)
 

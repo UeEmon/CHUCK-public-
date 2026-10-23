@@ -3169,6 +3169,105 @@ const HF_MESSAGES={
     "Drahtneigung ° (zur Waagerechten)",
     "선 경사 ° (수평 기준)"
   ],
+  "利得表（実測・解析パターン）": [
+    "Gain table (measured / simulated pattern)",
+    "Table de gain (diagramme mesuré / simulé)",
+    "Tabla de ganancia (diagrama medido / simulado)",
+    "Tabella di guadagno (diagramma misurato / simulato)",
+    "Tabela de ganho (diagrama medido / simulado)",
+    "Gewinntabelle (gemessenes / simuliertes Diagramm)",
+    "이득표 (실측·해석 패턴)"
+  ],
+  "利得表": [
+    "Gain table",
+    "Table de gain",
+    "Tabla de ganancia",
+    "Tabella di guadagno",
+    "Tabela de ganho",
+    "Gewinntabelle",
+    "이득표"
+  ],
+  "利得表（実測・解析パターン）の登録": [
+    "Register a gain table (measured / simulated pattern)",
+    "Enregistrer une table de gain (diagramme mesuré / simulé)",
+    "Registrar una tabla de ganancia (diagrama medido / simulado)",
+    "Registra una tabella di guadagno (diagramma misurato / simulato)",
+    "Registrar uma tabela de ganho (diagrama medido / simulado)",
+    "Gewinntabelle registrieren (gemessenes / simuliertes Diagramm)",
+    "이득표 등록 (실측·해석 패턴)"
+  ],
+  "航空機・艦船など、取付け構造を含めて実測またはNEC等で解析した放射パターンをCSVで登録します。見出しは frequency_mhz,azimuth_deg,elevation_deg,gain_dbi で、周波数1〜30 MHz・方位0〜360°未満・仰角0〜90°の全組合せの利得（dBi）が必要です。方位はアンテナの基準方向（機首など）から時計回りです。": [
+    "Register a radiation pattern measured or simulated (e.g. NEC) with its mounting structure, such as an aircraft or ship, as CSV. The header is frequency_mhz,azimuth_deg,elevation_deg,gain_dbi, and every combination of frequency 1–30 MHz, azimuth 0 to below 360° and elevation 0–90° needs a gain in dBi. Azimuth is clockwise from the antenna's reference direction (e.g. the nose).",
+    "Enregistrez en CSV un diagramme de rayonnement mesuré ou simulé (NEC, etc.) avec sa structure de montage, par exemple un aéronef ou un navire. L’en-tête est frequency_mhz,azimuth_deg,elevation_deg,gain_dbi ; chaque combinaison de fréquence 1–30 MHz, d’azimut 0 à moins de 360° et d’élévation 0–90° doit avoir un gain en dBi. L’azimut est compté dans le sens horaire depuis la direction de référence de l’antenne (le nez, par exemple).",
+    "Registre en CSV un diagrama de radiación medido o simulado (NEC, etc.) con su estructura de montaje, como una aeronave o un buque. El encabezado es frequency_mhz,azimuth_deg,elevation_deg,gain_dbi y cada combinación de frecuencia 1–30 MHz, azimut de 0 a menos de 360° y elevación 0–90° necesita una ganancia en dBi. El azimut se mide en sentido horario desde la dirección de referencia de la antena (por ejemplo, el morro).",
+    "Registra in CSV un diagramma di radiazione misurato o simulato (NEC, ecc.) con la struttura di montaggio, come un aereo o una nave. L’intestazione è frequency_mhz,azimuth_deg,elevation_deg,gain_dbi e ogni combinazione di frequenza 1–30 MHz, azimut da 0 a meno di 360° ed elevazione 0–90° richiede un guadagno in dBi. L’azimut è in senso orario dalla direzione di riferimento dell’antenna (ad esempio il muso).",
+    "Registre em CSV um diagrama de radiação medido ou simulado (NEC, etc.) com a estrutura de montagem, como uma aeronave ou um navio. O cabeçalho é frequency_mhz,azimuth_deg,elevation_deg,gain_dbi e cada combinação de frequência 1–30 MHz, azimute de 0 a menos de 360° e elevação 0–90° precisa de um ganho em dBi. O azimute é contado no sentido horário a partir da direção de referência da antena (por exemplo, o nariz).",
+    "Registrieren Sie ein gemessenes oder (z. B. mit NEC) simuliertes Strahlungsdiagramm samt Montagestruktur, etwa eines Flugzeugs oder Schiffs, als CSV. Die Kopfzeile lautet frequency_mhz,azimuth_deg,elevation_deg,gain_dbi; jede Kombination aus Frequenz 1–30 MHz, Azimut 0 bis unter 360° und Elevation 0–90° braucht einen Gewinn in dBi. Der Azimut zählt im Uhrzeigersinn ab der Bezugsrichtung der Antenne (z. B. der Flugzeugnase).",
+    "항공기·선박 등 장착 구조를 포함해 실측하거나 NEC 등으로 해석한 방사 패턴을 CSV로 등록합니다. 머리글은 frequency_mhz,azimuth_deg,elevation_deg,gain_dbi이며, 주파수 1~30 MHz·방위 0~360° 미만·앙각 0~90°의 모든 조합에 이득(dBi)이 필요합니다. 방위는 안테나 기준 방향(기수 등)에서 시계 방향입니다."
+  ],
+  "計算では回線方向で切り出した周波数×仰角表をVOACAPへ渡します。範囲外の周波数・仰角は端の値を使います。機体の高度、機体姿勢の変化、利得表に含まれない損失は再現しません。": [
+    "For each calculation, a frequency × elevation table cut at the circuit direction is passed to VOACAP. Frequencies and elevations outside the table use the edge values. Aircraft altitude, attitude changes and losses not in the table are not reproduced.",
+    "Pour chaque calcul, une table fréquence × élévation extraite dans la direction du circuit est transmise à VOACAP. Les fréquences et élévations hors table prennent les valeurs des bords. L’altitude de l’aéronef, les variations d’assiette et les pertes absentes de la table ne sont pas reproduites.",
+    "En cada cálculo se pasa a VOACAP una tabla frecuencia × elevación extraída en la dirección del circuito. Las frecuencias y elevaciones fuera de la tabla usan los valores del borde. No se reproducen la altitud de la aeronave, los cambios de actitud ni las pérdidas que no estén en la tabla.",
+    "Per ogni calcolo viene passata a VOACAP una tabella frequenza × elevazione estratta nella direzione del collegamento. Frequenze ed elevazioni fuori tabella usano i valori ai bordi. Quota dell’aereo, variazioni di assetto e perdite non incluse nella tabella non sono riprodotte.",
+    "Em cada cálculo, uma tabela frequência × elevação extraída na direção do circuito é passada ao VOACAP. Frequências e elevações fora da tabela usam os valores das bordas. A altitude da aeronave, as mudanças de atitude e as perdas fora da tabela não são reproduzidas.",
+    "Für jede Berechnung wird VOACAP eine in Verbindungsrichtung geschnittene Tabelle Frequenz × Elevation übergeben. Frequenzen und Elevationen außerhalb der Tabelle verwenden die Randwerte. Flughöhe, Lageänderungen und nicht in der Tabelle enthaltene Verluste werden nicht nachgebildet.",
+    "계산마다 회선 방향으로 잘라낸 주파수×앙각 표를 VOACAP에 넘깁니다. 범위 밖의 주파수·앙각은 가장자리 값을 씁니다. 기체 고도, 자세 변화, 이득표에 없는 손실은 재현하지 않습니다."
+  ],
+  "出典・解析条件（任意）": [
+    "Source / analysis conditions (optional)",
+    "Source / conditions d’analyse (facultatif)",
+    "Fuente / condiciones de análisis (opcional)",
+    "Fonte / condizioni di analisi (facoltativo)",
+    "Fonte / condições de análise (opcional)",
+    "Quelle / Analysebedingungen (optional)",
+    "출처·해석 조건 (선택)"
+  ],
+  "CSVファイル": [
+    "CSV file",
+    "Fichier CSV",
+    "Archivo CSV",
+    "File CSV",
+    "Arquivo CSV",
+    "CSV-Datei",
+    "CSV 파일"
+  ],
+  "利得表を登録": [
+    "Register gain table",
+    "Enregistrer la table",
+    "Registrar tabla",
+    "Registra tabella",
+    "Registrar tabela",
+    "Tabelle registrieren",
+    "이득표 등록"
+  ],
+  "利得表を選択": [
+    "Select a gain table",
+    "Choisir une table de gain",
+    "Seleccione una tabla de ganancia",
+    "Seleziona una tabella di guadagno",
+    "Selecione uma tabela de ganho",
+    "Gewinntabelle wählen",
+    "이득표 선택"
+  ],
+  "利得表を登録しました。アンテナプリセットの基準モデルで「利得表」を選んで使用します。": [
+    "Gain table registered. Choose “Gain table” as the reference model of an antenna preset to use it.",
+    "Table de gain enregistrée. Choisissez « Table de gain » comme modèle de référence d’un préréglage d’antenne pour l’utiliser.",
+    "Tabla de ganancia registrada. Elija «Tabla de ganancia» como modelo de referencia de un preajuste de antena para usarla.",
+    "Tabella di guadagno registrata. Scegli «Tabella di guadagno» come modello di riferimento di un preset d’antenna per usarla.",
+    "Tabela de ganho registrada. Escolha “Tabela de ganho” como modelo de referência de uma predefinição de antena para usá-la.",
+    "Gewinntabelle registriert. Wählen Sie „Gewinntabelle“ als Referenzmodell einer Antennenvorgabe, um sie zu verwenden.",
+    "이득표를 등록했습니다. 안테나 프리셋의 기준 모델에서 ‘이득표’를 선택해 사용합니다."
+  ],
+  "利得表を削除しました。": [
+    "Gain table deleted.",
+    "Table de gain supprimée.",
+    "Tabla de ganancia eliminada.",
+    "Tabella di guadagno eliminata.",
+    "Tabela de ganho excluída.",
+    "Gewinntabelle gelöscht.",
+    "이득표를 삭제했습니다."
+  ],
   "主放射方向の決め方": [
     "Main-beam direction",
     "Orientation du lobe",
@@ -8505,6 +8604,258 @@ const HF_MESSAGES={
     "Em «Exibição REL» no mapa, a REL aparece em porcentagem ou em quatro níveis (EXCELLENT, GOOD, POOR, NONE). Os trajetos são coloridos pelo nível de REL e mostram a melhor REL da hora escolhida.",
     "Mit „REL-Anzeige“ auf der Karte wird die REL in Prozent oder in vier Stufen (EXCELLENT, GOOD, POOR, NONE) angezeigt. Pfade sind nach REL-Stufe eingefärbt und zeigen die beste REL der gewählten Stunde.",
     "지도의 'REL 표시'에서 REL을 %와 4단계(EXCELLENT·GOOD·POOR·NONE) 중에서 고를 수 있습니다. 지도의 경로는 REL 단계로 색을 나누고, 선택한 시각의 최적 REL을 경로 위에 표시합니다."
+  ],
+  "利得表アンテナには登録済みの利得表が必要です": [
+    "A gain-table antenna needs a registered gain table",
+    "Une antenne à table de gain nécessite une table de gain enregistrée",
+    "Una antena con tabla de ganancia necesita una tabla registrada",
+    "Un'antenna a tabella di guadagno richiede una tabella registrata",
+    "Uma antena com tabela de ganho precisa de uma tabela registrada",
+    "Eine Gewinntabellen-Antenne benötigt eine registrierte Gewinntabelle",
+    "이득표 안테나에는 등록된 이득표가 필요합니다"
+  ],
+  "利得表を読み込めません": [
+    "Cannot load the gain table",
+    "Impossible de charger la table de gain",
+    "No se puede cargar la tabla de ganancia",
+    "Impossibile caricare la tabella di guadagno",
+    "Não é possível carregar a tabela de ganho",
+    "Die Gewinntabelle kann nicht geladen werden",
+    "이득표를 불러올 수 없습니다"
+  ],
+  "CSVが空です": [
+    "The CSV is empty",
+    "Le CSV est vide",
+    "El CSV está vacío",
+    "Il CSV è vuoto",
+    "O CSV está vazio",
+    "Die CSV-Datei ist leer",
+    "CSV가 비어 있습니다"
+  ],
+  "CSVは6 MiB以下にしてください": [
+    "The CSV must be 6 MiB or smaller",
+    "Le CSV doit faire 6 Mio au maximum",
+    "El CSV debe ocupar 6 MiB o menos",
+    "Il CSV deve essere al massimo di 6 MiB",
+    "O CSV deve ter no máximo 6 MiB",
+    "Die CSV-Datei darf höchstens 6 MiB groß sein",
+    "CSV는 6 MiB 이하로 해 주세요"
+  ],
+  "CSVの見出しは frequency_mhz,azimuth_deg,elevation_deg,gain_dbi です": [
+    "The CSV header must be frequency_mhz,azimuth_deg,elevation_deg,gain_dbi",
+    "L’en-tête du CSV doit être frequency_mhz,azimuth_deg,elevation_deg,gain_dbi",
+    "El encabezado del CSV debe ser frequency_mhz,azimuth_deg,elevation_deg,gain_dbi",
+    "L’intestazione del CSV deve essere frequency_mhz,azimuth_deg,elevation_deg,gain_dbi",
+    "O cabeçalho do CSV deve ser frequency_mhz,azimuth_deg,elevation_deg,gain_dbi",
+    "Die CSV-Kopfzeile muss frequency_mhz,azimuth_deg,elevation_deg,gain_dbi lauten",
+    "CSV 머리글은 frequency_mhz,azimuth_deg,elevation_deg,gain_dbi 입니다"
+  ],
+  "データ点は{count}点以下にしてください": [
+    "Use {count} data points or fewer",
+    "Utilisez au maximum {count} points de données",
+    "Use como máximo {count} puntos de datos",
+    "Usa al massimo {count} punti dati",
+    "Use no máximo {count} pontos de dados",
+    "Höchstens {count} Datenpunkte verwenden",
+    "데이터 점은 {count}개 이하로 해 주세요"
+  ],
+  "仰角は2点以上が必要です": [
+    "At least two elevation angles are needed",
+    "Au moins deux angles d’élévation sont nécessaires",
+    "Se necesitan al menos dos ángulos de elevación",
+    "Servono almeno due angoli di elevazione",
+    "São necessários pelo menos dois ângulos de elevação",
+    "Mindestens zwei Erhebungswinkel sind erforderlich",
+    "앙각은 2개 이상 필요합니다"
+  ],
+  "周波数・方位・仰角のすべての組合せに利得が必要です（格子が欠けています）": [
+    "Every combination of frequency, azimuth and elevation needs a gain (the grid is incomplete)",
+    "Chaque combinaison de fréquence, d’azimut et d’élévation doit avoir un gain (grille incomplète)",
+    "Cada combinación de frecuencia, acimut y elevación necesita una ganancia (la cuadrícula está incompleta)",
+    "Ogni combinazione di frequenza, azimut ed elevazione richiede un guadagno (griglia incompleta)",
+    "Cada combinação de frequência, azimute e elevação precisa de um ganho (a grade está incompleta)",
+    "Jede Kombination aus Frequenz, Azimut und Erhebung braucht einen Gewinn (das Raster ist unvollständig)",
+    "주파수·방위·앙각의 모든 조합에 이득이 필요합니다(격자가 빠져 있습니다)"
+  ],
+  "pattern_id: 利得表のIDが不正です": [
+    "pattern_id: invalid gain table ID",
+    "pattern_id : identifiant de table de gain invalide",
+    "pattern_id: ID de tabla de ganancia no válido",
+    "pattern_id: ID della tabella di guadagno non valido",
+    "pattern_id: ID de tabela de ganho inválido",
+    "pattern_id: ungültige Gewinntabellen-ID",
+    "pattern_id: 이득표 ID가 올바르지 않습니다"
+  ],
+  "{line}行目: 4列が必要です": [
+    "Line {line}: four columns are required",
+    "Ligne {line} : quatre colonnes sont nécessaires",
+    "Línea {line}: se necesitan cuatro columnas",
+    "Riga {line}: servono quattro colonne",
+    "Linha {line}: são necessárias quatro colunas",
+    "Zeile {line}: vier Spalten erforderlich",
+    "{line}행: 4개 열이 필요합니다"
+  ],
+  "{line}行目: 有限の数値が必要です": [
+    "Line {line}: finite numbers are required",
+    "Ligne {line} : des nombres finis sont nécessaires",
+    "Línea {line}: se necesitan números finitos",
+    "Riga {line}: servono numeri finiti",
+    "Linha {line}: são necessários números finitos",
+    "Zeile {line}: endliche Zahlen erforderlich",
+    "{line}행: 유한한 숫자가 필요합니다"
+  ],
+  "{line}行目: 周波数は1〜30 MHzです": [
+    "Line {line}: frequency must be 1–30 MHz",
+    "Ligne {line} : la fréquence doit être entre 1 et 30 MHz",
+    "Línea {line}: la frecuencia debe estar entre 1 y 30 MHz",
+    "Riga {line}: la frequenza deve essere tra 1 e 30 MHz",
+    "Linha {line}: a frequência deve estar entre 1 e 30 MHz",
+    "Zeile {line}: Frequenz muss 1–30 MHz sein",
+    "{line}행: 주파수는 1~30 MHz입니다"
+  ],
+  "{line}行目: 方位は0〜360°です": [
+    "Line {line}: azimuth must be 0–360°",
+    "Ligne {line} : l’azimut doit être entre 0 et 360°",
+    "Línea {line}: el acimut debe estar entre 0 y 360°",
+    "Riga {line}: l’azimut deve essere tra 0 e 360°",
+    "Linha {line}: o azimute deve estar entre 0 e 360°",
+    "Zeile {line}: Azimut muss 0–360° sein",
+    "{line}행: 방위는 0~360°입니다"
+  ],
+  "{line}行目: 仰角は0〜90°です": [
+    "Line {line}: elevation must be 0–90°",
+    "Ligne {line} : l’élévation doit être entre 0 et 90°",
+    "Línea {line}: la elevación debe estar entre 0 y 90°",
+    "Riga {line}: l’elevazione deve essere tra 0 e 90°",
+    "Linha {line}: a elevação deve estar entre 0 e 90°",
+    "Zeile {line}: Erhebung muss 0–90° sein",
+    "{line}행: 앙각은 0~90°입니다"
+  ],
+  "{line}行目: 利得は−100〜50 dBiです": [
+    "Line {line}: gain must be −100 to 50 dBi",
+    "Ligne {line} : le gain doit être entre −100 et 50 dBi",
+    "Línea {line}: la ganancia debe estar entre −100 y 50 dBi",
+    "Riga {line}: il guadagno deve essere tra −100 e 50 dBi",
+    "Linha {line}: o ganho deve estar entre −100 e 50 dBi",
+    "Zeile {line}: Gewinn muss −100 bis 50 dBi sein",
+    "{line}행: 이득은 −100~50 dBi입니다"
+  ],
+  "{line}行目: 同じ周波数・方位・仰角が重複しています": [
+    "Line {line}: duplicate frequency, azimuth and elevation",
+    "Ligne {line} : fréquence, azimut et élévation en double",
+    "Línea {line}: frecuencia, acimut y elevación duplicados",
+    "Riga {line}: frequenza, azimut ed elevazione duplicati",
+    "Linha {line}: frequência, azimute e elevação duplicados",
+    "Zeile {line}: doppelte Kombination aus Frequenz, Azimut und Erhebung",
+    "{line}행: 같은 주파수·방위·앙각이 중복되었습니다"
+  ],
+  "{line}行目: 数値ではありません": [
+    "Line {line}: not a number",
+    "Ligne {line} : ce n’est pas un nombre",
+    "Línea {line}: no es un número",
+    "Riga {line}: non è un numero",
+    "Linha {line}: não é um número",
+    "Zeile {line}: keine Zahl",
+    "{line}행: 숫자가 아닙니다"
+  ],
+  "指定された利得表がありません。アンテナプリセットを確認してください": [
+    "The specified gain table does not exist. Check the antenna preset",
+    "La table de gain indiquée n’existe pas. Vérifiez le préréglage d’antenne",
+    "La tabla de ganancia indicada no existe. Revise el preajuste de antena",
+    "La tabella di guadagno indicata non esiste. Controlla il preset dell’antenna",
+    "A tabela de ganho indicada não existe. Verifique a predefinição da antena",
+    "Die angegebene Gewinntabelle existiert nicht. Antennenvorlage prüfen",
+    "지정한 이득표가 없습니다. 안테나 프리셋을 확인해 주세요"
+  ],
+  "利得表の名称は表示可能な1〜40文字です": [
+    "Gain table names must be 1–40 printable characters",
+    "Le nom de la table de gain doit comporter 1 à 40 caractères affichables",
+    "El nombre de la tabla de ganancia debe tener de 1 a 40 caracteres visibles",
+    "Il nome della tabella di guadagno deve avere da 1 a 40 caratteri stampabili",
+    "O nome da tabela de ganho deve ter de 1 a 40 caracteres visíveis",
+    "Der Name der Gewinntabelle muss 1–40 druckbare Zeichen haben",
+    "이득표 이름은 표시 가능한 1~40자입니다"
+  ],
+  "出典・解析条件は200文字以内です": [
+    "Source and analysis conditions must be 200 characters or fewer",
+    "La source et les conditions d’analyse sont limitées à 200 caractères",
+    "La fuente y las condiciones de análisis admiten hasta 200 caracteres",
+    "Fonte e condizioni di analisi: massimo 200 caratteri",
+    "Fonte e condições de análise: no máximo 200 caracteres",
+    "Quelle und Analysebedingungen: höchstens 200 Zeichen",
+    "출처·해석 조건은 200자 이내입니다"
+  ],
+  "利得表は{count}件までです": [
+    "Up to {count} gain tables can be registered",
+    "Jusqu’à {count} tables de gain peuvent être enregistrées",
+    "Se pueden registrar hasta {count} tablas de ganancia",
+    "Si possono registrare fino a {count} tabelle di guadagno",
+    "É possível registrar até {count} tabelas de ganho",
+    "Es können bis zu {count} Gewinntabellen registriert werden",
+    "이득표는 {count}개까지입니다"
+  ],
+  "同じ名称の利得表があります": [
+    "A gain table with the same name already exists",
+    "Une table de gain portant le même nom existe déjà",
+    "Ya existe una tabla de ganancia con el mismo nombre",
+    "Esiste già una tabella di guadagno con lo stesso nome",
+    "Já existe uma tabela de ganho com o mesmo nome",
+    "Eine Gewinntabelle mit diesem Namen existiert bereits",
+    "같은 이름의 이득표가 있습니다"
+  ],
+  "この利得表を使うアンテナプリセットを先に削除してください": [
+    "Delete the antenna presets that use this gain table first",
+    "Supprimez d’abord les préréglages d’antenne qui utilisent cette table de gain",
+    "Elimine primero los preajustes de antena que usan esta tabla de ganancia",
+    "Elimina prima i preset di antenna che usano questa tabella di guadagno",
+    "Exclua primeiro as predefinições de antena que usam esta tabela de ganho",
+    "Zuerst die Antennenvorlagen löschen, die diese Gewinntabelle verwenden",
+    "이 이득표를 사용하는 안테나 프리셋을 먼저 삭제해 주세요"
+  ],
+  "指定された利得表がありません": [
+    "The specified gain table does not exist",
+    "La table de gain indiquée n’existe pas",
+    "La tabla de ganancia indicada no existe",
+    "La tabella di guadagno indicata non esiste",
+    "A tabela de ganho indicada não existe",
+    "Die angegebene Gewinntabelle existiert nicht",
+    "지정한 이득표가 없습니다"
+  ],
+  "利得表CSVは6 MiB以下です": [
+    "The gain table CSV must be 6 MiB or smaller",
+    "Le CSV de table de gain doit faire 6 Mio au maximum",
+    "El CSV de la tabla de ganancia debe ocupar 6 MiB o menos",
+    "Il CSV della tabella di guadagno deve essere al massimo di 6 MiB",
+    "O CSV da tabela de ganho deve ter no máximo 6 MiB",
+    "Die Gewinntabellen-CSV darf höchstens 6 MiB groß sein",
+    "이득표 CSV는 6 MiB 이하입니다"
+  ],
+  "利得表を保存できませんでした": [
+    "Could not save the gain table",
+    "Impossible d’enregistrer la table de gain",
+    "No se pudo guardar la tabla de ganancia",
+    "Impossibile salvare la tabella di guadagno",
+    "Não foi possível salvar a tabela de ganho",
+    "Die Gewinntabelle konnte nicht gespeichert werden",
+    "이득표를 저장하지 못했습니다"
+  ],
+  "アンテナの利得表": [
+    "Antenna gain tables",
+    "Tables de gain d’antenne",
+    "Tablas de ganancia de antena",
+    "Tabelle di guadagno d’antenna",
+    "Tabelas de ganho de antena",
+    "Antennen-Gewinntabellen",
+    "안테나 이득표"
+  ],
+  "実測やNEC等で解析した放射パターンをCSVの利得表として登録し、アンテナプリセットの基準モデル「利得表」として計算に使えます。": [
+    "Register measured or NEC-simulated radiation patterns as CSV gain tables and use them in calculations through the “gain table” base model of an antenna preset.",
+    "Enregistrez des diagrammes de rayonnement mesurés ou simulés (NEC, etc.) sous forme de tables de gain CSV et utilisez-les dans les calculs via le modèle de base « table de gain » d’un préréglage d’antenne.",
+    "Registre diagramas de radiación medidos o simulados (NEC, etc.) como tablas de ganancia CSV y úselos en los cálculos con el modelo base «tabla de ganancia» de un preajuste de antena.",
+    "Registra diagrammi di radiazione misurati o simulati (NEC, ecc.) come tabelle di guadagno CSV e usali nei calcoli tramite il modello base «tabella di guadagno» di un preset d’antenna.",
+    "Registre diagramas de radiação medidos ou simulados (NEC etc.) como tabelas de ganho CSV e use-os nos cálculos pelo modelo base «tabela de ganho» de uma predefinição de antena.",
+    "Gemessene oder mit NEC usw. simulierte Strahlungsdiagramme als CSV-Gewinntabellen registrieren und über das Basismodell „Gewinntabelle“ einer Antennenvorlage in Berechnungen verwenden.",
+    "실측 또는 NEC 등으로 해석한 방사 패턴을 CSV 이득표로 등록하고, 안테나 프리셋의 기준 모델 '이득표'로 계산에 사용할 수 있습니다."
   ],
   "スライダーで時刻を動かすと、マトリックス全体がその時刻に切り替わります。最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は「REL表示の閾値」の印の値以上、灰色は欠測です。セルを選ぶと下にその経路の24時間を表示します。": [
     "Moving the slider switches the whole matrix to that hour. With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks REL at or above the mark value in “REL display thresholds”; grey is missing data. Select a cell to show that link's 24 hours below.",
