@@ -110,3 +110,12 @@ python3 -m unittest discover -s tests
 - 書き込みには公開リポジトリのデプロイキー（書き込み可）を使います。秘密鍵はこのリポジトリの Secret `PUBLIC_DEPLOY_KEY` にだけ置きます。
 - 公開リポジトリに直接入った変更があると、上書きで消さないように同期を止めます。その変更をこのリポジトリに取り込めば、次の同期から再開します。
 - 手動で同期し直すときは、Actions の Publish を Run workflow で実行します。
+
+## 本家への自動マージ
+
+main が更新されると、`.github/workflows/upstream.yml` が本家 [UeEmon/VOCAP-COMPATIBILITY-](https://github.com/UeEmon/VOCAP-COMPATIBILITY-) の main へこのリポジトリの main を git merge します。開発版・公開版に入った機能は、これで本家にも入ります。本家だけの変更（海自の参考プリセットなど）はマージなので消えません。
+
+- マージ後に本家で `python -m unittest discover -s tests` を実行し、通ったときだけ本家の main に push します。
+- 衝突したときや試験が通らないときは本家の main を変えず、このリポジトリの main を本家の `sync/chuck-public-dev` ブランチに置いて失敗にします。本家でそのブランチを手で取り込めば、次のマージから再開します。
+- 書き込みには本家のデプロイキー（書き込み可）を使います。秘密鍵はこのリポジトリの Secret `UPSTREAM_DEPLOY_KEY` にだけ置きます。
+- 手動でマージし直すときは、Actions の Merge into upstream を Run workflow で実行します。

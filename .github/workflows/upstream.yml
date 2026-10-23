@@ -1,0 +1,64 @@
+# 開発用 CHUCK-public-dev の main を、本家 UeEmon/VOCAP-COMPATIBILITY- の main へマージする。
+# 開発用（＝公開版）に入った機能は、このワークフローで本家にも自動で入る。
+# git merge なので、本家だけの変更（利得表の取り込み、海自の参考プリセットなど）は残る。
+# 衝突したときやマージ後の試験が通らないときは本家の main を変えず、開発用の main を
+# 本家の sync/chuck-public-dev ブランチに置いて失敗にする。本家側で手で取り込む。
+# 鍵は本家の書き込み用デプロイキーで、秘密鍵は Secret UPSTREAM_DEPLOY_KEY にだけ置く。
+name: Merge into upstream
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: upstream
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  merge:
+    # 公開版・本家にも同じファイルが写るため、開発用でだけ動かす
+    if: github.repository == 'UeEmon/CHUCK-public-dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: dev
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Merge main into VOCAP-COMPATIBILITY-
+        env:
+          KEY: ${{ secrets.UPSTREAM_DEPLOY_KEY }}
+        run: |
+          set -eu
+          mkdir -p ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/upstream
+          chmod 600 ~/.ssh/upstream
+          echo 'github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl' > ~/.ssh/known_hosts
+          export GIT_SSH_COMMAND='ssh -i ~/.ssh/upstream -o IdentitiesOnly=yes'
+          git clone --quiet git@github.com:UeEmon/VOCAP-COMPATIBILITY-.git up
+          cd up
+          git config user.name Claude
+          git config user.email noreply@anthropic.com
+          git fetch --quiet ../dev main:refs/remotes/dev/main
+          if git merge-base --is-ancestor dev/main HEAD; then
+            echo "本家は最新です"
+            exit 0
+          fi
+          subject=$(git log -1 --format=%s dev/main)
+          case "$subject" in
+            "Merge pull request "*) subject=$(git log -1 --format=%b dev/main | sed -n '/./{p;q}') ;;
+          esac
+          hold() {
+            git push --quiet --force origin dev/main:refs/heads/sync/chuck-public-dev
+            echo "::error::$1本家の main は変えていません。本家の sync/chuck-public-dev ブランチを手で取り込んでください。"
+            exit 1
+          }
+          if ! git merge --no-ff --quiet -m "Merge CHUCK-public-dev: ${subject:-main}" dev/main; then
+            git merge --abort
+            hold "開発用の変更が本家と衝突しました。"
+          fi
+          python -m unittest discover -s tests -q || hold "マージ後の本家で試験が通りません。"
+          git push --quiet origin HEAD:main
+          echo "本家を $(git rev-parse --short HEAD) に更新しました"
