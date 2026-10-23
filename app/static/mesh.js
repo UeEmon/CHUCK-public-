@@ -22,12 +22,6 @@ function meshRelayRoute(hour,frequency,tx,rx,relays){
  };
  walk([tx],[]);return best;
 }
-function meshOneRelayRel(hour,frequency,tx,rx){
- // Best REL through a single relay (its weaker hop), ignoring the target REL; null when no hop has data.
- let best=null;for(const s of meshResult.sites){if(s.id===tx||s.id===rx)continue;const a=meshRow(meshLink(tx,s.id),hour,frequency)?.reliability,b=meshRow(meshLink(s.id,rx),hour,frequency)?.reliability;if(!relKnown(a)||!relKnown(b))continue;const v=Math.min(a,b);if(best===null||v>best)best=v;}return best;
-}
-// Comparison badges in a relayed cell, tinted by their own REL grade.
-function meshBadge(text,rel){const badge=document.createElement('small');badge.append(cell('span',text));const g=relGrade(rel);badge.className='mesh-badge';badge.style.background=g?.fill??'#3a4756';badge.style.color=g?.ink??'#d6e7f1';return badge;}
 function meshRouteText(route){return route.ids.map(id=>meshSite(id).name).join(' → ');}
 function meshName(id){const th=cell('th',meshSite(id).name);th.dataset.userContent='true';return th;}
 function meshPaint(td,rel){td.style.background=relFill(rel);td.style.color=relInk(rel);}
@@ -55,10 +49,8 @@ function renderMeshMatrix(){
    if(frequency==='best'&&v)button.append(cell('small',v.frequency_mhz.toFixed(1)));
    button.title=`${tx.name} → ${rx.name} / ${hour}:00 UTC / ${v?v.frequency_mhz+' MHz':'—'} / ${relTitle(rel)} / SNR ${fmt(v?.snr_db_hz)} dB·Hz`;
    const route=relays&&!(rel>=target)?meshRelayRoute(hour,frequency,tx.id,rx.id,relays):null;
-   // A relayed cell leads with the REL after relaying (its weakest hop) and keeps the direct REL on the line below.
-   if(route){relayed++;td.classList.add('mesh-relay');button.replaceChildren(relText(route.weakest,'cell')+relMark(route.weakest,target),cell('i','↻'+(route.ids.length-2)));// Badges nest from fewer relays inward: a two-relay cell wraps the direct badge inside the single-relay one.
-   const direct=meshBadge(relText(rel,'cell')+' ↻0'+(frequency==='best'&&v?' · '+v.frequency_mhz.toFixed(1):''),rel);
-   if(route.ids.length-2>=2){const one=meshOneRelayRel(hour,frequency,tx.id,rx.id),outer=meshBadge(relText(one,'cell')+' ↻1',one);outer.classList.add('mesh-badge-outer');outer.append(direct);button.append(outer);}else button.append(direct);button.title=`${button.title} / 中継${route.ids.length-2}段: ${meshRouteText(route)} · ${relTitle(route.weakest)}`;}
+   // A relayed cell shows only the REL after relaying (its weakest hop) and the relay count.
+   if(route){relayed++;td.classList.add('mesh-relay');button.replaceChildren(relText(route.weakest,'cell')+relMark(route.weakest,target),cell('i','↻'+(route.ids.length-2)));button.title=`${button.title} / 中継${route.ids.length-2}段: ${meshRouteText(route)} · ${relTitle(route.weakest)}`;}
    button.onclick=()=>{meshSelected={tx:tx.id,rx:rx.id};renderMeshMatrix();};
    meshPaint(td,route?route.weakest:rel);td.classList.toggle('selected',meshSelected?.tx===tx.id&&meshSelected?.rx===rx.id);td.append(button);tr.append(td);
   }

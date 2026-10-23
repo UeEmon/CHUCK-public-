@@ -91,9 +91,3 @@ main{display:block;max-width:1800px}
 .mesh-matrix td.mesh-relay{box-shadow:inset 0 0 0 2px #38e1ff}
 .mesh-matrix td.mesh-relay button i{display:inline;margin-left:5px;font-size:11px;font-weight:700;color:inherit}
 #rel-threshold-error{color:#ff8a8a}
-/* Relay badges: same pill shape, centred text, filled with the grade colour of their own REL. */
-.mesh-matrix td.mesh-relay button small.mesh-badge{display:table;margin:3px auto 0;padding:1px 7px;border-radius:10px;font-size:9px;font-weight:700;line-height:1.35;text-align:center;opacity:1;box-shadow:0 0 0 1px #050d16}
-/* A nested badge sits fully inside the outer one: the padding leaves room for the inner ring on every side. */
-.mesh-matrix td.mesh-relay button small.mesh-badge-outer{display:block;width:fit-content;padding:1px 4px 4px;border-radius:13px}
-.mesh-matrix td.mesh-relay button small.mesh-badge-outer>span{display:block;text-align:center;padding:0 3px 1px}
-.mesh-matrix td.mesh-relay button small.mesh-badge-outer small.mesh-badge{display:block;margin:1px 0 0;box-shadow:0 0 0 1px #050d16,0 0 0 2px rgba(255,255,255,.65)}

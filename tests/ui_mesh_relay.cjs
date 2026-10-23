@@ -35,11 +35,11 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#mesh-relays').inputValue(),'2');
   assert.equal(await page.locator('#mesh-relay-summary').innerText(),'中継で到達: 3 経路 · 到達不可: 6 経路（2段まで）');
   const relayCell=(r,c)=>matrixCell(r,c).locator('button').evaluate(b=>[b.firstChild.textContent,b.querySelector('i').textContent,...[...b.querySelectorAll('small>span')].map(e=>e.textContent)]);
-  // REL after relaying (weakest hop) on top, hop count, then the direct REL below.
-  assert.deepEqual(await relayCell(1,3),['85·','↻1','30 ↻0 · 10.0']);// A→B→D
-  assert.deepEqual(await relayCell(3,1),['90·','↻1','30 ↻0 · 10.0']);// C→A→B
-  assert.deepEqual(await relayCell(3,3),['85·','↻2','30 ↻1','30 ↻0 · 10.0']);// C→A→B→D; best single relay is 30
-  assert.equal(await matrixCell(3,3).locator('small.mesh-badge small.mesh-badge').innerText(),'30 ↻0 · 10.0');// direct nested inside single relay
+  // Only the REL after relaying (weakest hop) and the hop count; no direct REL in the cell.
+  assert.equal(await page.locator('#mesh-matrix td.mesh-relay small').count(),0);
+  assert.deepEqual(await relayCell(1,3),['85·','↻1']);// A→B→D
+  assert.deepEqual(await relayCell(3,1),['90·','↻1']);// C→A→B
+  assert.deepEqual(await relayCell(3,3),['85·','↻2']);// C→A→B→D
   await matrixCell(3,3).locator('button').click();
   assert.equal(await page.locator('#mesh-relay-route').innerText(),'中継経路（2段）: Charlie → Alpha → Bravo → Delta · 区間REL 95% / 90% / 85% · 中継経路REL 85% · 10.0 / 10.0 / 10.0 MHz');
   await page.selectOption('#mesh-relays','1');
@@ -66,9 +66,9 @@ const {chromium}=require('playwright');
   await page.selectOption('#mesh-relays','2');
   assert.equal(await matrixCell(1,1).locator('button').innerText(),'90·\n10.0');// dot at the target REL (80%)
   await page.selectOption('#rel-display','grade');
-  assert.deepEqual(await relayCell(1,3),['G·','↻1','N ↻0 · 10.0']);
+  assert.deepEqual(await relayCell(1,3),['G·','↻1']);
   await setThreshold('rel-good','86');
-  assert.deepEqual(await relayCell(1,3),['P·','↻1','N ↻0 · 10.0']);
+  assert.deepEqual(await relayCell(1,3),['P·','↻1']);
   // The dot follows the target REL of the shown result.
   await page.evaluate(()=>{meshResult.parameters.reliability=95;renderMeshMatrix();});
   assert.equal(await matrixCell(1,1).locator('button').innerText(),'E\n10.0');
@@ -79,7 +79,7 @@ const {chromium}=require('playwright');
   await page.evaluate(()=>$('rel-threshold-reset').click());
   assert.equal(await page.locator('#rel-good').inputValue(),'80');
   await page.selectOption('#rel-display','percent');
-  assert.deepEqual(await relayCell(1,3),['85·','↻1','30 ↻0 · 10.0']);
+  assert.deepEqual(await relayCell(1,3),['85·','↻1']);
   assert.deepEqual(errors,[]);
   console.log('Mesh relay UI checks passed');
  }finally{
