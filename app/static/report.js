@@ -32,7 +32,7 @@ function buildReport(d){
   ['対象年月',`${p.year}/${p.month}`],['SSN',ssn],['送信電力',`${p.power_w} W`],
   ['周波数',p.frequencies.map(f=>f.toFixed(3)).join(', ')+' MHz'],
   ['TXアンテナ',tx.antenna??`${p.tx_antenna} / ${p.tx_gain} dB`],['RXアンテナ',rx.antenna??`${p.rx_antenna} / ${p.rx_gain} dB`],
-  ['雑音',`−${p.noise} dBW`],['要求SNR・目標REL',`${p.required_snr} dB·Hz / ${p.reliability}%`],
+  ['雑音',`−${p.noise} dBW`],['要求SNR・目標REL',`${p.required_snr} dB·Hz / ${p.reliability}%`],['吸収モード',absorptionLabel(p)],
   ['電波型式・偏波',reportText(radioCaption(p).slice(3))],
  ]));
  sec('時刻別の推奨周波数');

@@ -12,6 +12,10 @@ ANTENNAS = {'isotropic':'samples/sample.00','whip':'default/swwhip.voa',
             'monopole':'samples/sample.22','dipole':'samples/sample.23','vertical_dipole':'samples/sample.35',
             'log_periodic':'samples/sample.43','inverted_l':'samples/sample.38','sloping_long_wire':'samples/sample.41',
             'pattern_table':'samples/sample.14'}
+# voacapl --absorption-mode: 'a' (Alex's changes with the IONCAP absorption) is what the
+# VOACAP Online Marine service runs; 'W' is the plain VOACAP default with a 0.1 floor on
+# the absorption index, which lowers night-time signals at low frequencies (docs/VALIDATION.md).
+ABSORPTION_MODES=('a','W')
 GEOMETRIC_ANTENNAS=('monopole','dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire')
 # Only these have a main-beam azimuth; the others are omnidirectional in azimuth.
 DIRECTIONAL_ANTENNAS=('dipole','log_periodic','inverted_l','sloping_long_wire','pattern_table')
@@ -143,7 +147,8 @@ def validate(data):
     p = {}
     p['modulation']=emission_class(data.get('modulation','manual'))
     for key,choices,default in [('snr_input',('direct','bandwidth'),'direct'),
-                                ('tx_polarization',POLARIZATIONS,'model'),('rx_polarization',POLARIZATIONS,'model')]:
+                                ('tx_polarization',POLARIZATIONS,'model'),('rx_polarization',POLARIZATIONS,'model'),
+                                ('absorption_mode',ABSORPTION_MODES,'a')]:
         value=data.get(key,default)
         if not isinstance(value,str) or value not in choices: raise InputError(key+': 設定値が不正です')
         p[key]=value
@@ -262,7 +267,7 @@ class Engine:
         self.patterns=None
     def ready(self):
         return bool(shutil.which(self.binary)) and (self.model/'coeffs/coeff01.bin').exists()
-    def execute(self,prepare):
+    def execute(self,prepare,absorption_mode='a'):
         """Run one card deck; prepare(root) may edit private files and returns the deck."""
         if not self.ready():
             raise EngineError('計算エンジンが準備されていません。docker compose up --build で起動してください。')
@@ -279,7 +284,7 @@ class Engine:
             (root/'run').mkdir()
             (root/'run/voacapx.dat').write_text(card,encoding='ascii')
             try:
-                cp=subprocess.run([self.binary,'-s',str(root)],cwd=tmp,stdin=subprocess.DEVNULL,capture_output=True,text=True,timeout=60)
+                cp=subprocess.run([self.binary,'--absorption-mode='+absorption_mode,'-s',str(root)],cwd=tmp,stdin=subprocess.DEVNULL,capture_output=True,text=True,timeout=60)
             except subprocess.TimeoutExpired:
                 raise EngineError('計算が60秒を超えました。条件を見直してください。')
             out=root/'run/voacapx.out'
@@ -306,7 +311,7 @@ class Engine:
             # Replacement of RX must occur only on RX card.
             card='\n'.join(line.replace(ANTENNAS[p['rx_antenna']].ljust(21),'rx.voa'.ljust(21)) if line.startswith('ANTENNA       2') else line for line in card.splitlines())+'\n'
             return card
-        raw=self.execute(antennas)
+        raw=self.execute(antennas,p['absorption_mode'])
         hours=parse_output(raw,p['frequencies'])
         if hour is None and len(hours)!=24:
             raise EngineError(f'24時間の結果が揃いません（{len(hours)}時間）')

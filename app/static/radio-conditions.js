@@ -29,4 +29,5 @@ fields.modulation.onchange=()=>{
 };
 for(const key of ['snr_input','bandwidth','inband_snr_db'])fields[key].addEventListener('input',updateRadioConditions);
 updateRadioConditions();
-function radioCaption(p,multiple=false){return ' · '+emissionLabel(p)+' · TX '+(polarizationLabels[p.tx_polarization]??polarizationLabels.model)+' / '+(multiple?'RX1 ':'RX ')+(polarizationLabels[p.rx_polarization]??polarizationLabels.model)+' · 追加偏波損失 '+(p.polarization_loss_db??0)+' dB';}
+function absorptionLabel(p){return p.absorption_mode==='a'?'a（Marine互換）':'W（VOACAP標準）';}
+function radioCaption(p,multiple=false){return ' · '+emissionLabel(p)+' · TX '+(polarizationLabels[p.tx_polarization]??polarizationLabels.model)+' / '+(multiple?'RX1 ':'RX ')+(polarizationLabels[p.rx_polarization]??polarizationLabels.model)+' · 追加偏波損失 '+(p.polarization_loss_db??0)+' dB · 吸収モード '+absorptionLabel(p);}

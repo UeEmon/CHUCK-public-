@@ -26,14 +26,14 @@ def independent_parse(raw,frequencies):
     assert len(result)==24
     return result
 
-def direct(cards,tag):
+def direct(cards,tag,mode=None):
     model=Path(os.environ['VOACAP_MODEL'])
     with tempfile.TemporaryDirectory(prefix='vc-',dir='/tmp') as t:
         root=Path(t)/'m';root.mkdir()
         for name in ['coeffs','geocity','geonatio','geostate']:(root/name).symlink_to(model/name,target_is_directory=True)
         for name in ['database','antennas']:shutil.copytree(model/name,root/name)
         (root/'run').mkdir();(root/'run/voacapx.dat').write_text(cards)
-        cp=subprocess.run([os.environ['VOACAP_BIN'],'-s',str(root)],cwd=t,capture_output=True,text=True,timeout=60)
+        cp=subprocess.run([os.environ['VOACAP_BIN'],*(['--absorption-mode='+mode] if mode else []),'-s',str(root)],cwd=t,capture_output=True,text=True,timeout=60)
         assert cp.returncode==0,cp.stderr
         raw=(root/'run/voacapx.out').read_text()
     (OUT/(tag+'-direct-input.dat')).write_text(cards)
@@ -76,7 +76,7 @@ def main():
                 req=Request(f'http://127.0.0.1:{http.server_port}/api/predict',data=json.dumps(p).encode(),headers={'Content-Type':'application/json'})
                 with urlopen(req,timeout=90) as r:app=json.load(r)
                 (OUT/(tag+'-chuck.json')).write_text(json.dumps(app,ensure_ascii=False,indent=2))
-                raw=direct(manual_cards(p),tag)
+                raw=direct(manual_cards(p),tag,'a')
                 ref=independent_parse(raw,p['frequencies']);maximum={k:0 for k in METRICS.values()};maximum['muf_mhz']=0
                 null_mismatches=0;count=0
                 for h in app['hours']:

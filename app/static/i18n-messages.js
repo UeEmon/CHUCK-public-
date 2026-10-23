@@ -9018,5 +9018,77 @@ const HF_MESSAGES={
     "As células com ↻ não atingem a REL alvo diretamente, mas são alcançadas por outras estações com cada salto igual ou acima da REL alvo (em cima a REL após a retransmissão, ou seja, o salto mais fraco; o número após ↻ é a quantidade de retransmissões; o selo de baixo é a REL direta sem retransmissão (↻0); com duas retransmissões, a melhor REL com uma só (↻1) é um selo externo que contém o direto). Atraso de encaminhamento e interferência de transmissões simultâneas não são considerados.",
     "Mit ↻ markierte Zellen verfehlen die Ziel-REL direkt, sind aber über andere Stationen erreichbar, wobei jeder Abschnitt die Ziel-REL erreicht (oben die REL nach Relais, also der schwächste Abschnitt; die Zahl nach ↻ ist die Anzahl der Relais; das untere Abzeichen ist die direkte REL ohne Relais (↻0); bei zwei Relais umschließt ein äußeres Abzeichen mit der besten REL über ein einzelnes Relais (↻1) das direkte). Weiterleitungsverzögerung und Störungen durch gleichzeitiges Senden werden nicht berücksichtigt.",
     "↻ 표시 셀은 직접으로는 목표 REL에 못 미치지만, 다른 거점을 중계하면 모든 구간이 목표 REL 이상이 되는 경로입니다(위는 중계 후 REL, 즉 가장 낮은 구간의 REL; ↻ 숫자는 중계 단수; 아래 배지는 중계 없는 직접 REL(↻0); 2단 중계에서는 1단 중계(↻1)만으로의 최적 REL을 바깥 배지로 표시하고 그 안에 직접 REL을 넣음). 중계국의 전달 지연과 동시 송신 간섭은 고려하지 않습니다."
+  ],
+  "吸収モード": [
+    "Absorption mode",
+    "Mode d’absorption",
+    "Modo de absorción",
+    "Modalità di assorbimento",
+    "Modo de absorção",
+    "Absorptionsmodus",
+    "흡수 모드"
+  ],
+  "a：Marine互換（Alexの改良＋IONCAPの吸収）": [
+    "a: Marine-compatible (Alex’s changes + IONCAP absorption)",
+    "a : compatible Marine (modifications d’Alex + absorption IONCAP)",
+    "a: compatible con Marine (cambios de Alex + absorción IONCAP)",
+    "a: compatibile con Marine (modifiche di Alex + assorbimento IONCAP)",
+    "a: compatível com Marine (alterações de Alex + absorção IONCAP)",
+    "a: Marine-kompatibel (Alex’ Änderungen + IONCAP-Absorption)",
+    "a: Marine 호환 (Alex 수정 + IONCAP 흡수)"
+  ],
+  "W：VOACAP標準（吸収指数の下限あり）": [
+    "W: VOACAP default (floor on the absorption index)",
+    "W : VOACAP standard (plancher de l’indice d’absorption)",
+    "W: VOACAP estándar (mínimo del índice de absorción)",
+    "W: VOACAP standard (minimo dell’indice di assorbimento)",
+    "W: VOACAP padrão (mínimo do índice de absorção)",
+    "W: VOACAP-Standard (Untergrenze des Absorptionsindex)",
+    "W: VOACAP 표준 (흡수 지수 하한 있음)"
+  ],
+  "吸収モードは計算エンジンの夜間吸収とMUF変動の扱いです。aはVOACAP Online Marineと同じ値になります。Wは夜間の低い周波数で受信電力が低めに出ます。": [
+    "The absorption mode sets how the engine treats night-time absorption and MUF variability. a gives the same values as VOACAP Online Marine. W gives lower signals at low frequencies at night.",
+    "Le mode d’absorption règle le traitement de l’absorption nocturne et de la variabilité de la MUF. a donne les mêmes valeurs que VOACAP Online Marine. W donne des signaux plus faibles la nuit aux basses fréquences.",
+    "El modo de absorción define cómo trata el motor la absorción nocturna y la variabilidad de la MUF. a da los mismos valores que VOACAP Online Marine. W da señales más bajas de noche en frecuencias bajas.",
+    "La modalità di assorbimento definisce come il motore tratta l’assorbimento notturno e la variabilità della MUF. a dà gli stessi valori di VOACAP Online Marine. W dà segnali più bassi di notte alle basse frequenze.",
+    "O modo de absorção define como o motor trata a absorção noturna e a variabilidade da MUF. a dá os mesmos valores que o VOACAP Online Marine. W dá sinais mais baixos à noite nas frequências baixas.",
+    "Der Absorptionsmodus legt fest, wie die Engine nächtliche Absorption und MUF-Schwankung behandelt. a liefert dieselben Werte wie VOACAP Online Marine. W liefert nachts bei niedrigen Frequenzen schwächere Signale.",
+    "흡수 모드는 계산 엔진의 야간 흡수와 MUF 변동 처리 방식입니다. a는 VOACAP Online Marine과 같은 값을 냅니다. W는 야간 낮은 주파수에서 수신 전력이 낮게 나옵니다."
+  ],
+  "a（Marine互換）": [
+    "a (Marine-compatible)",
+    "a (compatible Marine)",
+    "a (compatible con Marine)",
+    "a (compatibile con Marine)",
+    "a (compatível com Marine)",
+    "a (Marine-kompatibel)",
+    "a (Marine 호환)"
+  ],
+  "W（VOACAP標準）": [
+    "W (VOACAP default)",
+    "W (VOACAP standard)",
+    "W (VOACAP estándar)",
+    "W (VOACAP standard)",
+    "W (VOACAP padrão)",
+    "W (VOACAP-Standard)",
+    "W (VOACAP 표준)"
+  ],
+  "吸収モードの選択": [
+    "Absorption mode choice",
+    "Choix du mode d’absorption",
+    "Selección del modo de absorción",
+    "Scelta della modalità di assorbimento",
+    "Escolha do modo de absorção",
+    "Wahl des Absorptionsmodus",
+    "흡수 모드 선택"
+  ],
+  "計算エンジンの吸収モードを予察条件の詳細条件で選べるようにし、既定をVOACAP Online Marineと同じ a にしました。従来の値は W で再現できます。": [
+    "You can now choose the engine’s absorption mode under the detailed prediction conditions. The default is a, the same as VOACAP Online Marine. Choose W to reproduce earlier results.",
+    "Le mode d’absorption du moteur se choisit désormais dans les conditions détaillées. Par défaut a, comme VOACAP Online Marine. W reproduit les résultats antérieurs.",
+    "Ahora puede elegir el modo de absorción del motor en las condiciones detalladas. El predeterminado es a, igual que VOACAP Online Marine. W reproduce los resultados anteriores.",
+    "Ora si può scegliere la modalità di assorbimento del motore nelle condizioni dettagliate. Il predefinito è a, come VOACAP Online Marine. W riproduce i risultati precedenti.",
+    "Agora é possível escolher o modo de absorção do motor nas condições detalhadas. O padrão é a, igual ao VOACAP Online Marine. W reproduz os resultados anteriores.",
+    "Der Absorptionsmodus der Engine ist jetzt in den Detailbedingungen wählbar. Standard ist a wie bei VOACAP Online Marine. Mit W lassen sich frühere Ergebnisse reproduzieren.",
+    "예측 조건의 상세 조건에서 계산 엔진의 흡수 모드를 선택할 수 있습니다. 기본값은 VOACAP Online Marine과 같은 a입니다. 이전 결과는 W로 재현할 수 있습니다."
   ]
 };

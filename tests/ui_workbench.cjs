@@ -90,6 +90,7 @@ const {chromium}=require('playwright');
   assert.equal(run.parameters.bandwidth,'3K00');assert.equal(run.parameters.bandwidth_hz,3000);
   assert.equal(run.parameters.tx_polarization,'vertical');assert.equal(run.parameters.rx_polarization,'horizontal');
   assert.equal(run.parameters.polarization_loss_db,3);assert.equal(run.ui_selection.version,2);
+  assert.equal(run.parameters.absorption_mode,'a');await page.waitForFunction(()=>document.getElementById('result-caption').textContent.endsWith('Absorption mode a (Marine-compatible)'));
   await page.waitForFunction(()=>!busy);
   await page.locator('[data-tab="propagation-chart"]').click();
   assert.equal(await page.locator('#propagation-plot rect[role=button]').count(),24*run.parameters.frequencies.length);

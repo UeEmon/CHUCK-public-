@@ -22,7 +22,7 @@ CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは
 | 実行依存 | Python 3.12標準ライブラリ、ブラウザの素のJavaScript、Fortranエンジン |
 | 最新確認 | Python 85テスト成功（実エンジン付きは84件時点でスキップなし）、実Chromiumによる回帰試験成功、Apple Silicon実機でDocker完成イメージの検証成功（2026-10-17） |
 
-Docker完成イメージとApple Silicon（arm64）は2026-10-17に実機で検証済み（`docs/VALIDATION.md`）。arm64の再配布束も同日に生成し、最終イメージ内の全85試験がスキップなしで成功した。**Marine版との数値比較は2026-10-23に実施（11章）。差の原因は吸収モードと特定済み。次は吸収モード、SSN尺度、要求SNRの既定値の扱いを決めること。** amd64のDocker、実回線の検証完了とは扱わない。
+Docker完成イメージとApple Silicon（arm64）は2026-10-17に実機で検証済み（`docs/VALIDATION.md`）。arm64の再配布束も同日に生成し、最終イメージ内の全85試験がスキップなしで成功した。**Marine版との数値比較は2026-10-23に実施（11章）。差の原因は吸収モードと特定し、既定を `a`（Marine互換）に切り替えた。次はSSN尺度と要求SNRの既定値の扱いを決めること。** amd64のDocker、実回線の検証完了とは扱わない。
 
 ## 2 クリーン環境での再開
 
@@ -211,20 +211,20 @@ HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
 
 比較は、同梱VOACAPを別に直接実行した値と、CHUCKのHTTP APIの値を照合したもの。入力カードは別構築、基準出力も独立の解析処理で読んだ。同じエンジンと係数を使うため、これは入力変換・解析・API経路の整合試験である。
 
-条件：2026年10月、SSN 80、150 W、標準ホイップ双方、利得補正0、雑音−150 dBW、最低角3°、要求SNR 40 dB·Hz、要求REL 90%。東京からグアム・ホノルル・ロンドンへ、4／6／8／12／16 MHzの24時間を比較。
+条件：2026年10月、SSN 80、150 W、吸収モード `a`（直接実行側も同じ指定）、標準ホイップ双方、利得補正0、雑音−150 dBW、最低角3°、要求SNR 40 dB·Hz、要求REL 90%。東京からグアム・ホノルル・ロンドンへ、4／6／8／12／16 MHzの24時間を比較。
 
 | 比較 | 結果 |
 |---|---|
 | 3経路×5周波数×24時間 | 360点。欠測状態の食違いなし |
 | REL、SNR、受信信号、打上げ角 | 最大差すべて0 |
 | 経路MUF | 72時刻で最大差0 MHz |
-| 12 UTC・8 MHz 東京→グアム | 両方 REL 71%、SNR 45 dB·Hz |
-| 同 東京→ホノルル | 両方 REL 53%、SNR 41 dB·Hz |
-| 同 東京→ロンドン | 両方 REL 0%、SNR 0 dB·Hz |
+| 12 UTC・8 MHz 東京→グアム | 両方 REL 79%、SNR 47 dB·Hz（W では 71%、45 dB·Hz） |
+| 同 東京→ホノルル | 両方 REL 70%、SNR 47 dB·Hz（W では 53%、41 dB·Hz） |
+| 同 東京→ロンドン | 両方 REL 0%、SNR 2 dB·Hz（W では 0%、0 dB·Hz） |
 
 過去の付属Windows基準出力 `vendor/tests/p2p/test01.out` と現行エンジンの別比較では、最大差REL 1ポイント、受信信号1 dB、打上げ角0.1°、MUF 0.1 MHz、SNR 0 dB。原因は丸め境界付近の値の印字差と切り分け済み（`docs/VALIDATION.md` 2026-10-17）。比較スクリプトは末位1単位を許容差として判定する。過去基準の500 kW条件を本体の上限100 kWへ黙って縮小して比較していない。
 
-再現スクリプトは `scripts/compare_voacap.py`、記録は `docs/validation/voacap-comparison.json`。エンジンの環境変数を指定して実行する。Marineオンラインサービスとの比較は2026-10-23に実施した（`docs/VALIDATION.md`、`scripts/compare_marine.py`）。標準設定ではREL差が87%の点で5ポイント以内、低い周波数の夜間側でCHUCKが最大45ポイント低い。原因はエンジンの吸収モードで、Marineは `--absorption-mode=a`（Alexの改良＋IONCAPの吸収）に相当し、CHUCKは指定なし（W）。`a` で計算すると全2160点が完全に一致する。実測に対する予測精度検証は未実施。
+再現スクリプトは `scripts/compare_voacap.py`、記録は `docs/validation/voacap-comparison.json`。エンジンの環境変数を指定して実行する。Marineオンラインサービスとの比較は2026-10-23に実施した（`docs/VALIDATION.md`、`scripts/compare_marine.py`）。標準設定ではREL差が87%の点で5ポイント以内、低い周波数の夜間側でCHUCKが最大45ポイント低い。原因はエンジンの吸収モードで、Marineは `--absorption-mode=a`（Alexの改良＋IONCAPの吸収）に相当し、CHUCKは指定なし（W）。`a` で計算すると全2160点が完全に一致するため、2026-10-23から既定を `a` とし、予察条件で W も選べるようにした（API `absorption_mode`）。実測に対する予測精度検証は未実施。
 
 ```sh
 VOACAP_BIN=/path/to/voacapl VOACAP_MODEL=/path/to/itshfbc \
@@ -243,7 +243,7 @@ python3 scripts/compare_voacap.py --output-dir dist/voacap-comparison
 | P1 | 有料AIとローカル推論 | 権限のある実資料で各AIの画像・PDF可否、モデル選択、料金・失敗を確認 |
 | P1 | 実位置入力と遠隔HTTPS | GNSS等の実送信元、UTC同期、期限、認証、前段TLSとCookieを確認 |
 | 済 | Marine版との数値比較 | 2026-10-23、Isotrope 0 dBiで10条件2160点を比較。差の原因は吸収モード（Marineは `a`、CHUCKは W）と特定し、`a` で全点一致を確認。ホイップ比較はMarine側エラーで未実施 |
-| P1 | 吸収モード | CHUCKを `--absorption-mode=a` に切り替えるか、選択式にするかを依頼者と決める。夜間の低い周波数の予測が変わる |
+| 済 | 吸収モード | 2026-10-23、依頼者の判断で既定を `a`、選択でWとした。結果・履歴の `parameters.absorption_mode` に記録。項目のない過去の保存条件はWで計算したもので、定時の再計算もWで行う |
 | P1 | SSN尺度と要求SNRの既定値 | Marineは入力SSNを0.7倍し、要求SNRをCW 19／SSB 39／AM 48とする。CHUCKの扱い（無換算、例示値24/45/67）を変えるかを依頼者と決める |
 | 済 | 過去基準の微差分析 | 2026-10-17、全135差分が丸め境界付近の末位1単位と確認。許容差を末位1単位として比較スクリプトに組込み |
 | P2 | 国外観測の追加 | ASWFC／IGS等の利用条件、取得形式、欠測、鮮度を確認後に個別実装 |

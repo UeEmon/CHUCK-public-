@@ -1,5 +1,16 @@
 # 検証記録 — v0.1
 
+## 吸収モードの切替（2026-10-23、x86-64 Linux）
+
+計算エンジンを `--absorption-mode=a` で実行するのを既定にし、予察条件の「詳細条件」とAPIの `absorption_mode`（`a`／`W`）で選べるようにしました。使ったモードは結果・CSV・JSON・履歴の `parameters.absorption_mode` と、結果の説明行・報告書に出ます。
+
+- `python3 -m unittest discover -s tests`：同梱エンジンをビルドした環境で全件成功、スキップ0。追加した試験は、既定値と不正値、夜間4 MHzでaがWより強く昼間は同じこと、Marineの記録10条件が既定で全点一致すること、項目のない過去の保存条件を定時の再計算でWのまま扱うこと。
+- `scripts/compare_marine.py --require-complete`：10条件2160点でREL・受信電力の差がすべて0。
+- `scripts/compare_voacap.py`：直接実行側も `a` で実行し、3経路360点で差0。記録 `docs/validation/voacap-comparison.json` を更新。過去Windows基準（W）との比較は従来どおり許容範囲内。
+- 実効SSNの算出（Method 1）は、aとWで版数表示以外の出力が同じことを確認しました。
+
+`docs/validation/marine-comparison.json` は切替前（W）の差の記録として残しています。
+
 ## Marine版との数値比較（2026-10-23、x86-64 Linux）
 
 VOACAP Online for Marine HF（https://www.voacap.com/marine/）の点間予測と、CHUCKの `/api/predict` を同じ条件で比べました。Marineの値は利用者のChromeで画面が送る計算要求（`p2p_p2.php`）の応答を読み、`docs/validation/marine-cases.json` に保存しています。CHUCK側は同梱エンジンを作業環境でビルドして計算しました。
@@ -35,7 +46,7 @@ Marineの入力値は、計算前に次のように換算されています。CH
 - A／a はMUFの日変動分布の扱い（`curmuf.for`・`settxr.for`・`seltxr.for`）も変えるため、17〜20 UTCの高い周波数で出ていたMUFdayとRELの差もこれで説明できます。
 - 同じ10条件・2160点を `--absorption-mode=a` で計算し直すと、RELと受信電力が全点でMarineと完全に一致しました（I は REL 最大差16ポイント、A は25ポイントで一致せず）。
 
-CHUCKの計算は変えていません。吸収モードを変えるかどうかは引き継ぎ書のP1に残しています。
+これを受け、既定の吸収モードを `a` に切り替えました（次節）。
 
 - Marineの「Shortwave whip antenna」は、2026-10-23時点でMarine側が「Invalid antenna file extension」を返し、ホイップ同士の比較はできませんでした。
 - CHUCKはNOAAのSSN（SILSO V2尺度）を換算せずに使います。Marineと同じ月の予測SSNを使う場合、CHUCKがエンジンに渡すSSNはMarineの約1.43倍になります。この扱いは変えていません。
@@ -192,7 +203,7 @@ CHUCKの計算は変えていません。吸収モードを変えるかどうか
   HTML/CSS/JSファイルの配信とJS構文は確認済みです。
 - Apple Silicon、Windows Docker Desktop、Linux ARM64でのコンパイル・実行は未実施。
   CPU依存のバイナリを同梱せずDockerビルド時にコンパイルする構成ですが、動作保証ではありません。
-- オンラインMarineサービスとの比較は2026-10-23に10条件で実施（本書冒頭）。差の原因は吸収モードと特定済み。ホイップ同士の比較は未了。
+- オンラインMarineサービスとの比較は2026-10-23に10条件で実施（本書冒頭）。差の原因は吸収モードと特定し、既定をaに切替済み。ホイップ同士の比較は未了。
 - 実測値との伝搬精度比較・磁気嵐等への応答評価は未実施。
 
 ## 配布先の初回確認

@@ -9,7 +9,7 @@ function powerShade(r,w){
 function powerPaint(td,v){td.style.background=color(v);td.style.color=(v??0)>55?'#062b25':'#d6e7f1';}
 function showPower(){
  const r=powerResult;if(!r)return;const p=r.parameters;
- $('power-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} · 現在の設定 ${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}%`;
+ $('power-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} · 現在の設定 ${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}`;
  $('power-note').textContent=r.note;
  $('power-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('power-exports').append(a);}$('power-exports').hidden=false;
  const table=document.createElement('table');table.className='heat power-matrix';const head=document.createElement('tr');head.append(cell('th','MHz / UTC'));for(let h=0;h<24;h++)head.append(cell('th',String(h).padStart(2,'0')));table.append(head);

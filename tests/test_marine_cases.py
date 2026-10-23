@@ -6,6 +6,8 @@ import unittest
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
 from compare_marine import compare
+sys.path.insert(0,str(ROOT/'app'))
+from engine import Engine, validate
 
 class MarineCasesTests(unittest.TestCase):
     def test_recorded_cases_cover_every_hour_and_band(self):
@@ -24,5 +26,14 @@ class MarineCasesTests(unittest.TestCase):
         self.assertEqual([(p['hour_utc'],p['difference']) for p in points if p['metric']=='rel'],[(0,-3),(5,0)])
         self.assertEqual(stats['rel']['max_absolute'],3)
         self.assertEqual(stats['sdbw']['mean'],4)
+
+@unittest.skipUnless(Engine().ready(),'VOACAP_BIN and VOACAP_MODEL must point to a built engine')
+class MarineAgreementTests(unittest.TestCase):
+    def test_default_absorption_mode_reproduces_every_recorded_point(self):
+        spec=json.loads((ROOT/'docs/validation/marine-cases.json').read_text());engine=Engine()
+        for case in spec['cases']:
+            with self.subTest(case=case['id']):
+                points,stats=compare(case,engine.run(validate(dict(spec['defaults'],**case['parameters']))))
+                self.assertEqual({m:(s['max_absolute'],s['null_mismatches']) for m,s in stats.items()},{'rel':(0,0),'sdbw':(0,0)})
 
 if __name__=='__main__':unittest.main()

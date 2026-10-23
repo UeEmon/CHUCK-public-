@@ -70,6 +70,12 @@ POSTの例：
   diversityの各`rx_sites[]`では`polarization`を個別指定できます。
 - `polarization_loss_db`: 全経路に共通の仮定した追加損失0〜30 dB（既定0）。
   エンジンのTX電力を等価的に低減します。parameters.power_wは元の値を保持します。
+
+### 吸収モード
+
+- `absorption_mode`: 計算エンジン voacapl の `--absorption-mode`。`a`（既定、Alexの改良＋IONCAPの吸収）または `W`（VOACAP標準）。
+  `a` はVOACAP Online Marineと同じ値になります（`docs/VALIDATION.md` 2026-10-23）。`W` は吸収指数に下限0.1を設けるため、夜間の低い周波数で受信電力が低めに出ます。
+  2026-10-23より前の結果は `W` で計算しており、`parameters` にこの項目がありません。
 - 条件はJSON・CSV冒頭のparameters・履歴に保存します。
   `ui_selection`オブジェクトを指定すると、計算に使うプリセット選択のスナップショットも結果に保存します。
 

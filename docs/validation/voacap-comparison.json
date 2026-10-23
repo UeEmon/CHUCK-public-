@@ -44,21 +44,21 @@
           "frequency_mhz": 8.0,
           "takeoff_deg": 18.5,
           "muf_day_fraction": 0.98,
-          "signal_dbw": -108.0,
-          "snr_db_hz": 45.0,
-          "reliability": 71.0
+          "signal_dbw": -105.0,
+          "snr_db_hz": 47.0,
+          "reliability": 79.0
         },
         "voacap": {
           "frequency_mhz": 8,
           "takeoff_deg": 18.5,
-          "signal_dbw": -108.0,
-          "snr_db_hz": 45.0,
-          "reliability": 71.0
+          "signal_dbw": -105.0,
+          "snr_db_hz": 47.0,
+          "reliability": 79.0
         }
       },
       "engine": "voacapl 0.7.7",
       "engine_commit": "c12a98b348c39f36f2659b8b3aa97b86284c8a1d",
-      "direct_header": "VOACAP   VERSION 16.1207W"
+      "direct_header": "VOACAP   VERSION 16.1207a"
     },
     {
       "case": "tokyo-honolulu",
@@ -101,23 +101,23 @@
       "utc12_8mhz": {
         "chuck": {
           "frequency_mhz": 8.0,
-          "takeoff_deg": 15.4,
-          "muf_day_fraction": 0.9,
-          "signal_dbw": -122.0,
-          "snr_db_hz": 41.0,
-          "reliability": 53.0
+          "takeoff_deg": 9.2,
+          "muf_day_fraction": 0.98,
+          "signal_dbw": -116.0,
+          "snr_db_hz": 47.0,
+          "reliability": 70.0
         },
         "voacap": {
           "frequency_mhz": 8,
-          "takeoff_deg": 15.4,
-          "signal_dbw": -122.0,
-          "snr_db_hz": 41.0,
-          "reliability": 53.0
+          "takeoff_deg": 9.2,
+          "signal_dbw": -116.0,
+          "snr_db_hz": 47.0,
+          "reliability": 70.0
         }
       },
       "engine": "voacapl 0.7.7",
       "engine_commit": "c12a98b348c39f36f2659b8b3aa97b86284c8a1d",
-      "direct_header": "VOACAP   VERSION 16.1207W"
+      "direct_header": "VOACAP   VERSION 16.1207a"
     },
     {
       "case": "tokyo-london",
@@ -161,22 +161,22 @@
         "chuck": {
           "frequency_mhz": 8.0,
           "takeoff_deg": 6.9,
-          "muf_day_fraction": 0.99,
-          "signal_dbw": -166.0,
-          "snr_db_hz": 0.0,
+          "muf_day_fraction": 0.98,
+          "signal_dbw": -165.0,
+          "snr_db_hz": 2.0,
           "reliability": 0.0
         },
         "voacap": {
           "frequency_mhz": 8,
           "takeoff_deg": 6.9,
-          "signal_dbw": -166.0,
-          "snr_db_hz": 0.0,
+          "signal_dbw": -165.0,
+          "snr_db_hz": 2.0,
           "reliability": 0.0
         }
       },
       "engine": "voacapl 0.7.7",
       "engine_commit": "c12a98b348c39f36f2659b8b3aa97b86284c8a1d",
-      "direct_header": "VOACAP   VERSION 16.1207W"
+      "direct_header": "VOACAP   VERSION 16.1207a"
     }
   ],
   "upstream_windows_reference_max_difference": {

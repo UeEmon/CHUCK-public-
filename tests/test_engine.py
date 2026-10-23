@@ -127,6 +127,11 @@ class CardsTests(unittest.TestCase):
         legacy=validate(dict(BASE,modulation='ssb',snr_input='bandwidth',bandwidth_hz=2750,inband_snr_db=10))
         self.assertEqual((legacy['modulation'],legacy['bandwidth'],legacy['bandwidth_hz']),('J3E','2K75',2750))
         self.assertEqual(validate(dict(BASE,modulation='ofdm'))['modulation'],'manual')
+    def test_absorption_mode_defaults_to_the_marine_setting(self):
+        self.assertEqual(validate(dict(BASE))['absorption_mode'],'a')
+        self.assertEqual(validate(dict(BASE,absorption_mode='W'))['absorption_mode'],'W')
+        for value in ['A','I','w','',1,None]:
+            with self.subTest(value=value),self.assertRaises(InputError):validate(dict(BASE,absorption_mode=value))
 
 @unittest.skipUnless(Engine().ready(),'VOACAP_BIN and VOACAP_MODEL must point to a built engine')
 class IntegrationTests(unittest.TestCase):
@@ -139,6 +144,15 @@ class IntegrationTests(unittest.TestCase):
             for ra,rb in zip(ha['rows'],hb['rows']):
                 self.assertAlmostEqual(rb['signal_dbw']-ra['signal_dbw'],10,delta=1)
                 self.assertTrue(0<=ra['reliability']<=100)
+    def test_absorption_mode_reaches_the_engine(self):
+        # Tokyo-Guam at 14 UTC is night at the path: W floors the absorption index, so
+        # 4 MHz is weaker than with the Marine-compatible 'a'; daytime 1 UTC is unchanged.
+        e=Engine();p=validate(dict(BASE,tx_lat=35.68,tx_lon=139.76,frequencies=[4.12]))
+        night={m:e.run(dict(p,absorption_mode=m),14) for m in ('a','W')}
+        self.assertIn('16.1207a',night['a']['raw_output']);self.assertIn('16.1207W',night['W']['raw_output'])
+        self.assertGreater(night['a']['hours'][0]['rows'][0]['signal_dbw']-night['W']['hours'][0]['rows'][0]['signal_dbw'],3)
+        day=[e.run(dict(p,absorption_mode=m),1)['hours'][0]['rows'][0]['signal_dbw'] for m in ('a','W')]
+        self.assertEqual(day[0],day[1])
     def test_gain_controls(self):
         e=Engine()
         for antenna in ['whip','isotropic','monopole','dipole','vertical_dipole']:

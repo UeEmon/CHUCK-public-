@@ -6,7 +6,7 @@ function annualRow(hour,frequency){if(!hour)return null;if(frequency!=='best')re
 function annualPaint(td,rel){td.style.background=color(rel);td.style.color=(rel??0)>55?'#062b25':'#d6e7f1';}
 function showAnnual(){
  const r=annualResult;if(!r)return;const p=r.parameters;
- const span=`${annualLabel(r.months[0])}〜${annualLabel(r.months[r.months.length-1])}`,rest=`${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}%`;
+ const span=`${annualLabel(r.months[0])}〜${annualLabel(r.months[r.months.length-1])}`,rest=`${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}`;
  $('annual-caption').textContent=p.ssn_source==='noaa'?`${span} · NOAAの月ごとの平滑SSN · ${rest}`:`${span} · SSN ${p.ssn}（全月共通） · ${rest}`;
  $('annual-note').textContent=r.note;
  $('annual-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('annual-exports').append(a);}$('annual-exports').hidden=false;

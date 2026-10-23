@@ -6,7 +6,7 @@ function diversityTable(headers,rows){const table=document.createElement('table'
 function showDiversity(){
  const r=diversityResult;if(!r)return;
  const p=r.parameters;
- $('diversity-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} (${p.ssn_source}) · ${p.power_w} W · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · RX ${r.sites.length} · 表示は計算時点の条件です。`;
+ $('diversity-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} (${p.ssn_source}) · ${p.power_w} W · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)} · RX ${r.sites.length} · 表示は計算時点の条件です。`;
  $('diversity-caption').textContent+=radioCaption(p,true);$('diversity-note').textContent=r.note;
  $('diversity-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('diversity-exports').append(a);}$('diversity-exports').hidden=false;
  const table=document.createElement('table');table.className='heat';const head=document.createElement('tr');head.append(cell('th','MHz / UTC'));for(let h=0;h<24;h++)head.append(cell('th',String(h).padStart(2,'0')));table.append(head);

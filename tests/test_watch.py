@@ -42,6 +42,13 @@ class WatchTests(unittest.TestCase):
         self.assertEqual(r['best'][20], dict(hour_utc=20, frequency_mhz=8, reliability=40))
         self.assertEqual(watch.check(Mock(run=fake_run), validate(PARAMS), lambda y, m: (None, 'no data'))['error'], 'no data')
 
+    def test_check_keeps_the_absorption_mode_of_the_saved_conditions(self):
+        engine = Mock(run=Mock(side_effect=fake_run))
+        old = {k: v for k, v in validate(PARAMS).items() if k != 'absorption_mode'}
+        watch.check(engine, old, lambda y, m: (100, {}))
+        watch.check(engine, validate(PARAMS), lambda y, m: (100, {}))
+        self.assertEqual([c.args[0]['absorption_mode'] for c in engine.run.call_args_list], ['W', 'a'])
+
     def test_baseline_status_notification_and_acknowledgement(self):
         w = self.store.add(self.result)
         self.assertEqual(w['label'], '東京 → Guam')

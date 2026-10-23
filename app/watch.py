@@ -29,7 +29,8 @@ def check(engine, parameters, ssn_for, now=None):
     checked = (now or datetime.now(timezone.utc)).isoformat()
     ssn, detail = ssn_for(parameters['year'], parameters['month'])
     if ssn is None: return dict(checked=checked, error=detail)
-    q = validate(dict(parameters, ssn=ssn))
+    # Conditions saved before the absorption mode existed were calculated with 'W'.
+    q = validate(dict({'absorption_mode': 'W'}, **dict(parameters, ssn=ssn)))
     return dict(checked=checked, ssn=q['ssn'], ssn_detail=detail, **summary(engine.run(q), q['reliability']))
 
 
