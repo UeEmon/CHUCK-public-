@@ -1,6 +1,33 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "回線マップの表示時刻（UTC）": [
+    "Circuit map display time (UTC)",
+    "Heure affichée sur la carte du circuit (UTC)",
+    "Hora mostrada en el mapa del circuito (UTC)",
+    "Ora mostrata sulla mappa del collegamento (UTC)",
+    "Hora exibida no mapa do circuito (UTC)",
+    "Anzeigezeit der Verbindungskarte (UTC)",
+    "회선 지도 표시 시각 (UTC)"
+  ],
+  "回線マップの時刻スライダー": [
+    "Time slider on the circuit map",
+    "Curseur horaire sur la carte du circuit",
+    "Control deslizante de hora en el mapa del circuito",
+    "Cursore orario sulla mappa del collegamento",
+    "Controle deslizante de hora no mapa do circuito",
+    "Zeitschieberegler auf der Verbindungskarte",
+    "회선 지도의 시각 슬라이더"
+  ],
+  "24時間予測・ダイバーシティー結果・メッシュ結果のタブでは、回線マップの下にUTCのスライダーと再生・停止ボタンを表示します。時刻を動かすと、地図の経路の色とRELの表示がその時刻に切り替わります。": [
+    "On the 24-hour prediction, diversity and mesh result tabs, a UTC slider and a play/stop button appear below the circuit map. Moving the time switches the path colours and REL labels on the map to that hour.",
+    "Dans les onglets prévision sur 24 heures, résultats de diversité et résultats de maillage, un curseur UTC et un bouton lecture/arrêt s’affichent sous la carte du circuit. En déplaçant l’heure, les couleurs des trajets et l’affichage REL de la carte passent à cette heure.",
+    "En las pestañas de predicción de 24 horas, resultados de diversidad y resultados de malla, se muestran un control deslizante UTC y un botón de reproducir/detener bajo el mapa del circuito. Al mover la hora, los colores de los trayectos y el REL del mapa cambian a esa hora.",
+    "Nelle schede previsione 24 ore, risultati diversità e risultati maglia, sotto la mappa del collegamento compaiono un cursore UTC e un pulsante riproduci/ferma. Spostando l’ora, i colori dei percorsi e il REL sulla mappa passano a quell’ora.",
+    "Nas abas de previsão de 24 horas, resultados de diversidade e resultados de malha, um controle deslizante UTC e um botão reproduzir/parar aparecem abaixo do mapa do circuito. Ao mover a hora, as cores dos trajetos e o REL no mapa mudam para essa hora.",
+    "Auf den Reitern 24-Stunden-Vorhersage, Diversity-Ergebnis und Mesh-Ergebnis erscheinen unter der Verbindungskarte ein UTC-Schieberegler und eine Start/Stopp-Taste. Beim Verschieben der Zeit wechseln Pfadfarben und REL-Anzeige der Karte auf diese Stunde.",
+    "24시간 예측, 다이버시티 결과, 메시 결과 탭에서는 회선 지도 아래에 UTC 슬라이더와 재생·정지 버튼을 표시합니다. 시각을 움직이면 지도의 경로 색과 REL 표시가 그 시각으로 바뀝니다."
+  ],
   "全タブの報告書の印刷": [
     "Report printing on every tab",
     "Impression du rapport dans tous les onglets",

@@ -32,7 +32,7 @@ function showMesh(){
  $('mesh-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('mesh-exports').append(a);}$('mesh-exports').append(reportButton('mesh'));$('mesh-exports').hidden=false;
  const select=$('mesh-frequency'),previous=select.value;select.replaceChildren(new Option('最良周波数','best'),...p.frequencies.map(f=>new Option(f.toFixed(3)+' MHz',String(f))));select.value=[...select.options].some(o=>o.value===previous)?previous:'best';
  if(!meshSelected||!meshLink(meshSelected.tx,meshSelected.rx))meshSelected={tx:r.links[0].tx_id,rx:r.links[0].rx_id};
- renderMeshMatrix();drawMap();
+ renderMeshMatrix();
 }
 function renderMeshMatrix(){
  const r=meshResult;if(!r)return;const hour=Number($('mesh-hour').value),frequency=$('mesh-frequency').value,target=r.parameters.reliability,relays=Number($('mesh-relays').value);
@@ -60,7 +60,7 @@ function renderMeshMatrix(){
  const n=r.sites.length;
  $('mesh-summary').textContent=`目標REL ${target}% 以上: ${meeting} / ${n*(n-1)} 経路 · 双方向とも: ${both/2} / ${n*(n-1)/2} 組`;
  $('mesh-relay-summary').hidden=!relays;$('mesh-relay-summary').textContent=`中継で到達: ${relayed} 経路 · 到達不可: ${n*(n-1)-meeting-relayed} 経路（${relays}段まで）`;
- renderRelLegend();renderMeshLink();
+ renderRelLegend();renderMeshLink();drawMap();
 }
 function renderMeshLink(){
  const r=meshResult;if(!r||!meshSelected)return;const link=meshLink(meshSelected.tx,meshSelected.rx);if(!link)return;
@@ -87,7 +87,7 @@ function renderMeshRelay(link,hour,frequency){
  out.append(cell('span',` · 区間REL ${route.rows.map(v=>relText(v.reliability,'label')).join(' / ')} · 中継経路REL ${relText(route.weakest,'label')} · ${route.rows.map(v=>v.frequency_mhz.toFixed(1)).join(' / ')} MHz`));
 }
 function stopMeshPlay(){if(meshTimer){clearInterval(meshTimer);meshTimer=null;}$('mesh-play').textContent='▶ 再生';}
-$('mesh-play').onclick=()=>{if(meshTimer){stopMeshPlay();return;}if(!meshResult)return;$('mesh-play').textContent='■ 停止';meshTimer=setInterval(()=>{if($('mesh').hidden){stopMeshPlay();return;}$('mesh-hour').value=(Number($('mesh-hour').value)+1)%24;renderMeshMatrix();},800);};
+$('mesh-play').onclick=()=>{if(meshTimer){stopMeshPlay();return;}if(!meshResult)return;stopMapPlay();$('mesh-play').textContent='■ 停止';meshTimer=setInterval(()=>{if($('mesh').hidden){stopMeshPlay();return;}$('mesh-hour').value=(Number($('mesh-hour').value)+1)%24;renderMeshMatrix();},800);};
 $('mesh-hour').value=new Date().getUTCHours();
 $('mesh-hour').oninput=renderMeshMatrix;$('mesh-frequency').onchange=renderMeshMatrix;$('mesh-relays').onchange=renderMeshMatrix;
 $('mesh-reverse').onclick=()=>{if(meshSelected){meshSelected={tx:meshSelected.rx,rx:meshSelected.tx};renderMeshMatrix();}};
