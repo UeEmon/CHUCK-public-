@@ -33,6 +33,12 @@ const {chromium}=require('playwright');
    return {left:map.right<=right.left,below:out.top>=map.bottom,within:out.right<=right.left};
   });
   assert.deepEqual(layout,{left:true,below:true,within:true});
+  assert.equal(await page.inputValue('#rel-display'),'percent');
+  assert.deepEqual(await page.evaluate(()=>[90,89.9,80,60,59.9,null].map(v=>relGrade(v)?.name??null)),['EXCELLENT','GOOD','GOOD','POOR','NONE',null]);
+  await page.selectOption('#rel-display','grade');
+  assert.deepEqual(await page.evaluate(()=>[relText(95,'cell'),relText(85),relText(null)]),['E','GOOD','—']);
+  await page.selectOption('#rel-display','percent');
+  assert.deepEqual(await page.evaluate(()=>[relText(95.4,'cell'),relText(85.25),relText(72,'label')]),['95','85.3','72%']);
   const initial=await page.evaluate(()=>JSON.stringify(circuit));
   for(const language of ['en','fr','es','it','pt','de','ko','ja']){
    await page.selectOption('#language',language);

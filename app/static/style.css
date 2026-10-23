@@ -85,3 +85,6 @@ main{display:block;max-width:1800px}
 .whats-new .news-new{padding:0 6px;border-radius:4px;background:#f7b965;color:#09121d;font-size:10px;font-weight:700}
 .news-banner{display:flex;gap:8px;align-items:center;margin:0 0 16px;padding:8px 12px;border:1px solid var(--accent);border-radius:8px;background:#0f2a27}
 .news-banner span{flex:1}
+.legend .rel-grade-legend:not([hidden]){display:flex!important;flex-wrap:wrap;gap:4px 12px;margin-left:0!important}
+.rel-grade-legend span{display:flex;gap:5px;align-items:center;white-space:nowrap}
+.rel-grade-legend b{width:10px;height:10px;border-radius:2px;display:inline-block}

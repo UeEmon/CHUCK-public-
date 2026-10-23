@@ -8460,5 +8460,77 @@ const HF_MESSAGES={
     "Lançada como aplicativo web Docker: previsão ponto a ponto de 24 horas com VOACAP (voacapl), mapa de calor de confiabilidade, frequência recomendada, cobertura regional, histórico e exportação CSV/JSON.",
     "Als Docker-Webanwendung veröffentlicht: 24-Stunden-Punkt-zu-Punkt-Prognose mit VOACAP (voacapl), Zuverlässigkeits-Heatmap, empfohlene Frequenz, regionale Abdeckung, Verlauf und CSV/JSON-Export.",
     "Docker로 실행하는 웹 앱으로 공개: VOACAP(voacapl)에 의한 24시간 지점 간 예측, 신뢰도 히트맵, 추천 주파수, 지역 커버 범위, 계산 이력과 CSV·JSON 출력."
+  ],
+  "REL表示": [
+    "REL display",
+    "Affichage REL",
+    "Vista REL",
+    "Vista REL",
+    "Exibição REL",
+    "REL-Anzeige",
+    "REL 표시"
+  ],
+  "4段階": [
+    "4 grades",
+    "4 niveaux",
+    "4 niveles",
+    "4 livelli",
+    "4 níveis",
+    "4 Stufen",
+    "4단계"
+  ],
+  "REL · 4段階": [
+    "REL · 4 grades",
+    "REL · 4 niveaux",
+    "REL · 4 niveles",
+    "REL · 4 livelli",
+    "REL · 4 níveis",
+    "REL · 4 Stufen",
+    "REL · 4단계"
+  ],
+  "信頼度 段階": [
+    "Reliability grade",
+    "Niveau de fiabilité",
+    "Nivel de fiabilidad",
+    "Livello di affidabilità",
+    "Nível de confiabilidade",
+    "Zuverlässigkeitsstufe",
+    "신뢰도 등급"
+  ],
+  "最良REL 段階": [
+    "Best REL grade",
+    "Meilleur niveau REL",
+    "Mejor nivel REL",
+    "Miglior livello REL",
+    "Melhor nível REL",
+    "Beste REL-Stufe",
+    "최적 REL 등급"
+  ],
+  "REL 段階": [
+    "REL grade",
+    "Niveau REL",
+    "Nivel REL",
+    "Livello REL",
+    "Nível REL",
+    "REL-Stufe",
+    "REL 등급"
+  ],
+  "REL表示の切替と見やすい経路": [
+    "REL display options and clearer paths",
+    "Affichage REL et trajets plus lisibles",
+    "Vista REL y trayectos más claros",
+    "Vista REL e percorsi più leggibili",
+    "Exibição REL e trajetos mais claros",
+    "REL-Anzeige und deutlichere Pfade",
+    "REL 표시 전환과 보기 쉬운 경로"
+  ],
+  "地図の「REL表示」で、RELを%と4段階（EXCELLENT・GOOD・POOR・NONE）から選べます。地図の経路はRELの段階で色分けし、選択時刻の最良RELを経路上に表示します。": [
+    "Use “REL display” on the map to show REL as a percentage or in four grades (EXCELLENT, GOOD, POOR, NONE). Map paths are colored by REL grade and show the best REL for the selected hour.",
+    "« Affichage REL » sur la carte permet d’afficher la REL en pourcentage ou en quatre niveaux (EXCELLENT, GOOD, POOR, NONE). Les trajets sont colorés selon le niveau de REL et indiquent la meilleure REL de l’heure choisie.",
+    "Con «Vista REL» en el mapa, la REL se muestra en porcentaje o en cuatro niveles (EXCELLENT, GOOD, POOR, NONE). Los trayectos se colorean según el nivel de REL y muestran la mejor REL de la hora elegida.",
+    "Con «Vista REL» sulla mappa la REL si mostra in percentuale o in quattro livelli (EXCELLENT, GOOD, POOR, NONE). I percorsi sono colorati in base al livello di REL e mostrano la REL migliore dell’ora scelta.",
+    "Em «Exibição REL» no mapa, a REL aparece em porcentagem ou em quatro níveis (EXCELLENT, GOOD, POOR, NONE). Os trajetos são coloridos pelo nível de REL e mostram a melhor REL da hora escolhida.",
+    "Mit „REL-Anzeige“ auf der Karte wird die REL in Prozent oder in vier Stufen (EXCELLENT, GOOD, POOR, NONE) angezeigt. Pfade sind nach REL-Stufe eingefärbt und zeigen die beste REL der gewählten Stunde.",
+    "지도의 'REL 표시'에서 REL을 %와 4단계(EXCELLENT·GOOD·POOR·NONE) 중에서 고를 수 있습니다. 지도의 경로는 REL 단계로 색을 나누고, 선택한 시각의 최적 REL을 경로 위에 표시합니다."
   ]
 };

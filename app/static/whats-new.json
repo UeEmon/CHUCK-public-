@@ -1,4 +1,5 @@
 [
+ {"id":"2026-10-23-rel-display","date":"2026-10-23","title":"REL表示の切替と見やすい経路","text":"地図の「REL表示」で、RELを%と4段階（EXCELLENT・GOOD・POOR・NONE）から選べます。地図の経路はRELの段階で色分けし、選択時刻の最良RELを経路上に表示します。","tab":"prediction","element":"rel-display"},
  {"id":"2026-10-22-report","date":"2026-10-22","title":"報告書の印刷","text":"24時間予測の条件、時刻別の推奨周波数、ヒートマップ、24時間計画を1枚の印刷用ページにまとめます。","tab":"prediction","element":"report-print"},
  {"id":"2026-10-22-watch","date":"2026-10-22","title":"定時の再計算","text":"保存した地点間予測を毎日NOAAの最新SSNで再計算し、目標REL以上の時間が減ったら画面上部で知らせます。","tab":"history","element":"watch-panel"},
  {"id":"2026-10-22-sites","date":"2026-10-22","title":"拠点の候補","text":"登録済みの地点から、受信地点や中継地点として目標RELに届く時間が長い順に候補を並べます。","tab":"sites","element":"compute-sites"},
