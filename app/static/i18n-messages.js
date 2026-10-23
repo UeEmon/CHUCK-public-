@@ -775,14 +775,14 @@ const HF_MESSAGES={
     "Erforderliches SNR dB·Hz",
     "요구 SNR dB·Hz"
   ],
-  "要求信頼度 %": [
-    "Target reliability %",
-    "Fiabilité cible %",
-    "Fiabilidad objetivo %",
-    "Affidabilità obiettivo %",
-    "Confiabilidade alvo %",
-    "Zielzuverlässigkeit %",
-    "목표 신뢰도 %"
+  "目標REL %以上": [
+    "Target REL at or above %",
+    "REL cible à partir de %",
+    "REL objetivo desde %",
+    "REL obiettivo da %",
+    "REL alvo a partir de %",
+    "Ziel-REL ab %",
+    "목표 REL % 이상"
   ],
   "利得補正はモデル全体への一律加算です。SNRは1 Hz帯域換算値です。": [
     "Gain correction is a uniform model offset. SNR is normalized to 1 Hz.",
@@ -8893,14 +8893,14 @@ const HF_MESSAGES={
     "Gemessene oder mit NEC usw. simulierte Strahlungsdiagramme als CSV-Gewinntabellen registrieren und über das Basismodell „Gewinntabelle“ einer Antennenvorlage in Berechnungen verwenden.",
     "실측 또는 NEC 등으로 해석한 방사 패턴을 CSV 이득표로 등록하고, 안테나 프리셋의 기준 모델 '이득표'로 계산에 사용할 수 있습니다."
   ],
-  "スライダーで時刻を動かすと、マトリックス全体がその時刻に切り替わります。最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は「REL表示の閾値」の印の値以上、灰色は欠測です。セルを選ぶと下にその経路の24時間を表示します。": [
-    "Moving the slider switches the whole matrix to that hour. With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks REL at or above the mark value in “REL display thresholds”; grey is missing data. Select a cell to show that link's 24 hours below.",
-    "Le curseur fait passer toute la matrice à l’heure choisie. En mode Meilleure fréquence, la ligne inférieure de chaque cellule indique la fréquence (MHz) de REL maximale. Un point signale une REL au moins égale au seuil de marque des « Seuils d’affichage REL » ; le gris indique une donnée manquante. Sélectionnez une cellule pour afficher les 24 heures de cette liaison.",
-    "Al mover el control, toda la matriz cambia a esa hora. Con Mejor frecuencia, la línea inferior de cada celda muestra la frecuencia (MHz) de mayor REL. Un punto indica REL igual o superior al valor de marca de «Umbrales de visualización REL»; el gris indica falta de datos. Seleccione una celda para ver las 24 horas de ese enlace.",
-    "Spostando il cursore l’intera matrice passa a quell’ora. Con Frequenza migliore, la riga inferiore di ogni cella mostra la frequenza (MHz) con REL massima. Un punto indica REL pari o superiore al valore di segno in «Soglie di visualizzazione REL»; il grigio indica dati mancanti. Seleziona una cella per vedere sotto le 24 ore di quel collegamento.",
-    "Ao mover o controle, toda a matriz muda para essa hora. Com Melhor frequência, a linha inferior de cada célula mostra a frequência (MHz) de maior REL. Um ponto indica REL igual ou acima do valor de marca em «Limiares de exibição REL»; cinza indica dado ausente. Selecione uma célula para ver abaixo as 24 horas desse enlace.",
-    "Mit dem Schieberegler wechselt die gesamte Matrix auf diese Stunde. Bei Beste Frequenz zeigt die untere Zeile jeder Zelle die Frequenz (MHz) mit der höchsten REL. Ein Punkt markiert REL ab dem Markierungswert unter „REL-Anzeigeschwellen“, Grau fehlende Daten. Eine Zelle wählen, um darunter die 24 Stunden dieser Verbindung zu sehen.",
-    "슬라이더를 움직이면 매트릭스 전체가 해당 시각으로 바뀝니다. 최적 주파수에서는 각 셀 아래 줄에 REL이 가장 높은 주파수(MHz)를 표시합니다. 점은 'REL 표시 임계값'의 표시 기준 이상, 회색은 결측입니다. 셀을 선택하면 아래에 그 경로의 24시간을 표시합니다."
+  "スライダーで時刻を動かすと、マトリックス全体がその時刻に切り替わります。最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は目標REL以上、灰色は欠測です。セルを選ぶと下にその経路の24時間を表示します。": [
+    "Moving the slider switches the whole matrix to that hour. With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks REL at or above the target REL; grey is missing data. Select a cell to show that link's 24 hours below.",
+    "Le curseur fait passer toute la matrice à l’heure choisie. En mode Meilleure fréquence, la ligne inférieure de chaque cellule indique la fréquence (MHz) de REL maximale. Un point signale une REL au moins égale à la REL cible ; le gris indique une donnée manquante. Sélectionnez une cellule pour afficher les 24 heures de cette liaison.",
+    "Al mover el control, toda la matriz cambia a esa hora. Con Mejor frecuencia, la línea inferior de cada celda muestra la frecuencia (MHz) de mayor REL. Un punto indica REL igual o superior a la REL objetivo; el gris indica falta de datos. Seleccione una celda para ver las 24 horas de ese enlace.",
+    "Spostando il cursore l’intera matrice passa a quell’ora. Con Frequenza migliore, la riga inferiore di ogni cella mostra la frequenza (MHz) con REL massima. Un punto indica REL pari o superiore alla REL obiettivo; il grigio indica dati mancanti. Seleziona una cella per vedere sotto le 24 ore di quel collegamento.",
+    "Ao mover o controle, toda a matriz muda para essa hora. Com Melhor frequência, a linha inferior de cada célula mostra a frequência (MHz) de maior REL. Um ponto indica REL igual ou acima da REL alvo; cinza indica dado ausente. Selecione uma célula para ver abaixo as 24 horas desse enlace.",
+    "Mit dem Schieberegler wechselt die gesamte Matrix auf diese Stunde. Bei Beste Frequenz zeigt die untere Zeile jeder Zelle die Frequenz (MHz) mit der höchsten REL. Ein Punkt markiert REL ab der Ziel-REL, Grau fehlende Daten. Eine Zelle wählen, um darunter die 24 Stunden dieser Verbindung zu sehen.",
+    "슬라이더를 움직이면 매트릭스 전체가 해당 시각으로 바뀝니다. 최적 주파수에서는 각 셀 아래 줄에 REL이 가장 높은 주파수(MHz)를 표시합니다. 점은 목표 REL 이상, 회색은 결측입니다. 셀을 선택하면 아래에 그 경로의 24시간을 표시합니다."
   ],
   "· 区間REL {rels} · 中継経路REL {route} · {freqs} MHz": [
     "· Hop REL {rels} · Relay route REL {route} · {freqs} MHz",
@@ -8928,15 +8928,6 @@ const HF_MESSAGES={
     "Limiares de exibição REL",
     "REL-Anzeigeschwellen",
     "REL 표시 임계값"
-  ],
-  "%表示の印 %以上": [
-    "% view mark at or above %",
-    "Marque en vue % à partir de %",
-    "Marca en vista % desde %",
-    "Segno in vista % da %",
-    "Marca na exibição % a partir de %",
-    "Markierung in %-Ansicht ab %",
-    "% 표시 점 기준 % 이상"
   ],
   "EXCELLENT %以上": [
     "EXCELLENT at or above %",
@@ -8974,14 +8965,14 @@ const HF_MESSAGES={
     "Schwellen von 1 bis 100 % mit EXCELLENT > GOOD > POOR verwenden.",
     "임계값은 1~100%이며 EXCELLENT > GOOD > POOR 순서여야 합니다."
   ],
-  "表示だけの設定で、このブラウザに保存します。POOR未満はNONEです。計算結果や、中継経路の判定に使う要求信頼度は変わりません。": [
-    "Display-only settings, saved in this browser. Below POOR is NONE. Results and the required reliability used to judge relay routes do not change.",
-    "Réglages d’affichage seulement, enregistrés dans ce navigateur. En dessous de POOR : NONE. Les résultats et la fiabilité requise pour juger les relais ne changent pas.",
-    "Ajustes solo de visualización, guardados en este navegador. Por debajo de POOR es NONE. No cambian los resultados ni la fiabilidad requerida para evaluar los relevos.",
-    "Impostazioni solo di visualizzazione, salvate in questo browser. Sotto POOR è NONE. Risultati e affidabilità richiesta per valutare i relay non cambiano.",
-    "Configurações apenas de exibição, salvas neste navegador. Abaixo de POOR é NONE. Resultados e a confiabilidade exigida para avaliar retransmissões não mudam.",
-    "Nur Anzeigeeinstellungen, in diesem Browser gespeichert. Unter POOR gilt NONE. Ergebnisse und die geforderte Zuverlässigkeit für Relaisrouten ändern sich nicht.",
-    "표시 전용 설정이며 이 브라우저에 저장됩니다. POOR 미만은 NONE입니다. 계산 결과와 중계 경로 판정에 쓰는 요구 신뢰도는 바뀌지 않습니다."
+  "目標RELは計算条件です。推奨周波数、運用周波数の計画、送信電力・拠点の候補、中継経路の判定に使い、次の計算から反映します。セルの印（·）も目標REL以上に付けます。EXCELLENT・GOOD・POORは表示だけの設定で、このブラウザに保存します。POOR未満はNONEです。": [
+    "Target REL is a calculation condition. It is used for the recommended frequency, the operating frequency plan, transmit power and site candidates, and relay route judgment, from the next calculation. Cells at or above it get the dot (·). EXCELLENT, GOOD and POOR are display-only settings saved in this browser. Below POOR is NONE.",
+    "La REL cible est une condition de calcul. Elle sert à la fréquence recommandée, au plan de fréquences d’exploitation, aux candidats de puissance d’émission et de sites, et au jugement des relais, à partir du prochain calcul. Les cellules qui l’atteignent portent le point (·). EXCELLENT, GOOD et POOR sont des réglages d’affichage seulement, enregistrés dans ce navigateur. En dessous de POOR : NONE.",
+    "La REL objetivo es una condición de cálculo. Se usa para la frecuencia recomendada, el plan de frecuencias de operación, los candidatos de potencia de transmisión y de sitios, y la evaluación de relevos, desde el próximo cálculo. Las celdas que la alcanzan llevan el punto (·). EXCELLENT, GOOD y POOR son ajustes solo de visualización, guardados en este navegador. Por debajo de POOR es NONE.",
+    "La REL obiettivo è una condizione di calcolo. Si usa per la frequenza consigliata, il piano delle frequenze operative, i candidati di potenza di trasmissione e di siti e la valutazione dei relay, dal prossimo calcolo. Le celle che la raggiungono hanno il punto (·). EXCELLENT, GOOD e POOR sono impostazioni solo di visualizzazione, salvate in questo browser. Sotto POOR è NONE.",
+    "A REL alvo é uma condição de cálculo. É usada na frequência recomendada, no plano de frequências de operação, nos candidatos de potência de transmissão e de locais e na avaliação de retransmissões, a partir do próximo cálculo. As células que a atingem recebem o ponto (·). EXCELLENT, GOOD e POOR são configurações apenas de exibição, salvas neste navegador. Abaixo de POOR é NONE.",
+    "Die Ziel-REL ist eine Rechenbedingung. Sie gilt ab der nächsten Berechnung für die empfohlene Frequenz, den Betriebsfrequenzplan, Sendeleistungs- und Standortkandidaten sowie die Bewertung von Relaisrouten. Zellen ab diesem Wert erhalten den Punkt (·). EXCELLENT, GOOD und POOR sind reine Anzeigeeinstellungen, in diesem Browser gespeichert. Unter POOR gilt NONE.",
+    "목표 REL은 계산 조건입니다. 다음 계산부터 추천 주파수, 운용 주파수 계획, 송신 전력·거점 후보, 중계 경로 판정에 사용합니다. 목표 REL 이상인 셀에는 점(·)을 붙입니다. EXCELLENT·GOOD·POOR는 표시 전용 설정이며 이 브라우저에 저장됩니다. POOR 미만은 NONE입니다."
   ],
   "既定値に戻す": [
     "Restore defaults",

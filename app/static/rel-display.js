@@ -1,7 +1,7 @@
 'use strict';
 // REL can be shown as a percentage (default) or as four grades.
-// Thresholds are display settings only: they never change a calculation or the target REL.
-const relDefaults={mark:90,excellent:90,good:80,poor:60};
+// Grade thresholds are display settings only; the target REL input beside them is a calculation condition.
+const relDefaults={excellent:90,good:80,poor:60};
 const relGrades=[
  {key:'excellent',name:'EXCELLENT',short:'E',fill:'#2fd47a',ink:'#03200e'},
  {key:'good',name:'GOOD',short:'G',fill:'#c3e84b',ink:'#1d2903'},
@@ -19,8 +19,9 @@ try{const saved=JSON.parse(localStorage.getItem('hf-rel-thresholds'));if(validRe
 const relKnown=v=>v!==null&&v!==undefined&&Number.isFinite(Number(v));
 const relMin=g=>g.key?relThresholds[g.key]:-Infinity;
 function relGrade(v){return relKnown(v)?relGrades.find(g=>Number(v)>=relMin(g)):null;}
-// The dot that marks cells at or above the display threshold, in either mode.
-function relMark(v){return relKnown(v)&&Number(v)>=relThresholds.mark?'·':'';}
+// The dot that marks cells at or above the target REL of the shown result, in either mode.
+function relMark(v,target){return relKnown(v)&&Number(v)>=target?'·':'';}
+function relLegendTarget(e){const r=e.closest('#mesh')?(typeof meshResult!=='undefined'&&meshResult):(typeof result!=='undefined'&&result);return r?.parameters?.reliability??Number(fields.reliability.value);}
 // style: 'cell' for heatmap buttons, 'table' for detail tables, 'label' for map text.
 function relText(v,style='table'){
  if(!relKnown(v))return '—';
@@ -68,7 +69,7 @@ function renderRelLegend(){
   const item=document.createElement('span'),swatch=document.createElement('b');swatch.style.background=g.fill;
   item.append(swatch,document.createTextNode(g.short+' '+g.name+(g.key?' ≥'+relMin(g)+'%':' <'+relThresholds.poor+'%')));return item;
  }));
- for(const e of document.querySelectorAll('.rel-mark-legend'))e.textContent=`印 · はREL ${relThresholds.mark}%以上`;
+ for(const e of document.querySelectorAll('.rel-mark-legend'))e.textContent=`印 · はREL ${relLegendTarget(e)}%以上`;
  if($('rel-unit'))$('rel-unit').textContent=grade?'REL · 4段階':'REL · %';
  for(const e of document.querySelectorAll('.rel-percent-legend'))e.hidden=grade;
  for(const e of document.querySelectorAll('.rel-grade-legend'))e.hidden=!grade;
@@ -85,7 +86,7 @@ function setRelMode(mode){
  try{localStorage.setItem('hf-rel-display',relMode);}catch{/* Still apply for this session. */}
  refreshRelViews();
 }
-const relInputs={mark:'rel-mark-threshold',excellent:'rel-excellent',good:'rel-good',poor:'rel-poor'};
+const relInputs={excellent:'rel-excellent',good:'rel-good',poor:'rel-poor'};
 function showRelThresholds(){for(const [k,id]of Object.entries(relInputs))$(id).value=relThresholds[k];}
 function applyRelThresholds(){
  const next=Object.fromEntries(Object.entries(relInputs).map(([k,id])=>[k,$(id).value===''?NaN:Number($(id).value)]));
@@ -98,4 +99,5 @@ $('rel-threshold-reset').onclick=()=>{relThresholds={...relDefaults};showRelThre
 showRelThresholds();
 $('rel-display').value=relMode;
 $('rel-display').onchange=e=>setRelMode(e.target.value);
+fields.reliability.addEventListener('change',renderRelLegend);
 renderRelLegend();
