@@ -179,7 +179,7 @@ linksはTXの入力順、RXの入力順に並び、自己経路は含みませ�
 エンジンはN×(N−1)回逐次実行、各回60秒まで。失敗時は部分結果を保存しません。
 公開版では回数制限のコストが8です。詳細は[MESH.md](MESH.md)。
 
-## 12か月の見通し
+## 12か月予測
 
 `POST /api/annual`：`/api/predict` と同じ入力で、year/monthから始まる12か月の24時間予測を計算します。
 ssn_sourceはmanual（全月同じSSN）またはnoaa（月ごとの平滑SSN、新鮮な値がない月は計算しない）。
@@ -247,7 +247,7 @@ observed_at=UTC ISO時刻, stale, source_url, fetched_at）、sources, note。
 `POST /api/predict` と `/api/coverage` に `ssn_source: "manual" | "noaa"` を追加。
 省略時manual。noaaではクライアントSSNを使わずサーバー取得値を使用します。
 対象月に有効な新鮮なSSNがなければ503。手動値への暗黙のフォールバックは行いません。
-NOAA利用時は結果直下のspace_weatherに取得時点の出典情報を保存します。`space_weather.ssn.value` はNOAAの公表値（SILSO V2尺度）、`engine_value` はその0.7倍でエンジンに渡した値（`parameters.ssn` と同じ）、`scale` は係数0.7です。12か月の見通しでは各月の `ssn_detail` に `published` と `scale` を記録します。手動入力と実効SSNは換算しません。
+NOAA利用時は結果直下のspace_weatherに取得時点の出典情報を保存します。`space_weather.ssn.value` はNOAAの公表値（SILSO V2尺度）、`engine_value` はその0.7倍でエンジンに渡した値（`parameters.ssn` と同じ）、`scale` は係数0.7です。12か月予測では各月の `ssn_detail` に `published` と `scale` を記録します。手動入力と実効SSNは換算しません。
 詳細はSPACE_WEATHER.md。
 
 ## 実効SSN

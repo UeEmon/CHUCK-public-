@@ -306,7 +306,7 @@ class Handler(BaseHTTPRequestHandler):
             p=validate(dict(data,ssn=0) if data.get('ssn_source') in ('noaa','effective') else data)
             weather=effective=None
             if path=='/api/annual' and data.get('ssn_source')=='effective':
-                raise InputError('12か月の見通しでは実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。')
+                raise InputError('12か月予測では実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。')
             if data.get('ssn_source')=='effective':
                 prepared,effective=EFFECTIVE_SSN.calculation_input(dict(data,year=p['year'],month=p['month']))
             else:

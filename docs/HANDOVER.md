@@ -2,11 +2,11 @@
 
 作成日：2026年10月16日。基準main：`863d89471a3d2e906288c4760480893d27594325`。本書追加前の機能・操作要領が揃った状態を基準とする。
 
-CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは依頼者提供のchuckさんの肖像画で、`app/static/chuck-icon.png`（ヘッダー）、`app/static/favicon.png`（ブラウザタブ）、`docs/images/chuck-icon.png`（README）に置いている。HF伝搬・通信信頼度を予察するWebシステムで、旧名称はSPARK。リポジトリ名は `UeEmon/VOCAP-COMPATIBILITY-` のまま維持している。本書は別の開発者またはAIが、実装の境界、検証状況、制約を保持して作業を再開するための資料である。
+CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは依頼者提供のchuckさんの肖像画で、`app/static/chuck-icon.png`（ヘッダー）、`app/static/favicon.png`（ブラウザタブ）、`docs/images/chuck-icon.png`（README）に置いている。HF伝搬・通信信頼度を予測するWebシステムで、旧名称はSPARK。リポジトリ名は `UeEmon/VOCAP-COMPATIBILITY-` のまま維持している。本書は別の開発者またはAIが、実装の境界、検証状況、制約を保持して作業を再開するための資料である。
 
 ## 1 現在の到達点
 
-- VOACAPによる24時間地点間予察、最大35地点のカバー範囲、単一TXからRX 2～8局へのサイト比較を実装済み。
+- VOACAPによる24時間地点間予測、最大35地点のカバー範囲、単一TXからRX 2～8局へのサイト比較を実装済み。
 - 左に循環地図、右にTX 1局・RX 1～8局。結果は地図下のタブ。クリックで局位置を移動せず、地点プリセットから選択する。
 - 地点30都市、アンテナ18項目を初期登録。アンテナは5つの計算モデルと参考資料専用項目を区別する。
 - 位置ゲートウェイとログイン付き管理画面、NOAA・D-RAP・NICT・任意有効化GIRO、生成AI OCR、8言語UIを実装済み。
@@ -37,7 +37,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-本体でエンジン準備状態を確認し、東京→グアム、手動SSNで1件計算する。計算・CSV出力・再起動後の履歴復元まで確認する。AIキーや位置トークンが未設定でも固定地点の予察は使用できる。
+本体でエンジン準備状態を確認し、東京→グアム、手動SSNで1件計算する。計算・CSV出力・再起動後の履歴復元まで確認する。AIキーや位置トークンが未設定でも固定地点の予測は使用できる。
 
 ```sh
 docker compose logs --tail=100 -f
@@ -224,7 +224,7 @@ HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
 
 過去の付属Windows基準出力 `vendor/tests/p2p/test01.out` と現行エンジンの別比較では、最大差REL 1ポイント、受信信号1 dB、打上げ角0.1°、MUF 0.1 MHz、SNR 0 dB。原因は丸め境界付近の値の印字差と切り分け済み（`docs/VALIDATION.md` 2026-10-17）。比較スクリプトは末位1単位を許容差として判定する。過去基準の500 kW条件を本体の上限100 kWへ黙って縮小して比較していない。
 
-再現スクリプトは `scripts/compare_voacap.py`、記録は `docs/validation/voacap-comparison.json`。エンジンの環境変数を指定して実行する。Marineオンラインサービスとの比較は2026-10-23に実施した（`docs/VALIDATION.md`、`scripts/compare_marine.py`）。標準設定ではREL差が87%の点で5ポイント以内、低い周波数の夜間側でCHUCKが最大45ポイント低い。原因はエンジンの吸収モードで、Marineは `--absorption-mode=a`（Alexの改良＋IONCAPの吸収）に相当し、CHUCKは指定なし（W）。`a` で計算すると全2160点が完全に一致するため、2026-10-23から既定を `a` とし、予察条件で W も選べるようにした（API `absorption_mode`）。実測に対する予測精度検証は未実施。
+再現スクリプトは `scripts/compare_voacap.py`、記録は `docs/validation/voacap-comparison.json`。エンジンの環境変数を指定して実行する。Marineオンラインサービスとの比較は2026-10-23に実施した（`docs/VALIDATION.md`、`scripts/compare_marine.py`）。標準設定ではREL差が87%の点で5ポイント以内、低い周波数の夜間側でCHUCKが最大45ポイント低い。原因はエンジンの吸収モードで、Marineは `--absorption-mode=a`（Alexの改良＋IONCAPの吸収）に相当し、CHUCKは指定なし（W）。`a` で計算すると全2160点が完全に一致するため、2026-10-23から既定を `a` とし、予測条件で W も選べるようにした（API `absorption_mode`）。実測に対する予測精度検証は未実施。
 
 ```sh
 VOACAP_BIN=/path/to/voacapl VOACAP_MODEL=/path/to/itshfbc \
@@ -248,7 +248,7 @@ python3 scripts/compare_voacap.py --output-dir dist/voacap-comparison
 | 済 | 過去基準の微差分析 | 2026-10-17、全135差分が丸め境界付近の末位1単位と確認。許容差を末位1単位として比較スクリプトに組込み |
 | P2 | 国外観測の追加 | ASWFC／IGS等の利用条件、取得形式、欠測、鮮度を確認後に個別実装 |
 
-未実装：生TCP／UDP・シリアル、AIS／ADS-B／NMEA2000の直接デコード、移動経路追跡予察、航空機高度補正、機体・艦体パターン推定、偏波伝搬モデル、観測による自動補正、実受信切替制御。本体のアカウント管理や暗号化キー保管もない。
+未実装：生TCP／UDP・シリアル、AIS／ADS-B／NMEA2000の直接デコード、移動経路追跡予測、航空機高度補正、機体・艦体パターン推定、偏波伝搬モデル、観測による自動補正、実受信切替制御。本体のアカウント管理や暗号化キー保管もない。
 
 現行Dockerはパッケージ差異を監査で停止する設計。APT配布版の変化でビルドが止まっても、監査を無効化して通さない。digest・パッケージ版・対応ソース・通知をまとめて再評価する。
 

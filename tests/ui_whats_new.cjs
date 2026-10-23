@@ -24,10 +24,10 @@ const {chromium}=require('playwright');
   // Fixed notes: two features on the page and one whose element does not exist yet.
   const today=new Date().toISOString().slice(0,10);
   const notes=[{id:today+'-future',date:today,title:'未来の機能',text:'まだ画面にない機能',tab:'annual',element:'not-there-yet'},
-   {id:today+'-annual',date:today,title:'12か月の見通し',text:'1つの経路について12か月分を計算し、月×UTCのRELで季節による変化を示します。',tab:'annual',element:'compute-annual'},
+   {id:today+'-annual',date:today,title:'12か月予測',text:'1つの経路について12か月分を計算し、月×UTCのRELで季節による変化を示します。',tab:'annual',element:'compute-annual'},
    {id:today+'-plan',date:today,title:'運用周波数の24時間計画',text:'24時間予測の下に、切替を抑えた時間帯ごとの使用周波数の表を表示します（CSV出力・印刷つき）。',tab:'prediction',element:'plan-mode'},
    {id:today+'-history',date:today,title:'未来の機能',text:'履歴だけの項目',tab:'not-a-tab'},
-   {id:'2020-01-01-old',date:'2020-01-01',title:'メッシュの中継到達性',text:'直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ結果に示します。',tab:'mesh',element:'mesh-relays'}];
+   {id:'2020-01-01-old',date:'2020-01-01',title:'メッシュの中継到達性',text:'直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ予測に示します。',tab:'mesh',element:'mesh-relays'}];
   await page.route('**/whats-new.json',route=>route.fulfill({contentType:'application/json',body:JSON.stringify(notes)}));
   await page.goto(url);await page.waitForFunction(()=>catalog.presets.length>=30);
   // A first visit counts recent notes as new, without a blocking dialog.
@@ -55,7 +55,7 @@ const {chromium}=require('playwright');
   // Seen notes stay quiet after a reload; a newer note is new again.
   await page.reload();await page.waitForFunction(()=>catalog.presets.length>=30);await page.waitForTimeout(300);
   assert.equal(await page.locator('#news-banner').isHidden(),true);
-  notes.unshift({id:today+'-z',date:today,title:'メッシュの中継到達性',text:'直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ結果に示します。',tab:'mesh',element:'mesh-relays'});
+  notes.unshift({id:today+'-z',date:today,title:'メッシュの中継到達性',text:'直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ予測に示します。',tab:'mesh',element:'mesh-relays'});
   await page.reload();await page.waitForFunction(()=>!$('news-banner').hidden);
   assert.equal(await page.locator('#news-banner-text').innerText(),'新しい機能が1件あります。');
   await page.locator('#news-banner-close').click();

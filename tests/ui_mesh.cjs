@@ -65,7 +65,7 @@ const {chromium}=require('playwright');
   if(process.argv[2]){await page.selectOption('#mesh-frequency','best');await page.locator('#mesh-hour').fill('9');await page.locator('#mesh').screenshot({path:process.argv[2]});}
   // Language switch keeps user names and translates the controls.
   await page.selectOption('#language','en');
-  assert.equal(await page.locator('.tabs [data-tab="mesh"]').innerText(),'Mesh results');
+  assert.equal(await page.locator('.tabs [data-tab="mesh"]').innerText(),'Mesh forecast');
   assert.match(await page.locator('#mesh-summary').innerText(),/^Target REL/);
   assert.match(await page.locator('#circuit-mode').innerText(),/^Mesh · 3 stations · 6 links/);
   await page.selectOption('#language','ja');

@@ -63,7 +63,7 @@ function outlook(request){
   assert.equal(await page.locator('#annual-exports a').count(),2);
   if(process.argv[2]){await page.selectOption('#annual-frequency','best');await page.locator('#annual').screenshot({path:process.argv[2]});}
   await page.selectOption('#language','en');
-  assert.equal(await page.locator('.tabs [data-tab="annual"]').innerText(),'12-month outlook');
+  assert.equal(await page.locator('.tabs [data-tab="annual"]').innerText(),'12-month forecast');
   assert.match(await page.locator('#annual-caption').innerText(),/^2026\/10〜2027\/9 · SSN 80 \(all months\) · /);
   assert.equal(await rows.nth(0).locator('th').last().innerText(),'At target REL (h)');
   assert.deepEqual(errors,[]);

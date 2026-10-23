@@ -52,8 +52,8 @@ function openAnnual(r){annualResult=r;annualSelected=null;coverageResult=null;ta
 $('compute-annual').onclick=async()=>{
  if(busy)return;if(!form.checkValidity()){tab('conditions-tab');form.reportValidity();return;}if(!$('station-selection').reportValidity())return;
  try{
-  validateCircuit();if(meshMode())throw Error('12か月の見通しは単一RXの経路で計算します。メッシュを外してください。');
-  if(fields.ssn_source.value==='effective')throw Error('12か月の見通しでは実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。');
+  validateCircuit();if(meshMode())throw Error('12か月予測は単一RXの経路で計算します。メッシュを外してください。');
+  if(fields.ssn_source.value==='effective')throw Error('12か月予測では実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。');
   const p={...params(),ui_selection:circuitSnapshot()};setBusy(true);notice('12か月分を計算しています。エンジンを12回実行するため、完了までお待ちください…');
   annualResult=await post('/api/annual',p);annualSelected=null;coverageResult=null;showAnnual();notice('計算完了。条件と結果を履歴に保存しました。');
  }catch(e){notice(e.message,true);}finally{setBusy(false);}

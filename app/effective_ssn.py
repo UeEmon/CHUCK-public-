@@ -23,7 +23,7 @@ LINEARITY_TOLERANCE_MHZ = 0.15
 # Autoscaling errors give values far outside any solar cycle; those stations are rejected.
 RAW_RANGE = (-50.0, 400.0)
 NOTE = ('観測地点上空のfoF2に、VOACAP（CCIR係数）の同じ地点・月・時刻のfoF2が一致するSSNを局ごとに求め、'
-        '中央値を計算に使います。観測時点の電離圏を月間予察へ当てはめる近似で、磁気嵐中の急変や'
+        '中央値を計算に使います。観測時点の電離圏を月間予測へ当てはめる近似で、磁気嵐中の急変や'
         '観測局から遠い経路の差は補正しません。対象年月が現在の月のときだけ使えます。')
 
 

@@ -48,7 +48,7 @@ const {chromium}=require('playwright');
    assert.equal(await page.locator('html').getAttribute('lang'),language);
    assert.equal(await page.evaluate(()=>JSON.stringify(circuit)),initial);
    const label=await page.locator('.tabs [data-tab="conditions-tab"]').innerText();
-   assert.equal(label.includes('予察条件'),language==='ja');
+   assert.equal(label.includes('予測条件'),language==='ja');
   }
   await page.selectOption('#language','en');
   await page.reload();await page.waitForFunction(()=>catalog.presets.length>=30);

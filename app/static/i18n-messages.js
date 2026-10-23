@@ -1,32 +1,23 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
-  "回線マップの表示時刻（UTC）": [
-    "Circuit map display time (UTC)",
-    "Heure affichée sur la carte du circuit (UTC)",
-    "Hora mostrada en el mapa del circuito (UTC)",
-    "Ora mostrata sulla mappa del collegamento (UTC)",
-    "Hora exibida no mapa do circuito (UTC)",
-    "Anzeigezeit der Verbindungskarte (UTC)",
-    "회선 지도 표시 시각 (UTC)"
+  "画面の用語の統一": [
+    "Consistent screen terms",
+    "Termes d’écran harmonisés",
+    "Términos de pantalla unificados",
+    "Termini dello schermo uniformati",
+    "Termos de tela unificados",
+    "Einheitliche Begriffe auf dem Bildschirm",
+    "화면 용어 통일"
   ],
-  "回線マップの時刻スライダー": [
-    "Time slider on the circuit map",
-    "Curseur horaire sur la carte du circuit",
-    "Control deslizante de hora en el mapa del circuito",
-    "Cursore orario sulla mappa del collegamento",
-    "Controle deslizante de hora no mapa do circuito",
-    "Zeitschieberegler auf der Verbindungskarte",
-    "회선 지도의 시각 슬라이더"
-  ],
-  "24時間予測・ダイバーシティー結果・メッシュ結果のタブでは、回線マップの下にUTCのスライダーと再生・停止ボタンを表示します。時刻を動かすと、地図の経路の色とRELの表示がその時刻に切り替わります。": [
-    "On the 24-hour prediction, diversity and mesh result tabs, a UTC slider and a play/stop button appear below the circuit map. Moving the time switches the path colours and REL labels on the map to that hour.",
-    "Dans les onglets prévision sur 24 heures, résultats de diversité et résultats de maillage, un curseur UTC et un bouton lecture/arrêt s’affichent sous la carte du circuit. En déplaçant l’heure, les couleurs des trajets et l’affichage REL de la carte passent à cette heure.",
-    "En las pestañas de predicción de 24 horas, resultados de diversidad y resultados de malla, se muestran un control deslizante UTC y un botón de reproducir/detener bajo el mapa del circuito. Al mover la hora, los colores de los trayectos y el REL del mapa cambian a esa hora.",
-    "Nelle schede previsione 24 ore, risultati diversità e risultati maglia, sotto la mappa del collegamento compaiono un cursore UTC e un pulsante riproduci/ferma. Spostando l’ora, i colori dei percorsi e il REL sulla mappa passano a quell’ora.",
-    "Nas abas de previsão de 24 horas, resultados de diversidade e resultados de malha, um controle deslizante UTC e um botão reproduzir/parar aparecem abaixo do mapa do circuito. Ao mover a hora, as cores dos trajetos e o REL no mapa mudam para essa hora.",
-    "Auf den Reitern 24-Stunden-Vorhersage, Diversity-Ergebnis und Mesh-Ergebnis erscheinen unter der Verbindungskarte ein UTC-Schieberegler und eine Start/Stopp-Taste. Beim Verschieben der Zeit wechseln Pfadfarben und REL-Anzeige der Karte auf diese Stunde.",
-    "24시간 예측, 다이버시티 결과, 메시 결과 탭에서는 회선 지도 아래에 UTC 슬라이더와 재생·정지 버튼을 표시합니다. 시각을 움직이면 지도의 경로 색과 REL 표시가 그 시각으로 바뀝니다."
+  "「予察」と「〜結果」の表記を「予測」に揃えました。タブ名は「ダイバーシティー予測」「メッシュ予測」「12か月予測」「予測条件・宇宙天気」になります。": [
+    "Screen labels now consistently say “forecast”. The tabs are now Diversity forecast, Mesh forecast, 12-month forecast and Forecast & space weather.",
+    "Les libellés de l’écran utilisent désormais « prévision » de façon cohérente. Les onglets s’appellent Prévision de diversité, Prévision maillée, Prévision sur 12 mois et Conditions et météo spatiale.",
+    "Las etiquetas de la pantalla usan ahora «predicción» de forma coherente. Las pestañas son Predicción de diversidad, Predicción de malla, Predicción de 12 meses y Condiciones y clima espacial.",
+    "Le etichette dello schermo usano ora «previsione» in modo coerente. Le schede sono Previsione di diversità, Previsione mesh, Previsione a 12 mesi e Condizioni e meteo spaziale.",
+    "Os rótulos da tela usam agora “previsão” de forma consistente. As abas são Previsão de diversidade, Previsão de malha, Previsão de 12 meses e Condições e clima espacial.",
+    "Die Bildschirmbeschriftungen verwenden jetzt einheitlich „Prognose“. Die Reiter heißen Diversity-Prognose, Mesh-Prognose, 12-Monats-Prognose und Bedingungen und Weltraumwetter.",
+    "화면 표기를 '예측'으로 통일했습니다. 탭 이름은 다이버시티 예측, 메시 예측, 12개월 예측, 예측 조건·우주 날씨입니다."
   ],
   "全タブの報告書の印刷": [
     "Report printing on every tab",
@@ -37,14 +28,14 @@ const HF_MESSAGES={
     "Berichtsdruck auf allen Reitern",
     "모든 탭의 보고서 인쇄"
   ],
-  "カバー範囲、Propagation Chart、ダイバーシティー、メッシュ、12か月の見通し、必要な送信電力、拠点の候補の結果も「報告書を印刷」で、条件と表示中の表・図を1枚の印刷用ページにまとめられます。": [
-    "Coverage, Propagation Chart, diversity, mesh, 12-month outlook, required power and site candidate results can also be put on one printable page with “Print report”, with the conditions and the shown tables and charts.",
-    "Les résultats de couverture, Propagation Chart, diversité, maillage, perspective sur 12 mois, puissance requise et sites candidats peuvent aussi être réunis sur une page imprimable avec « Imprimer le rapport », avec les conditions et les tableaux et graphiques affichés.",
-    "Los resultados de cobertura, Propagation Chart, diversidad, malla, perspectiva de 12 meses, potencia necesaria y sitios candidatos también pueden reunirse en una página imprimible con «Imprimir informe», con las condiciones y las tablas y gráficos mostrados.",
-    "Anche i risultati di copertura, Propagation Chart, diversità, maglia, prospettiva a 12 mesi, potenza necessaria e siti candidati possono essere raccolti in una pagina stampabile con «Stampa rapporto», con le condizioni e le tabelle e i grafici mostrati.",
-    "Os resultados de cobertura, Propagation Chart, diversidade, malha, perspectiva de 12 meses, potência necessária e locais candidatos também podem ser reunidos numa página imprimível com “Imprimir relatório”, com as condições e as tabelas e gráficos mostrados.",
-    "Auch Ergebnisse zu Abdeckung, Propagation Chart, Diversity, Mesh, 12-Monats-Ausblick, erforderlicher Sendeleistung und Standortkandidaten lassen sich mit „Bericht drucken“ auf einer druckbaren Seite zusammenfassen, mit den Bedingungen und den angezeigten Tabellen und Diagrammen.",
-    "커버리지, Propagation Chart, 다이버시티, 메시, 12개월 전망, 필요 송신 전력, 거점 후보 결과도 '보고서 인쇄'로 조건과 표시 중인 표·그림을 한 장의 인쇄용 페이지로 정리할 수 있습니다."
+  "カバー範囲、Propagation Chart、ダイバーシティー、メッシュ、12か月予測、必要な送信電力、拠点の候補の結果も「報告書を印刷」で、条件と表示中の表・図を1枚の印刷用ページにまとめられます。": [
+    "Coverage, Propagation Chart, diversity, mesh, 12-month forecast, required power and site candidate results can also be put on one printable page with “Print report”, with the conditions and the shown tables and charts.",
+    "Les résultats de couverture, Propagation Chart, diversité, maillage, prévision sur 12 mois, puissance requise et sites candidats peuvent aussi être réunis sur une page imprimable avec « Imprimer le rapport », avec les conditions et les tableaux et graphiques affichés.",
+    "Los resultados de cobertura, Propagation Chart, diversidad, malla, predicción de 12 meses, potencia necesaria y sitios candidatos también pueden reunirse en una página imprimible con «Imprimir informe», con las condiciones y las tablas y gráficos mostrados.",
+    "Anche i risultati di copertura, Propagation Chart, diversità, maglia, previsione a 12 mesi, potenza necessaria e siti candidati possono essere raccolti in una pagina stampabile con «Stampa rapporto», con le condizioni e le tabelle e i grafici mostrati.",
+    "Os resultados de cobertura, Propagation Chart, diversidade, malha, previsão de 12 meses, potência necessária e locais candidatos também podem ser reunidos numa página imprimível com “Imprimir relatório”, com as condições e as tabelas e gráficos mostrados.",
+    "Auch Ergebnisse zu Abdeckung, Propagation Chart, Diversity, Mesh, 12-Monats-Prognose, erforderlicher Sendeleistung und Standortkandidaten lassen sich mit „Bericht drucken“ auf einer druckbaren Seite zusammenfassen, mit den Bedingungen und den angezeigten Tabellen und Diagrammen.",
+    "커버리지, Propagation Chart, 다이버시티, 메시, 12개월 예측, 필요 송신 전력, 거점 후보 결과도 '보고서 인쇄'로 조건과 표시 중인 표·그림을 한 장의 인쇄용 페이지로 정리할 수 있습니다."
   ],
   "項目": [
     "Field",
@@ -172,7 +163,7 @@ const HF_MESSAGES={
     "Ziehen zum Verschieben · Mausrad, Zwei-Finger-Geste oder +/− zum Zoomen · Natural Earth",
     "드래그로 이동 · 휠/핀치/+−로 확대·축소 · Natural Earth"
   ],
-  "D-RAPと観測局は「予察条件・宇宙天気」タブで取得できます。": [
+  "D-RAPと観測局は「予測条件・宇宙天気」タブで取得できます。": [
     "Load D-RAP and stations in Forecast & space weather.",
     "Charger D-RAP et les stations dans Conditions et météo spatiale.",
     "Cargue D-RAP y estaciones en Condiciones y clima espacial.",
@@ -244,16 +235,16 @@ const HF_MESSAGES={
     "Abdeckung",
     "커버리지"
   ],
-  "ダイバーシティー結果": [
-    "Diversity results",
-    "Résultats de diversité",
-    "Resultados de diversidad",
-    "Risultati di diversità",
-    "Resultados de diversidade",
-    "Diversitätsergebnisse",
-    "다이버시티 결과"
+  "ダイバーシティー予測": [
+    "Diversity forecast",
+    "Prévision de diversité",
+    "Predicción de diversidad",
+    "Previsione di diversità",
+    "Previsão de diversidade",
+    "Diversity-Prognose",
+    "다이버시티 예측"
   ],
-  "予察条件・宇宙天気": [
+  "予測条件・宇宙天気": [
     "Forecast & space weather",
     "Conditions et météo spatiale",
     "Condiciones y clima espacial",
@@ -307,7 +298,7 @@ const HF_MESSAGES={
     "Verbindungsentfernung",
     "경로 거리"
   ],
-  "送信点からの方位": [
+  "送信地点からの方位": [
     "Bearing from TX",
     "Azimut depuis TX",
     "Rumbo desde TX",
@@ -703,7 +694,7 @@ const HF_MESSAGES={
     "Standortdetails (Bedingungen bei Berechnung)",
     "사이트별 상세(계산 시점 조건)"
   ],
-  "共通の予察条件": [
+  "共通の予測条件": [
     "Common forecast conditions",
     "Conditions de prévision communes",
     "Condiciones comunes de predicción",
@@ -1414,7 +1405,7 @@ const HF_MESSAGES={
     "RX{n} · Empfangsstandort",
     "RX{n}·수신 지점"
   ],
-  "単一RX · 地点間予察": [
+  "単一RX · 地点間予測": [
     "Single RX · Point-to-point forecast",
     "RX unique · Prévision point à point",
     "RX único · Predicción punto a punto",
@@ -3006,33 +2997,6 @@ const HF_MESSAGES={
     "Polarização",
     "Polarisation",
     "편파 방식"
-  ],
-  "計算結果": [
-    "Calculation results",
-    "Résultats du calcul",
-    "Resultados del cálculo",
-    "Risultati del calcolo",
-    "Resultados do cálculo",
-    "Berechnungsergebnisse",
-    "계산 결과"
-  ],
-  "単一RXの結果": [
-    "Single RX results",
-    "Résultats RX unique",
-    "Resultados de un RX",
-    "Risultati RX singolo",
-    "Resultados de um RX",
-    "Ergebnisse eines RX",
-    "단일 RX 결과"
-  ],
-  "複数RXの結果": [
-    "Multiple RX results",
-    "Résultats multi-RX",
-    "Resultados de varios RX",
-    "Risultati multi-RX",
-    "Resultados de vários RX",
-    "Ergebnisse mehrerer RX",
-    "다중 RX 결과"
   ],
   "表示指標": [
     "Display metric",
@@ -4780,14 +4744,14 @@ const HF_MESSAGES={
     "[ausgeschlossen]",
     "[제외]"
   ],
-  "メッシュ結果": [
-    "Mesh results",
-    "Résultats maillés",
-    "Resultados de malla",
-    "Risultati mesh",
-    "Resultados de malha",
-    "Mesh-Ergebnisse",
-    "메시 결과"
+  "メッシュ予測": [
+    "Mesh forecast",
+    "Prévision maillée",
+    "Predicción de malla",
+    "Previsione mesh",
+    "Previsão de malha",
+    "Mesh-Prognose",
+    "메시 예측"
   ],
   "拠点間メッシュ · TX×RX のREL": [
     "Station mesh · TX×RX REL",
@@ -5536,7 +5500,7 @@ const HF_MESSAGES={
     "NOAA-Daten konnten nicht abgerufen werden",
     "NOAA 데이터를 가져오지 못했습니다"
   ],
-  "観測地点上空のfoF2に、VOACAP（CCIR係数）の同じ地点・月・時刻のfoF2が一致するSSNを局ごとに求め、中央値を計算に使います。観測時点の電離圏を月間予察へ当てはめる近似で、磁気嵐中の急変や観測局から遠い経路の差は補正しません。対象年月が現在の月のときだけ使えます。": [
+  "観測地点上空のfoF2に、VOACAP（CCIR係数）の同じ地点・月・時刻のfoF2が一致するSSNを局ごとに求め、中央値を計算に使います。観測時点の電離圏を月間予測へ当てはめる近似で、磁気嵐中の急変や観測局から遠い経路の差は補正しません。対象年月が現在の月のときだけ使えます。": [
     "For each station, the SSN at which VOACAP (CCIR coefficients) gives the observed foF2 for the same place, month and time is found, and the median is used. This approximates the monthly forecast with the ionosphere at observation time and does not correct for sudden changes during storms or for paths far from the stations. Available only when the target month is the current month.",
     "Pour chaque station, on cherche le SSN pour lequel VOACAP (coefficients CCIR) donne la foF2 observée au même lieu, mois et heure, puis on utilise la médiane. Cette approximation applique l’ionosphère du moment à la prévision mensuelle et ne corrige ni les variations brusques pendant les orages ni les trajets éloignés des stations. Disponible uniquement si le mois visé est le mois en cours.",
     "Para cada estación se busca el SSN con el que VOACAP (coeficientes CCIR) da la foF2 observada en el mismo lugar, mes y hora, y se usa la mediana. Es una aproximación que aplica la ionosfera del momento a la predicción mensual y no corrige cambios bruscos durante tormentas ni trayectos lejanos a las estaciones. Solo disponible cuando el mes objetivo es el actual.",
@@ -7309,23 +7273,23 @@ const HF_MESSAGES={
     "Das Druckfenster konnte nicht geöffnet werden. Prüfen Sie, ob Pop-ups erlaubt sind.",
     "인쇄 창을 열 수 없습니다. 팝업이 허용되어 있는지 확인하세요."
   ],
-  "12か月の見通し": [
-    "12-month outlook",
-    "Perspective sur 12 mois",
-    "Perspectiva de 12 meses",
-    "Prospettiva a 12 mesi",
-    "Perspectiva de 12 meses",
-    "12-Monats-Ausblick",
-    "12개월 전망"
+  "12か月予測": [
+    "12-month forecast",
+    "Prévision sur 12 mois",
+    "Predicción de 12 meses",
+    "Previsione a 12 mesi",
+    "Previsão de 12 meses",
+    "12-Monats-Prognose",
+    "12개월 예측"
   ],
-  "12か月の見通し · 月 × UTC のREL（%）": [
-    "12-month outlook · REL by month × UTC (%)",
-    "Perspective sur 12 mois · REL par mois × UTC (%)",
-    "Perspectiva de 12 meses · REL por mes × UTC (%)",
-    "Prospettiva a 12 mesi · REL per mese × UTC (%)",
-    "Perspectiva de 12 meses · REL por mês × UTC (%)",
-    "12-Monats-Ausblick · REL nach Monat × UTC (%)",
-    "12개월 전망 · 월 × UTC별 REL(%)"
+  "12か月予測 · 月 × UTC のREL（%）": [
+    "12-month forecast · REL by month × UTC (%)",
+    "Prévision sur 12 mois · REL par mois × UTC (%)",
+    "Predicción de 12 meses · REL por mes × UTC (%)",
+    "Previsione a 12 mesi · REL per mese × UTC (%)",
+    "Previsão de 12 meses · REL por mês × UTC (%)",
+    "12-Monats-Prognose · REL nach Monat × UTC (%)",
+    "12개월 예측 · 월 × UTC별 REL(%)"
   ],
   "12か月を計算": [
     "Calculate 12 months",
@@ -7336,7 +7300,7 @@ const HF_MESSAGES={
     "12 Monate berechnen",
     "12개월 계산"
   ],
-  "右側のTXとRX1の経路について、予察条件の年月から12か月分の24時間予測を計算します（エンジン12回）。SSNは手動入力なら全月に同じ値、NOAAなら月ごとの平滑SSNを使います。実効SSNは使えません。": [
+  "右側のTXとRX1の経路について、予測条件の年月から12か月分の24時間予測を計算します（エンジン12回）。SSNは手動入力なら全月に同じ値、NOAAなら月ごとの平滑SSNを使います。実効SSNは使えません。": [
     "For the path from TX to RX1 on the right, calculates 24-hour predictions for 12 months starting from the month in the prediction conditions (12 engine runs). A manual SSN is used for every month; NOAA uses each month’s smoothed SSN. The effective SSN cannot be used.",
     "Pour le trajet du TX vers RX1 à droite, calcule les prévisions sur 24 heures de 12 mois à partir du mois des conditions de prévision (12 exécutions du moteur). Une SSN manuelle sert pour tous les mois ; NOAA utilise la SSN lissée de chaque mois. La SSN effective n’est pas utilisable.",
     "Para el trayecto del TX al RX1 de la derecha, calcula predicciones de 24 horas de 12 meses a partir del mes de las condiciones de predicción (12 ejecuciones del motor). Una SSN manual se usa en todos los meses; NOAA usa la SSN suavizada de cada mes. No se puede usar la SSN efectiva.",
@@ -7390,14 +7354,14 @@ const HF_MESSAGES={
     "Für keinen der 12 Monate ist eine verwendbare SSN vorhanden",
     "12개월 중 사용할 수 있는 SSN이 있는 달이 없습니다"
   ],
-  "12か月の見通しでは実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。": [
-    "The effective SSN cannot be used for the 12-month outlook. Choose manual input or NOAA smoothed SSN.",
-    "La SSN effective n’est pas utilisable pour la perspective sur 12 mois. Choisissez la saisie manuelle ou la SSN lissée NOAA.",
-    "No se puede usar la SSN efectiva en la perspectiva de 12 meses. Elija entrada manual o la SSN suavizada de NOAA.",
-    "La SSN effettiva non è utilizzabile per la prospettiva a 12 mesi. Scegli l’inserimento manuale o la SSN livellata NOAA.",
-    "A SSN efetiva não pode ser usada na perspectiva de 12 meses. Escolha entrada manual ou a SSN suavizada da NOAA.",
-    "Die effektive SSN ist für den 12-Monats-Ausblick nicht verwendbar. Manuelle Eingabe oder geglättete NOAA-SSN wählen.",
-    "12개월 전망에서는 실효 SSN을 사용할 수 없습니다. 수동 입력이나 NOAA 평활 SSN을 선택하세요."
+  "12か月予測では実効SSNを使えません。手動入力かNOAAの平滑SSNを選んでください。": [
+    "The effective SSN cannot be used for the 12-month forecast. Choose manual input or NOAA smoothed SSN.",
+    "La SSN effective n’est pas utilisable pour la prévision sur 12 mois. Choisissez la saisie manuelle ou la SSN lissée NOAA.",
+    "No se puede usar la SSN efectiva en la predicción de 12 meses. Elija entrada manual o la SSN suavizada de NOAA.",
+    "La SSN effettiva non è utilizzabile per la previsione a 12 mesi. Scegli l’inserimento manuale o la SSN livellata NOAA.",
+    "A SSN efetiva não pode ser usada na previsão de 12 meses. Escolha entrada manual ou a SSN suavizada da NOAA.",
+    "Die effektive SSN ist für die 12-Monats-Prognose nicht verwendbar. Manuelle Eingabe oder geglättete NOAA-SSN wählen.",
+    "12개월 예측에서는 실효 SSN을 사용할 수 없습니다. 수동 입력이나 NOAA 평활 SSN을 선택하세요."
   ],
   "NOAAの新鮮な平滑SSNがありません": [
     "No fresh NOAA smoothed SSN",
@@ -7444,14 +7408,14 @@ const HF_MESSAGES={
     "Ziel-REL erreicht (h)",
     "목표 REL 이상(시간)"
   ],
-  "12か月の見通しは単一RXの経路で計算します。メッシュを外してください。": [
-    "The 12-month outlook is calculated for a single TX→RX path. Turn off mesh.",
-    "La perspective sur 12 mois se calcule pour un trajet TX→RX unique. Désactivez le maillage.",
-    "La perspectiva de 12 meses se calcula para un único trayecto TX→RX. Desactive la malla.",
-    "La prospettiva a 12 mesi si calcola per un singolo percorso TX→RX. Disattiva la mesh.",
-    "A perspectiva de 12 meses é calculada para um único trajeto TX→RX. Desative a malha.",
-    "Der 12-Monats-Ausblick wird für einen einzelnen TX→RX-Pfad berechnet. Mesh ausschalten.",
-    "12개월 전망은 단일 TX→RX 경로로 계산합니다. 메시를 해제하세요."
+  "12か月予測は単一RXの経路で計算します。メッシュを外してください。": [
+    "The 12-month forecast is calculated for a single TX→RX path. Turn off mesh.",
+    "La prévision sur 12 mois se calcule pour un trajet TX→RX unique. Désactivez le maillage.",
+    "La predicción de 12 meses se calcula para un único trayecto TX→RX. Desactive la malla.",
+    "La previsione a 12 mesi si calcola per un singolo percorso TX→RX. Disattiva la mesh.",
+    "A previsão de 12 meses é calculada para um único trajeto TX→RX. Desative a malha.",
+    "Die 12-Monats-Prognose wird für einen einzelnen TX→RX-Pfad berechnet. Mesh ausschalten.",
+    "12개월 예측은 단일 TX→RX 경로로 계산합니다. 메시를 해제하세요."
   ],
   "12か月分を計算しています。エンジンを12回実行するため、完了までお待ちください…": [
     "Calculating 12 months. The engine runs 12 times, so please wait…",
@@ -8344,14 +8308,14 @@ const HF_MESSAGES={
     "Erreichbarkeit über Relais im Netz",
     "메시 중계 도달성"
   ],
-  "直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ結果に示します。": [
-    "Shows in the mesh result the routes that reach a pair of stations through one or two relays when the direct path does not.",
-    "Indique dans le résultat du maillage les routes qui relient deux stations par un ou deux relais lorsque le trajet direct échoue.",
-    "Muestra en el resultado de la malla las rutas que conectan dos estaciones mediante uno o dos repetidores cuando el trayecto directo no llega.",
-    "Mostra nel risultato della rete i percorsi che collegano due stazioni tramite uno o due ripetitori quando il collegamento diretto non arriva.",
-    "Mostra no resultado da malha as rotas que ligam duas estações por um ou dois retransmissores quando o trajeto direto não chega.",
-    "Zeigt im Netzergebnis die Wege, die zwei Stationen über ein oder zwei Relais verbinden, wenn der direkte Pfad nicht reicht.",
-    "직통으로는 닿지 않는 거점 쌍도 1단 또는 2단 중계로 닿는 경로를 메시 결과에 보여 줍니다."
+  "直通では届かない拠点の組でも、1段か2段の中継で届く経路をメッシュ予測に示します。": [
+    "Shows in the mesh forecast the routes that reach a pair of stations through one or two relays when the direct path does not.",
+    "Indique dans la prévision maillée les routes qui relient deux stations par un ou deux relais lorsque le trajet direct échoue.",
+    "Muestra en la predicción de malla las rutas que conectan dos estaciones mediante uno o dos repetidores cuando el trayecto directo no llega.",
+    "Mostra nella previsione mesh i percorsi che collegano due stazioni tramite uno o due ripetitori quando il collegamento diretto non arriva.",
+    "Mostra na previsão de malha as rotas que ligam duas estações por um ou dois retransmissores quando o trajeto direto não chega.",
+    "Zeigt in der Mesh-Prognose die Wege, die zwei Stationen über ein oder zwei Relais verbinden, wenn der direkte Pfad nicht reicht.",
+    "직통으로는 닿지 않는 거점 쌍도 1단 또는 2단 중계로 닿는 경로를 메시 예측에 보여 줍니다."
   ],
   "新しい機能が{count}件あります。": [
     "{count} new feature(s) are available.",
@@ -9037,7 +9001,7 @@ const HF_MESSAGES={
     "Mesh-Relais und REL-Schwellen",
     "메시 중계 표시와 REL 임계값"
   ],
-  "メッシュのマトリックスで、中継で届く経路を枠で示し、中継後のRELと、その下に中継なしのRELを表示します。%と4段階の切替はメッシュ表にも反映し、段階と印の閾値は「予察条件・宇宙天気」で変更できます。": [
+  "メッシュのマトリックスで、中継で届く経路を枠で示し、中継後のRELと、その下に中継なしのRELを表示します。%と4段階の切替はメッシュ表にも反映し、段階と印の閾値は「予測条件・宇宙天気」で変更できます。": [
     "In the mesh matrix, links reachable via relay are framed and show the REL after relaying, with the direct REL without relays below. The %/grade toggle now also applies to the mesh tables, and the grade and mark thresholds can be changed under Conditions & space weather.",
     "Dans la matrice de maille, les liaisons atteintes par relais sont encadrées et affichent la REL après relais, avec la REL directe sans relais en dessous. Le choix %/niveaux s’applique aussi aux tableaux de maille, et les seuils se règlent dans Conditions et météo spatiale.",
     "En la matriz de malla, los enlaces alcanzables por relevo se enmarcan y muestran la REL tras el relevo, con la REL directa sin relevos debajo. El cambio %/niveles también se aplica a las tablas de malla, y los umbrales se ajustan en Condiciones y clima espacial.",
@@ -9118,7 +9082,7 @@ const HF_MESSAGES={
     "Wahl des Absorptionsmodus",
     "흡수 모드 선택"
   ],
-  "計算エンジンの吸収モードを予察条件の詳細条件で選べるようにし、既定をVOACAP Online Marineと同じ a にしました。従来の値は W で再現できます。": [
+  "計算エンジンの吸収モードを予測条件の詳細条件で選べるようにし、既定をVOACAP Online Marineと同じ a にしました。従来の値は W で再現できます。": [
     "You can now choose the engine’s absorption mode under the detailed prediction conditions. The default is a, the same as VOACAP Online Marine. Choose W to reproduce earlier results.",
     "Le mode d’absorption du moteur se choisit désormais dans les conditions détaillées. Par défaut a, comme VOACAP Online Marine. W reproduit les résultats antérieurs.",
     "Ahora puede elegir el modo de absorción del motor en las condiciones detalladas. El predeterminado es a, igual que VOACAP Online Marine. W reproduce los resultados anteriores.",
@@ -9163,13 +9127,49 @@ const HF_MESSAGES={
     "Die geglättete NOAA-SSN wird für die Berechnung jetzt mit 0,7 multipliziert (dieselbe Umrechnung wie VOACAP Online Marine). Ergebnisse speichern den veröffentlichten und den umgerechneten Wert. Die Beispielwerte der erforderlichen SNR für A1A, J3E und A3E sind jetzt 19, 39 und 48 dB·Hz, wie bei Marine.",
     "NOAA 평활 SSN을 0.7배하여 계산에 사용하도록 했습니다(VOACAP Online Marine과 같은 환산). 결과에는 공표값과 환산값을 기록합니다. 전파 형식 A1A·J3E·A3E의 요구 SNR 예시값도 Marine과 같은 19·39·48 dB·Hz로 했습니다."
   ],
-  "今月の回線を詰めるときは実効SSN、来月以降の計画や12か月の見通しにはNOAA（公表値×0.7）を使います。": [
-    "Use the effective SSN to fine-tune this month’s circuits, and NOAA (published value × 0.7) for planning next month onward and for the 12-month outlook.",
-    "Utilisez le SSN effectif pour affiner les liaisons de ce mois, et NOAA (valeur publiée × 0,7) pour planifier à partir du mois prochain et pour les perspectives sur 12 mois.",
-    "Use el SSN efectivo para ajustar los circuitos de este mes, y NOAA (valor publicado × 0,7) para planificar desde el próximo mes y para la perspectiva de 12 meses.",
-    "Usare l’SSN effettivo per affinare i collegamenti di questo mese, e NOAA (valore pubblicato × 0,7) per pianificare dal mese prossimo e per la prospettiva a 12 mesi.",
-    "Use o SSN efetivo para ajustar os circuitos deste mês, e NOAA (valor publicado × 0,7) para planejar a partir do próximo mês e para a perspectiva de 12 meses.",
-    "Für die Feinabstimmung der Verbindungen dieses Monats die effektive SSN verwenden, für die Planung ab nächstem Monat und den 12-Monats-Ausblick NOAA (veröffentlichter Wert × 0,7).",
-    "이번 달 회선을 조정할 때는 실효 SSN을, 다음 달 이후 계획과 12개월 전망에는 NOAA(공표값×0.7)를 사용합니다."
+  "今月の回線を詰めるときは実効SSN、来月以降の計画や12か月予測にはNOAA（公表値×0.7）を使います。": [
+    "Use the effective SSN to fine-tune this month’s circuits, and NOAA (published value × 0.7) for planning next month onward and for the 12-month forecast.",
+    "Utilisez le SSN effectif pour affiner les liaisons de ce mois, et NOAA (valeur publiée × 0,7) pour planifier à partir du mois prochain et pour la prévision sur 12 mois.",
+    "Use el SSN efectivo para ajustar los circuitos de este mes, y NOAA (valor publicado × 0,7) para planificar desde el próximo mes y para la predicción de 12 meses.",
+    "Usare l’SSN effettivo per affinare i collegamenti di questo mese, e NOAA (valore pubblicato × 0,7) per pianificare dal mese prossimo e per la previsione a 12 mesi.",
+    "Use o SSN efetivo para ajustar os circuitos deste mês, e NOAA (valor publicado × 0,7) para planejar a partir do próximo mês e para a previsão de 12 meses.",
+    "Für die Feinabstimmung der Verbindungen dieses Monats die effektive SSN verwenden, für die Planung ab nächstem Monat und die 12-Monats-Prognose NOAA (veröffentlichter Wert × 0,7).",
+    "이번 달 회선을 조정할 때는 실효 SSN을, 다음 달 이후 계획과 12개월 예측에는 NOAA(공표값×0.7)를 사용합니다."
+  ],
+  "表示する予測": [
+    "Forecast shown",
+    "Prévision affichée",
+    "Predicción mostrada",
+    "Previsione mostrata",
+    "Previsão exibida",
+    "Angezeigte Prognose",
+    "표시할 예측"
+  ],
+  "回線マップの表示時刻（UTC）": [
+    "Circuit map display time (UTC)",
+    "Heure affichée sur la carte du circuit (UTC)",
+    "Hora mostrada en el mapa del circuito (UTC)",
+    "Ora mostrata sulla mappa del collegamento (UTC)",
+    "Hora exibida no mapa do circuito (UTC)",
+    "Anzeigezeit der Verbindungskarte (UTC)",
+    "회선 지도 표시 시각 (UTC)"
+  ],
+  "回線マップの時刻スライダー": [
+    "Time slider on the circuit map",
+    "Curseur horaire sur la carte du circuit",
+    "Control deslizante de hora en el mapa del circuito",
+    "Cursore orario sulla mappa del collegamento",
+    "Controle deslizante de hora no mapa do circuito",
+    "Zeitschieberegler auf der Verbindungskarte",
+    "회선 지도의 시각 슬라이더"
+  ],
+  "24時間予測・ダイバーシティー予測・メッシュ予測のタブでは、回線マップの下にUTCのスライダーと再生・停止ボタンを表示します。時刻を動かすと、地図の経路の色とRELの表示がその時刻に切り替わります。": [
+    "On the 24-hour forecast, Diversity forecast and Mesh forecast tabs, a UTC slider and a play/stop button appear below the circuit map. Moving the time switches the path colours and REL labels on the map to that hour.",
+    "Dans les onglets Prévision sur 24 h, Prévision de diversité et Prévision maillée, un curseur UTC et un bouton lecture/arrêt s’affichent sous la carte du circuit. En déplaçant l’heure, les couleurs des trajets et l’affichage REL de la carte passent à cette heure.",
+    "En las pestañas Predicción de 24 horas, Predicción de diversidad y Predicción de malla, se muestran un control deslizante UTC y un botón de reproducir/detener bajo el mapa del circuito. Al mover la hora, los colores de los trayectos y el REL del mapa cambian a esa hora.",
+    "Nelle schede Previsione di 24 ore, Previsione di diversità e Previsione mesh, sotto la mappa del collegamento compaiono un cursore UTC e un pulsante riproduci/ferma. Spostando l’ora, i colori dei percorsi e il REL sulla mappa passano a quell’ora.",
+    "Nas abas Previsão de 24 horas, Previsão de diversidade e Previsão de malha, um controle deslizante UTC e um botão reproduzir/parar aparecem abaixo do mapa do circuito. Ao mover a hora, as cores dos trajetos e o REL no mapa mudam para essa hora.",
+    "Auf den Reitern 24-Stunden-Prognose, Diversity-Prognose und Mesh-Prognose erscheinen unter der Verbindungskarte ein UTC-Schieberegler und eine Start/Stopp-Taste. Beim Verschieben der Zeit wechseln Pfadfarben und REL-Anzeige der Karte auf diese Stunde.",
+    "24시간 예측, 다이버시티 예측, 메시 예측 탭에서는 회선 지도 아래에 UTC 슬라이더와 재생·정지 버튼을 표시합니다. 시각을 움직이면 지도의 경로 색과 REL 표시가 그 시각으로 바뀝니다."
   ]
 };

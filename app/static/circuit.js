@@ -88,7 +88,7 @@ function renderCircuit(){
   return box;
  }
  $('tx-selection').replaceChildren(card(circuit.tx,-1));$('rx-selections').replaceChildren(...circuit.rxs.map(card));
- const n=circuit.rxs.length+1;$('add-rx-site').disabled=busy||circuit.rxs.length>=rxLimit();$('add-rx-site').textContent=meshMode()?'＋ 拠点を追加':'＋ RXを追加';$('circuit-mode').textContent=meshMode()?`メッシュ ${n}拠点 · ${n*(n-1)}経路`:circuit.rxs.length===1?'単一RX · 地点間予察':'RX '+circuit.rxs.length+'局 · ダイバーシティー受信';
+ const n=circuit.rxs.length+1;$('add-rx-site').disabled=busy||circuit.rxs.length>=rxLimit();$('add-rx-site').textContent=meshMode()?'＋ 拠点を追加':'＋ RXを追加';$('circuit-mode').textContent=meshMode()?`メッシュ ${n}拠点 · ${n*(n-1)}経路`:circuit.rxs.length===1?'単一RX · 地点間予測':'RX '+circuit.rxs.length+'局 · ダイバーシティー受信';
  renderPolarizationSettings();setBusy(busy);drawMap();
 }
 function refreshCircuitPositions(){
