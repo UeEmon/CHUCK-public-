@@ -91,3 +91,4 @@ main{display:block;max-width:1800px}
 .mesh-matrix td.mesh-relay{box-shadow:inset 0 0 0 2px #38e1ff}
 .mesh-matrix td.mesh-relay button i{display:inline;margin-left:5px;font-size:11px;font-weight:700;color:inherit}
 #rel-threshold-error{color:#ff8a8a}
+#antennas-list tr>:nth-child(5){text-align:left}
