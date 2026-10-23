@@ -4690,15 +4690,6 @@ const HF_MESSAGES={
     "■ Stopp",
     "■ 정지"
   ],
-  "スライダーで時刻を動かすと、マトリックス全体がその時刻に切り替わります。最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は目標REL以上、灰色は欠測です。セルを選ぶと下にその経路の24時間を表示します。": [
-    "Moving the slider switches the whole matrix to that hour. With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks the target REL or above; grey is missing data. Select a cell to show that link's 24 hours below.",
-    "Le curseur fait passer toute la matrice à l’heure choisie. En mode Meilleure fréquence, la ligne inférieure de chaque cellule indique la fréquence (MHz) de REL maximale. Un point signale la REL cible atteinte ; le gris indique une donnée manquante. Sélectionnez une cellule pour afficher les 24 heures de cette liaison.",
-    "Al mover el control, toda la matriz cambia a esa hora. Con Mejor frecuencia, la línea inferior de cada celda muestra la frecuencia (MHz) de mayor REL. Un punto indica REL objetivo o superior; el gris indica falta de datos. Seleccione una celda para ver las 24 horas de ese enlace.",
-    "Spostando il cursore l’intera matrice passa a quell’ora. Con Frequenza migliore, la riga inferiore di ogni cella mostra la frequenza (MHz) con REL massima. Un punto indica REL obiettivo o superiore; il grigio indica dati mancanti. Seleziona una cella per vedere sotto le 24 ore di quel collegamento.",
-    "Ao mover o controle, toda a matriz muda para essa hora. Com Melhor frequência, a linha inferior de cada célula mostra a frequência (MHz) de maior REL. Um ponto indica REL alvo ou superior; cinza indica dado ausente. Selecione uma célula para ver abaixo as 24 horas desse enlace.",
-    "Mit dem Schieberegler wechselt die gesamte Matrix auf diese Stunde. Bei Beste Frequenz zeigt die untere Zeile jeder Zelle die Frequenz (MHz) mit der höchsten REL. Ein Punkt markiert Ziel-REL oder höher, Grau fehlende Daten. Eine Zelle wählen, um darunter die 24 Stunden dieser Verbindung zu sehen.",
-    "슬라이더를 움직이면 매트릭스 전체가 해당 시각으로 바뀝니다. 최적 주파수에서는 각 셀 아래 줄에 REL이 가장 높은 주파수(MHz)를 표시합니다. 점은 목표 REL 이상, 회색은 결측입니다. 셀을 선택하면 아래에 그 경로의 24시간을 표시합니다."
-  ],
   "経路の詳細 · 周波数 × UTC": [
     "Link detail · frequency × UTC",
     "Détail de la liaison · fréquence × UTC",
@@ -6958,15 +6949,6 @@ const HF_MESSAGES={
     "Bis 2 Relais",
     "2단까지"
   ],
-  "↻の付いたセルは、直通では目標RELに届かないものの、他の拠点で中継すれば各区間が目標REL以上になる経路です（数字は中継の段数）。中継局での転送遅延・同時送信の干渉は考慮しません。": [
-    "Cells marked ↻ miss the target REL directly but can be reached through other stations with every hop at or above the target REL (the number is the relay count). Forwarding delay at relays and simultaneous-transmission interference are not considered.",
-    "Les cellules marquées ↻ n’atteignent pas la REL cible en direct, mais peuvent être atteintes via d’autres stations avec chaque saut au moins à la REL cible (le nombre indique les relais). Le délai de retransmission et les interférences d’émissions simultanées ne sont pas pris en compte.",
-    "Las celdas con ↻ no alcanzan la REL objetivo en directo, pero se alcanzan a través de otras estaciones con cada salto igual o superior a la REL objetivo (el número es la cantidad de relevos). No se consideran el retardo de reenvío ni la interferencia por transmisiones simultáneas.",
-    "Le celle con ↻ non raggiungono la REL obiettivo in diretta, ma sono raggiungibili tramite altre stazioni con ogni tratta pari o superiore alla REL obiettivo (il numero indica i relay). Ritardo di inoltro e interferenza da trasmissioni simultanee non sono considerati.",
-    "As células com ↻ não atingem a REL alvo diretamente, mas são alcançadas por outras estações com cada salto igual ou acima da REL alvo (o número é a quantidade de retransmissões). Atraso de encaminhamento e interferência de transmissões simultâneas não são considerados.",
-    "Mit ↻ markierte Zellen verfehlen die Ziel-REL direkt, sind aber über andere Stationen erreichbar, wobei jeder Abschnitt die Ziel-REL erreicht (die Zahl ist die Anzahl der Relais). Weiterleitungsverzögerung und Störungen durch gleichzeitiges Senden werden nicht berücksichtigt.",
-    "↻ 표시 셀은 직접으로는 목표 REL에 못 미치지만, 다른 거점을 중계하면 모든 구간이 목표 REL 이상이 되는 경로입니다(숫자는 중계 단수). 중계국의 전달 지연과 동시 송신 간섭은 고려하지 않습니다."
-  ],
   "中継で到達: {count} 経路 · 到達不可: {none} 経路（{hops}段まで）": [
     "Reachable via relay: {count} links · Unreachable: {none} links (up to {hops} relays)",
     "Accessibles par relais : {count} liaisons · Inaccessibles : {none} liaisons (jusqu’à {hops} relais)",
@@ -7011,15 +6993,6 @@ const HF_MESSAGES={
     "Rota de retransmissão ({count}):",
     "Relaisroute ({count}):",
     "중계 경로({count}단):"
-  ],
-  "· 区間REL {rels}% · {freqs} MHz": [
-    "· Hop REL {rels}% · {freqs} MHz",
-    "· REL par saut {rels}% · {freqs} MHz",
-    "· REL por salto {rels}% · {freqs} MHz",
-    "· REL per tratta {rels}% · {freqs} MHz",
-    "· REL por salto {rels}% · {freqs} MHz",
-    "· Abschnitts-REL {rels}% · {freqs} MHz",
-    "· 구간 REL {rels}% · {freqs} MHz"
   ],
   "RELは各経路・UTC・周波数の月間統計です。VOACAPは送受信を入れ替えるとアンテナ・送信電力・受信雑音が変わるため、行（TX）と列（RX）の有向経路を別々に計算します。中継（最大2段）は各区間が目標REL以上かどうかだけで判定し、区間をまとめた通しのREL・中継の遅延・同時送信の干渉・チャネル割当・経路間の相関はモデル化していません。経路ごとの生出力は保存しません。必要な場合は単一RXで再計算してください。": [
     "REL is a monthly statistic per link, UTC hour and frequency. Swapping TX and RX changes antennas, transmit power and receiver noise in VOACAP, so each directed link (row TX, column RX) is calculated separately. Relays (up to 2) are judged only by whether every hop meets the target REL; an end-to-end REL across hops, relay delay, simultaneous-transmission interference, channel assignment and correlation between links are not modelled. Raw output per link is not stored; recalculate as a single RX if needed.",
@@ -8532,5 +8505,131 @@ const HF_MESSAGES={
     "Em «Exibição REL» no mapa, a REL aparece em porcentagem ou em quatro níveis (EXCELLENT, GOOD, POOR, NONE). Os trajetos são coloridos pelo nível de REL e mostram a melhor REL da hora escolhida.",
     "Mit „REL-Anzeige“ auf der Karte wird die REL in Prozent oder in vier Stufen (EXCELLENT, GOOD, POOR, NONE) angezeigt. Pfade sind nach REL-Stufe eingefärbt und zeigen die beste REL der gewählten Stunde.",
     "지도의 'REL 표시'에서 REL을 %와 4단계(EXCELLENT·GOOD·POOR·NONE) 중에서 고를 수 있습니다. 지도의 경로는 REL 단계로 색을 나누고, 선택한 시각의 최적 REL을 경로 위에 표시합니다."
+  ],
+  "スライダーで時刻を動かすと、マトリックス全体がその時刻に切り替わります。最良周波数では、セルの下段にREL最大の周波数（MHz）を表示します。点は「REL表示の閾値」の印の値以上、灰色は欠測です。セルを選ぶと下にその経路の24時間を表示します。": [
+    "Moving the slider switches the whole matrix to that hour. With Best frequency, the lower line of each cell shows the frequency (MHz) with the highest REL. A dot marks REL at or above the mark value in “REL display thresholds”; grey is missing data. Select a cell to show that link's 24 hours below.",
+    "Le curseur fait passer toute la matrice à l’heure choisie. En mode Meilleure fréquence, la ligne inférieure de chaque cellule indique la fréquence (MHz) de REL maximale. Un point signale une REL au moins égale au seuil de marque des « Seuils d’affichage REL » ; le gris indique une donnée manquante. Sélectionnez une cellule pour afficher les 24 heures de cette liaison.",
+    "Al mover el control, toda la matriz cambia a esa hora. Con Mejor frecuencia, la línea inferior de cada celda muestra la frecuencia (MHz) de mayor REL. Un punto indica REL igual o superior al valor de marca de «Umbrales de visualización REL»; el gris indica falta de datos. Seleccione una celda para ver las 24 horas de ese enlace.",
+    "Spostando il cursore l’intera matrice passa a quell’ora. Con Frequenza migliore, la riga inferiore di ogni cella mostra la frequenza (MHz) con REL massima. Un punto indica REL pari o superiore al valore di segno in «Soglie di visualizzazione REL»; il grigio indica dati mancanti. Seleziona una cella per vedere sotto le 24 ore di quel collegamento.",
+    "Ao mover o controle, toda a matriz muda para essa hora. Com Melhor frequência, a linha inferior de cada célula mostra a frequência (MHz) de maior REL. Um ponto indica REL igual ou acima do valor de marca em «Limiares de exibição REL»; cinza indica dado ausente. Selecione uma célula para ver abaixo as 24 horas desse enlace.",
+    "Mit dem Schieberegler wechselt die gesamte Matrix auf diese Stunde. Bei Beste Frequenz zeigt die untere Zeile jeder Zelle die Frequenz (MHz) mit der höchsten REL. Ein Punkt markiert REL ab dem Markierungswert unter „REL-Anzeigeschwellen“, Grau fehlende Daten. Eine Zelle wählen, um darunter die 24 Stunden dieser Verbindung zu sehen.",
+    "슬라이더를 움직이면 매트릭스 전체가 해당 시각으로 바뀝니다. 최적 주파수에서는 각 셀 아래 줄에 REL이 가장 높은 주파수(MHz)를 표시합니다. 점은 'REL 표시 임계값'의 표시 기준 이상, 회색은 결측입니다. 셀을 선택하면 아래에 그 경로의 24시간을 표시합니다."
+  ],
+  "· 区間REL {rels} · 中継経路REL {route} · {freqs} MHz": [
+    "· Hop REL {rels} · Relay route REL {route} · {freqs} MHz",
+    "· REL par saut {rels} · REL de l’itinéraire {route} · {freqs} MHz",
+    "· REL por salto {rels} · REL de la ruta {route} · {freqs} MHz",
+    "· REL per tratta {rels} · REL del percorso {route} · {freqs} MHz",
+    "· REL por salto {rels} · REL da rota {route} · {freqs} MHz",
+    "· Abschnitts-REL {rels} · Routen-REL {route} · {freqs} MHz",
+    "· 구간 REL {rels} · 중계 경로 REL {route} · {freqs} MHz"
+  ],
+  "印 · はREL {value}%以上": [
+    "Dot · = REL {value}% or above",
+    "Point · = REL ≥ {value} %",
+    "Punto · = REL ≥ {value}%",
+    "Punto · = REL ≥ {value}%",
+    "Ponto · = REL ≥ {value}%",
+    "Punkt · = REL ab {value} %",
+    "점 · = REL {value}% 이상"
+  ],
+  "REL表示の閾値": [
+    "REL display thresholds",
+    "Seuils d’affichage REL",
+    "Umbrales de visualización REL",
+    "Soglie di visualizzazione REL",
+    "Limiares de exibição REL",
+    "REL-Anzeigeschwellen",
+    "REL 표시 임계값"
+  ],
+  "%表示の印 %以上": [
+    "% view mark at or above %",
+    "Marque en vue % à partir de %",
+    "Marca en vista % desde %",
+    "Segno in vista % da %",
+    "Marca na exibição % a partir de %",
+    "Markierung in %-Ansicht ab %",
+    "% 표시 점 기준 % 이상"
+  ],
+  "EXCELLENT %以上": [
+    "EXCELLENT at or above %",
+    "EXCELLENT à partir de %",
+    "EXCELLENT desde %",
+    "EXCELLENT da %",
+    "EXCELLENT a partir de %",
+    "EXCELLENT ab %",
+    "EXCELLENT % 이상"
+  ],
+  "GOOD %以上": [
+    "GOOD at or above %",
+    "GOOD à partir de %",
+    "GOOD desde %",
+    "GOOD da %",
+    "GOOD a partir de %",
+    "GOOD ab %",
+    "GOOD % 이상"
+  ],
+  "POOR %以上": [
+    "POOR at or above %",
+    "POOR à partir de %",
+    "POOR desde %",
+    "POOR da %",
+    "POOR a partir de %",
+    "POOR ab %",
+    "POOR % 이상"
+  ],
+  "閾値は1〜100%で、EXCELLENT ＞ GOOD ＞ POOR の順にしてください。": [
+    "Use thresholds from 1 to 100% with EXCELLENT > GOOD > POOR.",
+    "Utilisez des seuils de 1 à 100 % avec EXCELLENT > GOOD > POOR.",
+    "Use umbrales de 1 a 100% con EXCELLENT > GOOD > POOR.",
+    "Usa soglie da 1 a 100% con EXCELLENT > GOOD > POOR.",
+    "Use limiares de 1 a 100% com EXCELLENT > GOOD > POOR.",
+    "Schwellen von 1 bis 100 % mit EXCELLENT > GOOD > POOR verwenden.",
+    "임계값은 1~100%이며 EXCELLENT > GOOD > POOR 순서여야 합니다."
+  ],
+  "表示だけの設定で、このブラウザに保存します。POOR未満はNONEです。計算結果や、中継経路の判定に使う要求信頼度は変わりません。": [
+    "Display-only settings, saved in this browser. Below POOR is NONE. Results and the required reliability used to judge relay routes do not change.",
+    "Réglages d’affichage seulement, enregistrés dans ce navigateur. En dessous de POOR : NONE. Les résultats et la fiabilité requise pour juger les relais ne changent pas.",
+    "Ajustes solo de visualización, guardados en este navegador. Por debajo de POOR es NONE. No cambian los resultados ni la fiabilidad requerida para evaluar los relevos.",
+    "Impostazioni solo di visualizzazione, salvate in questo browser. Sotto POOR è NONE. Risultati e affidabilità richiesta per valutare i relay non cambiano.",
+    "Configurações apenas de exibição, salvas neste navegador. Abaixo de POOR é NONE. Resultados e a confiabilidade exigida para avaliar retransmissões não mudam.",
+    "Nur Anzeigeeinstellungen, in diesem Browser gespeichert. Unter POOR gilt NONE. Ergebnisse und die geforderte Zuverlässigkeit für Relaisrouten ändern sich nicht.",
+    "표시 전용 설정이며 이 브라우저에 저장됩니다. POOR 미만은 NONE입니다. 계산 결과와 중계 경로 판정에 쓰는 요구 신뢰도는 바뀌지 않습니다."
+  ],
+  "既定値に戻す": [
+    "Restore defaults",
+    "Rétablir les valeurs par défaut",
+    "Restaurar valores predeterminados",
+    "Ripristina predefiniti",
+    "Restaurar padrões",
+    "Standardwerte wiederherstellen",
+    "기본값으로 되돌리기"
+  ],
+  "メッシュ表の中継表示とREL閾値": [
+    "Mesh relay marks and REL thresholds",
+    "Relais de la maille et seuils REL",
+    "Relevos de la malla y umbrales REL",
+    "Relay della maglia e soglie REL",
+    "Retransmissões da malha e limiares REL",
+    "Mesh-Relais und REL-Schwellen",
+    "메시 중계 표시와 REL 임계값"
+  ],
+  "メッシュのマトリックスで、中継で届く経路を枠で示し、中継後のRELと、その下に中継なしのRELを表示します。%と4段階の切替はメッシュ表にも反映し、段階と印の閾値は「予察条件・宇宙天気」で変更できます。": [
+    "In the mesh matrix, links reachable via relay are framed and show the REL after relaying, with the direct REL without relays below. The %/grade toggle now also applies to the mesh tables, and the grade and mark thresholds can be changed under Conditions & space weather.",
+    "Dans la matrice de maille, les liaisons atteintes par relais sont encadrées et affichent la REL après relais, avec la REL directe sans relais en dessous. Le choix %/niveaux s’applique aussi aux tableaux de maille, et les seuils se règlent dans Conditions et météo spatiale.",
+    "En la matriz de malla, los enlaces alcanzables por relevo se enmarcan y muestran la REL tras el relevo, con la REL directa sin relevos debajo. El cambio %/niveles también se aplica a las tablas de malla, y los umbrales se ajustan en Condiciones y clima espacial.",
+    "Nella matrice della maglia, i collegamenti raggiungibili tramite relay sono incorniciati e mostrano la REL dopo il relay, con sotto la REL diretta senza relay. Il passaggio %/livelli vale anche per le tabelle della maglia e le soglie si cambiano in Condizioni e meteo spaziale.",
+    "Na matriz da malha, enlaces alcançados por retransmissão ganham moldura e mostram a REL após a retransmissão, com a REL direta sem retransmissão abaixo. A troca %/níveis também vale para as tabelas da malha, e os limiares mudam em Condições e clima espacial.",
+    "In der Mesh-Matrix werden über Relais erreichbare Verbindungen gerahmt und zeigen die REL nach Relais, darunter die direkte REL ohne Relais. Die Umschaltung %/Stufen gilt auch für die Mesh-Tabellen; die Schwellen lassen sich unter Bedingungen & Weltraumwetter ändern.",
+    "메시 매트릭스에서 중계로 도달하는 경로는 테두리로 표시하고 중계 후 REL과 그 아래 중계 없는 REL을 보여 줍니다. %/단계 전환은 메시 표에도 적용되며, 단계와 점 기준 임계값은 예측 조건·우주 기상에서 바꿀 수 있습니다."
+  ],
+  "↻の付いたセルは、直通では目標RELに届かないものの、他の拠点で中継すれば各区間が目標REL以上になる経路です（上段は中継後のREL＝最も低い区間のREL、↻の数字は中継の段数、下段のバッジは中継なしの直通REL（↻0）です。2段中継では、1段中継（↻1）だけで届く場合の最良RELを外側のバッジに表示し、その中に直通を入れます）。中継局での転送遅延・同時送信の干渉は考慮しません。": [
+    "Cells marked ↻ miss the target REL directly but can be reached through other stations with every hop at or above the target REL (the top value is the REL after relaying, i.e. the weakest hop; the number after ↻ is the relay count; the badge below is the direct REL without relays (↻0); two-relay cells show the best REL through a single relay (↻1) as an outer badge holding the direct one). Forwarding delay at relays and simultaneous-transmission interference are not considered.",
+    "Les cellules marquées ↻ n’atteignent pas la REL cible en direct, mais peuvent être atteintes via d’autres stations avec chaque saut au moins à la REL cible (en haut la REL après relais, soit le saut le plus faible ; le nombre après ↻ indique les relais ; le badge du bas est la REL directe sans relais (↻0) ; avec deux relais, la meilleure REL via un seul relais (↻1) forme un badge extérieur contenant le direct). Le délai de retransmission et les interférences d’émissions simultanées ne sont pas pris en compte.",
+    "Las celdas con ↻ no alcanzan la REL objetivo en directo, pero se alcanzan a través de otras estaciones con cada salto igual o superior a la REL objetivo (arriba la REL tras el relevo, es decir, el salto más débil; el número tras ↻ es la cantidad de relevos; la insignia inferior es la REL directa sin relevos (↻0); con dos relevos, la mejor REL con un solo relevo (↻1) es una insignia exterior que contiene la directa). No se consideran el retardo de reenvío ni la interferencia por transmisiones simultáneas.",
+    "Le celle con ↻ non raggiungono la REL obiettivo in diretta, ma sono raggiungibili tramite altre stazioni con ogni tratta pari o superiore alla REL obiettivo (in alto la REL dopo il relay, cioè la tratta più debole; il numero dopo ↻ indica i relay; il badge in basso è la REL diretta senza relay (↻0); con due relay la miglior REL con un solo relay (↻1) è un badge esterno che contiene quello diretto). Ritardo di inoltro e interferenza da trasmissioni simultanee non sono considerati.",
+    "As células com ↻ não atingem a REL alvo diretamente, mas são alcançadas por outras estações com cada salto igual ou acima da REL alvo (em cima a REL após a retransmissão, ou seja, o salto mais fraco; o número após ↻ é a quantidade de retransmissões; o selo de baixo é a REL direta sem retransmissão (↻0); com duas retransmissões, a melhor REL com uma só (↻1) é um selo externo que contém o direto). Atraso de encaminhamento e interferência de transmissões simultâneas não são considerados.",
+    "Mit ↻ markierte Zellen verfehlen die Ziel-REL direkt, sind aber über andere Stationen erreichbar, wobei jeder Abschnitt die Ziel-REL erreicht (oben die REL nach Relais, also der schwächste Abschnitt; die Zahl nach ↻ ist die Anzahl der Relais; das untere Abzeichen ist die direkte REL ohne Relais (↻0); bei zwei Relais umschließt ein äußeres Abzeichen mit der besten REL über ein einzelnes Relais (↻1) das direkte). Weiterleitungsverzögerung und Störungen durch gleichzeitiges Senden werden nicht berücksichtigt.",
+    "↻ 표시 셀은 직접으로는 목표 REL에 못 미치지만, 다른 거점을 중계하면 모든 구간이 목표 REL 이상이 되는 경로입니다(위는 중계 후 REL, 즉 가장 낮은 구간의 REL; ↻ 숫자는 중계 단수; 아래 배지는 중계 없는 직접 REL(↻0); 2단 중계에서는 1단 중계(↻1)만으로의 최적 REL을 바깥 배지로 표시하고 그 안에 직접 REL을 넣음). 중계국의 전달 지연과 동시 송신 간섭은 고려하지 않습니다."
   ]
 };

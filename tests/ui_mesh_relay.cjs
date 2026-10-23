@@ -34,11 +34,14 @@ const {chromium}=require('playwright');
   const matrixCell=(r,c)=>page.locator('#mesh-matrix tr').nth(r).locator('td').nth(c);
   assert.equal(await page.locator('#mesh-relays').inputValue(),'2');
   assert.equal(await page.locator('#mesh-relay-summary').innerText(),'中継で到達: 3 経路 · 到達不可: 6 経路（2段まで）');
-  assert.equal(await matrixCell(1,3).locator('i').innerText(),'↻1');// A→B→D
-  assert.equal(await matrixCell(3,1).locator('i').innerText(),'↻1');// C→A→B
-  assert.equal(await matrixCell(3,3).locator('i').innerText(),'↻2');// C→A→B→D
+  const relayCell=(r,c)=>matrixCell(r,c).locator('button').evaluate(b=>[b.firstChild.textContent,b.querySelector('i').textContent,...[...b.querySelectorAll('small>span')].map(e=>e.textContent)]);
+  // REL after relaying (weakest hop) on top, hop count, then the direct REL below.
+  assert.deepEqual(await relayCell(1,3),['85','↻1','30 ↻0 · 10.0']);// A→B→D
+  assert.deepEqual(await relayCell(3,1),['90·','↻1','30 ↻0 · 10.0']);// C→A→B
+  assert.deepEqual(await relayCell(3,3),['85','↻2','30 ↻1','30 ↻0 · 10.0']);// C→A→B→D; best single relay is 30
+  assert.equal(await matrixCell(3,3).locator('small.mesh-badge small.mesh-badge').innerText(),'30 ↻0 · 10.0');// direct nested inside single relay
   await matrixCell(3,3).locator('button').click();
-  assert.equal(await page.locator('#mesh-relay-route').innerText(),'中継経路（2段）: Charlie → Alpha → Bravo → Delta · 区間REL 95 / 90 / 85% · 10.0 / 10.0 / 10.0 MHz');
+  assert.equal(await page.locator('#mesh-relay-route').innerText(),'中継経路（2段）: Charlie → Alpha → Bravo → Delta · 区間REL 95% / 90% / 85% · 中継経路REL 85% · 10.0 / 10.0 / 10.0 MHz');
   await page.selectOption('#mesh-relays','1');
   assert.equal(await page.locator('#mesh-relay-summary').innerText(),'中継で到達: 2 経路 · 到達不可: 7 経路（1段まで）');
   assert.equal(await page.locator('#mesh-relay-route').innerText(),'1段までの中継でも目標RELを満たす経路はありません');
@@ -58,6 +61,22 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#mesh-relay-summary').isVisible(),false);
   assert.equal(await page.locator('#mesh-relay-route').isVisible(),false);
   assert.equal(await page.locator('#mesh-matrix i').count(),0);
+  // The percent/grade toggle and the display thresholds also apply to the matrix.
+  const setThreshold=(id,value)=>page.evaluate(([id,value])=>{$(id).value=value;$(id).dispatchEvent(new Event('change'));},[id,value]);
+  await page.selectOption('#mesh-relays','2');
+  assert.equal(await matrixCell(1,1).locator('button').innerText(),'90·\n10.0');// mark at the default 90%
+  await page.selectOption('#rel-display','grade');
+  assert.deepEqual(await relayCell(1,3),['G','↻1','N ↻0 · 10.0']);
+  await setThreshold('rel-good','86');
+  assert.deepEqual(await relayCell(1,3),['P','↻1','N ↻0 · 10.0']);
+  await setThreshold('rel-mark-threshold','95');
+  assert.equal(await matrixCell(1,1).locator('button').innerText(),'E\n10.0');
+  await setThreshold('rel-poor','90');
+  assert.equal(await page.evaluate(()=>$('rel-threshold-error').hidden),false);// GOOD must stay above POOR
+  await page.evaluate(()=>$('rel-threshold-reset').click());
+  assert.equal(await page.locator('#rel-good').inputValue(),'80');
+  await page.selectOption('#rel-display','percent');
+  assert.deepEqual(await relayCell(1,3),['85','↻1','30 ↻0 · 10.0']);
   assert.deepEqual(errors,[]);
   console.log('Mesh relay UI checks passed');
  }finally{
