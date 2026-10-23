@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "ヒートマップの周波数行の選択": [
+    "Selecting a frequency row in the heatmaps",
+    "Sélection d’une ligne de fréquence dans les cartes thermiques",
+    "Selección de una fila de frecuencia en los mapas de calor",
+    "Selezione di una riga di frequenza nelle mappe di calore",
+    "Seleção de uma linha de frequência nos mapas de calor",
+    "Auswahl einer Frequenzzeile in den Heatmaps",
+    "히트맵의 주파수 행 선택"
+  ],
+  "24時間予測とダイバーシティー予測のヒートマップでセルを選ぶと、メッシュ予測の「経路の詳細 · 周波数 × UTC」と同じように、その周波数の行と時刻の列が選択されます。時刻別の詳細の表でも、選んだ周波数の行を色で示します。": [
+    "Choosing a cell in the 24-hour forecast and diversity forecast heatmaps now selects that frequency’s row and the hour’s column, as in “Link detail · frequency × UTC” of the mesh forecast. The hourly detail table also highlights the chosen frequency’s row.",
+    "Choisir une cellule dans les cartes thermiques de la prévision sur 24 h et de la prévision de diversité sélectionne désormais la ligne de cette fréquence et la colonne de l’heure, comme dans « Détail de la liaison · fréquence × UTC » de la prévision maillée. Le tableau des détails horaires met aussi en évidence la ligne de la fréquence choisie.",
+    "Al elegir una celda en los mapas de calor de la predicción de 24 horas y de la predicción de diversidad, ahora se seleccionan la fila de esa frecuencia y la columna de la hora, igual que en «Detalle del enlace · frecuencia × UTC» de la predicción de malla. La tabla de detalles por hora también resalta la fila de la frecuencia elegida.",
+    "Scegliendo una cella nelle mappe di calore della previsione di 24 ore e della previsione di diversità ora si selezionano la riga di quella frequenza e la colonna dell’ora, come in «Dettaglio collegamento · frequenza × UTC» della previsione mesh. Anche la tabella dei dettagli orari evidenzia la riga della frequenza scelta.",
+    "Ao escolher uma célula nos mapas de calor da previsão de 24 horas e da previsão de diversidade, agora são selecionadas a linha dessa frequência e a coluna da hora, como em «Detalhe do enlace · frequência × UTC» da previsão de malha. A tabela de detalhes por hora também destaca a linha da frequência escolhida.",
+    "Ein Klick auf eine Zelle in den Heatmaps der 24-Stunden-Prognose und der Diversity-Prognose wählt jetzt die Zeile dieser Frequenz und die Spalte der Stunde aus, wie in „Verbindungsdetails · Frequenz × UTC“ der Mesh-Prognose. Auch die Tabelle der Stundendetails hebt die Zeile der gewählten Frequenz hervor.",
+    "24시간 예측과 다이버시티 예측의 히트맵에서 셀을 선택하면, 메시 예측의 「경로 상세 · 주파수 × UTC」와 같이 그 주파수의 행과 시각의 열이 선택됩니다. 시각별 상세 표에서도 선택한 주파수의 행을 색으로 표시합니다."
+  ],
   "ヒートマップの表示時刻（UTC）": [
     "Heatmap display time (UTC)",
     "Heure affichée sur la carte thermique (UTC)",

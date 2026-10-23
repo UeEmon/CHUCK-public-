@@ -48,6 +48,21 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   // The selected hour's heatmap column is outlined.
   await page.evaluate(()=>{Object.assign(result,{id:'fake',distance_km:2550,bearing_deg:170});Object.assign(result.parameters,{year:2026,month:10,ssn:80,power_w:1000,required_snr:39});renderResult();});await heat.locator('input').fill('4');
   assert.deepEqual(await page.locator('#heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['4']);
+  // Choosing a cell selects its frequency row and hour, as in the mesh link matrix; the slider keeps the row.
+  assert.equal(await page.locator('#heatmap th.selected[data-frequency]').count(),0);
+  await page.locator('#heatmap tr').nth(1).locator('td').nth(6).locator('button').click();
+  assert.equal(await page.locator('#hour').inputValue(),'6');assert.equal(await heat.locator('input').inputValue(),'6');
+  assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['06','10.000']);
+  assert.equal(await page.locator('#detail tr.selected td').first().textContent(),'10.000');
+  await heat.locator('input').fill('8');assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['08','10.000']);
+  // The diversity heatmap does the same.
+  await page.evaluate(()=>{const rows=f=>({frequency_mhz:f,best_rel_percent:70,best_site_id:'a',union_lower_percent:70,union_upper_percent:90,complete:true,sites_meeting_target:1});diversityResult={id:'fake-div',note:'',independence_assumption:false,parameters:{year:2026,month:10,ssn:80,ssn_source:'manual',power_w:1000,required_snr:39,reliability:90,frequencies:[7,14]},sites:[{id:'a',name:'A',distance_km:100,parameters:{},hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[{frequency_mhz:7,reliability:70},{frequency_mhz:14,reliability:70}]}))}],diversity_hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[rows(7),rows(14)]}))};tab('diversity');showDiversity();});
+  await page.locator('#diversity-heatmap tr').nth(2).locator('td').nth(3).locator('button').click();
+  assert.equal(await page.locator('#diversity-hour').inputValue(),'3');
+  assert.deepEqual(await page.locator('#diversity-heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['03','14.000']);
+  assert.equal(await page.locator('#diversity-summary tr.selected td').first().textContent(),'14.000');
+  await divHeat.locator('input').fill('5');assert.deepEqual(await page.locator('#diversity-heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['05','14.000']);
+  await page.locator('.tabs [data-tab="prediction"]').click();
   if(process.argv[2])await page.locator('.map-panel').screenshot({path:process.argv[2]});
   assert.deepEqual(errors,[]);console.log('ok');
  }finally{if(browser)await browser.close();child.kill();}
