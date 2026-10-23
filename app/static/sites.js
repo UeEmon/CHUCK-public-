@@ -23,7 +23,7 @@ function showSites(){
  const r=sitesResult;if(!r)return;const p=r.parameters,relay=r.site_mode==='relay';
  $('sites-caption').textContent=`${relay?'中継地点':'受信地点'} · ${p.year}/${p.month} · SSN ${p.ssn} · ${p.power_w} W · 目標REL ${p.reliability}%`;
  $('sites-note').textContent=r.note;
- $('sites-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('sites-exports').append(a);}$('sites-exports').hidden=false;
+ $('sites-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('sites-exports').append(a);}$('sites-exports').append(reportButton('sites'));$('sites-exports').hidden=false;
  const table=document.createElement('table');table.className='heat sites-matrix';const head=document.createElement('tr');
  for(const t of ['順位','地点',relay?'TX / RX1 km':'TX km'])head.append(cell('th',t));for(let h=0;h<24;h++)head.append(cell('th',String(h).padStart(2,'0')));head.append(cell('th','目標REL以上（時間）'),cell('th','平均REL %'));table.append(head);
  for(const c of r.candidates){

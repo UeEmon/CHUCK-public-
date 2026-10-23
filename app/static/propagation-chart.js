@@ -16,7 +16,7 @@ function updatePropagationChart(preferred){
  renderPropagationChart();
 }
 function renderPropagationChart(){
- const box=$('propagation-plot'),run=chartRun();box.replaceChildren();$('chart-export').disabled=!run;
+ const box=$('propagation-plot'),run=chartRun();box.replaceChildren();$('chart-export').disabled=!run;$('chart-print').disabled=!run;
  if(!run){$('chart-caption').textContent='計算後にPropagation Chartを表示します。';return;}
  const metric=$('chart-metric').value,isRel=metric==='reliability',p=run.parameters;
  const width=1100,height=540,left=64,top=32,pw=1000,ph=420,cw=pw/24;

@@ -11,7 +11,7 @@ function showPower(){
  const r=powerResult;if(!r)return;const p=r.parameters;
  $('power-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} · 現在の設定 ${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}`;
  $('power-note').textContent=r.note;
- $('power-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('power-exports').append(a);}$('power-exports').hidden=false;
+ $('power-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('power-exports').append(a);}$('power-exports').append(reportButton('power'));$('power-exports').hidden=false;
  const table=document.createElement('table');table.className='heat power-matrix';const head=document.createElement('tr');head.append(cell('th','MHz / UTC'));for(let h=0;h<24;h++)head.append(cell('th',String(h).padStart(2,'0')));table.append(head);
  const best=document.createElement('tr');best.className='power-best';best.append(cell('th','最小電力'));
  for(const h of r.minimum){const v=h.best,td=document.createElement('td'),text=cell('span',powerLabel(v?.power_w));if(v)text.append(cell('small',v.frequency_mhz.toFixed(1)));td.append(text);td.title=`${h.hour_utc}:00 UTC / ${v?v.frequency_mhz+' MHz / '+v.power_w+' W':'>10 kW'}`;powerPaint(td,powerShade(r,v?.power_w));best.append(td);}

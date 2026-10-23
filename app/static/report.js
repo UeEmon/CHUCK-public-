@@ -12,14 +12,15 @@ function reportTable(d,rows){
  return table;
 }
 function reportPlain(d,source){
- // Cell buttons become text so the copy prints like a table, keeping its colours.
- const table=d.importNode(source,true);for(const b of table.querySelectorAll('button'))b.replaceWith(d.createTextNode(b.textContent));return table;
+ // Cell buttons become their contents so the copy prints like a table, keeping its colours and second lines.
+ const table=d.importNode(source,true);for(const b of table.querySelectorAll('button'))b.replaceWith(...b.childNodes);return table;
 }
+const reportCss='@page{size:A4 landscape;margin:10mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font:11px/1.5 system-ui,sans-serif;color:#000;margin:16px}h1{font-size:17px;margin:0 0 4px}h2{font-size:13px;margin:14px 0 6px;border-bottom:1px solid #999}h3{font-size:12px;margin:10px 0 4px}table{border-collapse:collapse;font:inherit}th,td{border:1px solid #999;padding:2px 5px;text-align:left}.conditions th{background:#eee;white-space:nowrap}.conditions td{min-width:420px}.heat td,.heat th,.hourly td,.hourly th{text-align:center;padding:2px 3px;font-size:10px}.heat th,.hourly th{background:#eee}.heat small,.heat i{display:block;font-size:8px;font-style:normal;opacity:.85}.meta,.foot{color:#444}.plan-table th{background:#eee}.plan-unmet{color:#a00}.chart{max-width:100%;height:auto;break-inside:avoid}.map{width:100%;height:auto;background:#0a1725}';
 function buildReport(d){
  const r=result,p=r.parameters,tx=reportEndpoint(r.ui_selection,'tx'),rx=reportEndpoint(r.ui_selection,'rx'),sec=(title)=>{const h=d.createElement('h2');h.textContent=reportText(title);d.body.append(h);};
  d.documentElement.lang=document.documentElement.lang;d.title=reportText('伝搬予測報告書');
  const style=d.createElement('style');
- style.textContent='@page{size:A4 landscape;margin:10mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{font:11px/1.5 system-ui,sans-serif;color:#000;margin:16px}h1{font-size:17px;margin:0 0 4px}h2{font-size:13px;margin:14px 0 6px;border-bottom:1px solid #999}table{border-collapse:collapse;font:inherit}th,td{border:1px solid #999;padding:2px 5px;text-align:left}.conditions th{background:#eee;white-space:nowrap}.conditions td{min-width:420px}.heat td,.heat th,.hourly td,.hourly th{text-align:center;padding:2px 3px;font-size:10px}.heat th,.hourly th{background:#eee}.meta,.foot{color:#444}.plan-table th{background:#eee}.plan-unmet{color:#a00}';
+ style.textContent=reportCss;
  d.head.append(style);
  const title=d.createElement('h1');title.textContent=d.title;d.body.append(title);
  const meta=d.createElement('p');meta.className='meta';meta.textContent=`${reportText('作成')} ${new Date().toISOString().slice(0,16).replace('T',' ')} UTC · ${reportText('計算')} ${String(r.created??'').slice(0,16).replace('T',' ')} UTC · ID ${r.id??'—'}`;d.body.append(meta);
@@ -51,8 +52,74 @@ function buildReport(d){
  if(plan){sec('運用周波数の24時間計画');for(const id of ['plan-caption','plan-summary']){const e=d.createElement('p');e.textContent=$(id).textContent;d.body.append(e);}d.body.append(reportPlain(d,plan));}
  const foot=d.createElement('p');foot.className='foot';foot.textContent=`${reportText('予測は月間統計です。瞬時の電離圏変動・磁気嵐・実機アンテナ設置条件を完全には反映しません。')} Engine: ${r.engine} (${r.engine_commit}) · CHUCK`;d.body.append(foot);
 }
-$('report-print').onclick=()=>{
- if(!result)return;
+function openReportWindow(build){
  const w=window.open('','_blank');if(!w){notice('印刷用のウィンドウを開けませんでした。ポップアップの許可を確認してください。',true);return;}
- buildReport(w.document);w.focus();w.print();
-};
+ build(w.document);w.focus();w.print();
+}
+$('report-print').onclick=()=>{if(result)openReportWindow(buildReport);};
+// The other result tabs print what the tab shows, already in the UI language: conditions, then each panel's captions, tables and charts.
+const reportTabs={coverage:()=>coverageResult,'propagation-chart':()=>chartRun(),diversity:()=>diversityResult,mesh:()=>meshResult,annual:()=>annualResult,power:()=>powerResult,sites:()=>sitesResult};
+function reportButton(id){const b=cell('button','報告書を印刷');b.type='button';b.className='report-tab-print';b.onclick=()=>printTabReport(id);return b;}
+function reportStamp(v){return v?String(v).slice(0,16).replace('T',' ')+' UTC':'—';}
+function reportConditions(d,id,r){
+ const p=r.parameters,rows=[];
+ if(id==='mesh')rows.push(['拠点',r.sites.map(s=>s.name).join(' · ')]);
+ else if(id==='diversity')rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.sites.map(s=>s.name).join(' · ')}`]);
+ else if(p.tx_lat!==undefined)rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.chart_site??reportEndpoint(r.ui_selection,'rx').name??'RX'}`]);
+ if(r.distance_km!==undefined)rows.push(['回線距離・方位',`${r.distance_km} km`+(r.bearing_deg!==undefined?` / ${r.bearing_deg} °`:'')]);
+ rows.push(['対象年月',`${p.year}/${p.month}`]);
+ if(id!=='annual')rows.push(['SSN',String(p.ssn)]);
+ if(p.power_w!==undefined&&id!=='mesh')rows.push(['送信電力',`${p.power_w} W`]);
+ rows.push(['周波数',id==='coverage'?`${r.frequency_mhz} MHz / ${r.hour_utc}:00 UTC`:p.frequencies.map(f=>f.toFixed(3)).join(', ')+' MHz']);
+ if(p.required_snr!==undefined)rows.push(['要求SNR・目標REL',`${p.required_snr} dB·Hz / ${p.reliability}%`]);
+ if(p.absorption_mode)rows.push(['吸収モード',reportText(absorptionLabel(p))]);
+ if(p.modulation)rows.push(['電波型式・偏波',reportText(radioCaption(p).slice(3))]);
+ return reportTable(d,rows);
+}
+function reportControls(panel){
+ // The view choices beside a panel title (UTC, frequency, metric), so the copy says which slice it shows.
+ const parts=[];
+ for(const label of panel.querySelectorAll('.panel-title label')){
+  const control=label.querySelector('output,select');if(!control)continue;
+  const name=[...label.childNodes].filter(n=>n.nodeType===Node.TEXT_NODE).map(n=>n.data.trim()).join(' ').trim();
+  const value=control.tagName==='SELECT'?control.selectedOptions[0]?.text??'':control.textContent;
+  // An output already names its unit ("03:00 UTC"), so its label is left out.
+  parts.push(name&&control.tagName!=='OUTPUT'?name+' '+value:value);
+ }
+ return parts.join(' · ');
+}
+function reportPanel(d,panel){
+ const h3=panel.querySelector('h3');if(!h3)return;
+ const h=d.createElement('h2'),extra=panel.querySelector('.panel-title > span.muted');h.textContent=h3.textContent+(extra?.textContent?' · '+extra.textContent:'');d.body.append(h);
+ const controls=reportControls(panel);if(controls){const p=d.createElement('p');p.className='meta';p.textContent=controls;d.body.append(p);}
+ for(const e of panel.children){
+  if(e.hidden||e.dataset.report==='skip'||e.matches('.panel-title,h3,.exports,form,details,label,button,.coverage-form,.legend'))continue;
+  const table=e.matches('table')?e:e.querySelector('table'),chart=e.querySelector('svg');
+  if(table){d.body.append(reportPlain(d,table));continue;}
+  if(chart){const c=d.importNode(chart,true);c.removeAttribute('id');c.classList.add('chart');for(const n of c.querySelectorAll('[tabindex]')){n.removeAttribute('tabindex');n.removeAttribute('role');}d.body.append(c);continue;}
+  const text=e.textContent.trim();if(!text)continue;
+  const p=d.createElement(e.tagName==='H4'?'h3':'p');if(e.classList.contains('hint'))p.className='foot';p.textContent=text;d.body.append(p);
+ }
+}
+function buildTabReport(d,id,r){
+ const label=document.querySelector(`nav.tabs [data-tab="${id}"]`).textContent;
+ d.documentElement.lang=document.documentElement.lang;d.title=`${reportText('伝搬予測報告書')} · ${label}`;
+ const style=d.createElement('style');style.textContent=reportCss;d.head.append(style);
+ const title=d.createElement('h1');title.textContent=d.title;d.body.append(title);
+ const meta=d.createElement('p');meta.className='meta';meta.textContent=`${reportText('作成')} ${reportStamp(new Date().toISOString())} · ${reportText('計算')} ${reportStamp(r.created)} · ID ${r.id??'—'}`;d.body.append(meta);
+ const h=d.createElement('h2');h.textContent=reportText('条件');d.body.append(h);d.body.append(reportConditions(d,id,r));
+ for(const panel of $(id).querySelectorAll('.panel'))if(panel.dataset.report!=='skip')reportPanel(d,panel);
+ if(id==='coverage'){
+  // The coverage points are drawn on the map, so the map is the result.
+  const h=d.createElement('h2');h.textContent=document.querySelector('.map-panel h3').textContent;d.body.append(h);
+  const map=d.importNode($('map'),true);map.removeAttribute('id');map.classList.add('map');d.body.append(map);
+ }
+ const foot=d.createElement('p');foot.className='foot';foot.textContent=reportText('予測は月間統計です。瞬時の電離圏変動・磁気嵐・実機アンテナ設置条件を完全には反映しません。')+(r.engine?` Engine: ${r.engine} (${r.engine_commit}) · CHUCK`:' CHUCK');d.body.append(foot);
+}
+function printTabReport(id){
+ const r=reportTabs[id]();if(!r)return;
+ // A diversity site run of the chart carries no id or time of its own.
+ const v=diversityResult,run=id==='propagation-chart'&&$('chart-result').value==='diversity'?{...r,id:v.id,created:v.created,ui_selection:v.ui_selection,engine:v.engine,engine_commit:v.engine_commit,chart_site:r.name}:r;
+ openReportWindow(d=>buildTabReport(d,id,run));
+}
+$('chart-print').onclick=()=>printTabReport('propagation-chart');

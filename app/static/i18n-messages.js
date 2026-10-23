@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "全タブの報告書の印刷": [
+    "Report printing on every tab",
+    "Impression du rapport dans tous les onglets",
+    "Impresión del informe en todas las pestañas",
+    "Stampa del rapporto in tutte le schede",
+    "Impressão do relatório em todas as abas",
+    "Berichtsdruck auf allen Reitern",
+    "모든 탭의 보고서 인쇄"
+  ],
+  "カバー範囲、Propagation Chart、ダイバーシティー、メッシュ、12か月の見通し、必要な送信電力、拠点の候補の結果も「報告書を印刷」で、条件と表示中の表・図を1枚の印刷用ページにまとめられます。": [
+    "Coverage, Propagation Chart, diversity, mesh, 12-month outlook, required power and site candidate results can also be put on one printable page with “Print report”, with the conditions and the shown tables and charts.",
+    "Les résultats de couverture, Propagation Chart, diversité, maillage, perspective sur 12 mois, puissance requise et sites candidats peuvent aussi être réunis sur une page imprimable avec « Imprimer le rapport », avec les conditions et les tableaux et graphiques affichés.",
+    "Los resultados de cobertura, Propagation Chart, diversidad, malla, perspectiva de 12 meses, potencia necesaria y sitios candidatos también pueden reunirse en una página imprimible con «Imprimir informe», con las condiciones y las tablas y gráficos mostrados.",
+    "Anche i risultati di copertura, Propagation Chart, diversità, maglia, prospettiva a 12 mesi, potenza necessaria e siti candidati possono essere raccolti in una pagina stampabile con «Stampa rapporto», con le condizioni e le tabelle e i grafici mostrati.",
+    "Os resultados de cobertura, Propagation Chart, diversidade, malha, perspectiva de 12 meses, potência necessária e locais candidatos também podem ser reunidos numa página imprimível com “Imprimir relatório”, com as condições e as tabelas e gráficos mostrados.",
+    "Auch Ergebnisse zu Abdeckung, Propagation Chart, Diversity, Mesh, 12-Monats-Ausblick, erforderlicher Sendeleistung und Standortkandidaten lassen sich mit „Bericht drucken“ auf einer druckbaren Seite zusammenfassen, mit den Bedingungen und den angezeigten Tabellen und Diagrammen.",
+    "커버리지, Propagation Chart, 다이버시티, 메시, 12개월 전망, 필요 송신 전력, 거점 후보 결과도 '보고서 인쇄'로 조건과 표시 중인 표·그림을 한 장의 인쇄용 페이지로 정리할 수 있습니다."
+  ],
   "項目": [
     "Field",
     "Champ",
