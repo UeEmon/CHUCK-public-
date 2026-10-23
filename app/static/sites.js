@@ -31,7 +31,7 @@ function showSites(){
   if(preset)siteName(preset,name);else{name.textContent=c.name;name.dataset.userContent='true';}
   tr.append(cell('td',c.rank??'—'),name,cell('td',relay?`${fmt(c.distance_tx_km,0)} / ${fmt(c.distance_rx_km,0)}`:fmt(c.distance_tx_km,0)));
   if(c.skipped){const td=cell('td',c.skipped);td.colSpan=26;td.className='muted';tr.append(td);table.append(tr);continue;}
-  for(const h of c.hours){const rel=h.reliability,td=cell('td',rel===null?'—':Math.round(rel)+(rel>=p.reliability?'·':''));td.style.background=color(rel);td.style.color=(rel??0)>55?'#062b25':'#d6e7f1';td.title=`${h.hour_utc}:00 UTC / ${h.frequencies.map(f=>f===null?'—':f+' MHz').join(' → ')} / REL ${fmt(rel)}%`;tr.append(td);}
+  for(const h of c.hours){const rel=h.reliability,td=cell('td',rel===null?'—':Math.round(rel)+(rel>=p.reliability?'·':''));td.style.background=relPercentFill(rel);td.style.color=relPercentInk(rel);td.title=`${h.hour_utc}:00 UTC / ${h.frequencies.map(f=>f===null?'—':f+' MHz').join(' → ')} / REL ${fmt(rel)}%`;tr.append(td);}
   tr.append(cell('td',String(c.hours_meeting)),cell('td',fmt(c.mean_reliability)));table.append(tr);
  }
  $('sites-table').classList.remove('empty');$('sites-table').replaceChildren(table);

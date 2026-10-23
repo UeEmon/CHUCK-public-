@@ -39,6 +39,9 @@ const {chromium}=require('playwright');
   assert.deepEqual(await page.evaluate(()=>[relText(95,'cell'),relText(85),relText(null)]),['E','GOOD','—']);
   await page.selectOption('#rel-display','percent');
   assert.deepEqual(await page.evaluate(()=>[relText(95.4,'cell'),relText(85.25),relText(72,'label')]),['95','85.3','72%']);
+  // Percent colors share each grade's hue: the grade color at the band top, a darker shade at its floor.
+  assert.deepEqual(await page.evaluate(()=>[relPercentFill(100),relPercentFill(80)===relMix(relGrades[1].fill,relShadeBase,relShadeDepth),relPercentFill(null)]),['rgb(47,212,122)',true,'#293445']);
+  assert.equal(await page.evaluate(()=>document.querySelector('#prediction i.rel-percent-legend').style.background.includes('rgb(195, 232, 75) 90%')),true);
   const initial=await page.evaluate(()=>JSON.stringify(circuit));
   for(const language of ['en','fr','es','it','pt','de','ko','ja']){
    await page.selectOption('#language',language);

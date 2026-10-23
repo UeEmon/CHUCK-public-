@@ -33,7 +33,7 @@ function renderPropagationChart(){
  for(const hour of run.hours){
   for(const row of hour.rows){
    const value=row[metric],valid=Number.isFinite(value),normalized=isRel?value:(value+20)/120*100;
-   const mark=svg('rect',{x:left+hour.hour_utc*cw+1,y:y(row.frequency_mhz)-5,width:cw-2,height:10,fill:valid?color(normalized):'#7b8794',tabindex:0,role:'button',stroke:valid&&isRel&&value>=p.reliability?'#effff8':'none','stroke-width':.8},plot);
+   const mark=svg('rect',{x:left+hour.hour_utc*cw+1,y:y(row.frequency_mhz)-5,width:cw-2,height:10,fill:valid?(isRel?relPercentFill(value):color(normalized)):'#7b8794',tabindex:0,role:'button',stroke:valid&&isRel&&value>=p.reliability?'#effff8':'none','stroke-width':.8},plot);
    const caption=hour.hour_utc+':00 UTC / '+row.frequency_mhz+' MHz / '+(isRel?'REL ':'SNR ')+(valid?fmt(value,1):'—')+(isRel?' %':' dB·Hz');
    mark.setAttribute('aria-label',caption);svg('title',{},mark).textContent=caption;
    const open=()=>{if($('chart-result').value==='diversity'){$('diversity-hour').value=hour.hour_utc;renderDiversityDetail();tab('diversity');}else{$('hour').value=hour.hour_utc;renderDetail();tab('prediction');}};
@@ -49,7 +49,7 @@ function renderPropagationChart(){
   svg('path',{d:path,fill:'none',stroke:'#ffcf70','stroke-width':2.2},plot);
  }
  const gradient=svg('linearGradient',{id:'propagation-scale',x1:'0%',x2:'100%'},defs);
- for(let i=0;i<=10;i++)svg('stop',{offset:(i*10)+'%','stop-color':color(i*10)},gradient);
+ for(let i=0;i<=100;i+=isRel?1:10)svg('stop',{offset:i+'%','stop-color':isRel?relPercentFill(i):color(i)},gradient);
  svg('rect',{x:left,y:500,width:240,height:9,fill:'url(#propagation-scale)'},root);
  svg('text',{x:left+250,y:510,fill:'#b3c4d5','font-size':12},root).textContent=isRel?'REL 0 → 100 %':'SNR −20 → 100 dB·Hz';
  if($('chart-muf').checked)svg('text',{x:left+pw-80,y:510,fill:'#ffcf70','font-size':13},root).textContent='MUF';

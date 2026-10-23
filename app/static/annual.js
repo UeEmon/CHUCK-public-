@@ -3,7 +3,7 @@
 let annualResult=null,annualSelected=null;
 const annualLabel=m=>`${m.year}/${m.month}`;
 function annualRow(hour,frequency){if(!hour)return null;if(frequency!=='best')return hour.rows.find(r=>r.frequency_mhz===Number(frequency))??null;let best=null;for(const r of hour.rows){if(r.reliability===null||r.reliability===undefined)continue;if(!best||r.reliability>best.reliability||(r.reliability===best.reliability&&(r.snr_db_hz??-Infinity)>(best.snr_db_hz??-Infinity)))best=r;}return best;}
-function annualPaint(td,rel){td.style.background=color(rel);td.style.color=(rel??0)>55?'#062b25':'#d6e7f1';}
+function annualPaint(td,rel){td.style.background=relPercentFill(rel);td.style.color=relPercentInk(rel);}
 function showAnnual(){
  const r=annualResult;if(!r)return;const p=r.parameters;
  const span=`${annualLabel(r.months[0])}〜${annualLabel(r.months[r.months.length-1])}`,rest=`${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}`;

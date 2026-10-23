@@ -6,7 +6,7 @@ function powerShade(r,w){
  // The smallest step is the brightest; out of reach is grey.
  if(w===null||w===undefined)return null;const i=r.ladder.indexOf(w);return 100-60*i/(r.ladder.length-1);
 }
-function powerPaint(td,v){td.style.background=color(v);td.style.color=(v??0)>55?'#062b25':'#d6e7f1';}
+function powerPaint(td,v){td.style.background=relPercentFill(v);td.style.color=relPercentInk(v);}
 function showPower(){
  const r=powerResult;if(!r)return;const p=r.parameters;
  $('power-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} · 現在の設定 ${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}`;

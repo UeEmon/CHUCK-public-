@@ -28,8 +28,22 @@ function relText(v,style='table'){
  if(relMode==='grade'){const g=relGrade(v);return style==='cell'?g.short:g.name;}
  return style==='cell'?String(Math.round(v)):style==='label'?Math.round(v)+'%':fmt(v);
 }
-function relFill(v){return relMode==='grade'&&relKnown(v)?relGrade(v).fill:color(v);}
-function relInk(v){return relMode==='grade'&&relKnown(v)?relGrade(v).ink:(v??0)>55?'#062b25':'#d6e7f1';}
+// Percent colors use the hue of the grade the value falls in, so both modes paint a band alike.
+// Within a band the shade brightens from the band floor to the grade color at its top.
+const relShadeBase='#111e2c',relShadeDepth=.5,relUnknownFill='#293445';
+const relHex=c=>[1,3,5].map(i=>parseInt(c.slice(i,i+2),16));
+const relMix=(a,b,t)=>{const x=relHex(a),y=relHex(b);return `rgb(${x.map((c,i)=>Math.round(c+(y[i]-c)*t)).join(',')})`;};
+function relBand(g){const i=relGrades.indexOf(g),lo=g.key?relThresholds[g.key]:0,hi=i?relThresholds[relGrades[i-1].key]:100;return [lo,hi];}
+function relShade(g,v){const [lo,hi]=relBand(g),t=hi>lo?Math.max(0,Math.min(1,(v-lo)/(hi-lo))):1;return relShadeDepth*(1-t);}
+function relPercentFill(v){if(!relKnown(v))return relUnknownFill;const g=relGrade(v);return relMix(g.fill,relShadeBase,relShade(g,Number(v)));}
+function relPercentInk(v){if(!relKnown(v))return '#d6e7f1';const g=relGrade(v);return relShade(g,Number(v))>.3?'#e6eef5':g.ink;}
+// CSS gradient for the percent legend, with the same bands as the cells.
+function relPercentGradient(){
+ const stops=[...relGrades].reverse().flatMap(g=>{const [lo,hi]=relBand(g);return [`${relMix(g.fill,relShadeBase,relShadeDepth)} ${lo}%`,`${g.fill} ${hi}%`];});
+ return `linear-gradient(90deg,${stops.join(',')})`;
+}
+function relFill(v){return relMode==='grade'&&relKnown(v)?relGrade(v).fill:relPercentFill(v);}
+function relInk(v){return relMode==='grade'&&relKnown(v)?relGrade(v).ink:relPercentInk(v);}
 function relHeader(name){return name+(relMode==='grade'?' 段階':' %');}
 function relTitle(v){const g=relGrade(v);return relKnown(v)?'REL '+fmt(v)+'% · '+g.name:'REL —';}
 function samePlace(a,b){return Math.abs(a.lat-b.lat)<1e-4&&Math.abs(a.lon-b.lon)<1e-4;}
@@ -71,7 +85,7 @@ function renderRelLegend(){
  }));
  for(const e of document.querySelectorAll('.rel-mark-legend'))e.textContent=`印 · はREL ${relLegendTarget(e)}%以上`;
  if($('rel-unit'))$('rel-unit').textContent=grade?'REL · 4段階':'REL · %';
- for(const e of document.querySelectorAll('.rel-percent-legend'))e.hidden=grade;
+ for(const e of document.querySelectorAll('.rel-percent-legend')){e.hidden=grade;if(e.tagName==='I')e.style.background=relPercentGradient();}
  for(const e of document.querySelectorAll('.rel-grade-legend'))e.hidden=!grade;
 }
 function refreshRelViews(){
@@ -79,6 +93,10 @@ function refreshRelViews(){
  if(typeof renderResult==='function'&&result)renderResult();
  if(typeof showDiversity==='function'&&diversityResult)showDiversity();
  if(typeof renderMeshMatrix==='function'&&meshResult)renderMeshMatrix();
+ if(typeof renderAnnual==='function'&&annualResult)renderAnnual();
+ if(typeof showPower==='function'&&powerResult)showPower();
+ if(typeof showSites==='function'&&sitesResult)showSites();
+ if(typeof renderPropagationChart==='function')renderPropagationChart();
  drawMap();
 }
 function setRelMode(mode){
