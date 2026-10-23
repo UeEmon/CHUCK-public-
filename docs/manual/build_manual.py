@@ -132,7 +132,7 @@ def write(m):
     d.add_paragraph('CHUCK 操作要領', style='Title')
     d.add_paragraph('HF伝搬 通信信頼度予測システム', style='Subtitle')
     m.p('Coverage & HF Usability Calculation Kit')
-    m.p(f'{EDITION}  {DATE.year}年{DATE.month}月{DATE.day}日\n対象  CHUCK 表示版（2026年10月23日の画面）')
+    m.p(f'{EDITION}  {DATE.year}年{DATE.month}月{DATE.day}日\n対象  CHUCK v1.0（2026年10月23日の画面）')
     m.p('本書は、CHUCKのWeb画面でHF回線を設定し、24時間の伝搬、回線マップ、報告書、地域カバー範囲、'
         '複数RXサイト、拠点間メッシュ、12か月予測、必要な送信電力、拠点の候補を確認するための手順書です。'
         '固定局の計算から始め、必要に応じて移動局、外部観測、AIによるアンテナ資料取込みを設定してください。')

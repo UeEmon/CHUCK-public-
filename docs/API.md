@@ -1,4 +1,4 @@
-# API v0.1
+# API v1.0
 
 AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、外部データの`refresh=1`と取得時刻は[SPACE_WEATHER.md](SPACE_WEATHER.md)を参照してください。
 

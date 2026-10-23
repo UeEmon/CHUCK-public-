@@ -4,6 +4,10 @@
 
 CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは依頼者提供のchuckさんの肖像画で、`app/static/chuck-icon.png`（ヘッダー）、`app/static/favicon.png`（ブラウザタブ）、`docs/images/chuck-icon.png`（README）に置いている。HF伝搬・通信信頼度を予測するWebシステムで、旧名称はSPARK。リポジトリ名は `UeEmon/VOCAP-COMPATIBILITY-` のまま維持している。本書は別の開発者またはAIが、実装の境界、検証状況、制約を保持して作業を再開するための資料である。
 
+## 0 バージョンと維持管理
+
+2026年10月23日に開発フェーズを終了し、バージョン1.0（タグ `v1.0`）として維持管理フェーズへ移行した。版表記は画面フッター（`app/static/index.html`）、`docs/API.md`、`docs/VALIDATION.md`、操作要領の表紙（`docs/manual/build_manual.py`）にある。以後は不具合修正と外部データ（NOAA・NICT・GIRO等）の仕様変更への追従を主とし、修正を出す際は版を1.0.1のように上げ、同じ箇所と新機能のお知らせを更新してタグを付ける。
+
 ## 1 現在の到達点
 
 - VOACAPによる24時間地点間予測、最大35地点のカバー範囲、単一TXからRX 2～8局へのサイト比較を実装済み。

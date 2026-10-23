@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "バージョン1.0": [
+    "Version 1.0",
+    "Version 1.0",
+    "Versión 1.0",
+    "Versione 1.0",
+    "Versão 1.0",
+    "Version 1.0",
+    "버전 1.0"
+  ],
+  "一通りの機能が揃ったため、バージョン1.0としました。以後は不具合の修正と外部データへの追従を中心に維持管理します。": [
+    "With the planned features complete, CHUCK is now version 1.0. From here on it is maintained mainly through bug fixes and keeping up with external data sources.",
+    "Les fonctions prévues étant terminées, CHUCK passe en version 1.0. Il sera désormais maintenu principalement par des corrections de bogues et l’adaptation aux sources de données externes.",
+    "Con las funciones previstas completas, CHUCK pasa a la versión 1.0. A partir de ahora se mantendrá principalmente con correcciones de errores y la adaptación a las fuentes de datos externas.",
+    "Completate le funzioni previste, CHUCK passa alla versione 1.0. D’ora in poi sarà mantenuto principalmente con correzioni di bug e l’adeguamento alle fonti di dati esterne.",
+    "Com as funções previstas concluídas, o CHUCK passa à versão 1.0. A partir de agora será mantido principalmente com correções de erros e a adaptação às fontes de dados externas.",
+    "Da die geplanten Funktionen fertig sind, ist CHUCK jetzt Version 1.0. Künftig wird es vor allem durch Fehlerbehebungen und die Anpassung an externe Datenquellen gepflegt.",
+    "계획된 기능이 갖추어져 CHUCK을 버전 1.0으로 했습니다. 앞으로는 주로 버그 수정과 외부 데이터 대응을 중심으로 유지 관리합니다."
+  ],
   "ヒートマップの周波数行の選択": [
     "Selecting a frequency row in the heatmaps",
     "Sélection d’une ligne de fréquence dans les cartes thermiques",
