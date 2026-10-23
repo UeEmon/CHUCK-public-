@@ -1,0 +1,1757 @@
+{
+ "comparison": "CHUCK HTTP API vs values read from VOACAP Online Marine (https://www.voacap.com/marine/)",
+ "engine": "voacapl 0.7.7",
+ "cases": [
+  {
+   "case": "tokyo-guam",
+   "description": "東京→グアム（Marine表示距離 2521 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 13.45,
+    "rx_lon": 144.75,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 25.0,
+     "mean": -2.94,
+     "mean_absolute": 3.181
+    },
+    "sdbw": {
+     "points": 208,
+     "null_mismatches": 0,
+     "max_absolute": 50.0,
+     "mean": -2.861,
+     "mean_absolute": 2.995
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 6.23,
+     "marine": 55,
+     "chuck": 30.0,
+     "difference": -25.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 6.23,
+     "marine": 53,
+     "chuck": 29.0,
+     "difference": -24.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 6.23,
+     "marine": 55,
+     "chuck": 31.0,
+     "difference": -24.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 6.23,
+     "marine": 55,
+     "chuck": 32.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 6.23,
+     "marine": 54,
+     "chuck": 32.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 4.12,
+     "marine": 33,
+     "chuck": 12.0,
+     "difference": -21.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 4.12,
+     "marine": 24,
+     "chuck": 5.0,
+     "difference": -19.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 4.12,
+     "marine": 22,
+     "chuck": 3.0,
+     "difference": -19.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 4.12,
+     "marine": 25,
+     "chuck": 6.0,
+     "difference": -19.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 6.23,
+     "marine": 56,
+     "chuck": 37.0,
+     "difference": -19.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-sapporo",
+   "description": "東京→札幌（Marine表示距離 832 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 43.06,
+    "rx_lon": 141.35,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 28.0,
+     "mean": -0.602,
+     "mean_absolute": 0.843
+    },
+    "sdbw": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 33.0,
+     "mean": -0.463,
+     "mean_absolute": 0.898
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 5,
+     "frequency_mhz": 18.83,
+     "marine": 39,
+     "chuck": 11.0,
+     "difference": -28.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 9,
+     "frequency_mhz": 12.35,
+     "marine": 43,
+     "chuck": 60.0,
+     "difference": 17.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 8.29,
+     "marine": 61,
+     "chuck": 48.0,
+     "difference": -13.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 5,
+     "frequency_mhz": 16.53,
+     "marine": 67,
+     "chuck": 56.0,
+     "difference": -11.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 2.18,
+     "marine": 95,
+     "chuck": 87.0,
+     "difference": -8.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 2.18,
+     "marine": 95,
+     "chuck": 88.0,
+     "difference": -7.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 2.18,
+     "marine": 95,
+     "chuck": 88.0,
+     "difference": -7.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 2.18,
+     "marine": 94,
+     "chuck": 87.0,
+     "difference": -7.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 2.18,
+     "marine": 94,
+     "chuck": 88.0,
+     "difference": -6.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 2.18,
+     "marine": 96,
+     "chuck": 91.0,
+     "difference": -5.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-singapore",
+   "description": "東京→シンガポール（Marine表示距離 5322 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 1.29,
+    "rx_lon": 103.85,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 27.0,
+     "mean": -2.046,
+     "mean_absolute": 2.417
+    },
+    "sdbw": {
+     "points": 193,
+     "null_mismatches": 0,
+     "max_absolute": 241.0,
+     "mean": -6.539,
+     "mean_absolute": 6.653
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 8.29,
+     "marine": 40,
+     "chuck": 13.0,
+     "difference": -27.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 8.29,
+     "marine": 36,
+     "chuck": 10.0,
+     "difference": -26.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 8.29,
+     "marine": 31,
+     "chuck": 8.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 19,
+     "frequency_mhz": 8.29,
+     "marine": 38,
+     "chuck": 15.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 8.29,
+     "marine": 31,
+     "chuck": 9.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 8.29,
+     "marine": 28,
+     "chuck": 7.0,
+     "difference": -21.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 8.29,
+     "marine": 28,
+     "chuck": 11.0,
+     "difference": -17.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 6.23,
+     "marine": 16,
+     "chuck": 1.0,
+     "difference": -15.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 22,
+     "frequency_mhz": 12.35,
+     "marine": 36,
+     "chuck": 51.0,
+     "difference": 15.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 6.23,
+     "marine": 15,
+     "chuck": 3.0,
+     "difference": -12.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-honolulu",
+   "description": "東京→ホノルル（Marine表示距離 6198 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 21.31,
+    "rx_lon": -157.86,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 39.0,
+     "mean": -3.19,
+     "mean_absolute": 3.486
+    },
+    "sdbw": {
+     "points": 179,
+     "null_mismatches": 0,
+     "max_absolute": 81.0,
+     "mean": -4.469,
+     "mean_absolute": 4.76
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 10,
+     "frequency_mhz": 6.23,
+     "marine": 42,
+     "chuck": 3.0,
+     "difference": -39.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 6.23,
+     "marine": 42,
+     "chuck": 3.0,
+     "difference": -39.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 6.23,
+     "marine": 43,
+     "chuck": 4.0,
+     "difference": -39.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 6.23,
+     "marine": 41,
+     "chuck": 3.0,
+     "difference": -38.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 6.23,
+     "marine": 41,
+     "chuck": 5.0,
+     "difference": -36.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 10,
+     "frequency_mhz": 8.29,
+     "marine": 61,
+     "chuck": 30.0,
+     "difference": -31.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 8.29,
+     "marine": 52,
+     "chuck": 23.0,
+     "difference": -29.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 8.29,
+     "marine": 57,
+     "chuck": 29.0,
+     "difference": -28.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 8.29,
+     "marine": 60,
+     "chuck": 33.0,
+     "difference": -27.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 8.29,
+     "marine": 58,
+     "chuck": 31.0,
+     "difference": -27.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-london",
+   "description": "東京→ロンドン（Marine表示距離 9561 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 51.51,
+    "rx_lon": -0.13,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 12.0,
+     "mean": -0.319,
+     "mean_absolute": 0.569
+    },
+    "sdbw": {
+     "points": 205,
+     "null_mismatches": 0,
+     "max_absolute": 81.0,
+     "mean": -7.0,
+     "mean_absolute": 9.585
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 21,
+     "frequency_mhz": 16.53,
+     "marine": 13,
+     "chuck": 1.0,
+     "difference": -12.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 22,
+     "frequency_mhz": 16.53,
+     "marine": 7,
+     "chuck": 0.0,
+     "difference": -7.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 16.53,
+     "marine": 6,
+     "chuck": 0.0,
+     "difference": -6.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 21,
+     "frequency_mhz": 12.35,
+     "marine": 18,
+     "chuck": 13.0,
+     "difference": -5.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 0,
+     "frequency_mhz": 12.35,
+     "marine": 7,
+     "chuck": 2.0,
+     "difference": -5.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 9,
+     "frequency_mhz": 22.16,
+     "marine": 25,
+     "chuck": 29.0,
+     "difference": 4.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 12.35,
+     "marine": 15,
+     "chuck": 11.0,
+     "difference": -4.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 21,
+     "frequency_mhz": 18.83,
+     "marine": 4,
+     "chuck": 0.0,
+     "difference": -4.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 22,
+     "frequency_mhz": 12.35,
+     "marine": 17,
+     "chuck": 13.0,
+     "difference": -4.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 7,
+     "frequency_mhz": 22.16,
+     "marine": 14,
+     "chuck": 17.0,
+     "difference": 3.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-guam-ssn20",
+   "description": "東京→グアム（Marine表示距離 2521 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 13.45,
+    "rx_lon": 144.75,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 14.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 20,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 24.0,
+     "mean": -3.185,
+     "mean_absolute": 3.398
+    },
+    "sdbw": {
+     "points": 213,
+     "null_mismatches": 0,
+     "max_absolute": 49.0,
+     "mean": -5.038,
+     "mean_absolute": 5.244
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 4.12,
+     "marine": 36,
+     "chuck": 12.0,
+     "difference": -24.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 6.23,
+     "marine": 50,
+     "chuck": 28.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 6.23,
+     "marine": 50,
+     "chuck": 28.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 6.23,
+     "marine": 50,
+     "chuck": 28.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 6.23,
+     "marine": 52,
+     "chuck": 30.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 4.12,
+     "marine": 26,
+     "chuck": 5.0,
+     "difference": -21.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 4.12,
+     "marine": 27,
+     "chuck": 6.0,
+     "difference": -21.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 4.12,
+     "marine": 32,
+     "chuck": 11.0,
+     "difference": -21.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 10,
+     "frequency_mhz": 4.12,
+     "marine": 39,
+     "chuck": 19.0,
+     "difference": -20.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 6.23,
+     "marine": 50,
+     "chuck": 30.0,
+     "difference": -20.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-guam-ssn200",
+   "description": "東京→グアム（Marine表示距離 2521 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 13.45,
+    "rx_lon": 144.75,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 140.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 200,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 26.0,
+     "mean": -2.736,
+     "mean_absolute": 2.949
+    },
+    "sdbw": {
+     "points": 204,
+     "null_mismatches": 0,
+     "max_absolute": 59.0,
+     "mean": -2.206,
+     "mean_absolute": 2.216
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 22.16,
+     "marine": 42,
+     "chuck": 16.0,
+     "difference": -26.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 20,
+     "frequency_mhz": 22.16,
+     "marine": 40,
+     "chuck": 15.0,
+     "difference": -25.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 6.23,
+     "marine": 54,
+     "chuck": 30.0,
+     "difference": -24.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 6.23,
+     "marine": 52,
+     "chuck": 29.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 6.23,
+     "marine": 53,
+     "chuck": 30.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 6.23,
+     "marine": 54,
+     "chuck": 31.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 19,
+     "frequency_mhz": 22.16,
+     "marine": 23,
+     "chuck": 1.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 6.23,
+     "marine": 53,
+     "chuck": 33.0,
+     "difference": -20.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 25.11,
+     "marine": 20,
+     "chuck": 0.0,
+     "difference": -20.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 19,
+     "frequency_mhz": 18.83,
+     "marine": 50,
+     "chuck": 30.0,
+     "difference": -20.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-guam-cw-1000w-noise140",
+   "description": "東京→グアム（Marine表示距離 2521 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 13.45,
+    "rx_lon": 144.75,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2026,
+    "month": 10,
+    "ssn": 70.0,
+    "power_w": 800.0,
+    "noise": 140.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 19.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 19,
+    "power_kw_sent": 0.8,
+    "noise": 140,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2026-10-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 45.0,
+     "mean": -2.741,
+     "mean_absolute": 2.926
+    },
+    "sdbw": {
+     "points": 208,
+     "null_mismatches": 0,
+     "max_absolute": 50.0,
+     "mean": -2.865,
+     "mean_absolute": 2.99
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 2.18,
+     "marine": 89,
+     "chuck": 44.0,
+     "difference": -45.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 2.18,
+     "marine": 88,
+     "chuck": 43.0,
+     "difference": -45.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 2.18,
+     "marine": 86,
+     "chuck": 42.0,
+     "difference": -44.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 2.18,
+     "marine": 88,
+     "chuck": 45.0,
+     "difference": -43.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 2.18,
+     "marine": 85,
+     "chuck": 44.0,
+     "difference": -41.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 2.18,
+     "marine": 88,
+     "chuck": 52.0,
+     "difference": -36.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 2.18,
+     "marine": 89,
+     "chuck": 55.0,
+     "difference": -34.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 2.18,
+     "marine": 89,
+     "chuck": 61.0,
+     "difference": -28.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 18.83,
+     "marine": 57,
+     "chuck": 29.0,
+     "difference": -28.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 10,
+     "frequency_mhz": 2.18,
+     "marine": 82,
+     "chuck": 56.0,
+     "difference": -26.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-guam-2027-01",
+   "description": "東京→グアム（Marine表示距離 2521 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 13.45,
+    "rx_lon": 144.75,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2027,
+    "month": 1,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2027-01-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 27.0,
+     "mean": -2.718,
+     "mean_absolute": 3.088
+    },
+    "sdbw": {
+     "points": 210,
+     "null_mismatches": 0,
+     "max_absolute": 40.0,
+     "mean": -2.581,
+     "mean_absolute": 2.61
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 4.12,
+     "marine": 40,
+     "chuck": 13.0,
+     "difference": -27.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 4.12,
+     "marine": 33,
+     "chuck": 6.0,
+     "difference": -27.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 4.12,
+     "marine": 31,
+     "chuck": 5.0,
+     "difference": -26.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 4.12,
+     "marine": 31,
+     "chuck": 5.0,
+     "difference": -26.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 4.12,
+     "marine": 32,
+     "chuck": 7.0,
+     "difference": -25.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 4.12,
+     "marine": 30,
+     "chuck": 5.0,
+     "difference": -25.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 4.12,
+     "marine": 36,
+     "chuck": 11.0,
+     "difference": -25.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 4.12,
+     "marine": 30,
+     "chuck": 6.0,
+     "difference": -24.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 10,
+     "frequency_mhz": 4.12,
+     "marine": 41,
+     "chuck": 19.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 6.23,
+     "marine": 60,
+     "chuck": 39.0,
+     "difference": -21.0
+    }
+   ]
+  },
+  {
+   "case": "tokyo-guam-2027-07",
+   "description": "東京→グアム（Marine表示距離 2521 km）",
+   "parameters": {
+    "modulation": "manual",
+    "snr_input": "direct",
+    "tx_polarization": "model",
+    "rx_polarization": "model",
+    "polarization_loss_db": 0.0,
+    "tx_lat": 35.68,
+    "tx_lon": 139.76,
+    "tx_antenna": "isotropic",
+    "tx_gain": 0.0,
+    "tx_length_m": null,
+    "tx_height_m": 0.0,
+    "tx_azimuth_deg": 0.0,
+    "tx_ground_permittivity": 13.0,
+    "tx_ground_conductivity": 0.005,
+    "tx_azimuth_mode": "fixed",
+    "tx_lp_slope_deg": null,
+    "tx_lp_impedance_ohm": null,
+    "tx_lp_apex_deg": null,
+    "tx_lp_tau": null,
+    "tx_lp_elements": null,
+    "tx_lw_slope_deg": null,
+    "tx_pattern_id": null,
+    "rx_lat": 13.45,
+    "rx_lon": 144.75,
+    "rx_antenna": "isotropic",
+    "rx_gain": 0.0,
+    "rx_length_m": null,
+    "rx_height_m": 0.0,
+    "rx_azimuth_deg": 0.0,
+    "rx_ground_permittivity": 13.0,
+    "rx_ground_conductivity": 0.005,
+    "rx_azimuth_mode": "fixed",
+    "rx_lp_slope_deg": null,
+    "rx_lp_impedance_ohm": null,
+    "rx_lp_apex_deg": null,
+    "rx_lp_tau": null,
+    "rx_lp_elements": null,
+    "rx_lw_slope_deg": null,
+    "rx_pattern_id": null,
+    "year": 2027,
+    "month": 7,
+    "ssn": 70.0,
+    "power_w": 100.0,
+    "noise": 150.0,
+    "min_angle": 3.0,
+    "reliability": 90.0,
+    "required_snr": 39.0,
+    "frequencies": [
+     2.18,
+     4.12,
+     6.23,
+     8.29,
+     12.35,
+     16.53,
+     18.83,
+     22.16,
+     25.11
+    ],
+    "ssn_source": "manual"
+   },
+   "marine_settings": {
+    "ssn_entered": 100,
+    "mode_required_snr": 39,
+    "power_kw_sent": 0.1,
+    "noise": 150,
+    "antennas": "Isotrope 0 dBi (TX/RX, all bands)",
+    "method": "Auto (30)",
+    "min_toa_deg": 3,
+    "date": "2027-07-01"
+   },
+   "marine_retrieved": "2026-10-23",
+   "has_marine_values": true,
+   "statistics": {
+    "rel": {
+     "points": 216,
+     "null_mismatches": 0,
+     "max_absolute": 25.0,
+     "mean": -2.125,
+     "mean_absolute": 2.458
+    },
+    "sdbw": {
+     "points": 206,
+     "null_mismatches": 0,
+     "max_absolute": 26.0,
+     "mean": -1.388,
+     "mean_absolute": 1.777
+    }
+   },
+   "largest_rel_differences": [
+    {
+     "metric": "rel",
+     "hour_utc": 13,
+     "frequency_mhz": 6.23,
+     "marine": 48,
+     "chuck": 23.0,
+     "difference": -25.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 14,
+     "frequency_mhz": 6.23,
+     "marine": 47,
+     "chuck": 23.0,
+     "difference": -24.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 16,
+     "frequency_mhz": 6.23,
+     "marine": 45,
+     "chuck": 22.0,
+     "difference": -23.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 6.23,
+     "marine": 52,
+     "chuck": 30.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 15,
+     "frequency_mhz": 6.23,
+     "marine": 45,
+     "chuck": 23.0,
+     "difference": -22.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 6.23,
+     "marine": 50,
+     "chuck": 30.0,
+     "difference": -20.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 11,
+     "frequency_mhz": 4.12,
+     "marine": 30,
+     "chuck": 14.0,
+     "difference": -16.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 17,
+     "frequency_mhz": 4.12,
+     "marine": 21,
+     "chuck": 5.0,
+     "difference": -16.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 12,
+     "frequency_mhz": 4.12,
+     "marine": 18,
+     "chuck": 3.0,
+     "difference": -15.0
+    },
+    {
+     "metric": "rel",
+     "hour_utc": 18,
+     "frequency_mhz": 4.12,
+     "marine": 27,
+     "chuck": 13.0,
+     "difference": -14.0
+    }
+   ]
+  }
+ ],
+ "missing_marine_values": []
+}

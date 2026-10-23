@@ -1,5 +1,39 @@
 # 検証記録 — v0.1
 
+## Marine版との数値比較（2026-10-23、x86-64 Linux）
+
+VOACAP Online for Marine HF（https://www.voacap.com/marine/）の点間予測と、CHUCKの `/api/predict` を同じ条件で比べました。Marineの値は利用者のChromeで画面が送る計算要求（`p2p_p2.php`）の応答を読み、`docs/validation/marine-cases.json` に保存しています。CHUCK側は同梱エンジンを作業環境でビルドして計算しました。
+
+```sh
+VOACAP_BIN=/path/to/voacapl VOACAP_MODEL=/path/to/itshfbc \
+python3 scripts/compare_marine.py --require-complete --output-dir dist/marine-comparison
+```
+
+条件：東京（35.68N 139.76E）から5地点（札幌・グアム・シンガポール・ホノルル・ロンドン）、両端Isotrope 0 dBi、Method 30、最低角3°、雑音150。グアムでSSN（20/100/200）、月（2026-10・2027-01・2027-07）、CW・1000 W・雑音140を変えた計10条件、各9周波数×24時間、計2160点。記録は `docs/validation/marine-comparison.json`。
+
+Marineの入力値は、計算前に次のように換算されています。CHUCKには換算後の値を与えて比べました。
+
+| Marineの設定 | エンジンに渡る値 |
+|---|---|
+| SSN（SILSO V2尺度で入力） | 入力値×0.7（100→70） |
+| 電力の表示値 | 表示値×0.8（125 W→100 W、1000 W→800 W） |
+| 電波型式 | 要求SNR：CW 19、SSB/DSC 39、AM 48 dB·Hz |
+
+| 結果 | 値 |
+|---|---|
+| REL差が5ポイント以内 | 87%（10ポイント以内 92%） |
+| REL差の平均（CHUCK−Marine） | −2.3ポイント |
+| REL差が10ポイントを超えた点 | 180点。うち176点はCHUCKが低く、144点は8.29 MHz以下 |
+| 受信電力（SDBW）の差 | 中央値0 dB、3 dB以内が78% |
+| 最も一致した経路 | 東京→ロンドン（REL差最大12ポイント）、東京→札幌（5ポイント以内96%） |
+
+差は主に低い周波数の夜間側に出ており、そこではMarineの受信電力がCHUCKより最大で約7 dB高く出ています（例：東京→グアム、12 UTC・4.12 MHzでREL 24%に対しCHUCK 5%、受信電力 −102 dBW に対し −108 dBW）。係数をURSIへ変える、最低角を0.1°にする、Methodを変える、時刻を1時間ずらす、のいずれでも差は縮まらず、原因は特定できていません。Marine側のエンジン版・係数・アンテナファイルの中身は公開されていないため、ここでは差を記録するにとどめます。
+
+- Marineの「Shortwave whip antenna」は、2026-10-23時点でMarine側が「Invalid antenna file extension」を返し、ホイップ同士の比較はできませんでした。
+- CHUCKはNOAAのSSN（SILSO V2尺度）を換算せずに使います。Marineと同じ月の予測SSNを使う場合、CHUCKがエンジンに渡すSSNはMarineの約1.43倍になります。この扱いは変えていません。
+- CHUCKの電波型式の例示値（A1A 24、J3E 45、A3E 67 dB·Hz）は、Marineの固定値（19、39、48）と異なります。
+- Marineへの問い合わせは画面操作と同じ要求を10件余り送ったもので、短時間に続けて送ると「Too many requests.」で止まります。比較を増やすときは間隔を空けてください。
+
 ## 必要な送信電力（2026-10-22、x86-64 Linux）
 
 - `tests/test_power.py` で、10段階の電力でのエンジン実行、時刻・周波数ごとの最小電力、同じ電力ではRELの高い周波数を選ぶこと、`/api/power` の履歴・CSV・raw出力なしを確認（エンジンはモック）。全単体試験は成功（実エンジンを要する試験はgfortranがない環境のためスキップ）。
@@ -150,7 +184,7 @@
   HTML/CSS/JSファイルの配信とJS構文は確認済みです。
 - Apple Silicon、Windows Docker Desktop、Linux ARM64でのコンパイル・実行は未実施。
   CPU依存のバイナリを同梱せずDockerビルド時にコンパイルする構成ですが、動作保証ではありません。
-- オンラインMarineサービスと同一条件での数値一致・性能比較は未実施。
+- オンラインMarineサービスとの比較は2026-10-23に10条件で実施（本書冒頭）。ホイップ同士の比較と、差の原因の特定は未了。
 - 実測値との伝搬精度比較・磁気嵐等への応答評価は未実施。
 
 ## 配布先の初回確認

@@ -22,7 +22,7 @@ CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは
 | 実行依存 | Python 3.12標準ライブラリ、ブラウザの素のJavaScript、Fortranエンジン |
 | 最新確認 | Python 85テスト成功（実エンジン付きは84件時点でスキップなし）、実Chromiumによる回帰試験成功、Apple Silicon実機でDocker完成イメージの検証成功（2026-10-17） |
 
-Docker完成イメージとApple Silicon（arm64）は2026-10-17に実機で検証済み（`docs/VALIDATION.md`）。arm64の再配布束も同日に生成し、最終イメージ内の全85試験がスキップなしで成功した。**次の優先事項はP1のMarine版との数値比較。** amd64のDocker、実回線の検証完了とは扱わない。
+Docker完成イメージとApple Silicon（arm64）は2026-10-17に実機で検証済み（`docs/VALIDATION.md`）。arm64の再配布束も同日に生成し、最終イメージ内の全85試験がスキップなしで成功した。**Marine版との数値比較は2026-10-23に実施（11章）。次はSSN尺度と要求SNRの既定値の扱いを決めること。** amd64のDocker、実回線の検証完了とは扱わない。
 
 ## 2 クリーン環境での再開
 
@@ -224,7 +224,7 @@ HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
 
 過去の付属Windows基準出力 `vendor/tests/p2p/test01.out` と現行エンジンの別比較では、最大差REL 1ポイント、受信信号1 dB、打上げ角0.1°、MUF 0.1 MHz、SNR 0 dB。原因は丸め境界付近の値の印字差と切り分け済み（`docs/VALIDATION.md` 2026-10-17）。比較スクリプトは末位1単位を許容差として判定する。過去基準の500 kW条件を本体の上限100 kWへ黙って縮小して比較していない。
 
-再現スクリプトは `scripts/compare_voacap.py`、記録は `docs/validation/voacap-comparison.json`。エンジンの環境変数を指定して実行する。Marineオンラインサービスとの同一設定比較、実測に対する予測精度検証は未実施。
+再現スクリプトは `scripts/compare_voacap.py`、記録は `docs/validation/voacap-comparison.json`。エンジンの環境変数を指定して実行する。Marineオンラインサービスとの比較は2026-10-23に実施した（`docs/VALIDATION.md`、`scripts/compare_marine.py`）。REL差は87%の点で5ポイント以内だが、低い周波数の夜間側でCHUCKが最大45ポイント低く、原因は未特定。実測に対する予測精度検証は未実施。
 
 ```sh
 VOACAP_BIN=/path/to/voacapl VOACAP_MODEL=/path/to/itshfbc \
@@ -242,7 +242,8 @@ python3 scripts/compare_voacap.py --output-dir dist/voacap-comparison
 | 済 | 再配布束の実生成 | 2026-10-17、arm64でライセンス監査・対応ソース・最終image内85試験（スキップ0）・SHA一覧を確認。amd64束は未生成 |
 | P1 | 有料AIとローカル推論 | 権限のある実資料で各AIの画像・PDF可否、モデル選択、料金・失敗を確認 |
 | P1 | 実位置入力と遠隔HTTPS | GNSS等の実送信元、UTC同期、期限、認証、前段TLSとCookieを確認 |
-| P1 | Marine版との数値比較 | 月・SSN・全アンテナ・雑音・Method・要求SNR等を揃え、基準と差を保存 |
+| 一部済 | Marine版との数値比較 | 2026-10-23、Isotrope 0 dBiで10条件2160点を比較し差を保存。ホイップ比較（Marine側エラー）と、低周波夜間の差の原因特定が残る |
+| P1 | SSN尺度と要求SNRの既定値 | Marineは入力SSNを0.7倍し、要求SNRをCW 19／SSB 39／AM 48とする。CHUCKの扱い（無換算、例示値24/45/67）を変えるかを依頼者と決める |
 | 済 | 過去基準の微差分析 | 2026-10-17、全135差分が丸め境界付近の末位1単位と確認。許容差を末位1単位として比較スクリプトに組込み |
 | P2 | 国外観測の追加 | ASWFC／IGS等の利用条件、取得形式、欠測、鮮度を確認後に個別実装 |
 
