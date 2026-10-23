@@ -58,7 +58,7 @@ POSTの例：
   1文字目は主搬送波の変調（N/A/H/R/J/B/C/F/G/D/P/K/L/M/Q/V/W/X）、2文字目は変調信号の性質（0/1/2/3/7/8/9/X）、
   3文字目は伝送情報の型式（N/A/B/C/D/E/F/W/X）。小文字は大文字に正規化します。
   旧形式の`cw/ssb/am/fm/fsk`はそれぞれ`A1A/J3E/A3E/F3E/F1B`へ読み替え、`psk/qam/ofdm/digital`は`manual`として扱います。
-  電波型式は記録で、APIが型式ごとの必要SNRを強制しません。UIでA1A/J3E/A3Eを選ぶと24/45/67を例示入力しますが編集可能です。
+  電波型式は記録で、APIが型式ごとの必要SNRを強制しません。UIでA1A/J3E/A3Eを選ぶと19/39/48（VOACAP Online MarineのCW・SSB・AMと同じ値）を例示入力しますが編集可能です。
 - `bandwidth`: 占有帯域幅を電波型式の表記法で指定（例 `500H`、`2K40`、`3K00`、`16K0`）。
   4文字で、単位文字H/K/M/Gを小数点の位置に置きます（1 Hz〜1M00）。結果には`bandwidth`と換算した`bandwidth_hz`を保存します。
   旧形式の`bandwidth_hz`だけを指定した場合は有効数字3桁の表記へ丸めて扱います。
@@ -247,7 +247,7 @@ observed_at=UTC ISO時刻, stale, source_url, fetched_at）、sources, note。
 `POST /api/predict` と `/api/coverage` に `ssn_source: "manual" | "noaa"` を追加。
 省略時manual。noaaではクライアントSSNを使わずサーバー取得値を使用します。
 対象月に有効な新鮮なSSNがなければ503。手動値への暗黙のフォールバックは行いません。
-NOAA利用時は結果直下のspace_weatherに取得時点の出典情報を保存します。
+NOAA利用時は結果直下のspace_weatherに取得時点の出典情報を保存します。`space_weather.ssn.value` はNOAAの公表値（SILSO V2尺度）、`engine_value` はその0.7倍でエンジンに渡した値（`parameters.ssn` と同じ）、`scale` は係数0.7です。12か月の見通しでは各月の `ssn_detail` に `published` と `scale` を記録します。手動入力と実効SSNは換算しません。
 詳細はSPACE_WEATHER.md。
 
 ## 実効SSN

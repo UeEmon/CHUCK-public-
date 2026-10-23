@@ -113,9 +113,10 @@ class AnnualApiTests(unittest.TestCase):
             status, body = self.request('/api/annual', data)
         self.assertEqual(status, 200, body)
         months = json.loads(body)['months']
-        self.assertEqual(months[0]['ssn'], 36)
+        self.assertEqual(months[0]['ssn'], 25.2)
+        self.assertEqual(months[0]['ssn_detail'], dict(kind='predicted', month='2026-10', published=36, scale=0.7))
         self.assertEqual(months[4]['ssn'], None)
-        self.assertEqual(months[3]['ssn'], 28)
+        self.assertEqual(months[3]['ssn'], 19.6)
 
 
 if __name__ == '__main__':

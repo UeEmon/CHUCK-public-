@@ -24,7 +24,7 @@ function buildReport(d){
  const title=d.createElement('h1');title.textContent=d.title;d.body.append(title);
  const meta=d.createElement('p');meta.className='meta';meta.textContent=`${reportText('作成')} ${new Date().toISOString().slice(0,16).replace('T',' ')} UTC · ${reportText('計算')} ${String(r.created??'').slice(0,16).replace('T',' ')} UTC · ID ${r.id??'—'}`;d.body.append(meta);
  sec('条件');
- const ssn=`${p.ssn}（${r.space_weather?'NOAA '+r.space_weather.ssn.kind:reportText(r.effective_ssn?effectiveCaption():'手動入力')}）`;
+ const ssn=`${p.ssn}（${r.space_weather?'NOAA '+noaaSSNText(r.space_weather.ssn):reportText(r.effective_ssn?effectiveCaption():'手動入力')}）`;
  d.body.append(reportTable(d,[
   ['経路',`${tx.name??'TX'} → ${rx.name??'RX'}`],
   ['座標',`TX ${p.tx_lat.toFixed(2)}, ${p.tx_lon.toFixed(2)} / RX ${p.rx_lat.toFixed(2)}, ${p.rx_lon.toFixed(2)}`],

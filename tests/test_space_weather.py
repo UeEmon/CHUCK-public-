@@ -30,7 +30,7 @@ class WeatherTests(unittest.TestCase):
     def test_prediction_not_daily_ssn_and_metadata(self):
         with patch('space_weather.urlopen',side_effect=self.download):
             w=self.weather.snapshot(2026,10)
-        self.assertEqual(w['ssn']['value'],87.5)
+        self.assertEqual((w['ssn']['value'],w['ssn']['engine_value']),(87.5,61.2))
         self.assertEqual(w['ssn']['kind'],'predicted')
         self.assertEqual(w['current']['scales'],{'R':0,'S':None,'G':3})
         self.assertFalse(w['current']['stale'])
@@ -80,8 +80,9 @@ class WeatherTests(unittest.TestCase):
     def test_automatic_input_overrides_client_and_manual_offline(self):
         with patch('space_weather.urlopen',side_effect=self.download):
             p,w=self.weather.calculation_input({'year':2026,'month':10,'ssn':999,'ssn_source':'noaa'})
-        self.assertEqual(p['ssn'],87.5)
-        self.assertEqual(w['ssn']['value'],p['ssn'])
+        # The published SILSO V2 value is converted to the engine's scale (×0.7, as VOACAP Online Marine).
+        self.assertEqual(p['ssn'],61.2)
+        self.assertEqual((w['ssn']['value'],w['ssn']['engine_value'],w['ssn']['scale']),(87.5,p['ssn'],0.7))
         with patch('space_weather.urlopen',side_effect=AssertionError('must not fetch')):
             self.assertEqual(self.weather.calculation_input({'ssn':80}),({'ssn':80},None))
         with self.assertRaises(ValueError):self.weather.calculation_input({'ssn_source':'other'})
@@ -117,9 +118,9 @@ class WeatherHttpTests(unittest.TestCase):
                     payload={'tx_lat':35.3,'tx_lon':139.67,'rx_lat':13.45,'rx_lon':144.75,'year':2026,'month':10,'ssn_source':'noaa'}
                     with urlopen(Request(base+'/api/predict',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json'})) as response:
                         saved=json.load(response)
-                    self.assertEqual(saved['parameters']['ssn'],87.5)
+                    self.assertEqual(saved['parameters']['ssn'],61.2)
                     with urlopen(base+'/api/results/'+saved['id']) as response:
-                        self.assertEqual(json.load(response)['space_weather'],snapshot)
+                        self.assertEqual(json.load(response)['space_weather'],dict(snapshot,ssn=dict(snapshot['ssn'],engine_value=61.2,scale=0.7)))
                     with urlopen(base+'/api/results/'+saved['id']+'/csv') as response:
                         self.assertIn('# space_weather',response.read().decode('utf-8-sig'))
                 finally:

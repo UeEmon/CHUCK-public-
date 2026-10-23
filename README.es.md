@@ -55,7 +55,7 @@ Cambiar las entradas no recalcula los resultados existentes. Ejecute de nuevo el
 
 ## Datos externos, estaciones móviles e IA
 
-La pestaña de condiciones/meteorología espacial reúne NOAA (SSN/F10.7/R/S/G), D-RAP, NICT y GIRO opcional. Muestra por separado la hora de observación/publicación y la última adquisición correcta, con actualización individual o conjunta. El SSN automático debe coincidir con el mes exacto; no se usan valores caducados de forma silenciosa. Las demás observaciones no corrigen automáticamente VOACAP. Consulte [meteorología espacial](docs/SPACE_WEATHER.md) y [fuentes internacionales](docs/INTERNATIONAL_IONOSPHERE.md).
+La pestaña de condiciones/meteorología espacial reúne NOAA (SSN/F10.7/R/S/G), D-RAP, NICT y GIRO opcional. Muestra por separado la hora de observación/publicación y la última adquisición correcta, con actualización individual o conjunta. El SSN automático debe coincidir con el mes exacto; no se usan valores caducados de forma silenciosa. Las demás observaciones no corrigen automáticamente VOACAP. El SSN de NOAA (escala SILSO V2) se multiplica por 0,7 antes del cálculo, como en VOACAP Online Marine; el SSN manual y el efectivo se usan tal cual. Consulte [meteorología espacial](docs/SPACE_WEATHER.md) y [fuentes internacionales](docs/INTERNATIONAL_IONOSPHERE.md).
 
 GIRO está desactivado por defecto. Añada `HF_GIRO_ENABLED=1` a `.env` únicamente si cumple sus condiciones o dispone del permiso necesario. Si está desactivado, no se conecta a GIRO.
 

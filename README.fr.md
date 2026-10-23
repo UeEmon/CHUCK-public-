@@ -55,7 +55,7 @@ Une modification des entrées ne recalcule pas les résultats existants : relanc
 
 ## Données externes, stations mobiles et IA
 
-L'onglet conditions/météo spatiale regroupe NOAA (SSN/F10.7/R/S/G), D-RAP, NICT et GIRO en option. Il distingue l'heure d'observation/publication de la dernière acquisition réussie et permet une actualisation individuelle ou globale. Le SSN automatique doit correspondre exactement au mois choisi ; une valeur expirée n'est pas utilisée silencieusement. Les autres observations ne corrigent pas automatiquement les calculs. Voir [météo spatiale](docs/SPACE_WEATHER.md) et [sources internationales](docs/INTERNATIONAL_IONOSPHERE.md).
+L'onglet conditions/météo spatiale regroupe NOAA (SSN/F10.7/R/S/G), D-RAP, NICT et GIRO en option. Il distingue l'heure d'observation/publication de la dernière acquisition réussie et permet une actualisation individuelle ou globale. Le SSN automatique doit correspondre exactement au mois choisi ; une valeur expirée n'est pas utilisée silencieusement. Les autres observations ne corrigent pas automatiquement les calculs. Le SSN NOAA (échelle SILSO V2) est multiplié par 0,7 avant le calcul, comme VOACAP Online Marine ; le SSN manuel et le SSN effectif sont utilisés tels quels. Voir [météo spatiale](docs/SPACE_WEATHER.md) et [sources internationales](docs/INTERNATIONAL_IONOSPHERE.md).
 
 GIRO est désactivé par défaut. N'ajoutez `HF_GIRO_ENABLED=1` à `.env` que si votre usage respecte ses conditions ou dispose de l'autorisation nécessaire. Aucune connexion GIRO n'est effectuée lorsqu'il est désactivé.
 

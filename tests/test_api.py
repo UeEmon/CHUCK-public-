@@ -44,8 +44,8 @@ class ApiTests(unittest.TestCase):
                 with patch.object(server.SPACE_WEATHER,'snapshot',return_value=snapshot) as snapshot_call:
                     automatic=json.load(request('/api/diversity',dict(p,rx_sites=sites,ssn_source='noaa',ssn=999)))
                 self.assertEqual(snapshot_call.call_count,1)
-                self.assertTrue(all(s['parameters']['ssn']==87.5 for s in automatic['sites']))
-                self.assertEqual(automatic['space_weather']['ssn']['value'],87.5)
+                self.assertTrue(all(s['parameters']['ssn']==61.2 for s in automatic['sites']))
+                self.assertEqual((automatic['space_weather']['ssn']['value'],automatic['space_weather']['ssn']['engine_value'],automatic['space_weather']['ssn']['scale']),(87.5,61.2,0.7))
                 now=datetime.now(timezone.utc)
                 effective={'value':42.5,'used_count':3,'stations':[],'error':None,'note':'fixture'}
                 with patch.object(server.EFFECTIVE_SSN,'snapshot',return_value=effective):

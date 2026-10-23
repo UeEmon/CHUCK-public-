@@ -49,6 +49,12 @@ class WatchTests(unittest.TestCase):
         watch.check(engine, validate(PARAMS), lambda y, m: (100, {}))
         self.assertEqual([c.args[0]['absorption_mode'] for c in engine.run.call_args_list], ['W', 'a'])
 
+    def test_check_keeps_the_ssn_scale_of_the_saved_conditions(self):
+        # Watches saved before the 0.7 conversion keep the published NOAA SSN their baseline used.
+        detail = dict(kind='predicted', published=120, scale=0.7)
+        self.assertEqual(watch.check(Mock(run=fake_run), validate(PARAMS), lambda y, m: (84, detail))['ssn'], 120)
+        self.assertEqual(watch.check(Mock(run=fake_run), dict(validate(PARAMS), noaa_ssn_scale=0.7), lambda y, m: (84, detail))['ssn'], 84)
+
     def test_baseline_status_notification_and_acknowledgement(self):
         w = self.store.add(self.result)
         self.assertEqual(w['label'], '東京 → Guam')
@@ -122,10 +128,11 @@ class WatchApiTests(unittest.TestCase):
             status, body = self.request('/api/watches', dict(action='add', result_id=r['id']))
             self.assertEqual(status, 200, body)
             w = body['watches'][0]
-            self.assertEqual((w['baseline']['ssn'], w['baseline']['hours_meeting'], w['status']), (120, 12, 'same'))
+            self.assertEqual((w['baseline']['ssn'], w['baseline']['hours_meeting'], w['status']), (84, 9, 'same'))
+            self.assertEqual((w['baseline']['ssn_detail']['published'], w['parameters']['noaa_ssn_scale']), (120, 0.7))
             ssn['value'] = 60
             status, body = self.request('/api/watches', dict(action='run', id=w['id']))
-            self.assertEqual((body['watches'][0]['latest']['hours_meeting'], body['watches'][0]['notify']), (6, True))
+            self.assertEqual((body['watches'][0]['latest']['hours_meeting'], body['watches'][0]['notify']), (5, True))
             # Another calculation holding the engine is reported, not waited for.
             self.server.RUN_LOCK.acquire()
             try: self.assertEqual(self.request('/api/watches', dict(action='run', id=w['id']))[0], 409)

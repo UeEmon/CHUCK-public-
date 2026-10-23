@@ -3,9 +3,10 @@ from datetime import datetime, timedelta, timezone
 import json
 import uuid
 from engine import InputError, validate
+from space_weather import ENGINE_SSN_SCALE
 
 MAX_WATCHES = 20
-NOTE = ('保存した地点間予測の条件を、定期的にNOAAの最新の平滑SSNで再計算します。'
+NOTE = ('保存した地点間予測の条件を、定期的にNOAAの最新の平滑SSN（0.7倍して使用）で再計算します。'
         '登録時の最初の結果を基準とし、目標REL以上になる時間数が基準より減ったら画面に通知します。'
         '手動SSN・実効SSNで計算した条件もNOAAの平滑SSNで再計算します。移動局の位置は登録時の値で固定します。'
         'RELは月間統計で、当日の電離圏の状態は反映しません。')
@@ -29,6 +30,8 @@ def check(engine, parameters, ssn_for, now=None):
     checked = (now or datetime.now(timezone.utc)).isoformat()
     ssn, detail = ssn_for(parameters['year'], parameters['month'])
     if ssn is None: return dict(checked=checked, error=detail)
+    # Conditions saved before the SSN scale conversion keep the published NOAA value.
+    if 'noaa_ssn_scale' not in parameters and detail and 'published' in detail: ssn = detail['published']
     # Conditions saved before the absorption mode existed were calculated with 'W'.
     q = validate(dict({'absorption_mode': 'W'}, **dict(parameters, ssn=ssn)))
     return dict(checked=checked, ssn=q['ssn'], ssn_detail=detail, **summary(engine.run(q), q['reliability']))
@@ -89,6 +92,7 @@ class WatchStore:
             if c.execute('SELECT COUNT(*) FROM watches').fetchone()[0] >= MAX_WATCHES:
                 raise InputError(f'定時の再計算に登録できるのは{MAX_WATCHES}件までです')
         parameters = {k: v for k, v in result['parameters'].items() if k not in ('tx_position', 'rx_position', 'ssn_source')}
+        parameters['noaa_ssn_scale'] = ENGINE_SSN_SCALE
         w = dict(id=uuid.uuid4().hex, created=datetime.now(timezone.utc).isoformat(), result_id=result['id'],
                  label=label(result), parameters=parameters, baseline=None, latest=None, acknowledged=None)
         with self.connection() as c:

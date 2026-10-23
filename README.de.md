@@ -55,7 +55,7 @@ Geänderte Eingaben berechnen vorhandene Ergebnisse nicht neu. Berechnung erneut
 
 ## Externe Daten, mobile Stationen und KI
 
-Die Registerkarte Bedingungen/Weltraumwetter vereint NOAA (SSN/F10.7/R/S/G), D-RAP, NICT und optional GIRO. Beobachtungs-/Veröffentlichungszeit und letzter erfolgreicher Abruf werden getrennt angezeigt; Einzel- und Gesamtaktualisierung sind möglich. Automatische SSN müssen exakt zum Monat passen; abgelaufene Werte werden nicht stillschweigend verwendet. Andere Beobachtungen korrigieren VOACAP nicht automatisch. Siehe [Weltraumwetter](docs/SPACE_WEATHER.md) und [internationale Quellen](docs/INTERNATIONAL_IONOSPHERE.md).
+Die Registerkarte Bedingungen/Weltraumwetter vereint NOAA (SSN/F10.7/R/S/G), D-RAP, NICT und optional GIRO. Beobachtungs-/Veröffentlichungszeit und letzter erfolgreicher Abruf werden getrennt angezeigt; Einzel- und Gesamtaktualisierung sind möglich. Automatische SSN müssen exakt zum Monat passen; abgelaufene Werte werden nicht stillschweigend verwendet. Andere Beobachtungen korrigieren VOACAP nicht automatisch. Die NOAA-SSN (SILSO-V2-Skala) wird vor der Berechnung mit 0,7 multipliziert, wie bei VOACAP Online Marine; manuelle und effektive SSN werden unverändert verwendet. Siehe [Weltraumwetter](docs/SPACE_WEATHER.md) und [internationale Quellen](docs/INTERNATIONAL_IONOSPHERE.md).
 
 GIRO ist standardmäßig deaktiviert. `HF_GIRO_ENABLED=1` nur bei erfüllten Nutzungsbedingungen oder entsprechender Genehmigung in `.env` setzen. Deaktiviert erfolgt keine GIRO-Verbindung.
 

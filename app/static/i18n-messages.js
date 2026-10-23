@@ -5446,14 +5446,14 @@ const HF_MESSAGES={
     "HF_GIRO_ENABLED=1 in einer Umgebung setzen, die die GIRO-Nutzungsbedingungen erfüllt.",
     "GIRO 이용 조건에 맞는 환경에서 HF_GIRO_ENABLED=1을 설정하세요."
   ],
-  "SSNのみ計算入力に使用。F10.7・R/S/Gは参考表示です。瞬時の電離圏・磁気嵐による補正は行いません。NOAA公表SSNを無変換で使用し、旧VOACAP係数との尺度校正は未検証です。": [
-    "Only SSN is used as calculation input. F10.7 and R/S/G are for reference. No correction is made for the instantaneous ionosphere or geomagnetic storms. The NOAA SSN is used unconverted; scale calibration against the older VOACAP coefficients is unverified.",
-    "Seul le SSN sert d’entrée au calcul. F10.7 et R/S/G sont indicatifs. Aucune correction pour l’ionosphère instantanée ni les orages géomagnétiques. Le SSN NOAA est utilisé tel quel ; l’étalonnage par rapport aux anciens coefficients VOACAP n’est pas vérifié.",
-    "Solo el SSN se usa como entrada del cálculo. F10.7 y R/S/G son de referencia. No se corrige por la ionosfera instantánea ni por tormentas geomagnéticas. El SSN de NOAA se usa sin convertir; la calibración de escala con los antiguos coeficientes VOACAP no está verificada.",
-    "Solo l’SSN è usato come input del calcolo. F10.7 e R/S/G sono indicativi. Nessuna correzione per la ionosfera istantanea o le tempeste geomagnetiche. L’SSN NOAA è usato senza conversione; la calibrazione di scala con i vecchi coefficienti VOACAP non è verificata.",
-    "Somente o SSN é usado como entrada do cálculo. F10.7 e R/S/G são de referência. Não há correção para a ionosfera instantânea nem tempestades geomagnéticas. O SSN da NOAA é usado sem conversão; a calibração de escala com os antigos coeficientes VOACAP não foi verificada.",
-    "Nur die SSN fließt in die Berechnung ein. F10.7 und R/S/G sind Referenzwerte. Keine Korrektur für momentane Ionosphäre oder geomagnetische Stürme. Die NOAA-SSN wird unverändert verwendet; die Skalenkalibrierung gegen ältere VOACAP-Koeffizienten ist ungeprüft.",
-    "SSN만 계산 입력에 사용합니다. F10.7·R/S/G는 참고 표시입니다. 순간 전리권·자기 폭풍에 의한 보정은 하지 않습니다. NOAA 공표 SSN을 변환 없이 사용하며 구 VOACAP 계수와의 척도 교정은 미검증입니다."
+  "SSNのみ計算入力に使用。F10.7・R/S/Gは参考表示です。瞬時の電離圏・磁気嵐による補正は行いません。NOAA公表SSN（SILSO V2尺度）は0.7倍して計算に使います（VOACAP Online Marineと同じ換算）。": [
+    "Only SSN is used as calculation input. F10.7 and R/S/G are for reference. No correction is made for the instantaneous ionosphere or geomagnetic storms. The published NOAA SSN (SILSO V2 scale) is multiplied by 0.7 for the calculation (the same conversion as VOACAP Online Marine).",
+    "Seul le SSN sert d’entrée au calcul. F10.7 et R/S/G sont indicatifs. Aucune correction pour l’ionosphère instantanée ni les orages géomagnétiques. Le SSN NOAA publié (échelle SILSO V2) est multiplié par 0,7 pour le calcul (même conversion que VOACAP Online Marine).",
+    "Solo el SSN se usa como entrada del cálculo. F10.7 y R/S/G son de referencia. No se corrige por la ionosfera instantánea ni por tormentas geomagnéticas. El SSN publicado por NOAA (escala SILSO V2) se multiplica por 0,7 para el cálculo (la misma conversión que VOACAP Online Marine).",
+    "Solo l’SSN è usato come input del calcolo. F10.7 e R/S/G sono indicativi. Nessuna correzione per la ionosfera istantanea o le tempeste geomagnetiche. L’SSN pubblicato da NOAA (scala SILSO V2) viene moltiplicato per 0,7 nel calcolo (la stessa conversione di VOACAP Online Marine).",
+    "Somente o SSN é usado como entrada do cálculo. F10.7 e R/S/G são de referência. Não há correção para a ionosfera instantânea nem tempestades geomagnéticas. O SSN publicado pela NOAA (escala SILSO V2) é multiplicado por 0,7 no cálculo (a mesma conversão do VOACAP Online Marine).",
+    "Nur die SSN fließt in die Berechnung ein. F10.7 und R/S/G sind Referenzwerte. Keine Korrektur für momentane Ionosphäre oder geomagnetische Stürme. Die veröffentlichte NOAA-SSN (SILSO-V2-Skala) wird für die Berechnung mit 0,7 multipliziert (dieselbe Umrechnung wie VOACAP Online Marine).",
+    "SSN만 계산 입력에 사용합니다. F10.7·R/S/G는 참고 표시입니다. 순간 전리권·자기 폭풍에 의한 보정은 하지 않습니다. NOAA 공표 SSN(SILSO V2 척도)은 0.7배하여 계산에 사용합니다(VOACAP Online Marine과 같은 환산)."
   ],
   "取得を再試行待ちです": [
     "Waiting to retry the fetch",
@@ -7363,23 +7363,23 @@ const HF_MESSAGES={
     "Keine aktuelle geglättete NOAA-SSN",
     "최신 NOAA 평활 SSN이 없습니다"
   ],
-  "{span} · NOAAの月ごとの平滑SSN · {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}%": [
-    "{span} · NOAA smoothed SSN per month · {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}%",
-    "{span} · SSN lissée NOAA par mois · {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}%",
-    "{span} · SSN suavizada de NOAA por mes · {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}%",
-    "{span} · SSN livellata NOAA per mese · {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}%",
-    "{span} · SSN suavizada da NOAA por mês · {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}%",
-    "{span} · Geglättete NOAA-SSN je Monat · {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}%",
-    "{span} · 월별 NOAA 평활 SSN · {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}%"
+  "{span} · NOAAの月ごとの平滑SSN×0.7 · {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}% · 吸収モード {label}": [
+    "{span} · NOAA smoothed SSN per month×0.7 · {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}% · Absorption mode {label}",
+    "{span} · SSN lissée NOAA par mois×0.7 · {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}% · Mode d’absorption {label}",
+    "{span} · SSN suavizada de NOAA por mes×0.7 · {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}% · Modo de absorción {label}",
+    "{span} · SSN livellata NOAA per mese×0.7 · {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}% · Modalità di assorbimento {label}",
+    "{span} · SSN suavizada da NOAA por mês×0.7 · {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}% · Modo de absorção {label}",
+    "{span} · Geglättete NOAA-SSN je Monat×0.7 · {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}% · Absorptionsmodus {label}",
+    "{span} · 월별 NOAA 평활 SSN×0.7 · {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}% · 흡수 모드 {label}"
   ],
-  "{span} · SSN {ssn}（全月共通） · {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}%": [
-    "{span} · SSN {ssn} (all months) · {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}%",
-    "{span} · SSN {ssn} (tous les mois) · {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}%",
-    "{span} · SSN {ssn} (todos los meses) · {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}%",
-    "{span} · SSN {ssn} (tutti i mesi) · {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}%",
-    "{span} · SSN {ssn} (todos os meses) · {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}%",
-    "{span} · SSN {ssn} (alle Monate) · {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}%",
-    "{span} · SSN {ssn}(전 월 공통) · {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}%"
+  "{span} · SSN {ssn}（全月共通） · {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}% · 吸収モード {label}": [
+    "{span} · SSN {ssn} (all months) · {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}% · Absorption mode {label}",
+    "{span} · SSN {ssn} (tous les mois) · {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}% · Mode d’absorption {label}",
+    "{span} · SSN {ssn} (todos los meses) · {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}% · Modo de absorción {label}",
+    "{span} · SSN {ssn} (tutti i mesi) · {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}% · Modalità di assorbimento {label}",
+    "{span} · SSN {ssn} (todos os meses) · {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}% · Modo de absorção {label}",
+    "{span} · SSN {ssn} (alle Monate) · {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}% · Absorptionsmodus {label}",
+    "{span} · SSN {ssn}(전 월 공통) · {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}% · 흡수 모드 {label}"
   ],
   "月 / UTC": [
     "Month / UTC",
@@ -7489,14 +7489,14 @@ const HF_MESSAGES={
     "Zeigt für jede Leistung die höchste REL je Stunde. Ein Punkt markiert die Ziel-REL oder mehr. Die letzte Spalte ist die Anzahl der Stunden mit Ziel-REL oder mehr.",
     "각 전력에서 시각별 가장 높은 REL을 표시합니다. 점은 목표 REL 이상입니다. 오른쪽 끝은 목표 REL 이상이 되는 시간 수입니다."
   ],
-  "{date} · SSN {ssn} · 現在の設定 {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}%": [
-    "{date} · SSN {ssn} · Current setting {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}%",
-    "{date} · SSN {ssn} · Réglage actuel {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}%",
-    "{date} · SSN {ssn} · Ajuste actual {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}%",
-    "{date} · SSN {ssn} · Impostazione attuale {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}%",
-    "{date} · SSN {ssn} · Configuração atual {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}%",
-    "{date} · SSN {ssn} · Aktuelle Einstellung {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}%",
-    "{date} · SSN {ssn} · 현재 설정 {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}%"
+  "{date} · SSN {ssn} · 現在の設定 {power} W · {distance} km · 要求SNR {snr} dB·Hz · 目標REL {rel}% · 吸収モード {label}": [
+    "{date} · SSN {ssn} · Current setting {power} W · {distance} km · Required SNR {snr} dB·Hz · Target REL {rel}% · Absorption mode {label}",
+    "{date} · SSN {ssn} · Réglage actuel {power} W · {distance} km · SNR requis {snr} dB·Hz · REL cible {rel}% · Mode d’absorption {label}",
+    "{date} · SSN {ssn} · Ajuste actual {power} W · {distance} km · SNR requerida {snr} dB·Hz · REL objetivo {rel}% · Modo de absorción {label}",
+    "{date} · SSN {ssn} · Impostazione attuale {power} W · {distance} km · SNR richiesto {snr} dB·Hz · REL obiettivo {rel}% · Modalità di assorbimento {label}",
+    "{date} · SSN {ssn} · Configuração atual {power} W · {distance} km · SNR exigida {snr} dB·Hz · REL alvo {rel}% · Modo de absorção {label}",
+    "{date} · SSN {ssn} · Aktuelle Einstellung {power} W · {distance} km · Erforderliche SNR {snr} dB·Hz · Ziel-REL {rel}% · Absorptionsmodus {label}",
+    "{date} · SSN {ssn} · 현재 설정 {power} W · {distance} km · 요구 SNR {snr} dB·Hz · 목표 REL {rel}% · 흡수 모드 {label}"
   ],
   "最小電力": [
     "Minimum power",
@@ -8011,14 +8011,14 @@ const HF_MESSAGES={
     "Geplante Neuberechnung konnte nicht aktualisiert werden",
     "정기 재계산을 갱신할 수 없습니다"
   ],
-  "保存した地点間予測の条件を、定期的にNOAAの最新の平滑SSNで再計算します。登録時の最初の結果を基準とし、目標REL以上になる時間数が基準より減ったら画面に通知します。手動SSN・実効SSNで計算した条件もNOAAの平滑SSNで再計算します。移動局の位置は登録時の値で固定します。RELは月間統計で、当日の電離圏の状態は反映しません。": [
-    "Saved point-to-point conditions are recalculated periodically with the latest NOAA smoothed SSN. The first result after registration is the baseline; a notice appears when the hours at the target REL fall below it. Conditions calculated with a manual or effective SSN are also recalculated with the NOAA smoothed SSN. Mobile station positions stay at their values at registration. REL is a monthly statistic and does not reflect the ionosphere on a given day.",
-    "Les conditions point à point enregistrées sont recalculées périodiquement avec la dernière SSN lissée NOAA. Le premier résultat après l’enregistrement sert de référence ; un avis s’affiche lorsque les heures à la REL cible passent en dessous. Les conditions calculées avec une SSN manuelle ou effective sont aussi recalculées avec la SSN lissée NOAA. Les positions des stations mobiles restent celles de l’enregistrement. La REL est une statistique mensuelle et ne reflète pas l’ionosphère d’un jour donné.",
-    "Las condiciones punto a punto guardadas se recalculan periódicamente con la última SSN suavizada de NOAA. El primer resultado tras el registro es la referencia; aparece un aviso cuando las horas con la REL objetivo bajan de ella. Las condiciones calculadas con SSN manual o efectiva también se recalculan con la SSN suavizada de NOAA. Las posiciones de estaciones móviles se mantienen como en el registro. La REL es una estadística mensual y no refleja la ionosfera de un día concreto.",
-    "Le condizioni punto-punto salvate vengono ricalcolate periodicamente con l’ultima SSN livellata NOAA. Il primo risultato dopo la registrazione è il riferimento; compare un avviso quando le ore alla REL obiettivo scendono sotto di esso. Anche le condizioni calcolate con SSN manuale o effettiva vengono ricalcolate con la SSN livellata NOAA. Le posizioni delle stazioni mobili restano quelle della registrazione. La REL è una statistica mensile e non riflette la ionosfera di un dato giorno.",
-    "As condições ponto a ponto salvas são recalculadas periodicamente com a última SSN suavizada da NOAA. O primeiro resultado após o registro é a referência; um aviso aparece quando as horas na REL alvo ficam abaixo dela. Condições calculadas com SSN manual ou efetiva também são recalculadas com a SSN suavizada da NOAA. As posições de estações móveis ficam com os valores do registro. A REL é uma estatística mensal e não reflete a ionosfera de um dia específico.",
-    "Gespeicherte Punkt-zu-Punkt-Bedingungen werden regelmäßig mit der neuesten geglätteten NOAA-SSN neu berechnet. Das erste Ergebnis nach der Registrierung ist die Basis; ein Hinweis erscheint, wenn die Stunden mit Ziel-REL darunter fallen. Mit manueller oder effektiver SSN berechnete Bedingungen werden ebenfalls mit der geglätteten NOAA-SSN neu berechnet. Positionen mobiler Stationen bleiben auf dem Stand der Registrierung. REL ist eine Monatsstatistik und spiegelt nicht die Ionosphäre eines bestimmten Tages wider.",
-    "저장한 지점 간 예측 조건을 정기적으로 NOAA의 최신 평활 SSN으로 재계산합니다. 등록 후 첫 결과를 기준으로 하며, 목표 REL 이상 시간 수가 기준보다 줄면 화면에 알립니다. 수동 SSN·실효 SSN으로 계산한 조건도 NOAA 평활 SSN으로 재계산합니다. 이동국 위치는 등록 시의 값으로 고정합니다. REL은 월간 통계이며 당일의 전리층 상태는 반영하지 않습니다."
+  "保存した地点間予測の条件を、定期的にNOAAの最新の平滑SSN（0.7倍して使用）で再計算します。登録時の最初の結果を基準とし、目標REL以上になる時間数が基準より減ったら画面に通知します。手動SSN・実効SSNで計算した条件もNOAAの平滑SSNで再計算します。移動局の位置は登録時の値で固定します。RELは月間統計で、当日の電離圏の状態は反映しません。": [
+    "Saved point-to-point conditions are recalculated periodically with the latest NOAA smoothed SSN (multiplied by 0.7). The first result after registration is the baseline; a notice appears when the hours at the target REL fall below it. Conditions calculated with a manual or effective SSN are also recalculated with the NOAA smoothed SSN. Mobile station positions stay at their values at registration. REL is a monthly statistic and does not reflect the ionosphere on a given day.",
+    "Les conditions point à point enregistrées sont recalculées périodiquement avec la dernière SSN lissée NOAA (multipliée par 0,7). Le premier résultat après l’enregistrement sert de référence ; un avis s’affiche lorsque les heures à la REL cible passent en dessous. Les conditions calculées avec une SSN manuelle ou effective sont aussi recalculées avec la SSN lissée NOAA. Les positions des stations mobiles restent celles de l’enregistrement. La REL est une statistique mensuelle et ne reflète pas l’ionosphère d’un jour donné.",
+    "Las condiciones punto a punto guardadas se recalculan periódicamente con la última SSN suavizada de NOAA (multiplicada por 0,7). El primer resultado tras el registro es la referencia; aparece un aviso cuando las horas con la REL objetivo bajan de ella. Las condiciones calculadas con SSN manual o efectiva también se recalculan con la SSN suavizada de NOAA. Las posiciones de estaciones móviles se mantienen como en el registro. La REL es una estadística mensual y no refleja la ionosfera de un día concreto.",
+    "Le condizioni punto-punto salvate vengono ricalcolate periodicamente con l’ultima SSN livellata NOAA (moltiplicata per 0,7). Il primo risultato dopo la registrazione è il riferimento; compare un avviso quando le ore alla REL obiettivo scendono sotto di esso. Anche le condizioni calcolate con SSN manuale o effettiva vengono ricalcolate con la SSN livellata NOAA. Le posizioni delle stazioni mobili restano quelle della registrazione. La REL è una statistica mensile e non riflette la ionosfera di un dato giorno.",
+    "As condições ponto a ponto salvas são recalculadas periodicamente com a última SSN suavizada da NOAA (multiplicada por 0,7). O primeiro resultado após o registro é a referência; um aviso aparece quando as horas na REL alvo ficam abaixo dela. Condições calculadas com SSN manual ou efetiva também são recalculadas com a SSN suavizada da NOAA. As posições de estações móveis ficam com os valores do registro. A REL é uma estatística mensal e não reflete a ionosfera de um dia específico.",
+    "Gespeicherte Punkt-zu-Punkt-Bedingungen werden regelmäßig mit der neuesten geglätteten NOAA-SSN (mit 0,7 multipliziert) neu berechnet. Das erste Ergebnis nach der Registrierung ist die Basis; ein Hinweis erscheint, wenn die Stunden mit Ziel-REL darunter fallen. Mit manueller oder effektiver SSN berechnete Bedingungen werden ebenfalls mit der geglätteten NOAA-SSN neu berechnet. Positionen mobiler Stationen bleiben auf dem Stand der Registrierung. REL ist eine Monatsstatistik und spiegelt nicht die Ionosphäre eines bestimmten Tages wider.",
+    "저장한 지점 간 예측 조건을 정기적으로 NOAA의 최신 평활 SSN(0.7배하여 사용)으로 재계산합니다. 등록 후 첫 결과를 기준으로 하며, 목표 REL 이상 시간 수가 기준보다 줄면 화면에 알립니다. 수동 SSN·실효 SSN으로 계산한 조건도 NOAA 평활 SSN으로 재계산합니다. 이동국 위치는 등록 시의 값으로 고정합니다. REL은 월간 통계이며 당일의 전리층 상태는 반영하지 않습니다."
   ],
   "報告書を印刷": [
     "Print report",
@@ -9090,5 +9090,50 @@ const HF_MESSAGES={
     "Agora é possível escolher o modo de absorção do motor nas condições detalhadas. O padrão é a, igual ao VOACAP Online Marine. W reproduz os resultados anteriores.",
     "Der Absorptionsmodus der Engine ist jetzt in den Detailbedingungen wählbar. Standard ist a wie bei VOACAP Online Marine. Mit W lassen sich frühere Ergebnisse reproduzieren.",
     "예측 조건의 상세 조건에서 계산 엔진의 흡수 모드를 선택할 수 있습니다. 기본값은 VOACAP Online Marine과 같은 a입니다. 이전 결과는 W로 재현할 수 있습니다."
+  ],
+  "計算用SSN": [
+    "Calculation SSN",
+    "SSN de calcul",
+    "SSN de cálculo",
+    "SSN di calcolo",
+    "SSN de cálculo",
+    "Berechnungs-SSN",
+    "계산용 SSN"
+  ],
+  "公表値の0.7倍": [
+    "0.7 × published value",
+    "0,7 × valeur publiée",
+    "0,7 × valor publicado",
+    "0,7 × valore pubblicato",
+    "0,7 × valor publicado",
+    "0,7 × veröffentlichter Wert",
+    "공표값의 0.7배"
+  ],
+  "SSNの換算と要求SNRの例示値": [
+    "SSN conversion and example required SNR",
+    "Conversion du SSN et SNR requis d’exemple",
+    "Conversión del SSN y SNR requerida de ejemplo",
+    "Conversione del SSN e SNR richiesto di esempio",
+    "Conversão do SSN e SNR exigida de exemplo",
+    "SSN-Umrechnung und Beispielwerte der erforderlichen SNR",
+    "SSN 환산과 요구 SNR 예시값"
+  ],
+  "NOAAの平滑SSNを0.7倍して計算に使うようにしました（VOACAP Online Marineと同じ換算）。結果には公表値と換算後の値を記録します。電波型式A1A・J3E・A3Eの要求SNRの例示値も、Marineと同じ19・39・48 dB·Hzにしました。": [
+    "The NOAA smoothed SSN is now multiplied by 0.7 for the calculation (the same conversion as VOACAP Online Marine). Results record both the published and the converted value. The example required SNR for the A1A, J3E and A3E emission classes is now 19, 39 and 48 dB·Hz, the same as Marine.",
+    "Le SSN lissé NOAA est désormais multiplié par 0,7 pour le calcul (même conversion que VOACAP Online Marine). Les résultats enregistrent la valeur publiée et la valeur convertie. Le SNR requis d’exemple pour les classes A1A, J3E et A3E est désormais de 19, 39 et 48 dB·Hz, comme Marine.",
+    "El SSN suavizado de NOAA ahora se multiplica por 0,7 para el cálculo (la misma conversión que VOACAP Online Marine). Los resultados registran el valor publicado y el convertido. La SNR requerida de ejemplo para las clases A1A, J3E y A3E es ahora 19, 39 y 48 dB·Hz, como en Marine.",
+    "L’SSN livellato NOAA viene ora moltiplicato per 0,7 nel calcolo (la stessa conversione di VOACAP Online Marine). I risultati registrano il valore pubblicato e quello convertito. L’SNR richiesto di esempio per le classi A1A, J3E e A3E è ora 19, 39 e 48 dB·Hz, come in Marine.",
+    "O SSN suavizado da NOAA agora é multiplicado por 0,7 no cálculo (a mesma conversão do VOACAP Online Marine). Os resultados registram o valor publicado e o convertido. A SNR exigida de exemplo para as classes A1A, J3E e A3E agora é 19, 39 e 48 dB·Hz, como no Marine.",
+    "Die geglättete NOAA-SSN wird für die Berechnung jetzt mit 0,7 multipliziert (dieselbe Umrechnung wie VOACAP Online Marine). Ergebnisse speichern den veröffentlichten und den umgerechneten Wert. Die Beispielwerte der erforderlichen SNR für A1A, J3E und A3E sind jetzt 19, 39 und 48 dB·Hz, wie bei Marine.",
+    "NOAA 평활 SSN을 0.7배하여 계산에 사용하도록 했습니다(VOACAP Online Marine과 같은 환산). 결과에는 공표값과 환산값을 기록합니다. 전파 형식 A1A·J3E·A3E의 요구 SNR 예시값도 Marine과 같은 19·39·48 dB·Hz로 했습니다."
+  ],
+  "今月の回線を詰めるときは実効SSN、来月以降の計画や12か月の見通しにはNOAA（公表値×0.7）を使います。": [
+    "Use the effective SSN to fine-tune this month’s circuits, and NOAA (published value × 0.7) for planning next month onward and for the 12-month outlook.",
+    "Utilisez le SSN effectif pour affiner les liaisons de ce mois, et NOAA (valeur publiée × 0,7) pour planifier à partir du mois prochain et pour les perspectives sur 12 mois.",
+    "Use el SSN efectivo para ajustar los circuitos de este mes, y NOAA (valor publicado × 0,7) para planificar desde el próximo mes y para la perspectiva de 12 meses.",
+    "Usare l’SSN effettivo per affinare i collegamenti di questo mese, e NOAA (valore pubblicato × 0,7) per pianificare dal mese prossimo e per la prospettiva a 12 mesi.",
+    "Use o SSN efetivo para ajustar os circuitos deste mês, e NOAA (valor publicado × 0,7) para planejar a partir do próximo mês e para a perspectiva de 12 meses.",
+    "Für die Feinabstimmung der Verbindungen dieses Monats die effektive SSN verwenden, für die Planung ab nächstem Monat und den 12-Monats-Ausblick NOAA (veröffentlichter Wert × 0,7).",
+    "이번 달 회선을 조정할 때는 실효 SSN을, 다음 달 이후 계획과 12개월 전망에는 NOAA(공표값×0.7)를 사용합니다."
   ]
 };

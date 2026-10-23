@@ -16,7 +16,14 @@ FEEDS = {
     'predicted': ('json/solar-cycle/predicted-solar-cycle.json', 21600),
     'scales': ('products/noaa-scales.json', 300),
 }
-NOTE = 'SSNのみ計算入力に使用。F10.7・R/S/Gは参考表示です。瞬時の電離圏・磁気嵐による補正は行いません。NOAA公表SSNを無変換で使用し、旧VOACAP係数との尺度校正は未検証です。'
+NOTE = 'SSNのみ計算入力に使用。F10.7・R/S/Gは参考表示です。瞬時の電離圏・磁気嵐による補正は行いません。NOAA公表SSN（SILSO V2尺度）は0.7倍して計算に使います（VOACAP Online Marineと同じ換算）。'
+# VOACAP's coefficients predate the SILSO V2 sunspot scale; VOACAP Online Marine also multiplies V2 values by 0.7.
+ENGINE_SSN_SCALE = 0.7
+
+
+def engine_ssn(value):
+    """The SSN given to the engine for a published SILSO V2 smoothed SSN."""
+    return round(value * ENGINE_SSN_SCALE, 1)
 
 
 def numeric(value, high=1000):
@@ -95,7 +102,8 @@ class SpaceWeather:
             for row in feed['data'] or []:
                 value = numeric(row.get(field), 250)
                 if row.get('time-tag') == target and value is not None:
-                    selected = {'value': value, 'month': target, 'kind': key, 'field': field,
+                    selected = {'value': value, 'engine_value': engine_ssn(value), 'scale': ENGINE_SSN_SCALE,
+                                'month': target, 'kind': key, 'field': field,
                                 'f10_7_sfu': numeric(row.get(flux)), 'source_url': feed['url'],
                                 'fetched_at': feed['fetched_at'], 'stale': feed['stale']}
                     break
@@ -132,4 +140,6 @@ class SpaceWeather:
         ssn = snapshot['ssn']
         if not ssn or ssn['stale']:
             raise SpaceWeatherError('対象年月の新鮮な平滑SSNを取得できません。年月を確認するか手動入力に切り替えてください。')
-        return dict(data, ssn=ssn['value']), copy.deepcopy(snapshot)
+        snapshot = copy.deepcopy(snapshot)
+        snapshot['ssn'].update(engine_value=engine_ssn(ssn['value']), scale=ENGINE_SSN_SCALE)
+        return dict(data, ssn=snapshot['ssn']['engine_value']), snapshot

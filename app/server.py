@@ -14,7 +14,7 @@ from urllib.parse import urlparse, parse_qs
 import uuid
 from engine import Engine, InputError, EngineError, validate, number, distance
 
-from space_weather import SpaceWeather, SpaceWeatherError
+from space_weather import ENGINE_SSN_SCALE, SpaceWeather, SpaceWeatherError, engine_ssn
 from observations import Observations, GIRO_STATIONS
 from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
@@ -72,11 +72,11 @@ def annual_ssn(p, year, month):
     return noaa_ssn(year,month)
 
 def noaa_ssn(year, month):
-    """A fresh NOAA smoothed SSN for the month, or None with the reason."""
+    """The engine SSN from a fresh NOAA smoothed SSN for the month, or None with the reason."""
     try: ssn=SPACE_WEATHER.snapshot(year,month)['ssn']
     except Exception: ssn=None
     if not ssn or ssn['stale']: return None,'NOAAの新鮮な平滑SSNがありません'
-    return ssn['value'],dict(kind=ssn['kind'],month=ssn['month'])
+    return engine_ssn(ssn['value']),dict(kind=ssn['kind'],month=ssn['month'],published=ssn['value'],scale=ENGINE_SSN_SCALE)
 
 def run_watch(identifier, blocking=False):
     """Recalculate one watched condition; False when another calculation holds the engine."""

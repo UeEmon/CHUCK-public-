@@ -22,7 +22,7 @@ function updateRadioConditions(){
  $('snr-conversion').textContent=bandwidth?'SNR₁Hz = SNR帯域内 + 10 log₁₀(B [Hz]) → '+fields.required_snr.value+' dB·Hz':'要求SNRは1 Hz帯域換算値（dB·Hz）です。';
 }
 fields.modulation.onchange=()=>{
- const example={A1A:24,J3E:45,A3E:67}[fields.modulation.value];
+ const example={A1A:19,J3E:39,A3E:48}[fields.modulation.value];
  if(example!==undefined){fields.snr_input.value='direct';fields.required_snr.value=example;}
  if(emissionBandwidths[fields.modulation.value])fields.bandwidth.value=emissionBandwidths[fields.modulation.value];
  updateRadioConditions();

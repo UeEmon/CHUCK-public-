@@ -7,7 +7,7 @@ function annualPaint(td,rel){td.style.background=color(rel);td.style.color=(rel?
 function showAnnual(){
  const r=annualResult;if(!r)return;const p=r.parameters;
  const span=`${annualLabel(r.months[0])}〜${annualLabel(r.months[r.months.length-1])}`,rest=`${p.power_w} W · ${r.distance_km} km · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}`;
- $('annual-caption').textContent=p.ssn_source==='noaa'?`${span} · NOAAの月ごとの平滑SSN · ${rest}`:`${span} · SSN ${p.ssn}（全月共通） · ${rest}`;
+ $('annual-caption').textContent=p.ssn_source==='noaa'?`${span} · NOAAの月ごとの平滑SSN×0.7 · ${rest}`:`${span} · SSN ${p.ssn}（全月共通） · ${rest}`;
  $('annual-note').textContent=r.note;
  $('annual-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('annual-exports').append(a);}$('annual-exports').hidden=false;
  const select=$('annual-frequency'),previous=select.value;select.replaceChildren(new Option('最良周波数','best'),...p.frequencies.map(f=>new Option(f.toFixed(3)+' MHz',String(f))));select.value=[...select.options].some(o=>o.value===previous)?previous:'best';

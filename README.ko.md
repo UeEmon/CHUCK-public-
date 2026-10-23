@@ -55,7 +55,7 @@ docker compose logs --tail=100 -f
 
 ## 외부 데이터·이동국·AI
 
-예측 조건·우주 기상 탭에서 NOAA(SSN/F10.7/R/S/G), D-RAP, NICT 및 선택적 GIRO를 사용합니다. 관측/발표 시각과 마지막 수집 성공 시각을 구분하며 개별·일괄 갱신할 수 있습니다. 자동 SSN은 대상 월과 정확히 일치해야 하며 만료된 값으로 조용히 대체하지 않습니다. 다른 관측값은 VOACAP 결과를 자동 보정하지 않습니다. [우주 기상](docs/SPACE_WEATHER.md), [국외 데이터 조사](docs/INTERNATIONAL_IONOSPHERE.md)를 참조하십시오.
+예측 조건·우주 기상 탭에서 NOAA(SSN/F10.7/R/S/G), D-RAP, NICT 및 선택적 GIRO를 사용합니다. 관측/발표 시각과 마지막 수집 성공 시각을 구분하며 개별·일괄 갱신할 수 있습니다. 자동 SSN은 대상 월과 정확히 일치해야 하며 만료된 값으로 조용히 대체하지 않습니다. 다른 관측값은 VOACAP 결과를 자동 보정하지 않습니다. NOAA SSN(SILSO V2 척도)은 VOACAP Online Marine과 같이 0.7배하여 계산에 사용하며, 수동 SSN과 실효 SSN은 그대로 사용합니다. [우주 기상](docs/SPACE_WEATHER.md), [국외 데이터 조사](docs/INTERNATIONAL_IONOSPHERE.md)를 참조하십시오.
 
 GIRO는 기본 비활성화입니다. 이용 조건을 충족하거나 필요한 허가를 받은 경우에만 `.env`에 `HF_GIRO_ENABLED=1`을 설정하십시오. 비활성 상태에서는 GIRO에 연결하지 않습니다.
 

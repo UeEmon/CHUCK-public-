@@ -57,7 +57,7 @@ const {chromium}=require('playwright');
   await page.route('**/api/space-weather?*',route=>{
    const query=new URL(route.request().url()).searchParams;assert.equal(query.get('refresh'),'1');weatherCalls++;
    const fetched=1770000000+weatherCalls,sources=Object.fromEntries(['observed','predicted','scales'].map(k=>[k,{url:'https://example.org/'+k,fetched_at:fetched,stale:false,error:null,fetch_state:'downloaded'}]));
-   route.fulfill({json:{target_month:'2026-10',ssn:{value:80,kind:'predicted',stale:false},current:{scales:{R:0,S:0,G:0},observed_at:'2026-01-01T00:00:00Z',stale:false},sources,note:'Fixture'}});
+   route.fulfill({json:{target_month:'2026-10',ssn:{value:80,engine_value:56,scale:0.7,kind:'predicted',stale:false},current:{scales:{R:0,S:0,G:0},observed_at:'2026-01-01T00:00:00Z',stale:false},sources,note:'Fixture'}});
   });
   await page.route('**/api/observations?refresh=1',route=>{observationCalls++;route.fulfill({json:{drap:{data:null,fetched_at:1770000001,stale:true,error:'fixture unavailable',fetch_state:'failed',source_url:'https://example.org/drap'},nict:{data:null,fetched_at:null,stale:true,error:'fixture unavailable',fetch_state:'failed',source_url:'https://example.org/nict'},giro:{enabled:false},note:'Fixture'}});});
   await page.locator('#external-refresh-all').click();await page.waitForFunction(()=>!$('external-refresh-all').disabled);
@@ -67,10 +67,12 @@ const {chromium}=require('playwright');
   const fetchedBefore=await page.locator('#external-data-times tr').nth(1).locator('td').nth(2).textContent();
   await page.locator('#weather-refresh').click();await page.waitForFunction(()=>!$('weather-refresh').disabled);
   assert.equal(weatherCalls,2);assert.notEqual(await page.locator('#external-data-times tr').nth(1).locator('td').nth(2).textContent(),fetchedBefore);
+  // The published SILSO V2 value is shown with the 0.7 conversion the engine receives.
+  assert.equal(await page.locator('[name=ssn]').inputValue(),'56');assert.match(await page.locator('#weather-summary').innerText(),/80 \(Predicted smoothed value\) → Calculation SSN 56（0.7 × published value）/);
   await page.unroute('**/api/space-weather?*');await page.unroute('**/api/observations?refresh=1');
-  await page.selectOption('#modulation','A1A');assert.equal(await page.locator('[name=required_snr]').inputValue(),'24');
+  await page.selectOption('#modulation','A1A');assert.equal(await page.locator('[name=required_snr]').inputValue(),'19');
   assert.equal(await page.locator('[name=bandwidth]').inputValue(),'500H');
-  await page.selectOption('#modulation','J3E');assert.equal(await page.locator('[name=required_snr]').inputValue(),'45');
+  await page.selectOption('#modulation','J3E');assert.equal(await page.locator('[name=required_snr]').inputValue(),'39');
   assert.equal(await page.locator('[name=bandwidth]').inputValue(),'3K00');
   await page.selectOption('#modulation','F1B');assert.equal(await page.locator('[name=bandwidth]').inputValue(),'304H');
   await page.selectOption('#snr-input','bandwidth');
