@@ -17,16 +17,23 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   await page.locator('#map-hour').fill('5');
   assert.equal(await page.locator('#hour').inputValue(),'5');assert.equal(await page.locator('#map-hour-label').innerText(),'05:00 UTC');
   await page.selectOption('#hour','9');assert.equal(await page.locator('#map-hour').inputValue(),'9');
+  // The heatmap slider of the prediction tab moves the same hour.
+  const heat=page.locator('#prediction .heat-time');
+  await heat.locator('input').fill('7');assert.equal(await page.locator('#hour').inputValue(),'7');
+  assert.equal(await page.locator('#map-hour').inputValue(),'7');assert.equal(await heat.locator('output').innerText(),'07:00 UTC');
+  await page.selectOption('#hour','9');assert.equal(await heat.locator('input').inputValue(),'9');
   await page.locator('.tabs [data-tab="coverage"]').click();assert.equal(await page.locator('#map-time').isVisible(),false);
   await page.locator('.tabs [data-tab="diversity"]').click();assert.equal(await page.locator('#map-time').isVisible(),true);
   await page.locator('#map-hour').fill('14');assert.equal(await page.locator('#diversity-hour').inputValue(),'14');
+  const divHeat=page.locator('#diversity .heat-time');assert.equal(await divHeat.locator('output').innerText(),'14:00 UTC');
+  await divHeat.locator('input').fill('16');assert.equal(await page.locator('#diversity-hour').inputValue(),'16');assert.equal(await page.locator('#map-hour').inputValue(),'16');
   await page.locator('.tabs [data-tab="mesh"]').click();
   await page.locator('#map-hour').fill('22');assert.equal(await page.locator('#mesh-hour').inputValue(),'22');
   await page.locator('#mesh-hour').fill('3');assert.equal(await page.locator('#map-hour-label').innerText(),'03:00 UTC');
   // Play advances the visible tab's hour and stops on tab change.
   await page.locator('.tabs [data-tab="prediction"]').click();assert.equal(await page.locator('#map-hour').inputValue(),'9');
   await page.evaluate("result={hours:[],parameters:{}}");
-  await page.locator('#map-play').click();assert.equal(await page.locator('#map-play').innerText(),'■ 停止');
+  await heat.locator('button').click();assert.equal(await page.locator('#map-play').innerText(),'■ 停止');assert.equal(await heat.locator('button').innerText(),'■ 停止');
   await page.waitForTimeout(1800);const h=Number(await page.locator('#hour').inputValue());assert.ok(h===10||h===11,String(h));
   assert.equal(await page.locator('#map-hour').inputValue(),String(h));
   await page.locator('.tabs [data-tab="sites"]').click();assert.equal(await page.locator('#map-play').innerText(),'▶ 再生');
@@ -38,6 +45,9 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   await page.locator('#map-hour').fill('23');assert.match(await label(),/REL 92%.*23UTC/);
   await page.selectOption('#language','en');assert.equal(await page.locator('#map-play').innerText(),'▶ Play');
   assert.equal(await page.locator('#map-hour').getAttribute('aria-label'),'Circuit map display time (UTC)');
+  // The selected hour's heatmap column is outlined.
+  await page.evaluate(()=>{Object.assign(result,{id:'fake',distance_km:2550,bearing_deg:170});Object.assign(result.parameters,{year:2026,month:10,ssn:80,power_w:1000,required_snr:39});renderResult();});await heat.locator('input').fill('4');
+  assert.deepEqual(await page.locator('#heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['4']);
   if(process.argv[2])await page.locator('.map-panel').screenshot({path:process.argv[2]});
   assert.deepEqual(errors,[]);console.log('ok');
  }finally{if(browser)await browser.close();child.kill();}

@@ -1,6 +1,33 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "ヒートマップの表示時刻（UTC）": [
+    "Heatmap display time (UTC)",
+    "Heure affichée sur la carte thermique (UTC)",
+    "Hora mostrada en el mapa de calor (UTC)",
+    "Ora mostrata sulla mappa di calore (UTC)",
+    "Hora exibida no mapa de calor (UTC)",
+    "Anzeigezeit der Heatmap (UTC)",
+    "히트맵 표시 시각 (UTC)"
+  ],
+  "ヒートマップの時刻スライダー": [
+    "Time slider on the heatmaps",
+    "Curseur horaire sur les cartes thermiques",
+    "Control deslizante de hora en los mapas de calor",
+    "Cursore orario sulle mappe di calore",
+    "Controle deslizante de hora nos mapas de calor",
+    "Zeitschieberegler an den Heatmaps",
+    "히트맵의 시각 슬라이더"
+  ],
+  "24時間予測の「周波数 × 時刻の信頼度」とダイバーシティー予測の「周波数 × UTC」にも、UTCのスライダーと再生・停止ボタンを付けました。選んだ時刻の列が枠で示され、時刻別の詳細と回線マップも同じ時刻に切り替わります。": [
+    "The 24-hour prediction “Reliability by frequency and time” and the diversity prediction “Frequency × UTC” now also have a UTC slider and a play/stop button. The chosen hour’s column is outlined, and the hourly details and the circuit map switch to the same hour.",
+    "La « Fiabilité par fréquence et heure » de la prévision sur 24 heures et la « fréquence × UTC » de la prévision de diversité disposent aussi d’un curseur UTC et d’un bouton lecture/arrêt. La colonne de l’heure choisie est encadrée, et les détails horaires et la carte du circuit passent à la même heure.",
+    "La «Fiabilidad por frecuencia y hora» de la predicción de 24 horas y la «frecuencia × UTC» de la predicción de diversidad también tienen un control deslizante UTC y un botón de reproducir/detener. La columna de la hora elegida se enmarca, y los detalles por hora y el mapa del circuito cambian a la misma hora.",
+    "Anche l’«Affidabilità per frequenza e ora» della previsione 24 ore e la «frequenza × UTC» della previsione di diversità hanno ora un cursore UTC e un pulsante riproduci/ferma. La colonna dell’ora scelta è evidenziata con un bordo e i dettagli orari e la mappa del collegamento passano alla stessa ora.",
+    "A «Confiabilidade por frequência e hora» da previsão de 24 horas e a «frequência × UTC» da previsão de diversidade também têm um controle deslizante UTC e um botão reproduzir/parar. A coluna da hora escolhida é destacada com uma moldura, e os detalhes por hora e o mapa do circuito mudam para a mesma hora.",
+    "Auch „Zuverlässigkeit nach Frequenz und Zeit“ der 24-Stunden-Vorhersage und „Frequenz × UTC“ der Diversity-Vorhersage haben jetzt einen UTC-Schieberegler und eine Start/Stopp-Taste. Die Spalte der gewählten Stunde wird umrandet, und die Stundendetails und die Verbindungskarte wechseln auf dieselbe Stunde.",
+    "24시간 예측의 「주파수·시각별 신뢰도」와 다이버시티 예측의 「주파수 × UTC」에도 UTC 슬라이더와 재생·정지 버튼을 달았습니다. 선택한 시각의 열에 테두리가 표시되고, 시각별 상세와 회선 지도도 같은 시각으로 바뀝니다."
+  ],
   "画面の用語の統一": [
     "Consistent screen terms",
     "Termes d’écran harmonisés",
