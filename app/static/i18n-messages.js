@@ -3232,6 +3232,42 @@ const HF_MESSAGES={
     "CSV-Datei",
     "CSV 파일"
   ],
+  "記入例つきテンプレート（CSV）をダウンロード": [
+    "Download template with example values (CSV)",
+    "Télécharger le modèle avec exemple (CSV)",
+    "Descargar plantilla con ejemplo (CSV)",
+    "Scarica il modello con esempio (CSV)",
+    "Baixar modelo com exemplo (CSV)",
+    "Vorlage mit Beispielwerten herunterladen (CSV)",
+    "예시 포함 템플릿 다운로드 (CSV)"
+  ],
+  "テンプレートの記入例は架空の値です。「#」で始まる注記行は残したまま、実測・解析した値に書き換えて登録できます。": [
+    "The example values in the template are fictitious. Replace them with your measured or simulated gains and register the file; lines starting with # are notes and can stay.",
+    "Les valeurs d’exemple du modèle sont fictives. Remplacez-les par vos gains mesurés ou simulés puis enregistrez le fichier ; les lignes commençant par # sont des notes et peuvent rester.",
+    "Los valores de ejemplo de la plantilla son ficticios. Sustitúyalos por sus ganancias medidas o simuladas y registre el archivo; las líneas que empiezan por # son notas y pueden mantenerse.",
+    "I valori di esempio del modello sono fittizi. Sostituiscili con i guadagni misurati o simulati e registra il file; le righe che iniziano con # sono note e possono restare.",
+    "Os valores de exemplo do modelo são fictícios. Substitua-os pelos ganhos medidos ou simulados e registre o arquivo; as linhas iniciadas por # são notas e podem permanecer.",
+    "Die Beispielwerte der Vorlage sind fiktiv. Ersetzen Sie sie durch gemessene oder simulierte Gewinne und registrieren Sie die Datei; mit # beginnende Zeilen sind Hinweise und dürfen bleiben.",
+    "템플릿의 예시 값은 가상의 값입니다. 측정 또는 해석한 이득으로 바꾸어 등록하십시오. #으로 시작하는 줄은 주석이므로 그대로 두어도 됩니다."
+  ],
+  "利得表のテンプレート": [
+    "Gain table template",
+    "Modèle de table de gain",
+    "Plantilla de tabla de ganancia",
+    "Modello di tabella di guadagno",
+    "Modelo de tabela de ganho",
+    "Vorlage für Gewinntabellen",
+    "이득표 템플릿"
+  ],
+  "利得表の登録画面から、記入例つきのCSVテンプレートをダウンロードできます。値を実測・解析結果に書き換えて、そのまま登録できます。": [
+    "Download a CSV template with example values from the gain table registration panel. Replace the values with your measured or simulated results and register it as is.",
+    "Téléchargez un modèle CSV avec exemple depuis le panneau d’enregistrement des tables de gain. Remplacez les valeurs par vos résultats mesurés ou simulés et enregistrez-le tel quel.",
+    "Descargue una plantilla CSV con ejemplo desde el panel de registro de tablas de ganancia. Sustituya los valores por sus resultados medidos o simulados y regístrela tal cual.",
+    "Scarica un modello CSV con esempio dal pannello di registrazione delle tabelle di guadagno. Sostituisci i valori con i risultati misurati o simulati e registralo così com’è.",
+    "Baixe um modelo CSV com exemplo no painel de registro de tabelas de ganho. Substitua os valores pelos resultados medidos ou simulados e registre-o como está.",
+    "Laden Sie im Bereich zur Registrierung von Gewinntabellen eine CSV-Vorlage mit Beispielwerten herunter. Ersetzen Sie die Werte durch Mess- oder Simulationsergebnisse und registrieren Sie sie unverändert.",
+    "이득표 등록 화면에서 예시가 포함된 CSV 템플릿을 내려받을 수 있습니다. 값을 측정·해석 결과로 바꾸어 그대로 등록하십시오."
+  ],
   "利得表を登録": [
     "Register gain table",
     "Enregistrer la table",

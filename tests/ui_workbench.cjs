@@ -186,6 +186,8 @@ const {chromium}=require('playwright');
   const rows=['frequency_mhz,azimuth_deg,elevation_deg,gain_dbi'];
   for(const f of [2,30])for(let a=0;a<360;a+=30)for(const e of [0,45,90])rows.push([f,a,e,a===0?3:-10].join(','));
   await page.locator('#pattern-panel > summary').click();
+  assert.equal(await page.locator('#pattern-template').getAttribute('download'),'antenna-pattern-template.csv');
+  assert.match(await (await page.request.get(new URL(await page.locator('#pattern-template').getAttribute('href'),page.url).href)).text(),/^\uFEFF?# CHUCK/);
   await page.fill('#pattern-form [name=name]','Test airframe');
   await page.locator('#pattern-form [name=file]').setInputFiles({name:'airframe.csv',mimeType:'text/csv',buffer:Buffer.from(rows.join('\n'))});
   await page.locator('#pattern-form button[type=submit]').click();await page.waitForFunction(()=>antennaPatterns.length===1);

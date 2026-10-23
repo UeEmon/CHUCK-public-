@@ -38,6 +38,12 @@ class GridTests(unittest.TestCase):
                             ('\n'.join(good[:1]+['2,0,0,0']),'仰角は2点'),('',"空")]:
             with self.assertRaisesRegex(InputError,message):parse_csv(bad)
 
+    def test_downloadable_template_imports_as_is(self):
+        raw=(Path(__file__).resolve().parents[1]/'app/static/antenna-pattern-template.csv').read_text(encoding='utf-8')
+        grid=parse_csv(raw)
+        self.assertEqual((len(grid['frequencies_mhz']),len(grid['azimuths_deg']),len(grid['elevations_deg'])),(4,8,6))
+        self.assertIn('架空',raw)   # the example values must not pass for a real antenna
+
     def test_slicing_interpolates_and_wraps_azimuth(self):
         grid=parse_csv(csv_text(lambda f,a,e:(-10 if a==180 else 0)+e/10+(f-2)/28,azims=(0,90,180,270)))
         self.assertAlmostEqual(slice_table(grid,180)[1][0],-10)   # 2 MHz, 0 deg

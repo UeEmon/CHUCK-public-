@@ -1,4 +1,5 @@
 [
+ {"id":"2026-10-23-pattern-template","date":"2026-10-23","title":"利得表のテンプレート","text":"利得表の登録画面から、記入例つきのCSVテンプレートをダウンロードできます。値を実測・解析結果に書き換えて、そのまま登録できます。","tab":"antenna-presets","element":"pattern-template"},
  {"id":"2026-10-23-mesh-relay-rel","date":"2026-10-23","title":"メッシュ表の中継表示とREL閾値","text":"メッシュのマトリックスで、中継で届く経路を枠で示し、中継後のRELと、その下に中継なしのRELを表示します。%と4段階の切替はメッシュ表にも反映し、段階と印の閾値は「予察条件・宇宙天気」で変更できます。","tab":"conditions-tab","element":"rel-mark-threshold"},
  {"id":"2026-10-23-pattern-table","date":"2026-10-23","title":"アンテナの利得表","text":"実測やNEC等で解析した放射パターンをCSVの利得表として登録し、アンテナプリセットの基準モデル「利得表」として計算に使えます。","tab":"antenna-presets","element":"pattern-panel"},
  {"id":"2026-10-23-rel-display","date":"2026-10-23","title":"REL表示の切替と見やすい経路","text":"地図の「REL表示」で、RELを%と4段階（EXCELLENT・GOOD・POOR・NONE）から選べます。地図の経路はRELの段階で色分けし、選択時刻の最良RELを経路上に表示します。","tab":"prediction","element":"rel-display"},
