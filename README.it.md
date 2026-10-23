@@ -12,7 +12,7 @@ Questa guida riassume avvio, funzioni e limiti principali. Il [README giapponese
 
 ## Manuale operativo
 
-Manuale in giapponese: 23 pagine e 24 schermate, con previsioni, gateway e impostazioni IA/OCR. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). Riferimento: `e790327`; consultare la documentazione corrente per modifiche successive.
+Manuale in giapponese (2ª edizione): 42 pagine e 42 schermate, con previsioni, mappa dei collegamenti, rapporti, mesh, 12 mesi, potenza, siti, gateway e impostazioni IA/OCR. Si scarica anche da «Manuale (giapponese, PDF)» / «Word» in cima all'app. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Schermate del 23/10/2026; consultare la documentazione corrente per modifiche successive.
 
 ## Avvio
 

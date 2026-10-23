@@ -12,7 +12,7 @@ Esta guía resume instalación, uso y limitaciones esenciales. El [README japon�
 
 ## Manual de uso
 
-Manual en japonés: 23 páginas y 24 capturas de la interfaz, con predicciones, pasarela y configuración de IA/OCR. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). Referencia: `e790327`; consulte la documentación actual para cambios posteriores.
+Manual en japonés (2.ª edición): 42 páginas y 42 capturas de la interfaz, con predicciones, mapa de enlaces, informes, malla, 12 meses, potencia, sitios, pasarela y configuración de IA/OCR. También se descarga desde «Manual (japonés, PDF)» / «Word» en la parte superior de la aplicación. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Pantallas del 23/10/2026; consulte la documentación actual para cambios posteriores.
 
 ## Inicio
 

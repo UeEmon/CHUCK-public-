@@ -12,7 +12,7 @@ Este guia resume instalação, operação e limitações essenciais. O [README j
 
 ## Manual de operação
 
-Manual em japonês: 23 páginas e 24 capturas da interface, incluindo previsões, gateway e configuração de IA/OCR. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). Referência: `e790327`; consulte a documentação atual para alterações posteriores.
+Manual em japonês (2.ª edição): 42 páginas e 42 capturas da interface, incluindo previsões, mapa de enlaces, relatórios, malha, 12 meses, potência, locais, gateway e configuração de IA/OCR. Também pode ser baixado em “Manual (japonês, PDF)” / “Word” no topo do app. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Telas de 23/10/2026; consulte a documentação atual para alterações posteriores.
 
 ## Início
 

@@ -12,7 +12,7 @@ Diese Anleitung beschreibt Einstieg, Funktionen und wesentliche Grenzen. Die [ja
 
 ## Bedienungsanleitung
 
-Japanische Anleitung mit 23 Seiten und 24 Bildschirmaufnahmen zu Prognosen, Gateway und KI/OCR-Einstellungen. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). Stand: `e790327`; spätere Änderungen stehen in der aktuellen Dokumentation.
+Japanische Anleitung (2. Auflage) mit 42 Seiten und 42 Bildschirmaufnahmen zu Prognosen, Verbindungskarte, Berichten, Mesh, 12 Monaten, Sendeleistung, Standorten, Gateway und KI/OCR-Einstellungen. Auch über „Handbuch (Japanisch, PDF)“ / „Word“ oben in der App herunterladbar. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Stand der Bildschirme: 23.10.2026; spätere Änderungen stehen in der aktuellen Dokumentation.
 
 ## Start
 

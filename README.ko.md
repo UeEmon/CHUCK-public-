@@ -12,7 +12,7 @@ CHUCK(Coverage & HF Usability Calculation Kit)는 공개 VOACAP 엔진을 사용
 
 ## 조작 매뉴얼
 
-일본어 매뉴얼은 23페이지에 Web 화면 24장을 수록하며 예측, 게이트웨이, AI/OCR 설정을 설명합니다. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). 기준 버전은 `e790327`이며 이후 변경 사항은 최신 문서를 확인하십시오.
+일본어 매뉴얼(제2판)은 42페이지에 Web 화면 42장을 수록하며 예측, 회선 지도, 보고서, 메시, 12개월, 송신 전력, 거점 후보, 게이트웨이, AI/OCR 설정을 설명합니다. 앱 위쪽의 「조작 요령(일본어, PDF)」/「Word」에서도 다운로드할 수 있습니다. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). 2026-10-23 기준 화면이며 이후 변경 사항은 최신 문서를 확인하십시오.
 
 ## 시작
 

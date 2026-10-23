@@ -12,7 +12,7 @@ This localized guide covers setup, operation and essential limitations. The [Jap
 
 ## Operation manual
 
-Japanese operation manual: 23 pages with 24 web-interface screenshots, including predictions, gateway management and AI/OCR setup. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). Applies to commit `e790327`; consult current documentation for subsequent changes.
+Japanese operation manual (2nd edition): 42 pages with 42 web-interface screenshots, including predictions, the path map, reports, mesh, 12-month, power and site tools, gateway management and AI/OCR setup. It can also be downloaded from “Manual (Japanese, PDF)” / “Word” at the top of the app. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Screens as of 2026-10-23; consult current documentation for subsequent changes.
 
 ## Quick start
 

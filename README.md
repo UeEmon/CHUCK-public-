@@ -15,11 +15,11 @@ CHUCK（Coverage & HF Usability Calculation Kit）は公開VOACAP計算エンジ
 
 開発者向けの構成・検証状況・残課題・再開手順は[開発引き継ぎ書](docs/HANDOVER.md)を参照してください。
 
-Web操作画面24枚を収録した全23ページの日本語操作要領です。起動、伝搬予測、プリセット管理、ゲートウェイ、AI・OCR設定、障害対応を説明しています。
+Web操作画面42枚を収録した全42ページの日本語操作要領（第2版）です。起動、伝搬予測、回線マップ、報告書、メッシュ・12か月予測・必要な送信電力・拠点の候補、プリセット管理、ゲートウェイ、AI・OCR設定、障害対応を説明しています。アプリ画面上部の「操作要領（PDF）」「Word」からもダウンロードできます。
 
-[PDF版](docs/manual/CHUCK_Operation_Manual_ja.pdf) ／ [Word版](docs/manual/CHUCK_Operation_Manual_ja.docx)
+[PDF版](app/static/manual/CHUCK_Operation_Manual_ja.pdf) ／ [Word版](app/static/manual/CHUCK_Operation_Manual_ja.docx)
 
-対象はCHUCK表示版（`e790327`）です。更新後の変更点は、このREADMEと各詳細文書も確認してください。
+対象は2026年10月23日の画面です。更新後の変更点は、このREADMEと各詳細文書も確認してください。画面図は `docs/manual/capture_screens.cjs`、本文は `docs/manual/build_manual.py` で再生成できます。
 
 ## 起動
 

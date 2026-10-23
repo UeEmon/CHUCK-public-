@@ -8236,6 +8236,51 @@ const HF_MESSAGES={
     "Zuverlässigkeits-Heatmap (REL %)",
     "신뢰도 히트맵(REL %)"
   ],
+  "操作要領（PDF）": [
+    "Manual (Japanese, PDF)",
+    "Manuel (japonais, PDF)",
+    "Manual (japonés, PDF)",
+    "Manuale (giapponese, PDF)",
+    "Manual (japonês, PDF)",
+    "Handbuch (Japanisch, PDF)",
+    "조작 요령(일본어, PDF)"
+  ],
+  "画面図入りの日本語の操作要領をダウンロード": [
+    "Download the illustrated operation manual (Japanese)",
+    "Télécharger le manuel d’utilisation illustré (en japonais)",
+    "Descargar el manual de uso ilustrado (en japonés)",
+    "Scarica il manuale operativo illustrato (in giapponese)",
+    "Baixar o manual de operação ilustrado (em japonês)",
+    "Bebildertes Bedienhandbuch herunterladen (Japanisch)",
+    "화면 그림이 들어간 일본어 조작 요령 다운로드"
+  ],
+  "編集できるWord形式の操作要領をダウンロード": [
+    "Download the editable Word version of the manual (Japanese)",
+    "Télécharger la version Word modifiable du manuel (en japonais)",
+    "Descargar la versión editable en Word del manual (en japonés)",
+    "Scarica la versione Word modificabile del manuale (in giapponese)",
+    "Baixar a versão editável em Word do manual (em japonês)",
+    "Bearbeitbare Word-Fassung des Handbuchs herunterladen (Japanisch)",
+    "편집할 수 있는 Word 형식의 조작 요령 다운로드"
+  ],
+  "操作要領の更新とダウンロード": [
+    "Updated manual and download",
+    "Manuel mis à jour et téléchargement",
+    "Manual actualizado y descarga",
+    "Manuale aggiornato e download",
+    "Manual atualizado e download",
+    "Aktualisiertes Handbuch zum Herunterladen",
+    "조작 요령 갱신과 다운로드"
+  ],
+  "画面図入りの日本語の操作要領（第2版）を現在の画面に合わせて更新し、新しい機能の章を加えました。画面上部の「操作要領（PDF）」「Word」からダウンロードできます。": [
+    "The illustrated Japanese operation manual (2nd edition) now matches the current screens and covers the new features. Download it with “Manual (Japanese, PDF)” or “Word” at the top of the page.",
+    "Le manuel d’utilisation illustré en japonais (2e édition) correspond désormais aux écrans actuels et couvre les nouvelles fonctions. Téléchargez-le avec « Manuel (japonais, PDF) » ou « Word » en haut de la page.",
+    "El manual de uso ilustrado en japonés (2.ª edición) refleja ahora las pantallas actuales e incluye las nuevas funciones. Descárguelo con «Manual (japonés, PDF)» o «Word» en la parte superior de la página.",
+    "Il manuale operativo illustrato in giapponese (2ª edizione) ora corrisponde alle schermate attuali e include le nuove funzioni. Scaricalo con «Manuale (giapponese, PDF)» o «Word» in cima alla pagina.",
+    "O manual de operação ilustrado em japonês (2.ª edição) agora corresponde às telas atuais e inclui as novas funções. Baixe-o em “Manual (japonês, PDF)” ou “Word” no topo da página.",
+    "Das bebilderte japanische Bedienhandbuch (2. Auflage) entspricht jetzt den aktuellen Bildschirmen und beschreibt die neuen Funktionen. Herunterladen über „Handbuch (Japanisch, PDF)“ oder „Word“ oben auf der Seite.",
+    "화면 그림이 들어간 일본어 조작 요령(제2판)을 현재 화면에 맞게 갱신하고 새 기능의 장을 추가했습니다. 페이지 위쪽의 「조작 요령(일본어, PDF)」「Word」에서 다운로드할 수 있습니다."
+  ],
   "新機能のお知らせ": [
     "What’s new",
     "Nouveautés",

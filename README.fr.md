@@ -12,7 +12,7 @@ Ce guide présente l'installation, les fonctions et les limites essentielles. Le
 
 ## Manuel d'utilisation
 
-Manuel en japonais : 23 pages et 24 captures de l'interface, avec prévisions, passerelle et configuration IA/OCR. [PDF](docs/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](docs/manual/CHUCK_Operation_Manual_ja.docx). Version de référence : `e790327`. Consultez la documentation actuelle pour les changements ultérieurs.
+Manuel en japonais (2e édition) : 42 pages et 42 captures de l'interface, avec prévisions, carte des liaisons, rapports, maillage, 12 mois, puissance, sites, passerelle et configuration IA/OCR. Téléchargeable aussi depuis « Manuel (japonais, PDF) » / « Word » en haut de l'application. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Écrans du 23/10/2026. Consultez la documentation actuelle pour les changements ultérieurs.
 
 ## Démarrage
 
