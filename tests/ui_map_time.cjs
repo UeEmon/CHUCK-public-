@@ -39,7 +39,7 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   await page.locator('.tabs [data-tab="sites"]').click();assert.equal(await page.locator('#map-play').innerText(),'▶ 再生');
   await page.locator('.tabs [data-tab="prediction"]').click();
   // The computed path recolours with the slider (REL rises with the hour in this fake result).
-  await page.evaluate(()=>{const [tx,rx]=circuitEndpoints();result={parameters:{tx_lat:tx.lat,tx_lon:tx.lon,rx_lat:rx.lat,rx_lon:rx.lon,reliability:90,frequencies:[10]},hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[{frequency_mhz:10,reliability:h*4,snr_db_hz:40}]}))};drawMap();});
+  await page.evaluate(()=>{const [tx,rx]=circuitEndpoints();result={parameters:{tx_lat:tx.lat,tx_lon:tx.lon,rx_lat:rx.lat,rx_lon:rx.lon,reliability:90,frequencies:[10]},hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[{frequency_mhz:10,reliability:h*4,snr_db_hz:40},{frequency_mhz:14,reliability:h*2,snr_db_hz:30}]}))};result.parameters.frequencies=[10,14];drawMap();});
   const label=()=>page.locator('#map text').filter({hasText:'REL'}).first().textContent();
   await page.locator('#map-hour').fill('2');assert.match(await label(),/REL 8%.*02UTC/);
   await page.locator('#map-hour').fill('23');assert.match(await label(),/REL 92%.*23UTC/);
@@ -47,21 +47,40 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   assert.equal(await page.locator('#map-hour').getAttribute('aria-label'),'Circuit map display time (UTC)');
   // The selected hour's heatmap column is outlined.
   await page.evaluate(()=>{Object.assign(result,{id:'fake',distance_km:2550,bearing_deg:170});Object.assign(result.parameters,{year:2026,month:10,ssn:80,power_w:1000,required_snr:39});renderResult();});await heat.locator('input').fill('4');
-  assert.deepEqual(await page.locator('#heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['4']);
+  assert.deepEqual(await page.locator('#heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['4','4']);
   // Choosing a cell selects its frequency row and hour, as in the mesh link matrix; the slider keeps the row.
   assert.equal(await page.locator('#heatmap th.selected[data-frequency]').count(),0);
-  await page.locator('#heatmap tr').nth(1).locator('td').nth(6).locator('button').click();
+  assert.match(await label(),/REL 16% · 10\.000 MHz · 04UTC/);// best frequency until a row is chosen
+  const predCell=page.locator('#heatmap tr').nth(2).locator('td').nth(6).locator('button');
+  await predCell.click();
   assert.equal(await page.locator('#hour').inputValue(),'6');assert.equal(await heat.locator('input').inputValue(),'6');
-  assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['06','10.000']);
-  assert.equal(await page.locator('#detail tr.selected td').first().textContent(),'10.000');
-  await heat.locator('input').fill('8');assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['08','10.000']);
+  assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['06','14.000']);
+  assert.equal(await page.locator('#detail tr.selected td').first().textContent(),'14.000');
+  // The circuit map follows the chosen frequency row, also when the hour moves.
+  assert.match(await label(),/REL 12% · 14\.000 MHz · 06UTC/);
+  await heat.locator('input').fill('8');assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['08','14.000']);
+  assert.match(await label(),/REL 16% · 14\.000 MHz · 08UTC/);
+  // Choosing the same cell again clears the row; the map returns to the best frequency.
+  await heat.locator('input').fill('6');await predCell.click();
+  assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['06']);
+  assert.equal(await page.locator('#detail tr.selected').count(),0);
+  assert.match(await label(),/REL 24% · 10\.000 MHz · 06UTC/);
+  await predCell.click();assert.match(await label(),/14\.000 MHz/);
   // The diversity heatmap does the same.
-  await page.evaluate(()=>{const rows=f=>({frequency_mhz:f,best_rel_percent:70,best_site_id:'a',union_lower_percent:70,union_upper_percent:90,complete:true,sites_meeting_target:1});diversityResult={id:'fake-div',note:'',independence_assumption:false,parameters:{year:2026,month:10,ssn:80,ssn_source:'manual',power_w:1000,required_snr:39,reliability:90,frequencies:[7,14]},sites:[{id:'a',name:'A',distance_km:100,parameters:{},hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[{frequency_mhz:7,reliability:70},{frequency_mhz:14,reliability:70}]}))}],diversity_hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[rows(7),rows(14)]}))};tab('diversity');showDiversity();});
-  await page.locator('#diversity-heatmap tr').nth(2).locator('td').nth(3).locator('button').click();
+  await page.evaluate(()=>{const [tx,rx]=circuitEndpoints(),rows=f=>({frequency_mhz:f,best_rel_percent:70,best_site_id:'a',union_lower_percent:70,union_upper_percent:90,complete:true,sites_meeting_target:1});diversityResult={id:'fake-div',note:'',independence_assumption:false,parameters:{year:2026,month:10,ssn:80,ssn_source:'manual',power_w:1000,required_snr:39,reliability:90,frequencies:[7,14],tx_lat:tx.lat,tx_lon:tx.lon,rx_sites:[{lat:rx.lat,lon:rx.lon}]},sites:[{id:'a',name:'A',distance_km:100,parameters:{},hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[{frequency_mhz:7,reliability:70},{frequency_mhz:14,reliability:40}]}))}],diversity_hours:Array.from({length:24},(_,h)=>({hour_utc:h,rows:[rows(7),rows(14)]}))};tab('diversity');showDiversity();});
+  assert.match(await label(),/REL 70% · 7\.000 MHz/);
+  const divCell=page.locator('#diversity-heatmap tr').nth(2).locator('td').nth(3).locator('button');
+  await divCell.click();
   assert.equal(await page.locator('#diversity-hour').inputValue(),'3');
   assert.deepEqual(await page.locator('#diversity-heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['03','14.000']);
   assert.equal(await page.locator('#diversity-summary tr.selected td').first().textContent(),'14.000');
+  assert.match(await label(),/REL 40% · 14\.000 MHz · 03UTC/);
   await divHeat.locator('input').fill('5');assert.deepEqual(await page.locator('#diversity-heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['05','14.000']);
+  assert.match(await label(),/14\.000 MHz · 05UTC/);
+  await divHeat.locator('input').fill('3');await divCell.click();
+  assert.deepEqual(await page.locator('#diversity-heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['03']);
+  assert.equal(await page.locator('#diversity-summary tr.selected').count(),0);
+  assert.match(await label(),/REL 70% · 7\.000 MHz · 03UTC/);
   await page.locator('.tabs [data-tab="prediction"]').click();
   if(process.argv[2])await page.locator('.map-panel').screenshot({path:process.argv[2]});
   assert.deepEqual(errors,[]);console.log('ok');

@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "選んだ周波数の回線マップ表示": [
+    "Circuit map for the chosen frequency",
+    "Carte du circuit pour la fréquence choisie",
+    "Mapa del circuito para la frecuencia elegida",
+    "Mappa del collegamento per la frequenza scelta",
+    "Mapa do circuito para a frequência escolhida",
+    "Verbindungskarte für die gewählte Frequenz",
+    "선택한 주파수의 회선 지도"
+  ],
+  "24時間予測・ダイバーシティー予測・メッシュ予測で周波数の行を選んでいるときは、回線マップの経路の色とRELもその周波数で表示します。同じセルをもう一度選ぶと周波数の選択が外れ、最良周波数の表示に戻ります。": [
+    "When a frequency row is chosen in the 24-hour forecast, diversity forecast or mesh forecast, the circuit map path colour and REL are also shown for that frequency. Choosing the same cell again clears the frequency and returns to the best frequency.",
+    "Lorsqu’une ligne de fréquence est choisie dans la prévision sur 24 h, la prévision de diversité ou la prévision maillée, la couleur du trajet et la REL sur la carte du circuit sont aussi affichées pour cette fréquence. Choisir à nouveau la même cellule annule la fréquence et revient à la meilleure fréquence.",
+    "Cuando se elige una fila de frecuencia en la predicción de 24 horas, la predicción de diversidad o la predicción de malla, el color del trayecto y la REL del mapa del circuito también se muestran para esa frecuencia. Al elegir de nuevo la misma celda se quita la frecuencia y se vuelve a la mejor frecuencia.",
+    "Quando si sceglie una riga di frequenza nella previsione di 24 ore, nella previsione di diversità o nella previsione mesh, anche il colore del percorso e la REL sulla mappa del collegamento sono mostrati per quella frequenza. Scegliendo di nuovo la stessa cella la frequenza viene deselezionata e si torna alla frequenza migliore.",
+    "Quando uma linha de frequência é escolhida na previsão de 24 horas, na previsão de diversidade ou na previsão de malha, a cor do percurso e a REL no mapa do circuito também são mostradas para essa frequência. Escolher a mesma célula novamente remove a frequência e volta à melhor frequência.",
+    "Ist in der 24-Stunden-Prognose, der Diversity-Prognose oder der Mesh-Prognose eine Frequenzzeile gewählt, zeigt die Verbindungskarte Farbe und REL des Pfads ebenfalls für diese Frequenz. Ein erneuter Klick auf dieselbe Zelle hebt die Frequenzauswahl auf und kehrt zur besten Frequenz zurück.",
+    "24시간 예측·다이버시티 예측·메시 예측에서 주파수 행을 선택하면 회선 지도의 경로 색과 REL도 그 주파수로 표시합니다. 같은 셀을 다시 선택하면 주파수 선택이 해제되고 최적 주파수 표시로 돌아갑니다."
+  ],
   "バージョン1.0": [
     "Version 1.0",
     "Version 1.0",

@@ -51,6 +51,8 @@ function sameEndpoint(endpoint,lat,lon,ref){
  if(endpoint.position_ref&&ref)return endpoint.position_ref.source===ref.source&&endpoint.position_ref.id===ref.id;
  return !endpoint.position_ref&&!ref&&samePlace(endpoint,{lat,lon});
 }
+// The selected heatmap frequency row when there is one, otherwise the best frequency of the hour.
+function chosenRow(rows,frequency){return frequency===null?bestRow(rows):rows.find(r=>r.frequency_mhz===frequency)??null;}
 function bestRow(rows){return rows.filter(r=>relKnown(r.reliability)).sort((a,b)=>b.reliability-a.reliability||(b.snr_db_hz??-999)-(a.snr_db_hz??-999))[0]??null;}
 // REL of the computed TX→RX path shown on the map, for the hour selected in the visible result.
 function relayReliability(tx,rx){
@@ -58,14 +60,14 @@ function relayReliability(tx,rx){
   if(typeof result==='undefined'||!result?.hours)return null;const p=result.parameters;
   if(!sameEndpoint(tx,p.tx_lat,p.tx_lon,p.tx_position)||!sameEndpoint(rx,p.rx_lat,p.rx_lon,p.rx_position))return null;
   const hour=Number($('hour').value),h=result.hours.find(h=>h.hour_utc===hour);
-  return h?{hour,row:bestRow(h.rows)}:null;
+  return h?{hour,row:chosenRow(h.rows,resultFrequency)}:null;
  };
  const fromDiversity=()=>{
   if(typeof diversityResult==='undefined'||!diversityResult)return null;const r=diversityResult,p=r.parameters;
   if(!sameEndpoint(tx,p.tx_lat,p.tx_lon,p.tx_position))return null;
   const index=(p.rx_sites??[]).findIndex(s=>sameEndpoint(rx,s.lat,s.lon,s.position_ref)),site=r.sites[index];
   const hour=Number($('diversity-hour').value),h=site?.hours.find(h=>h.hour_utc===hour);
-  return h?{hour,row:bestRow(h.rows)}:null;
+  return h?{hour,row:chosenRow(h.rows,diversityFrequency)}:null;
  };
  const fromMesh=()=>{
   if(typeof meshResult==='undefined'||!meshResult)return null;const site=e=>meshResult.sites.find(s=>sameEndpoint(e,s.lat,s.lon,s.position_ref));

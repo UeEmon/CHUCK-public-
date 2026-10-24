@@ -52,6 +52,15 @@ const {chromium}=require('playwright');
   await matrixCell(1,1).locator('button').click();
   assert.equal(await page.locator('#mesh-relay-route').innerText(),'直通で目標RELを満たします');
   await matrixCell(3,3).locator('button').click();
+  // Choosing a link-detail cell selects its frequency; choosing it again returns to the best frequency.
+  const linkCell=page.locator('#mesh-link-heatmap tr').nth(1).locator('td').nth(7).locator('button');
+  await linkCell.click();
+  assert.equal(await page.locator('#mesh-frequency').inputValue(),'5');assert.equal(await page.locator('#mesh-hour').inputValue(),'7');
+  const mapRow=()=>page.evaluate(()=>relayReliability({lat:32,lon:132},{lat:30,lon:130})?.row?.frequency_mhz);// the map path's REL source
+  assert.equal(await mapRow(),5);
+  await linkCell.click();
+  assert.equal(await page.locator('#mesh-frequency').inputValue(),'best');assert.equal(await page.locator('#mesh-hour').inputValue(),'7');
+  assert.equal(await page.locator('#mesh-link-heatmap th.selected').count(),1);assert.equal(await mapRow(),10);
   // Station names stay as entered in another language.
   await page.selectOption('#language','en');
   assert.equal(await page.locator('#mesh-relay-summary').innerText(),'Reachable via relay: 3 links · Unreachable: 6 links (up to 2 relays)');
