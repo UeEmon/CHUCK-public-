@@ -89,6 +89,25 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('#rel-good').inputValue(),'80');
   await page.selectOption('#rel-display','percent');
   assert.deepEqual(await relayCell(1,3),['85·','↻1']);
+  // The circuit map draws both directions of each station pair, with that direction's REL.
+  const mapLabels=await page.evaluate(()=>{
+   const presets=catalog.presets.filter(p=>p.kind!=='mobile').slice(0,3),ids=['m1','m2','m3'],rel={'m1>m2':90,'m2>m1':20};
+   circuit.tx={...circuit.tx,location_id:presets[0].id};circuit.rxs=presets.slice(1).map(p=>({...circuit.rxs[0],location_id:p.id}));$('mesh-mode').checked=true;renderCircuit();
+   const sites=presets.map((p,i)=>({id:ids[i],name:p.name,lat:p.lat,lon:p.lon,antenna:'whip',power_w:1000,noise:150})),links=[];
+   for(const a of ids)for(const b of ids)if(a!==b)links.push({tx_id:a,rx_id:b,distance_km:500,bearing_deg:90,hours:Array.from({length:24},(_,h)=>({hour_utc:h,muf_mhz:12,rows:[{frequency_mhz:10,reliability:rel[a+'>'+b]??50,snr_db_hz:40}]}))});
+   openMesh({id:2,kind:'mesh',parameters:{year:2026,month:10,ssn:100,ssn_source:'manual',required_snr:40,reliability:80,frequencies:[10]},sites,links,note:'note'});
+   return [...document.querySelectorAll('#map text')].map(t=>t.textContent).filter(t=>t.includes('REL'));
+  });
+  assert.equal(mapLabels.length,6);
+  assert.ok(mapLabels.some(t=>/^N1→N2 REL 90%/.test(t)),mapLabels.join(' | '));
+  assert.ok(mapLabels.some(t=>/^N2→N1 REL 20%/.test(t)),mapLabels.join(' | '));
+  assert.equal(await page.locator('#map .map-arrow').count(),6);
+  assert.equal(await page.locator('#route-info').innerText(),'メッシュ 3拠点 · 3組・双方向 6経路（短経路）');
+  // The two directions run side by side rather than on top of each other.
+  assert.ok(await page.evaluate(()=>{const pts=gc([30,130],[40,150]),a=sidePath(pts,2),b=sidePath([...pts].reverse(),2).reverse(),i=50;return Math.hypot(a[i][0]-b[i][0],a[i][1]-b[i][1])>3.9;}));
+  await page.selectOption('#language','en');
+  assert.equal(await page.locator('#route-info').innerText(),'Mesh · 3 stations · 3 pairs, both directions 6 links (short path)');
+  await page.selectOption('#language','ja');
   assert.deepEqual(errors,[]);
   console.log('Mesh relay UI checks passed');
  }finally{

@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "メッシュ予測の回線マップを双方向で表示": [
+    "Mesh forecast circuit map in both directions",
+    "Carte du circuit de la prévision maillée dans les deux sens",
+    "Mapa del circuito de la predicción de malla en ambos sentidos",
+    "Mappa del collegamento della previsione mesh in entrambe le direzioni",
+    "Mapa do circuito da previsão de malha nos dois sentidos",
+    "Verbindungskarte der Mesh-Prognose in beide Richtungen",
+    "메시 예측 회선 지도의 양방향 표시"
+  ],
+  "メッシュ予測の回線マップで、拠点の組ごとにA→BとB→Aの2本の経路を並べて描き、矢印で向きを、色とラベルでそれぞれの方向のRELを示します。これまでは片方向のRELだけを表示していました。": [
+    "The mesh forecast circuit map now draws two paths side by side for each station pair, A→B and B→A, with arrows for the direction and colours and labels for the REL of each direction. Previously only the REL of one direction was shown.",
+    "La carte du circuit de la prévision maillée trace désormais deux trajets côte à côte pour chaque paire de stations, A→B et B→A, avec des flèches pour le sens et des couleurs et étiquettes pour la REL de chaque sens. Auparavant, seule la REL d’un sens était affichée.",
+    "El mapa del circuito de la predicción de malla dibuja ahora dos trayectos uno junto al otro para cada par de estaciones, A→B y B→A, con flechas para el sentido y colores y etiquetas para la REL de cada sentido. Antes solo se mostraba la REL de un sentido.",
+    "La mappa del collegamento della previsione mesh ora traccia due percorsi affiancati per ogni coppia di stazioni, A→B e B→A, con frecce per la direzione e colori ed etichette per la REL di ciascuna direzione. Prima veniva mostrata solo la REL di una direzione.",
+    "O mapa do circuito da previsão de malha agora desenha dois percursos lado a lado para cada par de estações, A→B e B→A, com setas para o sentido e cores e rótulos para a REL de cada sentido. Antes só era mostrada a REL de um sentido.",
+    "Die Verbindungskarte der Mesh-Prognose zeichnet nun für jedes Stationspaar zwei Pfade nebeneinander, A→B und B→A, mit Pfeilen für die Richtung sowie Farben und Beschriftungen für die REL jeder Richtung. Bisher wurde nur die REL einer Richtung angezeigt.",
+    "메시 예측의 회선 지도에서 거점 쌍마다 A→B와 B→A의 두 경로를 나란히 그리고, 화살표로 방향을, 색과 라벨로 각 방향의 REL을 표시합니다. 이전에는 한 방향의 REL만 표시했습니다."
+  ],
   "選んだ周波数の回線マップ表示": [
     "Circuit map for the chosen frequency",
     "Carte du circuit pour la fréquence choisie",
@@ -4978,14 +4996,14 @@ const HF_MESSAGES={
     "Mesh · {n} Stationen · {count} Verbindungen",
     "메시 {n}거점 · {count}경로"
   ],
-  "メッシュ {n}拠点 · {count}組（短経路）": [
-    "Mesh · {n} stations · {count} pairs (short path)",
-    "Maillage · {n} stations · {count} paires (trajet court)",
-    "Malla · {n} estaciones · {count} pares (trayecto corto)",
-    "Mesh · {n} stazioni · {count} coppie (percorso breve)",
-    "Malha · {n} estações · {count} pares (caminho curto)",
-    "Mesh · {n} Stationen · {count} Paare (kurzer Weg)",
-    "메시 {n}거점 · {count}쌍(단경로)"
+  "メッシュ {n}拠点 · {count}組・双方向 {links}経路（短経路）": [
+    "Mesh · {n} stations · {count} pairs, both directions {links} links (short path)",
+    "Maillage · {n} stations · {count} paires, deux sens {links} liaisons (trajet court)",
+    "Malla · {n} estaciones · {count} pares, ambos sentidos {links} enlaces (trayecto corto)",
+    "Mesh · {n} stazioni · {count} coppie, entrambe le direzioni {links} collegamenti (percorso breve)",
+    "Malha · {n} estações · {count} pares, ambos os sentidos {links} enlaces (caminho curto)",
+    "Mesh · {n} Stationen · {count} Paare, beide Richtungen {links} Verbindungen (kurzer Weg)",
+    "메시 {n}거점 · {count}쌍·양방향 {links}경로(단경로)"
   ],
   "メッシュの{n}経路を計算しています。完了までお待ちください…": [
     "Calculating {n} mesh links. Please wait…",
