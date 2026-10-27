@@ -10,7 +10,7 @@ function updatePropagationChart(preferred){
  choice.value=preferred??previous;
  if(choice.selectedOptions[0]?.disabled)choice.value=result?'point':'diversity';
  const sites=$('chart-site'),old=sites.value;sites.replaceChildren();
- if(choice.value==='diversity'&&diversityResult){for(const s of diversityResult.sites){const option=new Option(s.name,s.id);option.dataset.userContent='true';sites.add(option);}if([...sites.options].some(o=>o.value===old))sites.value=old;}
+ if(choice.value==='diversity'&&diversityResult){for(const s of diversityResult.sites){sites.add(resultSiteName(s.name,new Option(s.name,s.id)));}if([...sites.options].some(o=>o.value===old))sites.value=old;}
  else sites.add(new Option('RX1','rx1'));
  sites.disabled=choice.value!=='diversity';
  renderPropagationChart();

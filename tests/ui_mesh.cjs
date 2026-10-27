@@ -68,7 +68,13 @@ const {chromium}=require('playwright');
   assert.equal(await page.locator('.tabs [data-tab="mesh"]').innerText(),'Mesh forecast');
   assert.match(await page.locator('#mesh-summary').innerText(),/^Target REL/);
   assert.match(await page.locator('#circuit-mode').innerText(),/^Mesh · 3 stations · 6 links/);
+  // Default site names follow the language; a user's own name stays as entered.
+  const heads=()=>page.locator('#mesh-matrix th.mesh-name').evaluateAll(e=>e.slice(0,2).map(t=>t.textContent));
+  assert.deepEqual(await heads(),['Tokyo [N1]','Guam [N2]']);
+  assert.doesNotMatch(await page.locator('#mesh-link-title').innerText(),/[\u3040-\u30ff\u4e00-\u9fff]/);
+  assert.deepEqual(await page.evaluate(()=>[resultSiteText('グアム [RX1]'),resultSiteText('グアム基地 [RX1]'),resultSiteName('グアム基地 [N1]',document.createElement('th')).dataset.userContent]),['Guam [RX1]','グアム基地 [RX1]','true']);
   await page.selectOption('#language','ja');
+  assert.deepEqual(await heads(),['東京 [N1]','グアム [N2]']);
   // History restores mesh mode and per-station power.
   await page.locator('#mesh-mode').uncheck();assert.equal(await page.locator('.mesh-power').count(),0);
   await page.locator('.tabs [data-tab="history"]').click();await page.locator('#history-list button').first().click();

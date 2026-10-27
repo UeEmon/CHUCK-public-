@@ -26,7 +26,7 @@ async function refreshPositions(){
 }
 function drawPositionLayer(parent){
  if(!$('positions-map').checked||!positionData)return;
- for(const p of positionData.positions){const stale=p.stale||Date.parse(p.expires_at)<=Date.now(),[x,y]=xy(p.lon,p.lat);const marker=svg('circle',{cx:x,cy:y,r:4/Math.sqrt(zoom),fill:stale?'#7b8794':p.kind==='aircraft'?'#94c8ff':p.kind==='vehicle'?'#b598ff':'#f7b965',stroke:'#fff','stroke-width':.7},parent);svg('title',{},marker).textContent=positionKind[p.kind]+' '+p.name+' ('+p.source+'/'+p.id+') / '+p.observed_at+(stale?' [期限切れ]':'');marker.onclick=e=>{e.stopPropagation();tab('positions');notice(p.name+'：地点プリセットから選択できます。');};}
+ for(const p of positionData.positions){const stale=p.stale||Date.parse(p.expires_at)<=Date.now(),[x,y]=xy(p.lon,p.lat);const marker=svg('circle',{cx:x,cy:y,r:4/Math.sqrt(zoom),fill:stale?'#7b8794':p.kind==='aircraft'?'#94c8ff':p.kind==='vehicle'?'#b598ff':'#f7b965',stroke:'#fff','stroke-width':.7},parent);const label=s=>window.HF_I18N?HF_I18N.translate(s):s;svg('title',{},marker).textContent=label(positionKind[p.kind])+' '+p.name+' ('+p.source+'/'+p.id+') / '+p.observed_at+(stale?' ['+label('期限切れ')+']':'');marker.onclick=e=>{e.stopPropagation();tab('positions');notice(p.name+'：地点プリセットから選択できます。');};}
 }
 $('positions-refresh').onclick=refreshPositions;$('positions-map').onchange=drawMap;
 setInterval(()=>{if(document.hidden)return;if($('positions-poll').checked)refreshPositions();else if(positionData)renderPositions();},5000);

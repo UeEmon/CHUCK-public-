@@ -63,9 +63,9 @@ function reportButton(id){const b=cell('button','報告書を印刷');b.type='bu
 function reportStamp(v){return v?String(v).slice(0,16).replace('T',' ')+' UTC':'—';}
 function reportConditions(d,id,r){
  const p=r.parameters,rows=[];
- if(id==='mesh')rows.push(['拠点',r.sites.map(s=>s.name).join(' · ')]);
- else if(id==='diversity')rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.sites.map(s=>s.name).join(' · ')}`]);
- else if(p.tx_lat!==undefined)rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.chart_site??reportEndpoint(r.ui_selection,'rx').name??'RX'}`]);
+ if(id==='mesh')rows.push(['拠点',r.sites.map(s=>resultSiteText(s.name)).join(' · ')]);
+ else if(id==='diversity')rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.sites.map(s=>resultSiteText(s.name)).join(' · ')}`]);
+ else if(p.tx_lat!==undefined)rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.chart_site!=null?resultSiteText(r.chart_site):reportEndpoint(r.ui_selection,'rx').name??'RX'}`]);
  if(r.distance_km!==undefined)rows.push(['回線距離・方位',`${r.distance_km} km`+(r.bearing_deg!==undefined?` / ${r.bearing_deg} °`:'')]);
  rows.push(['対象年月',`${p.year}/${p.month}`]);
  if(id!=='annual')rows.push(['SSN',String(p.ssn)]);

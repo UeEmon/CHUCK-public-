@@ -6,6 +6,11 @@ const defaultPresetNames={"default-new-york":"ニューヨーク","default-washi
 Object.assign(defaultPresetNames,{"standard-whip-24":"垂直ホイップ 2.4 m","standard-whip-5":"垂直ホイップ 5 m","standard-whip-7":"垂直ホイップ 7 m","standard-whip-10":"垂直ホイップ 10 m","standard-gp-5":"グランドプレーン 5 m","standard-dipole-10":"水平ダイポール 全長10 m","standard-dipole-20":"水平ダイポール 全長20 m","standard-dipole-40":"水平ダイポール 全長40 m","standard-vertical-10":"垂直ダイポール 全長10 m","standard-vertical-20":"垂直ダイポール 全長20 m","reference-usn-as2537c":"USN AS-2537C/SR（寸法近似）"});
 function isOriginalPreset(p){return defaultPresetNames[p.id]===p.name;}
 function displayedPresetName(p){return isOriginalPreset(p)&&window.HF_I18N?HF_I18N.translate(p.name):p.name;}
+// Result sites are named "<location> [RX1]" or "<location> [N1]"; a default location follows the UI language, a user name stays as entered.
+const resultSiteParts=name=>/^(.*?)( \[(?:RX|N)\d+\])?$/.exec(String(name));
+function isDefaultSiteName(name){return Object.values(defaultPresetNames).includes(resultSiteParts(name)[1]);}
+function resultSiteText(name){if(!isDefaultSiteName(name)||!window.HF_I18N)return name;const [,base,suffix]=resultSiteParts(name);return HF_I18N.translate(base)+(suffix??'');}
+function resultSiteName(name,node){node.textContent=name;if(!isDefaultSiteName(name))node.dataset.userContent='true';return node;}
 const lpDefaults={lp_elements:16,lp_tau:.9,lp_apex_deg:25,lp_slope_deg:90,lp_impedance_ohm:450};
 // Model-specific fields and their defaults, mirroring engine.MODEL_FIELDS.
 const modelFields={log_periodic:lpDefaults,sloping_long_wire:{lw_slope_deg:10}};

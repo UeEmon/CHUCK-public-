@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "結果のサイト名の多言語化": [
+    "Site names in results translated",
+    "Noms de sites traduits dans les résultats",
+    "Nombres de sitios traducidos en los resultados",
+    "Nomi dei siti tradotti nei risultati",
+    "Nomes de locais traduzidos nos resultados",
+    "Standortnamen in Ergebnissen übersetzt",
+    "결과의 사이트 이름 다국어화"
+  ],
+  "メッシュのTX × RXマトリックス、ダイバーシティーの表、Propagation Chartのサイト選択、報告書で、初期登録の地点名（東京・グアムなど）を表示中の言語で示すようにしました。登録・名前を変えた地点名は入力したまま表示します。": [
+    "The mesh TX × RX matrix, the diversity tables, the Propagation Chart site selector and reports now show the built-in location names (Tokyo, Guam and so on) in the selected language. Locations you registered or renamed keep the name as entered.",
+    "La matrice TX × RX du maillage, les tableaux de diversité, le choix du site du Propagation Chart et les rapports affichent désormais les noms des lieux prédéfinis (Tokyo, Guam, etc.) dans la langue choisie. Les lieux que vous avez enregistrés ou renommés gardent le nom saisi.",
+    "La matriz TX × RX de la malla, las tablas de diversidad, el selector de sitio del Propagation Chart y los informes muestran ahora los nombres de las ubicaciones predefinidas (Tokio, Guam, etc.) en el idioma seleccionado. Las ubicaciones que usted registró o renombró conservan el nombre introducido.",
+    "La matrice TX × RX della maglia, le tabelle di diversità, la scelta del sito del Propagation Chart e i rapporti mostrano ora i nomi delle località predefinite (Tokyo, Guam, ecc.) nella lingua selezionata. Le località registrate o rinominate da voi mantengono il nome inserito.",
+    "A matriz TX × RX da malha, as tabelas de diversidade, o seletor de local do Propagation Chart e os relatórios mostram agora os nomes dos locais predefinidos (Tóquio, Guam etc.) no idioma selecionado. Os locais que você registrou ou renomeou mantêm o nome digitado.",
+    "Die TX × RX-Matrix des Netzes, die Diversity-Tabellen, die Standortauswahl des Propagation Chart und Berichte zeigen die vordefinierten Ortsnamen (Tokio, Guam usw.) jetzt in der gewählten Sprache. Selbst angelegte oder umbenannte Orte behalten den eingegebenen Namen.",
+    "메시 TX × RX 매트릭스, 다이버시티 표, Propagation Chart의 사이트 선택, 보고서에서 초기 등록 지점 이름(도쿄, 괌 등)을 선택한 언어로 표시합니다. 직접 등록하거나 이름을 바꾼 지점은 입력한 이름 그대로 표시합니다."
+  ],
   "操作要領の8言語化": [
     "Manual in 8 languages",
     "Manuel en 8 langues",

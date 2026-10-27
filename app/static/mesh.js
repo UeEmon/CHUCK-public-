@@ -23,7 +23,7 @@ function meshRelayRoute(hour,frequency,tx,rx,relays){
  walk([tx],[]);return best;
 }
 function meshRouteText(route){return route.ids.map(id=>meshSite(id).name).join(' → ');}
-function meshName(id){const th=cell('th',meshSite(id).name);th.dataset.userContent='true';return th;}
+function meshName(id){const th=resultSiteName(meshSite(id).name,document.createElement('th'));th.className='mesh-name';return th;}
 function meshPaint(td,rel){td.style.background=relFill(rel);td.style.color=relInk(rel);}
 function showMesh(){
  const r=meshResult;if(!r)return;const p=r.parameters,powers=r.sites.map(s=>s.power_w),low=Math.min(...powers),high=Math.max(...powers);
@@ -65,7 +65,7 @@ function renderMeshMatrix(){
 function renderMeshLink(){
  const r=meshResult;if(!r||!meshSelected)return;const link=meshLink(meshSelected.tx,meshSelected.rx);if(!link)return;
  const hour=Number($('mesh-hour').value),frequency=$('mesh-frequency').value,tx=meshSite(link.tx_id),rx=meshSite(link.rx_id);
- const title=$('mesh-link-title');title.replaceChildren();for(const [text,user]of [[tx.name,true],[' → ',false],[rx.name,true],[` · ${link.distance_km} km · ${link.bearing_deg} ° · ${tx.antenna} → ${(rx.receive??rx).antenna}`,false]]){const span=cell('span',text);if(user)span.dataset.userContent='true';title.append(span);}
+ const title=$('mesh-link-title');title.replaceChildren();for(const [text,user]of [[tx.name,!isDefaultSiteName(tx.name)],[' → ',false],[rx.name,!isDefaultSiteName(rx.name)],[` · ${link.distance_km} km · ${link.bearing_deg} ° · ${tx.antenna} → ${(rx.receive??rx).antenna}`,false]]){const span=cell('span',text);if(user)span.dataset.userContent='true';title.append(span);}
  const table=document.createElement('table');table.className='heat';const head=document.createElement('tr');head.append(cell('th','MHz / UTC'));for(let h=0;h<24;h++){const th=cell('th',String(h).padStart(2,'0'));th.classList.toggle('selected',h===hour);head.append(th);}table.append(head);
  for(const f of r.parameters.frequencies){
   const tr=document.createElement('tr'),label=cell('th',f.toFixed(3));label.classList.toggle('selected',frequency===String(f));tr.append(label);
@@ -76,14 +76,14 @@ function renderMeshLink(){
  renderMeshRelay(link,hour,frequency);
 }
 function renderMeshRelay(link,hour,frequency){
- // The chain for the selected pair at the matrix time; names stay untranslated.
+ // The chain for the selected pair at the matrix time; user names stay untranslated.
  const out=$('mesh-relay-route'),relays=Number($('mesh-relays').value),target=meshResult.parameters.reliability;out.replaceChildren();out.hidden=!relays;if(!relays)return;
  const direct=meshRow(link,hour,frequency)?.reliability;
  if(direct!==null&&direct!==undefined&&direct>=target){out.append(cell('span','直通で目標RELを満たします'));return;}
  const route=meshRelayRoute(hour,frequency,link.tx_id,link.rx_id,relays);
  if(!route){out.append(cell('span',`${relays}段までの中継でも目標RELを満たす経路はありません`));return;}
  out.append(cell('span',`中継経路（${route.ids.length-2}段）:`),' ');
- route.ids.forEach((id,i)=>{if(i)out.append(' → ');const name=cell('span',meshSite(id).name);name.dataset.userContent='true';out.append(name);});
+ route.ids.forEach((id,i)=>{if(i)out.append(' → ');const name=resultSiteName(meshSite(id).name,document.createElement('span'));name.className='mesh-route-site';out.append(name);});
  out.append(cell('span',` · 区間REL ${route.rows.map(v=>relText(v.reliability,'label')).join(' / ')} · 中継経路REL ${relText(route.weakest,'label')} · ${route.rows.map(v=>v.frequency_mhz.toFixed(1)).join(' / ')} MHz`));
 }
 function stopMeshPlay(){if(meshTimer){clearInterval(meshTimer);meshTimer=null;}$('mesh-play').textContent='▶ 再生';}
