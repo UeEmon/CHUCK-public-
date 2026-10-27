@@ -14,7 +14,7 @@ CHUCKは **Coverage & HF Usability Calculation Kit** の略称。アイコンは
 - 左に循環地図、右にTX 1局・RX 1～8局。結果は地図下のタブ。クリックで局位置を移動せず、地点プリセットから選択する。
 - 地点30都市、アンテナ18項目を初期登録。アンテナは5つの計算モデルと参考資料専用項目を区別する。
 - 位置ゲートウェイとログイン付き管理画面、NOAA・D-RAP・NICT・任意有効化GIRO、生成AI OCR、8言語UIを実装済み。
-- 日本語の操作要領（第2版、2026-10-23の画面）は42ページ・Web画面42枚。PDF・Wordを `app/static/manual/` に格納し、アプリ画面上部の「操作要領（PDF）」「Word」と8言語のREADMEから参照できる。画面図は `docs/manual/capture_screens.cjs`（実エンジン＋UIフィクスチャ）、本文は `docs/manual/build_manual.py`（python-docx＋LibreOffice）で再生成する。
+- 操作要領（第3版、2026-10-27の画面）はWeb画面42枚を収録し、画面の8言語（ja・en・fr・es・it・pt・de・ko）ごとにその言語の画面図を載せたPDFを `app/static/manual/CHUCK_Operation_Manual_<言語>.pdf` に格納する（Word版は第3版で廃止）。アプリ画面上部の「操作要領（PDF）」は `app/static/manual-download.js` で表示中の言語の版に切り替わり、各言語のREADMEも自言語の版へリンクする。画面図は `docs/manual/capture_screens.cjs`（実エンジン＋UIフィクスチャ、8言語を順に撮影）、本文は `docs/manual/build_manual.py`（python-docx＋LibreOffice）で再生成する。日本語の本文を変えたら `docs/manual/i18n/<言語>.json` の訳文も追加しないと生成が止まる。PDFの文字は日本語がIPAゴシック、韓国語がNanumGothic、欧文がLiberation Sansで、テーマフォント（中国語字形の代替フォントに落ちる）は使わない。
 
 | 対象 | 基準 |
 |---|---|
@@ -285,7 +285,7 @@ GitHub操作は通常の認証済みGit環境で行う。前の作業環境で�
 
 | 目的 | 参照文書 |
 |---|---|
-| 操作 | `app/static/manual/CHUCK_Operation_Manual_ja.pdf` とWord版 |
+| 操作 | `app/static/manual/CHUCK_Operation_Manual_<言語>.pdf`（8言語） |
 | APIと単位 | `docs/API.md`、`docs/GATEWAY_PROTOCOL.md`、`docs/POSITION_INTERFACE.md` |
 | AIとアンテナ | `docs/AI_SETTINGS.md`、`docs/ANTENNA_OCR.md`、`docs/ANTENNA_PRESETS.md` |
 | 観測とサイト比較 | `docs/SPACE_WEATHER.md`、`docs/INTERNATIONAL_IONOSPHERE.md`、`docs/RX_DIVERSITY.md` |

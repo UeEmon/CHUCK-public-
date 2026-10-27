@@ -12,7 +12,7 @@ Este guia resume instalação, operação e limitações essenciais. O [README j
 
 ## Manual de operação
 
-Manual em japonês (2.ª edição): 42 páginas e 42 capturas da interface, incluindo previsões, mapa de enlaces, relatórios, malha, 12 meses, potência, locais, gateway e configuração de IA/OCR. Também pode ser baixado em “Manual (japonês, PDF)” / “Word” no topo do app. [PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [Word](app/static/manual/CHUCK_Operation_Manual_ja.docx). Telas de 23/10/2026; consulte a documentação atual para alterações posteriores.
+Manual de operação (3.ª edição) com 42 capturas da interface: previsões, mapa de enlaces, relatórios, malha, 12 meses, potência, locais, gateway e configuração de IA/OCR. Há um PDF para cada um dos 8 idiomas da tela, ilustrado com a tela nesse idioma: [PDF em português](app/static/manual/CHUCK_Operation_Manual_pt.pdf). “Manual (PDF)” no topo do app baixa a edição do idioma exibido. Todos os idiomas: [日本語](app/static/manual/CHUCK_Operation_Manual_ja.pdf) / [English](app/static/manual/CHUCK_Operation_Manual_en.pdf) / [Français](app/static/manual/CHUCK_Operation_Manual_fr.pdf) / [Español](app/static/manual/CHUCK_Operation_Manual_es.pdf) / [Italiano](app/static/manual/CHUCK_Operation_Manual_it.pdf) / [Português](app/static/manual/CHUCK_Operation_Manual_pt.pdf) / [Deutsch](app/static/manual/CHUCK_Operation_Manual_de.pdf) / [한국어](app/static/manual/CHUCK_Operation_Manual_ko.pdf). Telas de 27/10/2026; consulte a documentação atual para alterações posteriores.
 
 ## Início
 

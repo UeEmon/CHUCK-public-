@@ -62,7 +62,7 @@ $('plan-print').onclick=()=>{
  // A separate plain page keeps the dark workspace out of print; the text is already in the UI language.
  const w=window.open('','_blank');if(!w){notice('印刷用のウィンドウを開けませんでした。ポップアップの許可を確認してください。',true);return;}
  const d=w.document;d.documentElement.lang=document.documentElement.lang;d.title=$('frequency-plan').querySelector('h3').textContent;
- const style=d.createElement('style');style.textContent='body{font:12px/1.6 system-ui,sans-serif;color:#000;margin:24px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:4px 8px;text-align:left}th{background:#eee}';d.head.append(style);
+ const style=d.createElement('style');style.textContent='body{font:12px/1.6 "Hiragino Sans","Hiragino Kaku Gothic ProN","Meiryo","Yu Gothic","Noto Sans JP",sans-serif;color:#000;margin:24px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:4px 8px;text-align:left}th{background:#eee}';d.head.append(style);
  const title=d.createElement('h1');title.style.fontSize='16px';title.textContent=d.title;d.body.append(title);
  for(const id of ['plan-caption','plan-summary']){const p=d.createElement('p');p.textContent=$(id).textContent;d.body.append(p);}
  d.body.append(d.importNode($('plan-table').querySelector('table'),true));

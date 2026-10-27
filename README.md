@@ -15,11 +15,11 @@ CHUCK（Coverage & HF Usability Calculation Kit）は公開VOACAP計算エンジ
 
 開発者向けの構成・検証状況・残課題・再開手順は[開発引き継ぎ書](docs/HANDOVER.md)を参照してください。
 
-Web操作画面42枚を収録した全42ページの日本語操作要領（第2版）です。起動、伝搬予測、回線マップ、報告書、メッシュ・12か月予測・必要な送信電力・拠点の候補、プリセット管理、ゲートウェイ、AI・OCR設定、障害対応を説明しています。アプリ画面上部の「操作要領（PDF）」「Word」からもダウンロードできます。
+Web操作画面42枚を収録した操作要領（第3版）です。起動、伝搬予測、回線マップ、報告書、メッシュ・12か月予測・必要な送信電力・拠点の候補、プリセット管理、ゲートウェイ、AI・OCR設定、障害対応を説明しています。画面の8言語それぞれのPDFがあり、画面図もその言語の画面です。アプリ画面上部の「操作要領（PDF）」から、表示中の言語の版をダウンロードできます。
 
-[PDF版](app/static/manual/CHUCK_Operation_Manual_ja.pdf) ／ [Word版](app/static/manual/CHUCK_Operation_Manual_ja.docx)
+[日本語PDF](app/static/manual/CHUCK_Operation_Manual_ja.pdf) ／ 他の言語：[English](app/static/manual/CHUCK_Operation_Manual_en.pdf) / [Français](app/static/manual/CHUCK_Operation_Manual_fr.pdf) / [Español](app/static/manual/CHUCK_Operation_Manual_es.pdf) / [Italiano](app/static/manual/CHUCK_Operation_Manual_it.pdf) / [Português](app/static/manual/CHUCK_Operation_Manual_pt.pdf) / [Deutsch](app/static/manual/CHUCK_Operation_Manual_de.pdf) / [한국어](app/static/manual/CHUCK_Operation_Manual_ko.pdf)
 
-対象は2026年10月23日の画面です。更新後の変更点は、このREADMEと各詳細文書も確認してください。画面図は `docs/manual/capture_screens.cjs`、本文は `docs/manual/build_manual.py` で再生成できます。
+対象は2026年10月27日の画面です。更新後の変更点は、このREADMEと各詳細文書も確認してください。画面図は `docs/manual/capture_screens.cjs`、本文は `docs/manual/build_manual.py`（訳文は `docs/manual/i18n/`）で再生成できます。
 
 ## 起動
 

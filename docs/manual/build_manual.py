@@ -1,10 +1,16 @@
-"""Build the Japanese operation manual (Word and PDF) from the screenshots.
+"""Build the operation manual PDFs, one per screen language, from the screenshots.
 
-  python3 docs/manual/build_manual.py docs/manual/images app/static/manual
+  python3 docs/manual/build_manual.py docs/manual/images app/static/manual [ja,en,...]
 
-Screenshots come from docs/manual/capture_screens.cjs. The PDF is made with
-LibreOffice (soffice) from the generated Word file. Needs python-docx.
+The text below is the Japanese source. Other languages look every sentence up in
+docs/manual/i18n/<language>.json (source -> translation) and stop on a missing one,
+so a changed sentence must be translated before the manuals are rebuilt.
+Screenshots come from docs/manual/capture_screens.cjs (images/<language>/).
+Each PDF is made with LibreOffice (soffice) from a temporary Word file. Needs python-docx.
 """
+import copy
+import json
+import re
 import datetime
 import shutil
 import subprocess
@@ -20,22 +26,97 @@ from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 HERE = Path(__file__).resolve().parent
-NAME = 'CHUCK_Operation_Manual_ja'
-EDITION = '第2版'
-DATE = datetime.date(2026, 10, 23)
+LANGUAGES = ('ja', 'en', 'fr', 'es', 'it', 'pt', 'de', 'ko')
+DATE = datetime.date(2026, 10, 27)
+JAPANESE = re.compile('[\u3041-\u3093\u30a1-\u30f6\u4e00-\u9faf]')
+FIGURE = dict(ja='図{n}  {caption}', en='Figure {n}  {caption}', fr='Figure {n}  {caption}', es='Figura {n}  {caption}',
+              it='Figura {n}  {caption}', pt='Figura {n}  {caption}', de='Abbildung {n}  {caption}', ko='그림 {n}  {caption}')
+# Japanese text uses a Japanese typeface so kanji keep the Japanese glyph forms.
+FONTS = dict(ja=('IPAGothic', 'IPAGothic', 'ja-JP'), ko=('NanumGothic', 'NanumGothic', 'ko-KR'))
+LATIN = ('Liberation Sans', 'IPAGothic')
+LOCALES = dict(en='en-US', fr='fr-FR', es='es-ES', it='it-IT', pt='pt-BR', de='de-DE')
+# Symbols missing from the text faces; without this LibreOffice falls back to arbitrary fonts.
+SYMBOLS = re.compile('([↻▶■−])')
+SYMBOL_FONT = 'DejaVu Sans'
+THEME = [qn(f'w:{key}') for key in ('asciiTheme', 'hAnsiTheme', 'eastAsiaTheme', 'cstheme')]
 MAX_WIDTH = 6.5   # inches; the text column of the template is 6.9 in
 MAX_HEIGHT = 4.3  # leaves room for the caption and the steps on the same page
 
 
+def translations(language):
+    if language == 'ja':
+        return lambda text: text
+    table = json.loads((HERE / 'i18n' / f'{language}.json').read_text(encoding='utf-8'))
+
+    def t(text):
+        if not text or not JAPANESE.search(text):
+            return text
+        if text not in table:
+            raise KeyError(f'{language}: no translation for {text!r}')
+        return table[text]
+    return t
+
+
 class Manual:
-    def __init__(self, images):
-        self.images = Path(images)
+    def __init__(self, images, language='ja'):
+        self.language = language
+        self.t = translations(language)
+        self.images = Path(images) / language
         self.doc = docx.Document(HERE / 'template.docx')
+        self.fonts()
         self.figure = 0
         self.chapter = 0
         self.tmp = tempfile.mkdtemp()
 
+    def fonts(self):
+        latin, east_asia, lang = FONTS.get(self.language, (*LATIN, LOCALES.get(self.language)))
+        for style in self.doc.styles:
+            if style.type != 1 or style.name.startswith('Default'):
+                continue
+            style.element.get_or_add_rPr().get_or_add_rFonts()
+        # Theme fonts win over named fonts, so headings and the title would fall back to a
+        # Chinese face. Name the fonts everywhere and drop the theme references.
+        styles = self.doc.styles.element
+        for fonts in styles.iter(qn('w:rFonts')):
+            for key in THEME:
+                fonts.attrib.pop(key, None)
+            for key in ('w:ascii', 'w:hAnsi', 'w:cs'):
+                fonts.set(qn(key), latin)
+            fonts.set(qn('w:eastAsia'), east_asia)
+        language = self.doc.styles['Normal'].element.get_or_add_rPr()
+        tag = language.find(qn('w:lang'))
+        if tag is None:
+            tag = OxmlElement('w:lang')
+            language.append(tag)
+        tag.set(qn('w:val'), lang)
+        tag.set(qn('w:eastAsia'), 'ko-KR' if self.language == 'ko' else 'ja-JP')
+        for section in self.doc.sections:
+            for para in section.footer.paragraphs:
+                for run in para.runs:
+                    run.text = run.text.replace('CHUCK 操作要領', self.t('CHUCK 操作要領'))
+
+    def symbols(self):
+        """Put the symbols in SYMBOLS into runs of their own with SYMBOL_FONT."""
+        for run in list(self.doc.element.body.iter(qn('w:r'))):
+            text = run.find(qn('w:t'))
+            if text is None or not text.text or not SYMBOLS.search(text.text):
+                continue
+            for part in SYMBOLS.split(text.text):
+                if not part:
+                    continue
+                piece = copy.deepcopy(run)
+                piece.find(qn('w:t')).text = part
+                if SYMBOLS.fullmatch(part):
+                    fonts = piece.get_or_add_rPr().get_or_add_rFonts()
+                    for key in THEME:
+                        fonts.attrib.pop(key, None)
+                    for key in ('w:ascii', 'w:hAnsi', 'w:eastAsia', 'w:cs'):
+                        fonts.set(qn(key), SYMBOL_FONT)
+                run.addprevious(piece)
+            run.getparent().remove(run)
+
     def p(self, text='', style=None, bold=False, size=None, after=None, align=None):
+        text = self.t(text)
         para = self.doc.add_paragraph(style=style)
         if text:
             run = para.add_run(text)
@@ -50,16 +131,16 @@ class Manual:
 
     def h1(self, title, new_page=True):
         self.chapter += 1
-        para = self.doc.add_paragraph(f'{self.chapter}  {title}', style='Heading 1')
+        para = self.doc.add_paragraph(f'{self.chapter}  {self.t(title)}', style='Heading 1')
         para.paragraph_format.page_break_before = new_page
         return para
 
     def h2(self, title):
-        return self.doc.add_paragraph(title, style='Heading 2')
+        return self.doc.add_paragraph(self.t(title), style='Heading 2')
 
     def steps(self, *items):
         for i, item in enumerate(items, 1):
-            self.p(f'{i}. {item}', after=5)
+            self.p(f'{i}. {self.t(item)}', after=5)
 
     def note(self, *texts):
         for text in texts:
@@ -93,11 +174,12 @@ class Manual:
             image.quantize(256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE).save(path, optimize=True)
         width = min(width, MAX_WIDTH, MAX_HEIGHT * w / h)
         self.figure += 1
+        caption = FIGURE[self.language].format(n=self.figure, caption=self.t(caption))
         para = self.p(align=WD_ALIGN_PARAGRAPH.CENTER, after=3)
         para.paragraph_format.keep_with_next = True
         para.add_run().add_picture(str(path), width=Inches(width))
-        para.runs[-1]._r.find('.//' + qn('wp:docPr')).set('descr', f'図{self.figure}  {caption}')
-        self.p(f'図{self.figure}  {caption}', style='Caption', align=WD_ALIGN_PARAGRAPH.CENTER, after=8)
+        para.runs[-1]._r.find('.//' + qn('wp:docPr')).set('descr', caption)
+        self.p(caption, style='Caption', align=WD_ALIGN_PARAGRAPH.CENTER, after=8)
 
     def table(self, header, rows, widths=(1.9, 4.9)):
         table = self.doc.add_table(rows=1, cols=len(header))
@@ -105,7 +187,7 @@ class Manual:
         table.alignment = WD_TABLE_ALIGNMENT.CENTER
         for cell, text in zip(table.rows[0].cells, header):
             cell.text = ''
-            run = cell.paragraphs[0].add_run(text)
+            run = cell.paragraphs[0].add_run(self.t(text))
             run.bold = True
             run.font.size = Pt(10)
             shade = OxmlElement('w:shd')
@@ -116,7 +198,7 @@ class Manual:
             cells = table.add_row().cells
             for cell, text in zip(cells, row):
                 cell.text = ''
-                cell.paragraphs[0].add_run(text).font.size = Pt(10)
+                cell.paragraphs[0].add_run(self.t(text)).font.size = Pt(10)
         table.autofit = False
         for column, width in zip(table.columns, widths):
             column.width = Inches(width)
@@ -127,12 +209,11 @@ class Manual:
 
 
 def write(m):
-    d = m.doc
     # ---- Cover -------------------------------------------------------------
-    d.add_paragraph('CHUCK 操作要領', style='Title')
-    d.add_paragraph('HF伝搬 通信信頼度予測システム', style='Subtitle')
+    m.p('CHUCK 操作要領', style='Title')
+    m.p('HF伝搬 通信信頼度予測システム', style='Subtitle')
     m.p('Coverage & HF Usability Calculation Kit')
-    m.p(f'{EDITION}  {DATE.year}年{DATE.month}月{DATE.day}日\n対象  CHUCK v1.0（2026年10月23日の画面）')
+    m.p('第3版  2026年10月27日\n対象  CHUCK v1.0（2026年10月27日の画面）')
     m.p('本書は、CHUCKのWeb画面でHF回線を設定し、24時間の伝搬、回線マップ、報告書、地域カバー範囲、'
         '複数RXサイト、拠点間メッシュ、12か月予測、必要な送信電力、拠点の候補を確認するための手順書です。'
         '固定局の計算から始め、必要に応じて移動局、外部観測、AIによるアンテナ資料取込みを設定してください。')
@@ -143,13 +224,12 @@ def write(m):
             '「24時間の伝搬を計算」を押し、ヒートマップ、回線マップ、時刻別詳細を確認します。',
             '必要に応じて「報告書を印刷」で1枚にまとめるか、CSV・JSONで保存します。')
     m.h2('本書の入手')
-    m.p('最新の操作要領は、画面上部の「操作要領（PDF）」と「Word」から、いつでもダウンロードできます（第1章）。')
-    m.h2('第2版の主な変更')
-    m.p('用語を「予測」に統一（ダイバーシティー予測・メッシュ予測・12か月予測・予測条件・宇宙天気）。'
-        '目標RELとREL表示の閾値、REL表示（%／4段階）の配色、回線マップの時刻スライダー、'
-        'メッシュの中継表示、全結果タブの報告書印刷、運用周波数の24時間計画、12か月予測、必要な送信電力、'
-        '拠点の候補、定時の再計算、利得表、電波型式と吸収モードを追加し、すべての画面図を現在の画面に差し替えました。')
-    m.note('図は日本語UIの操作例です。横須賀・グアム等は都市の概略位置で、実在する通信施設を示しません。'
+    m.p('最新の操作要領は、画面上部の「操作要領（PDF）」から、表示中の言語の版をいつでもダウンロードできます（第1章）。')
+    m.h2('第3版の主な変更')
+    m.p('画面の8言語（日本語・英語・フランス語・スペイン語・イタリア語・ポルトガル語・ドイツ語・韓国語）それぞれの操作要領を用意し、'
+        '画面図もその言語の画面にしました。配布はPDFだけにしました。ヒートマップの時刻スライダーと周波数行の選択、'
+        '選んだ周波数での回線マップ表示、メッシュ予測の双方向の経路表示を反映しました。')
+    m.note('図は日本語の画面の操作例です。横須賀・グアム等は都市の概略位置で、実在する通信施設を示しません。'
            '予測結果は実VOACAPエンジンで計算した例（2026年11月、SSN 100の手動入力）です。外部観測は未取得の状態、'
            'OCR結果とモデル名は説明用サンプルです。時刻表示は主にUTCで、日本時間はUTCに9時間を加えます。')
 
@@ -157,11 +237,11 @@ def write(m):
     m.h1('操作要領のダウンロード')
     m.p('画面右上の「新機能のお知らせ」の左に、操作要領のダウンロードボタンがあります。')
     m.fig('02-manual-buttons', '操作要領のダウンロードボタン', width=4.2)
-    m.steps('「操作要領（PDF）」を押すと、画面図入りのPDF版を保存します。閲覧・印刷に使います。',
-            '「Word」を押すと、編集できるWord版を保存します。部隊・組織の手順書へ転記する場合に使います。',
+    m.steps('右上のLanguageで、読みたい言語を選びます。',
+            '「操作要領（PDF）」を押すと、選んでいる言語の画面図入りPDFを保存します。閲覧・印刷に使います。',
             '保存先はブラウザのダウンロード設定に従います。')
-    m.note('操作要領は日本語です。画面の言語を切り替えても、日本語版をダウンロードします。'
-           'ボタンは公開版とローカル版の両方にあります。本書の画面はダウンロード時点のアプリに同梱された版です。')
+    m.note('操作要領は画面と同じ8言語にあり、画面図もそれぞれの言語の画面です。'
+           'ボタンは公開版とローカル版の両方にあります。ダウンロードされるのは、その時点のアプリに同梱された版です。')
 
     # ---- 2 -----------------------------------------------------------------
     m.h1('起動と停止')
@@ -275,13 +355,14 @@ def write(m):
     m.fig('07-map-time', '時刻スライダーとRELで色分けした経路')
     m.steps('スライダーを動かすと、地図の経路の色と、経路上のREL表示（REL・周波数・UTC）がその時刻に切り替わります。',
             '「▶ 再生」で1時間ずつ自動で進み、「停止」で止まります。',
-            'ヒートマップのセルやヒートマップ上のスライダーで時刻を選んでも、地図の時刻が連動します。')
+            'ヒートマップのセルやヒートマップ上のスライダーで時刻を選んでも、地図の時刻が連動します。',
+            'ヒートマップで周波数の行を選んでいる間は、経路の色とRELもその周波数で表示します。同じセルをもう一度選ぶと選択が外れ、最良周波数の表示に戻ります。')
     m.h2('REL表示（%／4段階）')
     m.p('地図右上の「REL表示」を「4段階」にすると、地図・ヒートマップ・メッシュ表がEXCELLENT・GOOD・POOR・NONEの段階表示になります。'
         '%表示の色も4段階表示と同じ色相にそろえてあり、どちらでも同じ色で読めます。')
     m.fig('09-map-grade', '4段階表示の回線マップ')
     m.fig('10-heatmap-grade', '4段階表示のヒートマップ')
-    m.note('経路の色は選択時刻の最良RELです。段階の境界は第7章で変更できます。')
+    m.note('周波数を選んでいないとき、経路の色は選択時刻の最良RELです。段階の境界は第7章で変更できます。')
 
     # ---- 10 ----------------------------------------------------------------
     m.h1('運用周波数の24時間計画')
@@ -363,7 +444,8 @@ def write(m):
             '「中継」を「直通のみ」「1段まで」「2段まで」（既定）から選びます。直通では目標RELに届かないが中継で届く経路は、枠で示し、中継後のRELと↻段数、その下に中継なしのRELを表示します。',
             'セルを選ぶと、下の「経路の詳細」にその経路の周波数×UTCのRELと中継経路が表示されます。「逆方向を表示」でTXとRXを入れ替えます。')
     m.fig('22-mesh-link', '経路の詳細と中継経路')
-    m.fig('23-mesh-map', 'メッシュ予測の回線マップ')
+    m.fig('23-mesh-map', 'メッシュ予測の回線マップ（拠点の組ごとに双方向の2本）')
+    m.p('回線マップでは、拠点の組ごとにA→BとB→Aの2本の経路を並べて描き、矢印で向きを、色とラベルでそれぞれの方向のRELを示します。')
     m.note('中継は同じUTCで全区間が目標REL以上かどうかだけで判定し、区間のRELを掛け合わせた通しのRELは表示しません。'
            '中継局での蓄積・転送の遅延、送受信切替、混信、チャネル割当は考慮しません。'
            'VOACAPの入力は送受信で非対称のため、A→BとB→AのRELは一致しないことがあります。')
@@ -581,26 +663,35 @@ def write(m):
     m.p('本書の画面・手順は表紙の日付の画面に基づきます。更新後はアプリの「操作要領（PDF）」から最新版を取得し、READMEと詳細文書を併せて確認してください。')
 
 
-def main(images, out):
-    out = Path(out)
-    out.mkdir(parents=True, exist_ok=True)
-    m = Manual(images)
+def build(images, out, language):
+    m = Manual(images, language)
     write(m)
+    m.symbols()
+    t = m.t
     props = m.doc.core_properties
-    props.title = 'CHUCK 操作要領'
-    props.subject = 'Web操作画面を用いたHF伝搬予測と位置ゲートウェイの操作手順'
-    props.keywords = 'CHUCK, HF, VOACAP, 操作要領'
+    props.title = t('CHUCK 操作要領')
+    props.subject = t('Web操作画面を用いたHF伝搬予測と位置ゲートウェイの操作手順')
+    props.keywords = 'CHUCK, HF, VOACAP'
     props.author = 'CHUCK Project'
-    props.revision = 2
+    props.language = FONTS.get(language, (None, None, LOCALES.get(language)))[2]
+    props.revision = 3
     props.created = props.modified = datetime.datetime(DATE.year, DATE.month, DATE.day)
-    target = out / f'{NAME}.docx'
-    m.doc.save(target)
+    name = f'CHUCK_Operation_Manual_{language}'
     with tempfile.TemporaryDirectory() as tmp:
+        target = Path(tmp) / f'{name}.docx'
+        m.doc.save(target)
         subprocess.run(['soffice', '--headless', f'-env:UserInstallation=file://{tmp}/profile',
                         '--convert-to', 'pdf', '--outdir', tmp, str(target)], check=True, capture_output=True)
-        shutil.copy(Path(tmp) / f'{NAME}.pdf', out / f'{NAME}.pdf')
-    print(f'{m.figure} figures, {m.chapter} chapters -> {out}')
+        shutil.copy(Path(tmp) / f'{name}.pdf', out / f'{name}.pdf')
+    print(f'{language}: {m.figure} figures, {m.chapter} chapters -> {out / name}.pdf')
+
+
+def main(images, out, languages=','.join(LANGUAGES)):
+    out = Path(out)
+    out.mkdir(parents=True, exist_ok=True)
+    for language in languages.split(','):
+        build(images, out, language)
 
 
 if __name__ == '__main__':
-    main(*sys.argv[1:3])
+    main(*sys.argv[1:4])

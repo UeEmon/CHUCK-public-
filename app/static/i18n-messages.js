@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "操作要領の8言語化": [
+    "Manual in 8 languages",
+    "Manuel en 8 langues",
+    "Manual en 8 idiomas",
+    "Manuale in 8 lingue",
+    "Manual em 8 idiomas",
+    "Handbuch in 8 Sprachen",
+    "조작 요령 8개 언어 제공"
+  ],
+  "操作要領を画面の8言語それぞれで用意し、画面図もその言語の画面にしました。画面上部の「操作要領（PDF）」で、表示中の言語のPDFをダウンロードできます。Word版の配布は終了しました。": [
+    "The operation manual is now available in each of the 8 screen languages, with figures taken from the screen in that language. “Manual (PDF)” at the top of the screen downloads the PDF in the current language. The Word version is no longer distributed.",
+    "Le manuel d’utilisation est désormais disponible dans chacune des 8 langues de l’écran, avec des figures tirées de l’écran dans cette langue. « Manuel (PDF) » en haut de l’écran télécharge le PDF dans la langue affichée. La version Word n’est plus distribuée.",
+    "El manual de operación está ahora disponible en cada uno de los 8 idiomas de la pantalla, con figuras tomadas de la pantalla en ese idioma. «Manual (PDF)» en la parte superior descarga el PDF en el idioma actual. La versión Word ya no se distribuye.",
+    "Il manuale d’uso è ora disponibile in ciascuna delle 8 lingue della schermata, con figure tratte dalla schermata in quella lingua. «Manuale (PDF)» in alto scarica il PDF nella lingua attuale. La versione Word non è più distribuita.",
+    "O manual de operação está agora disponível em cada um dos 8 idiomas do ecrã, com figuras tiradas do ecrã nesse idioma. “Manual (PDF)” no topo do ecrã transfere o PDF no idioma atual. A versão Word deixou de ser distribuída.",
+    "Das Bedienungshandbuch gibt es jetzt in jeder der 8 Bildschirmsprachen, mit Abbildungen des Bildschirms in dieser Sprache. „Handbuch (PDF)“ oben im Bildschirm lädt das PDF in der angezeigten Sprache herunter. Die Word-Fassung wird nicht mehr verteilt.",
+    "조작 요령을 화면의 8개 언어별로 마련하고, 그림도 해당 언어의 화면으로 했습니다. 화면 위쪽의 ‘조작 요령(PDF)’에서 표시 중인 언어의 PDF를 다운로드할 수 있습니다. Word판 배포는 종료했습니다."
+  ],
   "メッシュ予測の回線マップを双方向で表示": [
     "Mesh forecast circuit map in both directions",
     "Carte du circuit de la prévision maillée dans les deux sens",
@@ -8290,33 +8308,6 @@ const HF_MESSAGES={
     "Zuverlässigkeits-Heatmap (REL %)",
     "신뢰도 히트맵(REL %)"
   ],
-  "操作要領（PDF）": [
-    "Manual (Japanese, PDF)",
-    "Manuel (japonais, PDF)",
-    "Manual (japonés, PDF)",
-    "Manuale (giapponese, PDF)",
-    "Manual (japonês, PDF)",
-    "Handbuch (Japanisch, PDF)",
-    "조작 요령(일본어, PDF)"
-  ],
-  "画面図入りの日本語の操作要領をダウンロード": [
-    "Download the illustrated operation manual (Japanese)",
-    "Télécharger le manuel d’utilisation illustré (en japonais)",
-    "Descargar el manual de uso ilustrado (en japonés)",
-    "Scarica il manuale operativo illustrato (in giapponese)",
-    "Baixar o manual de operação ilustrado (em japonês)",
-    "Bebildertes Bedienhandbuch herunterladen (Japanisch)",
-    "화면 그림이 들어간 일본어 조작 요령 다운로드"
-  ],
-  "編集できるWord形式の操作要領をダウンロード": [
-    "Download the editable Word version of the manual (Japanese)",
-    "Télécharger la version Word modifiable du manuel (en japonais)",
-    "Descargar la versión editable en Word del manual (en japonés)",
-    "Scarica la versione Word modificabile del manuale (in giapponese)",
-    "Baixar a versão editável em Word do manual (em japonês)",
-    "Bearbeitbare Word-Fassung des Handbuchs herunterladen (Japanisch)",
-    "편집할 수 있는 Word 형식의 조작 요령 다운로드"
-  ],
   "操作要領の更新とダウンロード": [
     "Updated manual and download",
     "Manuel mis à jour et téléchargement",
@@ -8334,6 +8325,24 @@ const HF_MESSAGES={
     "O manual de operação ilustrado em japonês (2.ª edição) agora corresponde às telas atuais e inclui as novas funções. Baixe-o em “Manual (japonês, PDF)” ou “Word” no topo da página.",
     "Das bebilderte japanische Bedienhandbuch (2. Auflage) entspricht jetzt den aktuellen Bildschirmen und beschreibt die neuen Funktionen. Herunterladen über „Handbuch (Japanisch, PDF)“ oder „Word“ oben auf der Seite.",
     "화면 그림이 들어간 일본어 조작 요령(제2판)을 현재 화면에 맞게 갱신하고 새 기능의 장을 추가했습니다. 페이지 위쪽의 「조작 요령(일본어, PDF)」「Word」에서 다운로드할 수 있습니다."
+  ],
+  "操作要領（PDF）": [
+    "Manual (PDF)",
+    "Manuel (PDF)",
+    "Manual (PDF)",
+    "Manuale (PDF)",
+    "Manual (PDF)",
+    "Handbuch (PDF)",
+    "조작 요령(PDF)"
+  ],
+  "表示中の言語の操作要領（画面図入りPDF）をダウンロード": [
+    "Download the illustrated manual (PDF) in the current language",
+    "Télécharger le manuel illustré (PDF) dans la langue affichée",
+    "Descargar el manual ilustrado (PDF) en el idioma actual",
+    "Scarica il manuale illustrato (PDF) nella lingua attuale",
+    "Baixar o manual ilustrado (PDF) no idioma atual",
+    "Bebildertes Handbuch (PDF) in der aktuellen Sprache herunterladen",
+    "표시 중인 언어의 조작 요령(화면 그림 포함 PDF) 다운로드"
   ],
   "新機能のお知らせ": [
     "What’s new",
