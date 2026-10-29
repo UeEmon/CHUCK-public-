@@ -64,7 +64,8 @@ const {chromium}=require('playwright');
   await linkCell.click();
   assert.equal(await page.locator('#mesh-frequency').inputValue(),'best');assert.equal(await page.locator('#mesh-hour').inputValue(),'7');
   assert.equal(await page.locator('#mesh-link-heatmap th.selected').count(),1);assert.equal(await mapRow(),10);
-  assert.equal(await page.locator('#mesh-link-heatmap td.selected').count(),0);
+  assert.equal(await page.locator('#mesh-link-heatmap td.selected').count(),await page.locator('#mesh-link-heatmap tr').count()-1);// the hour column again
+  assert.equal(await page.locator('#mesh-link-heatmap tr').nth(1).locator('td').nth(7).evaluate(td=>td.classList.contains('selected')),true);
   // Station names stay as entered in another language.
   await page.selectOption('#language','en');
   assert.equal(await page.locator('#mesh-relay-summary').innerText(),'Reachable via relay: 3 links · Unreachable: 6 links (up to 2 relays)');

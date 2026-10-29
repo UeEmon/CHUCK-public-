@@ -45,10 +45,10 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   await page.locator('#map-hour').fill('23');assert.match(await label(),/REL 92%.*23UTC/);
   await page.selectOption('#language','en');assert.equal(await page.locator('#map-play').innerText(),'▶ Play');
   assert.equal(await page.locator('#map-hour').getAttribute('aria-label'),'Circuit map display time (UTC)');
-  // The selected hour is shown on its column header; no cell is outlined until one is chosen.
+  // Until a cell is chosen, the selected hour's whole column is outlined.
   await page.evaluate(()=>{Object.assign(result,{id:'fake',distance_km:2550,bearing_deg:170});Object.assign(result.parameters,{year:2026,month:10,ssn:80,power_w:1000,required_snr:39});renderResult();});await heat.locator('input').fill('4');
   assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['04']);
-  assert.equal(await page.locator('#heatmap td.selected').count(),0);
+  assert.deepEqual(await page.locator('#heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['4','4']);
   // Choosing a cell selects its frequency row and hour, as in the mesh link matrix; the slider keeps the row.
   assert.equal(await page.locator('#heatmap th.selected[data-frequency]').count(),0);
   assert.match(await label(),/REL 16% · 10\.000 MHz · 04UTC/);// best frequency until a row is chosen
@@ -67,7 +67,8 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   await heat.locator('input').fill('6');await predCell.click();
   assert.deepEqual(await page.locator('#heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['06']);
   assert.equal(await page.locator('#detail tr.selected').count(),0);
-  assert.equal(await page.locator('#heatmap td.selected').count(),0);
+  // Clearing the cell outlines the hour column again.
+  assert.deepEqual(await page.locator('#heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['6','6']);
   assert.match(await label(),/REL 24% · 10\.000 MHz · 06UTC/);
   await predCell.click();assert.match(await label(),/14\.000 MHz/);
   // The diversity heatmap does the same.
@@ -86,7 +87,7 @@ const {spawn}=require('node:child_process');const {chromium}=require('playwright
   await divHeat.locator('input').fill('3');await divCell.click();
   assert.deepEqual(await page.locator('#diversity-heatmap th.selected').evaluateAll(e=>e.map(th=>th.textContent)),['03']);
   assert.equal(await page.locator('#diversity-summary tr.selected').count(),0);
-  assert.equal(await page.locator('#diversity-heatmap td.selected').count(),0);
+  assert.deepEqual(await page.locator('#diversity-heatmap td.selected').evaluateAll(e=>e.map(td=>td.dataset.hour)),['3','3']);
   assert.match(await label(),/REL 70% · 7\.000 MHz · 03UTC/);
   await page.locator('.tabs [data-tab="prediction"]').click();
   if(process.argv[2])await page.locator('.map-panel').screenshot({path:process.argv[2]});
