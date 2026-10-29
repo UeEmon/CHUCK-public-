@@ -59,6 +59,9 @@ const {chromium}=require('playwright');
   await page.locator('#mesh-link-heatmap td button').nth(24*1+5).click();
   assert.equal(await page.locator('#mesh-hour').inputValue(),'5');
   assert.equal(await page.locator('#mesh-frequency').inputValue(),String(mesh.parameters.frequencies[1]));
+  // Only the chosen cell is outlined, not the whole hour column.
+  assert.equal(await page.locator('#mesh-link-heatmap td.selected').count(),1);
+  assert.equal(await page.locator('#mesh-link-heatmap tr').nth(2).locator('td').nth(5).evaluate(td=>td.classList.contains('selected')),true);
   await page.locator('#mesh-play').click();await page.waitForFunction(()=>$('mesh-hour').value!=='5');await page.locator('#mesh-play').click();
   const csv=await page.evaluate(id=>fetch(`/api/results/${id}/csv`).then(r=>r.text()),mesh.id);
   assert.match(csv,/tx_id,tx_name,rx_id,rx_name/);
