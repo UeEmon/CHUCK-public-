@@ -8,7 +8,9 @@ cleanly. This module only wraps it:
   the password-protected admin site and stripped on the public site.
 * The shared history list is hidden; each browser keeps its own list of result
   IDs (static/public.js). Results stay readable by their random ID.
-* Calculations are rate limited per client and old results are pruned.
+* Calculations are rate limited per client and old results are pruned. The
+  budget, window and costs come from the environment and can be changed on the
+  admin site (RateSettings).
 * GitHub Sponsors reports sponsorships to a webhook kept in a ledger
   (donations.py); sponsors may send antenna catalogs, reviewed on the admin site.
 """
@@ -67,6 +69,9 @@ class RateLimiter:
         self.budget=budget;self.window=window_seconds;self.clock=clock
         self.spent={};self.lock=threading.Lock()
 
+    def configure(self,budget,window_seconds):
+        with self.lock:self.budget=budget;self.window=window_seconds
+
     def take(self,client,cost):
         now=self.clock()
         with self.lock:
@@ -83,6 +88,52 @@ class RateLimiter:
 
 LIMITER=RateLimiter(int_env('CHUCK_RATE_BUDGET',60),int_env('CHUCK_RATE_WINDOW_SECONDS',3600))
 UPLOAD_LIMITER=RateLimiter(10,3600)
+RATE_DEFAULTS=dict(budget=LIMITER.budget,window_seconds=LIMITER.window,cost=dict(COST))
+MAX_BUDGET=100000
+WINDOW_RANGE=(60,7*86400)
+MAX_COST=1000
+
+
+def bounded_int(value,low,high,message):
+    if isinstance(value,bool) or not isinstance(value,(int,float)) or value!=int(value) or not low<=value<=high:raise ValueError(message)
+    return int(value)
+
+
+class RateSettings:
+    """Calculation budget set on the admin site; it overrides the environment defaults until reset."""
+    def __init__(self,connection):
+        self.connect=connection
+
+    def connection(self):
+        c=self.connect()
+        with c:c.execute('CREATE TABLE IF NOT EXISTS rate_settings (id INTEGER PRIMARY KEY CHECK (id=1), budget INTEGER NOT NULL, window_seconds INTEGER NOT NULL, cost TEXT NOT NULL, updated TEXT NOT NULL)')
+        return c
+
+    def current(self):
+        with self.connection() as c:row=c.execute('SELECT budget,window_seconds,cost,updated FROM rate_settings WHERE id=1').fetchone()
+        if not row:return dict(RATE_DEFAULTS,cost=dict(RATE_DEFAULTS['cost']),updated=None)
+        # Calculations added after the row was saved keep their default cost.
+        return dict(budget=row[0],window_seconds=row[1],cost=dict(RATE_DEFAULTS['cost'],**{k:v for k,v in json.loads(row[2]).items() if k in COST}),updated=row[3])
+
+    def save(self,data):
+        budget=bounded_int(data.get('budget'),0,MAX_BUDGET,f'上限は0〜{MAX_BUDGET}の整数で指定してください')
+        window=bounded_int(data.get('window_seconds'),*WINDOW_RANGE,'時間枠は1分〜7日で指定してください')
+        cost=data.get('cost')
+        if not isinstance(cost,dict) or set(cost)!=set(COST):raise ValueError('すべての計算の消費ポイントを指定してください')
+        cost={k:bounded_int(v,1,MAX_COST,f'消費ポイントは1〜{MAX_COST}の整数で指定してください') for k,v in cost.items()}
+        with self.connection() as c:
+            c.execute('INSERT OR REPLACE INTO rate_settings VALUES (1,?,?,?,?)',(budget,window,json.dumps(cost),datetime.now(timezone.utc).isoformat()))
+        return self.apply()
+
+    def reset(self):
+        with self.connection() as c:c.execute('DELETE FROM rate_settings')
+        return self.apply()
+
+    def apply(self):
+        settings=self.current()
+        LIMITER.configure(settings['budget'],settings['window_seconds'])
+        COST.update(settings['cost'])
+        return settings
 RETENTION_DAYS=int_env('CHUCK_RESULT_RETENTION_DAYS',30)
 MAX_RESULTS=int_env('CHUCK_MAX_RESULTS',20000)
 
@@ -109,6 +160,7 @@ def save(result,kind='point'):
 
 server.save=save
 DONATIONS=donations.DonationStore(server.connection)
+RATE_SETTINGS=RateSettings(server.connection)
 
 
 def webhook_secret():
@@ -202,6 +254,7 @@ class PublicHandler(server.Handler):
     def admin_get(self,path):
         if path=='/api/admin/donations':
             return self.json(200,dict(DONATIONS.ledger(),fixed_cost_usd=int_env('CHUCK_MONTHLY_COST_USD',0),running_costs=DONATIONS.running_costs(),goal_usd=monthly_goal()))
+        if path=='/api/admin/rate-limit':return self.json(200,dict(RATE_SETTINGS.current(),defaults=RATE_DEFAULTS))
         if path=='/api/admin/catalog-requests':return self.json(200,DONATIONS.catalogs())
         match=re.fullmatch(r'/api/admin/catalog-requests/([0-9a-f]{32})/file',path)
         row=DONATIONS.catalog_file(match.group(1)) if match else None
@@ -243,6 +296,8 @@ class PublicHandler(server.Handler):
         try:
             data=json.loads(body or b'')
             if not isinstance(data,dict):raise ValueError('JSONオブジェクトが必要です')
+            if path=='/api/admin/rate-limit':
+                return self.json(200,dict(RATE_SETTINGS.reset() if data.get('reset') is True else RATE_SETTINGS.save(data),defaults=RATE_DEFAULTS))
             if path=='/api/admin/running-cost':DONATIONS.set_running_cost(data.get('source'),data.get('usd'));return self.json(200,{'goal_usd':monthly_goal()})
             match=re.fullmatch(r'/api/admin/catalog-requests/([0-9a-f]{32})',path)
             if match:DONATIONS.update_catalog(match.group(1),data);return self.json(200,{'ok':True})
@@ -277,6 +332,7 @@ class PublicHandler(server.Handler):
 
 if __name__=='__main__':
     server.connection().close()
+    RATE_SETTINGS.apply()
     server.start_watcher()
     if not admin_secret():print('CHUCK_ADMIN_SECRET is unset or shorter than 32 characters: admin functions are disabled',flush=True)
     print('CHUCK public mode: http://localhost:18082',flush=True)

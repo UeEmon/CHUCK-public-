@@ -72,7 +72,7 @@ class LocalesTests(unittest.TestCase):
 
     def test_page_dictionaries_cover_their_pages(self):
         for page,extra in [('index.html',()),('../gateway_static/index.html',()),('catalog.html',('public-messages.js',)),
-                           ('support-admin.html',('support-messages.js',)),('data-licenses.html',('data-licenses-messages.js',))]:
+                           ('support-admin.html',('support-messages.js',)),('limits-admin.html',('support-messages.js',)),('data-licenses.html',('data-licenses-messages.js',))]:
             messages=load_messages(*extra);covered=translatable(messages)
             for name in extra:
                 source=(STATIC/name).read_text()

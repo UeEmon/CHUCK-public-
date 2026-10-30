@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>計算回数の上限 — CHUCK</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<header><div class="brand">CHUCK 管理</div><select id="language" aria-label="Language" style="width:auto;margin-left:auto"><option value="ja">日本語</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="it">Italiano</option><option value="pt">Português</option><option value="de">Deutsch</option><option value="ko">한국어</option></select><a href="/" style="margin-left:12px;color:var(--accent)">アプリに戻る</a></header>
+<div class="workspace" style="max-width:900px;margin:auto">
+<p id="status" class="muted" role="status"></p>
+<form id="rate-form" class="panel">
+<h3>計算回数の上限</h3>
+<p class="hint">公開サイトの利用者（接続元IPごと）は、時間枠のあいだに上限までのポイントを使って計算できます。計算の種類ごとに1回の消費ポイントが決まっています。管理サイトからの計算は制限されません。保存するとすぐに反映されます。</p>
+<div class="pair"><label>上限（ポイント）<input name="budget" type="number" min="0" max="100000" step="1" required></label><label>時間枠（分）<input name="window_minutes" type="number" min="1" max="10080" step="1" required></label></div>
+<p id="rate-defaults" class="hint"></p>
+<div id="rate-costs" class="table-wrap"></div>
+<p class="exports"><button type="submit" class="primary">保存</button><button type="button" id="rate-reset">既定値に戻す</button></p>
+<p id="rate-updated" class="hint"></p>
+</form>
+</div>
+<script src="limits-admin.js"></script><script src="i18n-messages.js"></script><script src="support-messages.js"></script><script src="i18n.js"></script>
+</body></html>

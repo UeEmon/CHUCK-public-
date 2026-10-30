@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -126,6 +127,48 @@ class PublicModeTests(unittest.TestCase):
         self.assertEqual(limiter.take('b',1),0)
         now[0]=61
         self.assertEqual(limiter.take('a',5),0)
+
+    def test_admin_sets_rate_limit(self):
+        public=self.public
+        try:
+            self.assertEqual(self.request('/api/admin/rate-limit')[0],403)
+            status,body=self.request('/api/admin/rate-limit',admin=True);current=json.loads(body)
+            self.assertEqual(status,200);self.assertIsNone(current['updated'])
+            self.assertEqual(current['defaults']['budget'],public.RATE_DEFAULTS['budget'])
+            # Visitors cannot change the limit.
+            self.assertEqual(self.request('/api/admin/rate-limit',dict(current,budget=999))[0],403)
+            cost=dict(current['cost'],**{'/api/predict':2})
+            status,body=self.request('/api/admin/rate-limit',dict(budget=3,window_seconds=600,cost=cost),admin=True)
+            self.assertEqual(status,200,body);saved=json.loads(body)
+            self.assertEqual((saved['budget'],saved['window_seconds'],saved['cost']['/api/predict']),(3,600,2))
+            self.assertEqual((public.LIMITER.budget,public.LIMITER.window,public.COST['/api/predict']),(3,600,2))
+            cfg=json.loads(self.request('/api/public-config')[1])
+            self.assertEqual((cfg['rate_budget'],cfg['rate_window_seconds'],cfg['cost']['/api/predict']),(3,600,2))
+            # The saved value survives a restart: a fresh limiter picks it up from the database.
+            public.LIMITER.configure(60,3600);public.RATE_SETTINGS.apply()
+            self.assertEqual((public.LIMITER.budget,public.LIMITER.window),(3,600))
+            for bad in (dict(budget=-1),dict(budget=1.5),dict(budget='3'),dict(window_seconds=30),dict(cost={'/api/predict':1}),dict(cost=dict(cost,**{'/api/mesh':0}))):
+                status,body=self.request('/api/admin/rate-limit',dict(dict(budget=3,window_seconds=600,cost=cost),**bad),admin=True)
+                self.assertEqual(status,400,bad)
+            status,body=self.request('/api/admin/rate-limit',dict(reset=True),admin=True)
+            self.assertEqual(status,200,body);self.assertIsNone(json.loads(body)['updated'])
+            self.assertEqual(public.LIMITER.budget,public.RATE_DEFAULTS['budget'])
+            self.assertEqual(public.COST,public.RATE_DEFAULTS['cost'])
+        finally:
+            public.RATE_SETTINGS.reset()
+
+    def test_limits_admin_page_is_translated(self):
+        status,body=self.request('/limits-admin.html');body=body.decode()
+        self.assertEqual(status,200)
+        order=[body.index(s) for s in ('limits-admin.js','i18n-messages.js','support-messages.js','i18n.js')]
+        self.assertEqual(order,sorted(order))
+        static=Path(__file__).resolve().parents[1]/'app'/'static'
+        source=(static/'support-messages.js').read_text(encoding='utf-8')
+        entries=json.loads('{'+source.split('const messages={',1)[1].split('\n };',1)[0]+'}')
+        script=(static/'limits-admin.js').read_text(encoding='utf-8')
+        for word in ('カバー範囲（周波数×時刻）','1回の消費ポイント','既定値で動作しています','既定値に戻しました'):
+            self.assertIn("'"+word+"'",script);self.assertIn(word,entries)
+        self.assertEqual(set(self.public.COST),set(re.findall(r"'(/api/[a-z-]+)':",script.split('LABELS=',1)[1].split('};',1)[0])))
 
     def test_old_results_are_pruned(self):
         with self.server.connection() as c:

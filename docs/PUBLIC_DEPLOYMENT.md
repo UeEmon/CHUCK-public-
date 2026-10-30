@@ -14,6 +14,7 @@
 | `app/donations.py` | 寄付台帳とアンテナ資料の受付（GitHub Sponsors の Webhook の検証と記録） |
 | `app/static/catalog.html`・`catalog.js` | アンテナ資料の受付ページ |
 | `app/static/support-admin.html`・`support-admin.js` | 管理サイトの寄付・資料の管理画面 |
+| `app/static/limits-admin.html`・`limits-admin.js` | 管理サイトの計算回数の上限の設定画面 |
 | `app/static/public-messages.js` | 公開版で追加した文言の翻訳（本家と同じ8言語） |
 | `tests/test_public.py`・`tests/test_donations.py` | 公開版の試験 |
 
@@ -81,6 +82,8 @@ admin.{$CHUCK_DOMAIN} {
 ## 計算回数の制限
 
 利用者ごと（`X-Forwarded-For` の先頭、なければ接続元IP）に、`CHUCK_RATE_WINDOW_SECONDS`（既定3600秒）あたり `CHUCK_RATE_BUDGET`（既定60）の枠を設けます。1回の消費量は地点間予測1、ダイバーシティー3、カバー範囲5です（カバー範囲は35回分のエンジン計算を行うため）。上限を超えると429を返します。CaddyはX-Forwarded-Forを接続元の値で置き換えるため、利用者が偽装しても無視されます。
+
+管理サイトのアンテナ画面にある「計算回数の上限」（`/limits-admin.html`）で、上限ポイント・時間枠・計算ごとの消費ポイントを変更できます。保存した値はデータベースに残り、再起動後も環境変数より優先されます。「既定値に戻す」で環境変数の値に戻ります。上限を0にすると公開サイトでの計算を止められます。
 
 同時に実行できる計算は本家と同じく1件で、実行中の要求は409になります。
 

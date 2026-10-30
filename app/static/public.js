@@ -161,10 +161,12 @@ function antennaRequest(cfg){
 }
 const domReady=new Promise(resolve=>document.readyState==='loading'?document.addEventListener('DOMContentLoaded',resolve,{once:true}):resolve());
 Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
- if(cfg.public&&cfg.admin&&cfg.donations){
-  // Admins reach the donation ledger from the antenna screen.
-  const link=Object.assign(document.createElement('a'),{href:'/support-admin.html',textContent:'寄付と資料の管理'});
-  const p=document.createElement('p');p.className='exports';p.append(link);document.getElementById('antenna-editor')?.before(p);
+ if(cfg.public&&cfg.admin){
+  // Admins reach the calculation limits and the donation ledger from the antenna screen.
+  const p=document.createElement('p');p.className='exports';
+  p.append(Object.assign(document.createElement('a'),{href:'/limits-admin.html',textContent:'計算回数の上限'}));
+  if(cfg.donations)p.append(Object.assign(document.createElement('a'),{href:'/support-admin.html',textContent:'寄付と資料の管理'}));
+  document.getElementById('antenna-editor')?.before(p);
  }
  if(!cfg.public||cfg.admin)return;
  const hide=el=>{if(el){el.hidden=true;el.style.display='none';}};

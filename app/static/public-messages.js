@@ -98,7 +98,8 @@
   "マイ地点":["My locations", "Mes lieux", "Mis ubicaciones", "Le mie località", "Meus locais", "Meine Standorte", "내 지점"],
   "このブラウザに保存できるのは{count}件までです":["This browser can store up to {count} entries", "Ce navigateur peut enregistrer {count} éléments au maximum", "Este navegador puede guardar hasta {count} elementos", "Questo browser può salvare al massimo {count} elementi", "Este navegador pode salvar até {count} itens", "Dieser Browser kann höchstens {count} Einträge speichern", "이 브라우저에 저장할 수 있는 것은 {count}건까지입니다"],
   "緯度":["Latitude", "Latitude", "Latitud", "Latitudine", "Latitude", "Breite", "위도"],
-  "経度":["Longitude", "Longitude", "Longitud", "Longitudine", "Longitude", "Länge", "경도"]
+  "経度":["Longitude", "Longitude", "Longitud", "Longitudine", "Longitude", "Länge", "경도"],
+  "計算回数の上限":["Calculation limits", "Limites de calcul", "Límites de cálculo", "Limiti di calcolo", "Limites de cálculo", "Berechnungslimits", "계산 횟수 제한"]
  };
  // Upstream keys win so a merge never changes its existing wording.
  for(const [key,values]of Object.entries(messages))if(!(key in HF_MESSAGES))HF_MESSAGES[key]=values;
