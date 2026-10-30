@@ -31,9 +31,15 @@ class ApiTests(unittest.TestCase):
                 self.assertEqual(json.load(request('/api/results/'+r['id']))['parameters'],r['parameters'])
                 for ext in ['csv','json','raw','input']:
                     with request('/api/results/'+r['id']+'/'+ext) as response:self.assertGreater(len(response.read()),200)
+                c=json.load(request('/api/coverage',dict(p,frequency_mhz=8,hour_utc=12)))
+                # One VOACAP area run over the whole world by default; a span is centred on the TX.
+                self.assertEqual((c['center_lat'],c['center_lon'],c['span'],c['area']['size']),(35.3,139.67,360,181))
+                self.assertEqual(len(c['area']['signal_dbw']),181);self.assertEqual(len(c['area']['reliability'][0]),181)
+                with request('/api/results/'+c['id']+'/csv') as response:self.assertEqual(sum(l[:1] in '-0123456789' for l in response.read().decode().splitlines()),181*181)
                 c=json.load(request('/api/coverage',dict(p,frequency_mhz=8,hour_utc=12,span=60)))
-                self.assertEqual(len(c['coverage']),35)
-                self.assertEqual(len(json.load(request('/api/history'))),2)
+                self.assertEqual((c['area']['size'],c['area']['lon_min'],c['area']['lon_max'],c['area']['lat_min'],c['area']['lat_max']),(121,109.7,169.7,5.3,65.3))
+                with self.assertRaises(urllib.error.HTTPError):request('/api/coverage',dict(p,span=45))
+                self.assertEqual(len(json.load(request('/api/history'))),3)
                 sites=[dict(name='=RX1',lat=13.45,lon=144.75),dict(name='那覇',lat=26.21,lon=127.68,gain=3,noise=145)]
                 multi={key:value for key,value in p.items() if key not in ('rx_lat','rx_lon')}
                 d=json.load(request('/api/diversity',dict(multi,rx_sites=sites,independence_assumption=True)))

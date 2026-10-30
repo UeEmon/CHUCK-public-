@@ -12,7 +12,7 @@ import sqlite3
 import threading
 from urllib.parse import urlparse, parse_qs
 import uuid
-from engine import Engine, InputError, EngineError, validate, number, distance
+from engine import Engine, InputError, EngineError, validate, number, distance, DIRECTIONAL_ANTENNAS
 
 from space_weather import ENGINE_SSN_SCALE, SpaceWeather, SpaceWeatherError, engine_ssn
 from observations import Observations, GIRO_STATIONS
@@ -101,23 +101,25 @@ def watcher():
 def start_watcher():
     if WATCH_INTERVAL_HOURS>0: threading.Thread(target=watcher,daemon=True).start()
 
+# Area coverage spans in degrees of latitude/longitude; 360 is the whole world.
+COVERAGE_SPANS=(30,60,120,360)
+
 def coverage(p, extra):
-    # A regional sample grid, not interpolated coverage contours.
-    lat=number(extra,'center_lat',-70,70,p['rx_lat'])
-    lon=number(extra,'center_lon',-180,180,p['rx_lon'])
-    span=number(extra,'span',10,120,60)
+    # One VOACAP area-coverage run from the TX: every grid point is a receiver with RX1's antenna and noise.
+    lat=number(extra,'center_lat',-89,89,p['tx_lat'])
+    lon=number(extra,'center_lon',-180,180,p['tx_lon'])
+    span=number(extra,'span',30,360,360,integer=True)
+    if span not in COVERAGE_SPANS: raise InputError('span: 30・60・120・360（全世界）から選んでください')
     hour=number(extra,'hour_utc',0,23,12,integer=True)
     frequency=number(extra,'frequency_mhz',2,30,8)
-    points=[]
-    for y in range(5):
-        for x in range(7):
-            a=max(-89,min(89,lat+(y-2)*span/4))
-            b=(lon+(x-3)*span/6+180)%360-180
-            q=dict(p,rx_lat=a,rx_lon=b,frequencies=[frequency])
-            if distance(p['tx_lat'],p['tx_lon'],a,b)<1: continue
-            r=ENGINE.run(q,hour)['hours'][0]['rows'][0]
-            points.append(dict(lat=a,lon=b,**r))
-    return {'parameters':p,'coverage':points,'hour_utc':hour,'frequency_mhz':frequency,'span':span,'center_lat':lat,'center_lon':lon,'engine':'voacapl 0.7.7','engine_commit':__import__('engine').ENGINE_COMMIT}
+    if span==360: bounds,size=(-180.,180.,-90.,90.),181
+    # Longitudes may run past ±180 so the TX stays centred; the map draws them wrapped.
+    else: bounds,size=(round(lon-span/2,1),round(lon+span/2,1),round(max(-90.,lat-span/2),1),round(min(90.,lat+span/2),1)),121
+    r=ENGINE.area(p,hour,frequency,bounds,size)
+    notes=[]
+    if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='path':
+        notes.append('RX1のアンテナは全格子点で、RX1からTXへの方位に向けています')
+    return {'parameters':p,'area':r['grid'],'input_area':r['input_area'],'notes':notes,'hour_utc':hour,'frequency_mhz':frequency,'span':span,'center_lat':lat,'center_lon':lon,'engine':'voacapl 0.7.7','engine_commit':__import__('engine').ENGINE_COMMIT}
 
 class Handler(BaseHTTPRequestHandler):
     def send(self,code,body,content_type='application/json; charset=utf-8',filename=None):
@@ -250,8 +252,16 @@ class Handler(BaseHTTPRequestHandler):
                             for h in r['hours']:
                                 for v in h['rows']: w.writerow([h['hour_utc'],v['frequency_mhz'],v.get('reliability'),v.get('snr_db_hz'),v.get('signal_dbw'),v.get('takeoff_deg'),h['muf_mhz']])
                         else:
-                            w.writerow(['latitude','longitude','UTC','MHz','REL_percent','SNR_dBHz'])
-                            for v in r['coverage']: w.writerow([v['lat'],v['lon'],r['hour_utc'],v['frequency_mhz'],v.get('reliability'),v.get('snr_db_hz')])
+                            w.writerow(['latitude','longitude','UTC','MHz','REL_percent','SNR_dBHz','S_dBW'])
+                            if 'area' in r:
+                                a=r['area'];n=a['size']
+                                for y in range(n):
+                                    for x in range(n):
+                                        w.writerow([round(a['lat_min']+(a['lat_max']-a['lat_min'])*y/(n-1),4),round((a['lon_min']+(a['lon_max']-a['lon_min'])*x/(n-1)+180)%360-180,4),r['hour_utc'],r['frequency_mhz'],
+                                                    a['reliability'][y][x],a['snr_db_hz'][y][x],a['signal_dbw'][y][x]])
+                            # Coverage saved before the area run: independent sample points.
+                            else:
+                                for v in r['coverage']: w.writerow([v['lat'],v['lon'],r['hour_utc'],v['frequency_mhz'],v.get('reliability'),v.get('snr_db_hz'),v.get('signal_dbw')])
                         return self.send(200,'\ufeff'+output.getvalue(),'text/csv; charset=utf-8',r['id']+'.csv')
                 return self.json(404,{'error':'出力形式がありません'})
             name='index.html' if path=='/' else path.lstrip('/')
@@ -292,8 +302,8 @@ class Handler(BaseHTTPRequestHandler):
                 for key in ('tx_position','rx_position','rx_sites'): data.pop(key,None)
             else: data.pop('mesh_sites',None)
             data,position_inputs=POSITIONS.apply(data)
-            if path=='/api/coverage' and 'rx_position' in data:
-                data.update(center_lat=data['rx_lat'],center_lon=data['rx_lon'])
+            if path=='/api/coverage' and 'tx_position' in data:
+                data.update(center_lat=data['tx_lat'],center_lon=data['tx_lon'])
             sites,independent=diversity.prepare(data) if path=='/api/diversity' else (None,False)
             if sites:
                 first=sites[0]

@@ -30,7 +30,7 @@ import server
 
 ADMIN_HEADER='X-Chuck-Admin'
 CALCULATIONS=('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites')
-# Coverage runs 35 engine passes, diversity up to 8, a power search 10, an annual outlook 12, a site search up to 20 and a mesh up to 56, so they cost more.
+# Coverage runs one VOACAP area calculation over up to 181×181 points, diversity up to 8, a power search 10, an annual outlook 12, a site search up to 20 and a mesh up to 56, so they cost more.
 COST={'/api/predict':1,'/api/coverage':5,'/api/diversity':3,'/api/power':4,'/api/annual':4,'/api/sites':5,'/api/mesh':8}
 ADMIN_GET=('/api/ai-settings','/api/antenna-imports','/api/positions','/api/watches')
 ADMIN_POST=('/api/ai-settings','/api/position-stations','/api/presets','/api/antenna-imports','/api/antenna-patterns','/api/watches')

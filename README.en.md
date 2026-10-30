@@ -39,7 +39,7 @@ History and presets persist in the `hf-data` volume across normal stops/rebuilds
 - Select one TX and one to eight RX sites from presets on the right. Swap TX with an individual RX without changing the others. Two or more RX sites enable diversity predictions.
 - Manage location and antenna presets in separate editors. Initial cities cover North America, East Asia and Europe; city coordinates are approximate, not actual radio stations.
 - Set month, smoothed sunspot number (SSN), power, up to 11 frequencies within 2–30 MHz, antenna model, noise, required SNR/reliability and minimum elevation.
-- Calculate 24-hour CCIR/Method 30 predictions. Results below the map use tabs for reliability, diversity and regional coverage (up to 35 independent points). Select a heatmap cell for UTC details and recommended frequencies.
+- Calculate 24-hour CCIR/Method 30 predictions. Results below the map use tabs for reliability, diversity and regional coverage (VOACAP area calculation from the TX, shown like VOACAP S dBW maps). Select a heatmap cell for UTC details and recommended frequencies.
 - Use the UTC–frequency Propagation Chart (REL/SNR, path MUF, RX selection, SVG export), saved history, CSV/JSON and raw VOACAP input/output.
 - Choose Japanese, English, French, Spanish, Italian, Portuguese, German or Korean with Language. User-entered names and settings are preserved.
 

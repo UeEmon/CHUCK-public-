@@ -10,7 +10,7 @@ AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、�
 |---|---|---|
 | GET | /api/health | 計算エンジン・係数ファイルの配置確認（完全な自己試験ではない） |
 | POST | /api/predict | 24時間地点間予測・履歴保存 |
-| POST | /api/coverage | 地域格子35地点の予測・履歴保存 |
+| POST | /api/coverage | VOACAPエリア計算（TXから格子全体）・履歴保存 |
 | POST | /api/diversity | 単一TX→複数RXの24時間比較・履歴保存 |
 | GET | /api/positions | 移動局の最新位置・局別受信設定 |
 | POST | /api/positions または /api/positions/nmea | 本体では廃止。410、ゲートウェイ18083へ送信する |
@@ -102,9 +102,14 @@ POST例：
   戻り値は`{imported}`。古い／計算緯度範囲外は登録せず、登録済みの名称編集・明示削除を維持します。
   削除済み局はUIから手動登録可能です。既定都市を削除しても再起動時に復活しません。
 
-coverageでは追加で `frequency_mhz`（既定8）、`hour_utc`（既定12）、`span`（10〜120、既定60）、
-`center_lat`（−70〜70、既定RX緯度）、`center_lon`（既定RX経度）を指定できます。
-中心緯度の範囲外では入力エラーを返します。緯度端は±89°でクリップします。
+coverageでは追加で `frequency_mhz`（既定8）、`hour_utc`（既定12）、`span`（30・60・120・360、既定360＝全世界）、
+`center_lat`（−89〜89、既定TX緯度）、`center_lon`（既定TX経度）を指定できます。
+VOACAPのエリア計算を1回実行し、TXから各格子点（受信はRX1のアンテナ・雑音）までを計算します。
+全世界は経度−180〜180°・緯度−90〜90°の181×181格子、それ以外は中心±span/2の121×121格子です
+（緯度は±90°で切り詰め、経度は±180°を越えたまま返します）。結果の `area` は
+`{size, lon_min, lon_max, lat_min, lat_max, signal_dbw, snr_db_hz, reliability}` で、各値は
+南から北の行・西から東の列の2次元配列です。エリア計算の入力形式のため雑音・要求REL・要求SNRは整数に丸め、
+利得表アンテナは400を返します。以前の版で保存した結果は `coverage`（地点の配列）を持ちます。
 
 地点間の結果には `parameters, hours, distance_km, bearing_deg, raw_output, input_cards, engine, engine_commit, id, created` が含まれます。
 `hours[].rows[]` は周波数、信頼度%、SNR dB·Hz、信号dBW、打上げ角などを持ち、計算不能値はnullです。
@@ -291,7 +296,7 @@ HF_GIRO_ENABLED=1の場合、過去2時間のデータを取得し、data.series
 予測3APIへtx_position/rx_position={source,id}、diversityのrx_sitesへposition_ref={source,id}を指定可能。
 緯経度の代わりにサーバーの有効な最新位置を使い、結果へposition_inputsを保存します。
 期限切れ・不明局・エンジン緯度範囲外は400、手動座標への暗黙の代替は行いません。
-diversityのトップレベルrx_positionは無視、coverageの中心点はrx_positionに連動します。
+diversityのトップレベルrx_positionは無視、coverageの中心点はtx_positionに連動します。
 
 ## 外部データの条件表示・保存
 

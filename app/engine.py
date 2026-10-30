@@ -259,6 +259,54 @@ def parse_output(raw, frequencies):
                 r['reliability']=round(r['reliability']*100,1)
     return sorted(blocks,key=lambda b:b['hour_utc'])
 
+def fixed(value,width):
+    """Widest decimal text of value that fits the field; VOACAP reads an explicit decimal point as written."""
+    for places in range(6,-1,-1):
+        text=f'{value:{width}.{places}f}'
+        if len(text)<=width:return text
+    raise InputError('値が入力欄に収まりません')
+
+def area_input(p,hour,frequency,bounds,size):
+    """VOACAP area-coverage input file (areamap.for): the TX is fixed and every grid point is a receiver."""
+    lon_min,lon_max,lat_min,lat_max=bounds
+    place=lambda lat,lon:f'{abs(lat):6.2f}{"N" if lat>=0 else "S"}   {abs(lon):6.2f}{"E" if lon>=0 else "W"}   '
+    azimuth=round((beam_azimuth(p,'tx')+BEAM_OFFSET_DEG.get(p['tx_antenna'],0))%360,1)
+    rx_azimuth=round((beam_azimuth(p,'rx')+BEAM_OFFSET_DEG.get(p['rx_antenna'],0))%360,1)
+    gain=lambda prefix:p[prefix+'_gain'] if p[prefix+'_antenna']=='isotropic' else 0.
+    # The area file holds noise, required REL and required SNR as integers.
+    return '\n'.join(['Model    :VOACAP','Colors   :Black    :Blue     :Ignore   :Ignore   :Red      :Black with shading',
+        'Cities   :Receive.cty','Nparms   :    1','Parameter:REL      0',
+        f'Transmit :{place(p["tx_lat"],p["tx_lon"])}{"TX":<20} Short',
+        f'Pcenter  :{place(p["tx_lat"],p["tx_lon"])}TX',
+        f'Area     :{lon_min:10.1f}{lon_max:10.1f}{lat_min:10.1f}{lat_max:10.1f}',f'Gridsize :{size:5d}    1',
+        'Method   :   30','Coeffs   :CCIR',f'Months   :{p["month"]:7.2f}'+'   0.00'*8,f'Ssns     :{round(p["ssn"]):7d}'+'      0'*8,
+        f'Hours    :{hour or 24:7d}'+'      0'*8,f'Freqs    :{frequency:7.3f}'+'  0.000'*8,
+        f'System   :{round(p["noise"]):5d}{fixed(p["min_angle"],10)}{round(p["reliability"]):5d}{round(p["required_snr"]):5d}{3.:10.3f}{.1:10.3f}',
+        'Fprob    : 1.00 1.00 1.00 0.00',
+        f'Rec Ants :[{"rx.voa":<21}]  gain={gain("rx"):6.1f}{rx_azimuth:6.1f}',
+        f'Tx Ants  :[{"tx.voa":<21}] {gain("tx"):7.3f}{azimuth:6.1f} {fixed(card_power_kw(p),10)}'])+'\n'
+
+# Columns of the 24 six-character fields after latitude and longitude (outarea.for).
+AREA_FIELDS={'signal_dbw':8,'snr_db_hz':10,'reliability':12}
+
+def parse_area(raw,bounds,size):
+    """Rows of the .vg1 grid (outarea.for): latitude rows south to north, longitude columns west to east."""
+    grid={key:[[None]*size for _ in range(size)] for key in AREA_FIELDS}
+    seen=0
+    for line in raw.splitlines():
+        try:x,y,_=int(line[0:3]),int(line[3:6]),float(line[6:16])
+        except ValueError:continue # title and column-header lines
+        if not (1<=x<=size and 1<=y<=size):continue
+        for key,k in AREA_FIELDS.items():
+            try:value=float(line[26+6*k:32+6*k])
+            except ValueError:value=None
+            if key=='reliability' and value is not None:value=round(value*100,1)
+            grid[key][y-1][x-1]=value
+        seen+=1
+    if seen!=size*size:raise EngineError(f'エリア計算の格子が揃いません（{seen}/{size*size}点）')
+    lon_min,lon_max,lat_min,lat_max=bounds
+    return dict(size=size,lon_min=lon_min,lon_max=lon_max,lat_min=lat_min,lat_max=lat_max,**grid)
+
 class Engine:
     def __init__(self):
         self.binary=os.environ.get('VOACAP_BIN','/usr/local/bin/voacapl')
@@ -267,8 +315,9 @@ class Engine:
         self.patterns=None
     def ready(self):
         return bool(shutil.which(self.binary)) and (self.model/'coeffs/coeff01.bin').exists()
-    def execute(self,prepare,absorption_mode='a'):
-        """Run one card deck; prepare(root) may edit private files and returns the deck."""
+    def execute(self,prepare,absorption_mode='a',area=None):
+        """Run one card deck; prepare(root) may edit private files and returns the deck.
+        With area=name, prepare returns an area-coverage input file instead and the grid file is returned."""
         if not self.ready():
             raise EngineError('計算エンジンが準備されていません。docker compose up --build で起動してください。')
         # Each calculation gets private run/database/antenna files. Short paths
@@ -282,31 +331,40 @@ class Engine:
                 shutil.copytree(self.model/name,root/name)
             card=prepare(root)
             (root/'run').mkdir()
-            (root/'run/voacapx.dat').write_text(card,encoding='ascii')
+            if area:
+                (root/'areadata/c').mkdir(parents=True)
+                (root/'areadata/c'/(area+'.voa')).write_text(card,encoding='ascii')
+                args=['area','calc','c/'+area+'.voa'];out=root/'areadata/c'/(area+'.vg1')
+            else:
+                (root/'run/voacapx.dat').write_text(card,encoding='ascii')
+                args=[];out=root/'run/voacapx.out'
             try:
-                cp=subprocess.run([self.binary,'--absorption-mode='+absorption_mode,'-s',str(root)],cwd=tmp,stdin=subprocess.DEVNULL,capture_output=True,text=True,timeout=60)
+                cp=subprocess.run([self.binary,'--absorption-mode='+absorption_mode,'-s',str(root),*args],cwd=tmp,stdin=subprocess.DEVNULL,capture_output=True,text=True,timeout=60)
             except subprocess.TimeoutExpired:
                 raise EngineError('計算が60秒を超えました。条件を見直してください。')
-            out=root/'run/voacapx.out'
             if cp.returncode or not out.exists():
                 raise EngineError('VOACAP計算に失敗しました: '+(cp.stderr or cp.stdout)[-800:])
             return out.read_text(errors='replace')
+    def antenna_files(self,root,p):
+        """Write private tx.voa/rx.voa files; returns the parameters with any pattern digests."""
+        for prefix in ('tx','rx'):
+            source=root/'antennas'/ANTENNAS[p[prefix+'_antenna']]
+            # Separate files allow independent TX/RX gain even for same model.
+            target=root/'antennas'/('tx.voa' if prefix=='tx' else 'rx.voa')
+            if p[prefix+'_antenna']=='pattern_table':
+                import patterns
+                if self.patterns is None:raise EngineError('利得表を読み込めません')
+                grid,digest=self.patterns(p[prefix+'_pattern_id'])
+                offset=round((path_bearing(p,prefix)-beam_azimuth(p,prefix))%360,1)%360
+                target.write_text(patterns.type14_file(grid,offset,p[prefix+'_gain'],'CHUCK '+prefix.upper()),encoding='ascii')
+                p=dict(p,**{prefix+'_pattern_sha256':digest,prefix+'_pattern_offset_deg':offset})
+            else:target.write_text(antenna_file(p,prefix,source.read_text()))
+        return p
     def run(self,p,hour=None):
         card=cards(p,hour)
         def antennas(root):
             nonlocal card,p
-            for prefix in ('tx','rx'):
-                source=root/'antennas'/ANTENNAS[p[prefix+'_antenna']]
-                # Separate files allow independent TX/RX gain even for same model.
-                target=root/'antennas'/('tx.voa' if prefix=='tx' else 'rx.voa')
-                if p[prefix+'_antenna']=='pattern_table':
-                    import patterns
-                    if self.patterns is None:raise EngineError('利得表を読み込めません')
-                    grid,digest=self.patterns(p[prefix+'_pattern_id'])
-                    offset=round((path_bearing(p,prefix)-beam_azimuth(p,prefix))%360,1)%360
-                    target.write_text(patterns.type14_file(grid,offset,p[prefix+'_gain'],'CHUCK '+prefix.upper()),encoding='ascii')
-                    p=dict(p,**{prefix+'_pattern_sha256':digest,prefix+'_pattern_offset_deg':offset})
-                else:target.write_text(antenna_file(p,prefix,source.read_text()))
+            p=self.antenna_files(root,p)
             card=card.replace(ANTENNAS[p['tx_antenna']].ljust(21),'tx.voa'.ljust(21),1)
             # Replacement of RX must occur only on RX card.
             card='\n'.join(line.replace(ANTENNAS[p['rx_antenna']].ljust(21),'rx.voa'.ljust(21)) if line.startswith('ANTENNA       2') else line for line in card.splitlines())+'\n'
@@ -316,3 +374,10 @@ class Engine:
         if hour is None and len(hours)!=24:
             raise EngineError(f'24時間の結果が揃いません（{len(hours)}時間）')
         return {'parameters':p,'engine':'voacapl 0.7.7','engine_commit':ENGINE_COMMIT,'distance_km':round(distance(p['tx_lat'],p['tx_lon'],p['rx_lat'],p['rx_lon']),1),'bearing_deg':round(bearing(p['tx_lat'],p['tx_lon'],p['rx_lat'],p['rx_lon']),1),'hours':hours,'input_cards':card,'raw_output':raw}
+    def area(self,p,hour,frequency,bounds,size):
+        """One VOACAP area-coverage run from the TX over a size x size grid of receivers."""
+        for prefix in ('tx','rx'):
+            if p[prefix+'_antenna']=='pattern_table':raise InputError('利得表アンテナは方位ごとの切り出しが必要なため、カバー範囲では使えません')
+        text=area_input(p,hour,frequency,bounds,size)
+        raw=self.execute(lambda root:(self.antenna_files(root,p),text)[1],p['absorption_mode'],area='chuck')
+        return {'grid':parse_area(raw,bounds,size),'input_area':text}

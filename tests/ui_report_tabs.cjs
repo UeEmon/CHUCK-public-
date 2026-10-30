@@ -100,15 +100,16 @@ const {chromium}=require('playwright');
   assert.match(out.text,/^伝搬予測報告書 · Propagation Chart\n/);assert.match(out.text,/ID d1/);
   assert.match(out.text,/経路\t東京 → Saipan/);assert.match(out.text,/受信局 Saipan/);assert.equal(out.svgs,1);
 
-  // Coverage prints the map with its points.
+  // Coverage prints the map with the VOACAP area grid drawn as colour bands.
   await page.evaluate(()=>{
-   coverageResult={id:'c1',kind:'coverage',created:'2026-10-23T04:00:00+00:00',parameters:{...base},frequency_mhz:8,hour_utc:12,span:60,coverage:[{lat:20,lon:140,reliability:90},{lat:25,lon:145,reliability:null}]};
+   coverageResult={id:'c1',kind:'coverage',created:'2026-10-23T04:00:00+00:00',parameters:{...base},frequency_mhz:8,hour_utc:12,span:60,center_lat:20,center_lon:140,
+    area:{size:2,lon_min:110,lon_max:170,lat_min:-10,lat_max:50,signal_dbw:[[-150,-120],[-100,null]],snr_db_hz:[[10,40],[60,null]],reliability:[[5,50],[95,null]]}};
    tab('coverage');showCoverage();
   });
   out=await print('#coverage-exports .report-tab-print','coverage');
   assert.match(out.text,/^伝搬予測報告書 · カバー範囲\n/);assert.match(out.text,/周波数\t8 MHz \/ 12:00 UTC/);
   assert.match(out.text,/回線マップ/);assert.doesNotMatch(out.text,/計算には時間がかかります/);
-  assert.equal(out.svgs,1);assert.equal((out.html.match(/<circle/g)||[]).length>=2,true);
+  assert.equal(out.svgs,1);assert.match(out.html,/<image class="coverage-area"[^>]*href="data:image\/png;base64,/);
 
   // Text follows the UI language.
   await page.selectOption('#language','en');

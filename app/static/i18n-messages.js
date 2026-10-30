@@ -550,15 +550,6 @@ const HF_MESSAGES={
     "Regionale Abdeckung zur gewählten Stunde",
     "지정 시각의 지역 커버리지"
   ],
-  "RX1の地点・アンテナ・雑音を使用し、その地点を中心に、最大35地点で信頼度を計算します。補間なしの格子点表示です。": [
-    "Uses RX1 location, antenna and noise; up to 35 grid points without interpolation.",
-    "Position, antenne et bruit de RX1 ; 35 points maximum sans interpolation.",
-    "Usa la ubicación, antena y ruido de RX1; hasta 35 puntos sin interpolación.",
-    "Usa posizione, antenna e rumore di RX1; fino a 35 punti senza interpolazione.",
-    "Usa posição, antena e ruído de RX1; até 35 pontos sem interpolação.",
-    "Nutzt Standort, Antenne und Rauschen von RX1; bis zu 35 Gitterpunkte ohne Interpolation.",
-    "RX1의 위치·안테나·잡음으로 최대 35개 격자점을 계산합니다. 보간하지 않습니다."
-  ],
   "周波数 MHz": [
     "Frequency MHz",
     "Fréquence MHz",
@@ -577,15 +568,6 @@ const HF_MESSAGES={
     "UTC-Stunde",
     "UTC 시각"
   ],
-  "範囲（緯度・経度幅）": [
-    "Extent (latitude / longitude)",
-    "Étendue (latitude / longitude)",
-    "Extensión (latitud / longitud)",
-    "Estensione (latitudine / longitudine)",
-    "Extensão (latitude / longitude)",
-    "Bereich (Breite / Länge)",
-    "범위(위도·경도)"
-  ],
   "カバー範囲を計算": [
     "Calculate coverage",
     "Calculer la couverture",
@@ -594,15 +576,6 @@ const HF_MESSAGES={
     "Calcular cobertura",
     "Abdeckung berechnen",
     "커버리지 계산"
-  ],
-  "計算には時間がかかります。完了後に上の地図へ表示します。": [
-    "Calculation may take time. Results appear on the map.",
-    "Le calcul peut prendre du temps. Les résultats apparaissent sur la carte.",
-    "El cálculo puede tardar. Los resultados aparecen en el mapa.",
-    "Il calcolo può richiedere tempo. I risultati appaiono sulla mappa.",
-    "O cálculo pode demorar. Os resultados aparecem no mapa.",
-    "Die Berechnung kann dauern. Ergebnisse erscheinen auf der Karte.",
-    "계산에 시간이 걸릴 수 있습니다. 완료 후 지도에 표시합니다."
   ],
   "移動局 · 位置ゲートウェイ": [
     "Mobile stations · Position gateway",
@@ -2530,24 +2503,6 @@ const HF_MESSAGES={
     "Zielmonat geändert. Zum Aktualisieren erneut abrufen.",
     "대상 연월이 변경되었습니다. 다시 가져오세요."
   ],
-  "地域カバー範囲を計算しています。最大35地点の処理が完了するまでお待ちください。": [
-    "Calculating regional coverage at up to 35 points…",
-    "Calcul de couverture régionale sur 35 points maximum…",
-    "Calculando cobertura regional en hasta 35 puntos…",
-    "Calcolo della copertura regionale su un massimo di 35 punti…",
-    "Calculando cobertura regional em até 35 pontos…",
-    "Regionale Abdeckung an bis zu 35 Punkten wird berechnet…",
-    "최대 35개 지점의 지역 커버리지를 계산하는 중…"
-  ],
-  "カバー範囲の計算が完了しました。地図の丸を選ぶと地点と信頼度を確認できます。": [
-    "Coverage complete. Select map circles for location and reliability.",
-    "Couverture calculée. Choisir les cercles pour le lieu et la fiabilité.",
-    "Cobertura calculada. Seleccione círculos para ubicación y fiabilidad.",
-    "Copertura completata. Seleziona i cerchi per località e affidabilità.",
-    "Cobertura calculada. Selecione círculos para local e confiabilidade.",
-    "Abdeckung berechnet. Kartenkreise für Standort und Zuverlässigkeit wählen.",
-    "커버리지 계산 완료. 지도 원을 선택하면 지점과 신뢰도를 확인합니다."
-  ],
   "最良サイト": [
     "Best site",
     "Meilleur site",
@@ -2818,14 +2773,14 @@ const HF_MESSAGES={
     "Server nicht erreichbar. Docker-Status prüfen.",
     "서버에 연결할 수 없습니다. Docker 실행 상태를 확인하세요."
   ],
-  "{freq} MHz / {hour}:00 UTC / {count}地点 · 丸の色はREL（0〜100%）、灰色は計算値なし": [
-    "{freq} MHz / {hour}:00 UTC / {count} points · Circle color: REL 0–100%; gray: no value",
-    "{freq} MHz / {hour}:00 UTC / {count} points · Couleur : REL 0–100 % ; gris : absent",
-    "{freq} MHz / {hour}:00 UTC / {count} puntos · Color: REL 0–100%; gris: sin valor",
-    "{freq} MHz / {hour}:00 UTC / {count} punti · Colore: REL 0–100%; grigio: nessun valore",
-    "{freq} MHz / {hour}:00 UTC / {count} pontos · Cor: REL 0–100%; cinza: sem valor",
-    "{freq} MHz / {hour}:00 UTC / {count} Punkte · Farbe: REL 0–100 %; Grau: kein Wert",
-    "{freq} MHz / {hour}:00 UTC / {count}개 지점·원 색상: REL 0~100%, 회색: 값 없음"
+  "{freq} MHz / {hour}:00 UTC / {count}地点 · TX中心の範囲を区画ごとにRELの色で表示（0〜100%）、灰色は計算値なし": [
+    "{freq} MHz / {hour}:00 UTC / {count} points · Area around the TX, each cell colored by REL 0–100%; gray: no value",
+    "{freq} MHz / {hour}:00 UTC / {count} points · Zone autour du TX, cases colorées par REL 0–100 % ; gris : absent",
+    "{freq} MHz / {hour}:00 UTC / {count} puntos · Zona alrededor del TX, celdas por REL 0–100%; gris: sin valor",
+    "{freq} MHz / {hour}:00 UTC / {count} punti · Area attorno al TX, celle per REL 0–100%; grigio: nessun valore",
+    "{freq} MHz / {hour}:00 UTC / {count} pontos · Área em torno do TX, células por REL 0–100%; cinza: sem valor",
+    "{freq} MHz / {hour}:00 UTC / {count} Punkte · Gebiet um den TX, Zellen nach REL 0–100 %; Grau: kein Wert",
+    "{freq} MHz / {hour}:00 UTC / {count}개 지점·TX 중심 범위를 구획별 REL 색으로 표시(0~100%), 회색: 값 없음"
   ],
   "{count}サイト。": [
     "{count} sites.",
@@ -9360,5 +9315,176 @@ const HF_MESSAGES={
     "Nas abas Previsão de 24 horas, Previsão de diversidade e Previsão de malha, um controle deslizante UTC e um botão reproduzir/parar aparecem abaixo do mapa do circuito. Ao mover a hora, as cores dos trajetos e o REL no mapa mudam para essa hora.",
     "Auf den Reitern 24-Stunden-Prognose, Diversity-Prognose und Mesh-Prognose erscheinen unter der Verbindungskarte ein UTC-Schieberegler und eine Start/Stopp-Taste. Beim Verschieben der Zeit wechseln Pfadfarben und REL-Anzeige der Karte auf diese Stunde.",
     "24시간 예측, 다이버시티 예측, 메시 예측 탭에서는 회선 지도 아래에 UTC 슬라이더와 재생·정지 버튼을 표시합니다. 시각을 움직이면 지도의 경로 색과 REL 표시가 그 시각으로 바뀝니다."
+  ],
+  "VOACAPのエリア計算で、TXから範囲内の各格子点までの信号強度・SNR・信頼度を計算します。受信側はRX1のアンテナ・雑音を使います。地図には等値線で区切った色の範囲で表示します。": [
+    "VOACAP area coverage computes signal strength, SNR and reliability from the TX to every grid point in the range, using RX1’s antenna and noise at the receiver. The map shows the result as colour bands separated by contour lines.",
+    "Le calcul de zone VOACAP calcule la force du signal, le SNR et la fiabilité du TX vers chaque point de la grille, avec l’antenne et le bruit de RX1 en réception. La carte affiche des plages de couleur séparées par des isolignes.",
+    "El cálculo de área de VOACAP obtiene la intensidad de señal, el SNR y la fiabilidad desde el TX hasta cada punto de la cuadrícula, con la antena y el ruido de RX1 en recepción. El mapa muestra bandas de color separadas por isolíneas.",
+    "Il calcolo d’area VOACAP ricava intensità del segnale, SNR e affidabilità dal TX a ogni punto della griglia, con antenna e rumore di RX1 in ricezione. La mappa mostra fasce di colore separate da isolinee.",
+    "O cálculo de área do VOACAP obtém a intensidade do sinal, o SNR e a confiabilidade do TX até cada ponto da grelha, com a antena e o ruído de RX1 na receção. O mapa mostra faixas de cor separadas por isolinhas.",
+    "Die VOACAP-Flächenberechnung ermittelt Signalstärke, SNR und Zuverlässigkeit vom TX zu jedem Gitterpunkt im Bereich, mit Antenne und Rauschen von RX1 beim Empfang. Die Karte zeigt Farbbänder, getrennt durch Isolinien.",
+    "VOACAP 영역 계산으로 TX에서 범위 내 각 격자점까지의 신호 강도·SNR·신뢰도를 계산합니다. 수신 측은 RX1의 안테나·잡음을 사용합니다. 지도에는 등치선으로 구분한 색 범위로 표시합니다."
+  ],
+  "範囲": [
+    "Range",
+    "Zone",
+    "Rango",
+    "Area",
+    "Área",
+    "Bereich",
+    "범위"
+  ],
+  "全世界": [
+    "Whole world",
+    "Monde entier",
+    "Todo el mundo",
+    "Mondo intero",
+    "Mundo inteiro",
+    "Ganze Welt",
+    "전 세계"
+  ],
+  "TX中心 120° × 120°": [
+    "Around TX 120° × 120°",
+    "Autour du TX 120° × 120°",
+    "Alrededor del TX 120° × 120°",
+    "Attorno al TX 120° × 120°",
+    "Em torno do TX 120° × 120°",
+    "Um den TX 120° × 120°",
+    "TX 중심 120° × 120°"
+  ],
+  "TX中心 60° × 60°": [
+    "Around TX 60° × 60°",
+    "Autour du TX 60° × 60°",
+    "Alrededor del TX 60° × 60°",
+    "Attorno al TX 60° × 60°",
+    "Em torno do TX 60° × 60°",
+    "Um den TX 60° × 60°",
+    "TX 중심 60° × 60°"
+  ],
+  "TX中心 30° × 30°": [
+    "Around TX 30° × 30°",
+    "Autour du TX 30° × 30°",
+    "Alrededor del TX 30° × 30°",
+    "Attorno al TX 30° × 30°",
+    "Em torno do TX 30° × 30°",
+    "Um den TX 30° × 30°",
+    "TX 중심 30° × 30°"
+  ],
+  "表示": [
+    "Show",
+    "Affichage",
+    "Mostrar",
+    "Mostra",
+    "Mostrar",
+    "Anzeige",
+    "표시"
+  ],
+  "信号強度 S dBW": [
+    "Signal strength S dBW",
+    "Force du signal S dBW",
+    "Intensidad de señal S dBW",
+    "Intensità del segnale S dBW",
+    "Intensidade do sinal S dBW",
+    "Signalstärke S dBW",
+    "신호 강도 S dBW"
+  ],
+  "計算には数秒かかります。完了後に上の地図へ表示します。": [
+    "The calculation takes a few seconds; the result then appears on the map above.",
+    "Le calcul prend quelques secondes ; le résultat s’affiche ensuite sur la carte.",
+    "El cálculo tarda unos segundos; luego el resultado aparece en el mapa.",
+    "Il calcolo richiede alcuni secondi; poi il risultato appare sulla mappa.",
+    "O cálculo demora alguns segundos; depois o resultado aparece no mapa.",
+    "Die Berechnung dauert einige Sekunden; danach erscheint das Ergebnis auf der Karte.",
+    "계산에는 몇 초가 걸립니다. 완료되면 위 지도에 표시합니다."
+  ],
+  "VOACAPのエリア計算でカバー範囲を計算しています。完了までお待ちください。": [
+    "Calculating coverage with VOACAP area coverage. Please wait…",
+    "Calcul de la couverture par calcul de zone VOACAP. Veuillez patienter…",
+    "Calculando la cobertura con el cálculo de área de VOACAP. Espere…",
+    "Calcolo della copertura con il calcolo d’area VOACAP. Attendere…",
+    "Calculando a cobertura com o cálculo de área do VOACAP. Aguarde…",
+    "Abdeckung wird mit der VOACAP-Flächenberechnung berechnet. Bitte warten…",
+    "VOACAP 영역 계산으로 커버리지를 계산하는 중입니다. 잠시 기다려 주세요."
+  ],
+  "カバー範囲の計算が完了しました。地図の色の範囲を選ぶと、その地点の信号強度・SNR・信頼度を確認できます。": [
+    "Coverage complete. Select a coloured area on the map for the signal strength, SNR and reliability there.",
+    "Couverture calculée. Choisissez une zone colorée pour voir force du signal, SNR et fiabilité.",
+    "Cobertura calculada. Seleccione una zona coloreada para ver intensidad de señal, SNR y fiabilidad.",
+    "Copertura completata. Seleziona un’area colorata per intensità del segnale, SNR e affidabilità.",
+    "Cobertura calculada. Selecione uma área colorida para ver intensidade do sinal, SNR e confiabilidade.",
+    "Abdeckung berechnet. Farbigen Bereich wählen für Signalstärke, SNR und Zuverlässigkeit.",
+    "커버리지 계산 완료. 지도의 색 범위를 선택하면 그 지점의 신호 강도·SNR·신뢰도를 확인합니다."
+  ],
+  "{freq} MHz / {hour}:00 UTC / {label} / {size}×{size}格子 · TXから各格子点までのVOACAPエリア計算。格子点の間は補間して色分けしています": [
+    "{freq} MHz / {hour}:00 UTC / {label} / {size}×{size} grid · VOACAP area coverage from the TX to each grid point, interpolated between grid points into colour bands",
+    "{freq} MHz / {hour}:00 UTC / {label} / grille {size}×{size} · Calcul de zone VOACAP du TX vers chaque point, interpolé entre les points en plages de couleur",
+    "{freq} MHz / {hour}:00 UTC / {label} / cuadrícula {size}×{size} · Cálculo de área VOACAP del TX a cada punto, interpolado entre puntos en bandas de color",
+    "{freq} MHz / {hour}:00 UTC / {label} / griglia {size}×{size} · Calcolo d’area VOACAP dal TX a ogni punto, interpolato tra i punti in fasce di colore",
+    "{freq} MHz / {hour}:00 UTC / {label} / grelha {size}×{size} · Cálculo de área VOACAP do TX a cada ponto, interpolado entre pontos em faixas de cor",
+    "{freq} MHz / {hour}:00 UTC / {label} / Gitter {size}×{size} · VOACAP-Flächenberechnung vom TX zu jedem Gitterpunkt, zwischen den Punkten zu Farbbändern interpoliert",
+    "{freq} MHz / {hour}:00 UTC / {label} / {size}×{size} 격자 · TX에서 각 격자점까지 VOACAP 영역 계산, 격자점 사이는 보간해 색으로 구분"
+  ],
+  "RX1のアンテナは全格子点で、RX1からTXへの方位に向けています": [
+    "RX1’s antenna points along the RX1-to-TX bearing at every grid point.",
+    "L’antenne de RX1 vise, en chaque point, le relèvement de RX1 vers le TX.",
+    "La antena de RX1 apunta en cada punto al rumbo de RX1 hacia el TX.",
+    "L’antenna di RX1 punta in ogni punto lungo la direzione da RX1 al TX.",
+    "A antena de RX1 aponta, em cada ponto, no rumo de RX1 para o TX.",
+    "Die RX1-Antenne zeigt an jedem Gitterpunkt in Richtung RX1→TX.",
+    "RX1 안테나는 모든 격자점에서 RX1→TX 방위로 향합니다."
+  ],
+  "カバー範囲をVOACAPのエリア計算で面表示": [
+    "Coverage as an area with VOACAP area calculation",
+    "Couverture en zone avec le calcul de zone VOACAP",
+    "Cobertura como zona con el cálculo de área de VOACAP",
+    "Copertura come area con il calcolo d’area VOACAP",
+    "Cobertura como área com o cálculo de área do VOACAP",
+    "Abdeckung als Fläche mit der VOACAP-Flächenberechnung",
+    "VOACAP 영역 계산으로 커버리지를 면으로 표시"
+  ],
+  "「カバー範囲」をVOACAPのエリア計算に変えました。TXから全世界または TX中心の範囲の各格子点（最大181×181）までを1回で計算し、VOACAPのS dBW地図のように、信号強度（Sメーター）・SNR・RELを等値線で区切った色の範囲で地図に表示します。受信側はRX1のアンテナ・雑音を使います。地図を選ぶとその地点の値を表示します。": [
+    "“Coverage” now uses VOACAP area coverage. One run computes every grid point (up to 181×181) from the TX over the whole world or a range around the TX, and the map shows signal strength (S-meter), SNR or REL as colour bands separated by contour lines, like VOACAP’s S dBW maps. The receiver uses RX1’s antenna and noise. Select the map to see the values at that point.",
+    "La « Couverture » utilise désormais le calcul de zone VOACAP. Un seul calcul couvre chaque point de grille (jusqu’à 181×181) depuis le TX, sur le monde entier ou une zone autour du TX, et la carte affiche la force du signal (S-mètre), le SNR ou la REL en plages de couleur séparées par des isolignes, comme les cartes S dBW de VOACAP. La réception utilise l’antenne et le bruit de RX1. Choisissez la carte pour voir les valeurs en ce point.",
+    "La «Cobertura» usa ahora el cálculo de área de VOACAP. Un solo cálculo cubre cada punto de la cuadrícula (hasta 181×181) desde el TX, en todo el mundo o en un rango alrededor del TX, y el mapa muestra la intensidad de señal (S-meter), el SNR o la REL en bandas de color separadas por isolíneas, como los mapas S dBW de VOACAP. La recepción usa la antena y el ruido de RX1. Seleccione el mapa para ver los valores en ese punto.",
+    "La «Copertura» usa ora il calcolo d’area VOACAP. Un solo calcolo copre ogni punto della griglia (fino a 181×181) dal TX, sul mondo intero o su un’area attorno al TX, e la mappa mostra intensità del segnale (S-meter), SNR o REL in fasce di colore separate da isolinee, come le mappe S dBW di VOACAP. La ricezione usa antenna e rumore di RX1. Seleziona la mappa per vedere i valori in quel punto.",
+    "A «Cobertura» passa a usar o cálculo de área do VOACAP. Um só cálculo cobre cada ponto da grelha (até 181×181) desde o TX, no mundo inteiro ou numa área em torno do TX, e o mapa mostra a intensidade do sinal (S-meter), o SNR ou a REL em faixas de cor separadas por isolinhas, como os mapas S dBW do VOACAP. A receção usa a antena e o ruído de RX1. Selecione o mapa para ver os valores nesse ponto.",
+    "„Abdeckung“ nutzt jetzt die VOACAP-Flächenberechnung. Ein Lauf berechnet jeden Gitterpunkt (bis 181×181) vom TX aus, weltweit oder in einem Bereich um den TX, und die Karte zeigt Signalstärke (S-Meter), SNR oder REL als Farbbänder mit Isolinien, wie die S-dBW-Karten von VOACAP. Der Empfang nutzt Antenne und Rauschen von RX1. Karte wählen, um die Werte an diesem Punkt zu sehen.",
+    "'커버리지'를 VOACAP 영역 계산으로 바꿨습니다. TX에서 전 세계 또는 TX 중심 범위의 각 격자점(최대 181×181)까지를 한 번에 계산하고, VOACAP의 S dBW 지도처럼 신호 강도(S미터)·SNR·REL을 등치선으로 구분한 색 범위로 지도에 표시합니다. 수신 측은 RX1의 안테나·잡음을 사용합니다. 지도를 선택하면 그 지점의 값을 표시합니다."
+  ],
+  "値が入力欄に収まりません": [
+    "The value does not fit the input field",
+    "La valeur ne tient pas dans le champ",
+    "El valor no cabe en el campo",
+    "Il valore non entra nel campo",
+    "O valor não cabe no campo",
+    "Der Wert passt nicht in das Feld",
+    "값이 입력란에 맞지 않습니다"
+  ],
+  "エリア計算の格子が揃いません（{count}/{total}点）": [
+    "The area grid is incomplete ({count}/{total} points)",
+    "La grille de zone est incomplète ({count}/{total} points)",
+    "La cuadrícula de área está incompleta ({count}/{total} puntos)",
+    "La griglia d’area è incompleta ({count}/{total} punti)",
+    "A grelha de área está incompleta ({count}/{total} pontos)",
+    "Das Flächengitter ist unvollständig ({count}/{total} Punkte)",
+    "영역 격자가 완전하지 않습니다({count}/{total}점)"
+  ],
+  "利得表アンテナは方位ごとの切り出しが必要なため、カバー範囲では使えません": [
+    "Gain-table antennas need a slice per bearing, so they cannot be used for coverage",
+    "Les antennes à table de gain exigent une découpe par azimut et ne sont pas utilisables pour la couverture",
+    "Las antenas con tabla de ganancia requieren un corte por rumbo y no se pueden usar en la cobertura",
+    "Le antenne a tabella di guadagno richiedono un taglio per direzione e non si possono usare per la copertura",
+    "As antenas com tabela de ganho exigem um corte por rumo e não podem ser usadas na cobertura",
+    "Antennen mit Gewinntabelle brauchen einen Schnitt je Richtung und sind für die Abdeckung nicht nutzbar",
+    "이득표 안테나는 방위별 절단이 필요하므로 커버리지에서는 사용할 수 없습니다"
+  ],
+  "span: 30・60・120・360（全世界）から選んでください": [
+    "span: choose 30, 60, 120 or 360 (whole world)",
+    "span : choisir 30, 60, 120 ou 360 (monde entier)",
+    "span: elija 30, 60, 120 o 360 (todo el mundo)",
+    "span: scegliere 30, 60, 120 o 360 (mondo intero)",
+    "span: escolha 30, 60, 120 ou 360 (mundo inteiro)",
+    "span: 30, 60, 120 oder 360 (ganze Welt) wählen",
+    "span: 30·60·120·360(전 세계) 중에서 선택하세요"
   ]
 };

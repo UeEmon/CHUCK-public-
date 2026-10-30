@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'app'))
-from engine import Engine, InputError, cards, parse_output, validate, antenna_file, ANTENNAS
+from engine import Engine, InputError, cards, parse_output, validate, antenna_file, ANTENNAS, area_input, parse_area, EngineError
 
 BASE={'tx_lat':35.3,'tx_lon':139.67,'rx_lat':13.45,'rx_lon':144.75,'year':2026,'month':10}
 class CardsTests(unittest.TestCase):
@@ -133,6 +133,34 @@ class CardsTests(unittest.TestCase):
         for value in ['A','I','w','',1,None]:
             with self.subTest(value=value),self.assertRaises(InputError):validate(dict(BASE,absorption_mode=value))
 
+    def test_area_input_columns_follow_areamap(self):
+        # Fixed columns read by areamap.for: System 10x,i5,f10.3,2i5,2f10.3; Tx Ants 10x,1x,a21,1x,f7.3,f6.1,1x,f10.4.
+        p=validate(dict(BASE,tx_antenna='isotropic',tx_gain=6,rx_antenna='isotropic',rx_gain=3,noise=145.4,required_snr=37.6,power_w=0.5*1000))
+        lines={line[:10]:line for line in area_input(p,0,8.291,(-180.,180.,-90.,90.),181).splitlines()}
+        self.assertEqual(lines['Transmit :'][10:30],' 35.30N   139.67E   ')
+        self.assertEqual([float(lines['Area     :'][10+10*i:20+10*i]) for i in range(4)],[-180,180,-90,90])
+        self.assertEqual(int(lines['Gridsize :'][10:15]),181)
+        self.assertEqual(int(lines['Hours    :'][10:17]),24)
+        self.assertEqual(float(lines['Freqs    :'][10:17]),8.291)
+        system=lines['System   :']
+        self.assertEqual((int(system[10:15]),float(system[15:25]),int(system[25:30]),int(system[30:35])),(145,3,90,38))
+        tx=lines['Tx Ants  :']
+        self.assertEqual((tx[11:32].strip(),float(tx[33:40]),float(tx[47:57])),('tx.voa',6,.5))
+        rx=lines['Rec Ants :']
+        self.assertEqual((rx[11:32].strip(),float(rx[40:46])),('rx.voa',3))
+    def test_area_grid_parsing(self):
+        rows=['VOACAPL Version 16.1207W','TX [tx.voa] 1kW 0deg 12ut 8.000MHz Oct 100ssn',' 22 22  Latitude Longitude   MUF  MODE']
+        for y in (1,2):
+            for x in (1,2):
+                fields=['  9.99']*24;fields[8]=f'{-100-x-10*y:6.1f}';fields[10]=f'{40+x:6.1f}';fields[12]=f'{.25*x:6.3f}' if y==1 else '******'
+                rows.append(f'{x:3d}{y:3d}{0:10.4f}{0:10.4f}'+''.join(fields))
+        grid=parse_area('\n'.join(rows),(0,10,20,30),2)
+        self.assertEqual(grid['signal_dbw'],[[-111,-112],[-121,-122]])
+        self.assertEqual(grid['snr_db_hz'][1],[41,42])
+        self.assertEqual(grid['reliability'],[[25,50],[None,None]])
+        self.assertEqual((grid['lon_min'],grid['lat_max'],grid['size']),(0,30,2))
+        with self.assertRaises(EngineError):parse_area('\n'.join(rows[:-1]),(0,10,20,30),2)
+
 @unittest.skipUnless(Engine().ready(),'VOACAP_BIN and VOACAP_MODEL must point to a built engine')
 class IntegrationTests(unittest.TestCase):
     def test_real_prediction_and_power_scaling(self):
@@ -200,6 +228,17 @@ class IntegrationTests(unittest.TestCase):
             self.assertGreaterEqual(ar['reliability'],cr['reliability'])
             changed|=ar['reliability']!=cr['reliability']
         self.assertTrue(changed)
+    def test_area_matches_point_predictions(self):
+        # Each grid point of the area run is the point-to-point prediction from the TX with RX1's antenna and noise.
+        e=Engine()
+        for values in [dict(),dict(tx_antenna='isotropic',tx_gain=6,rx_antenna='isotropic',rx_gain=3),dict(tx_antenna='dipole',tx_length_m=20,tx_height_m=10,tx_azimuth_deg=200),dict(tx_antenna='log_periodic',tx_length_m=20,tx_height_m=15,tx_gain=4)]:
+            p=validate(dict(BASE,**values));grid=e.area(p,12,8,(100.,200.,-30.,70.),11)['grid']
+            for x,y in [(2,4),(5,2),(8,8)]:
+                point=e.run(dict(p,rx_lat=-30.+10*y,rx_lon=100.+10*x,frequencies=[8]),12)['hours'][0]['rows'][0]
+                with self.subTest(values=values,x=x,y=y):
+                    self.assertAlmostEqual(grid['signal_dbw'][y][x],point['signal_dbw'],delta=1)
+                    self.assertAlmostEqual(grid['reliability'][y][x],point['reliability'],delta=2)
+        with self.assertRaises(InputError):e.area(dict(validate(BASE),tx_antenna='pattern_table'),12,8,(100.,200.,-30.,70.),11)
     def test_decimal_frequency_and_midnight(self):
         p=validate(dict(BASE,frequencies=[8.291,12.29],rx_lat=-33.87,rx_lon=-157.86))
         r=Engine().run(p,0)
