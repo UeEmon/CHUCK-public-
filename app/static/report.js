@@ -70,7 +70,7 @@ function reportConditions(d,id,r){
  rows.push(['対象年月',`${p.year}/${p.month}`]);
  if(id!=='annual')rows.push(['SSN',String(p.ssn)]);
  if(p.power_w!==undefined&&id!=='mesh')rows.push(['送信電力',`${p.power_w} W`]);
- rows.push(['周波数',id==='coverage'?`${r.frequency_mhz} MHz / ${r.hour_utc}:00 UTC`:p.frequencies.map(f=>f.toFixed(3)).join(', ')+' MHz']);
+ rows.push(['周波数',id==='coverage'&&r.matrix?`${r.matrix.frequencies[Math.min(matrixFrequency,r.matrix.frequencies.length-1)]} MHz / ${$('cov_hour').value}:00 UTC`:id==='coverage'?`${r.frequency_mhz} MHz / ${r.hour_utc}:00 UTC`:p.frequencies.map(f=>f.toFixed(3)).join(', ')+' MHz']);
  if(p.required_snr!==undefined)rows.push(['要求SNR・目標REL',`${p.required_snr} dB·Hz / ${p.reliability}%`]);
  if(p.absorption_mode)rows.push(['吸収モード',reportText(absorptionLabel(p))]);
  if(p.modulation)rows.push(['電波型式・偏波',reportText(radioCaption(p).slice(3))]);

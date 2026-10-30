@@ -12,7 +12,7 @@ import sqlite3
 import threading
 from urllib.parse import urlparse, parse_qs
 import uuid
-from engine import Engine, InputError, EngineError, validate, number, distance, DIRECTIONAL_ANTENNAS
+from engine import Engine, InputError, EngineError, Cancelled, validate, number, distance, DIRECTIONAL_ANTENNAS
 
 from space_weather import ENGINE_SSN_SCALE, SpaceWeather, SpaceWeatherError, engine_ssn
 from observations import Observations, GIRO_STATIONS
@@ -104,22 +104,103 @@ def start_watcher():
 # Area coverage spans in degrees of latitude/longitude; 360 is the whole world.
 COVERAGE_SPANS=(30,60,120,360)
 
-def coverage(p, extra):
-    # One VOACAP area-coverage run from the TX: every grid point is a receiver with RX1's antenna and noise.
+class Jobs:
+    """Progress and cancel events of running calculations, keyed by a token only the requesting page knows."""
+    def __init__(self):self.lock=threading.Lock();self.jobs={}
+    def start(self,token):
+        if not isinstance(token,str) or not __import__('re').fullmatch('[A-Za-z0-9_-]{16,64}',token):return None
+        job=dict(done=0,total=1,cancel=threading.Event())
+        with self.lock:self.jobs[token]=job
+        return job
+    def finish(self,token):
+        with self.lock:self.jobs.pop(token,None)
+    def status(self,token):
+        with self.lock:job=self.jobs.get(token)
+        return job and dict(done=job['done'],total=job['total'],cancelling=job['cancel'].is_set())
+    def cancel(self,token):
+        with self.lock:job=self.jobs.get(token)
+        if job:job['cancel'].set()
+        return bool(job)
+    def step(self,job):
+        if job:
+            with self.lock:job['done']+=1
+
+JOBS=Jobs()
+
+def coverage_region(p, extra, size):
+    """Centre, span and grid bounds of a coverage request; regional sizes give a finer grid."""
     lat=number(extra,'center_lat',-89,89,p['tx_lat'])
     lon=number(extra,'center_lon',-180,180,p['tx_lon'])
     span=number(extra,'span',30,360,360,integer=True)
     if span not in COVERAGE_SPANS: raise InputError('span: 30・60・120・360（全世界）から選んでください')
+    if span==360: return lat,lon,span,(-180.,180.,-90.,90.),size[0]
+    # Longitudes may run past ±180 so the TX stays centred; the map draws them wrapped.
+    return lat,lon,span,(round(lon-span/2,1),round(lon+span/2,1),round(max(-90.,lat-span/2),1),round(min(90.,lat+span/2),1)),size[1]
+
+def coverage_notes(p):
+    if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='path':
+        return ['RX1のアンテナは全格子点で、RX1からTXへの方位に向けています']
+    return []
+
+def coverage(p, extra, job=None):
+    # One VOACAP area-coverage run from the TX: every grid point is a receiver with RX1's antenna and noise.
+    lat,lon,span,bounds,size=coverage_region(p,extra,(181,121))
     hour=number(extra,'hour_utc',0,23,12,integer=True)
     frequency=number(extra,'frequency_mhz',2,30,8)
-    if span==360: bounds,size=(-180.,180.,-90.,90.),181
-    # Longitudes may run past ±180 so the TX stays centred; the map draws them wrapped.
-    else: bounds,size=(round(lon-span/2,1),round(lon+span/2,1),round(max(-90.,lat-span/2),1),round(min(90.,lat+span/2),1)),121
-    r=ENGINE.area(p,hour,frequency,bounds,size)
-    notes=[]
-    if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='path':
-        notes.append('RX1のアンテナは全格子点で、RX1からTXへの方位に向けています')
-    return {'parameters':p,'area':r['grid'],'input_area':r['input_area'],'notes':notes,'hour_utc':hour,'frequency_mhz':frequency,'span':span,'center_lat':lat,'center_lon':lon,'engine':'voacapl 0.7.7','engine_commit':__import__('engine').ENGINE_COMMIT}
+    r=ENGINE.area(p,hour,frequency,bounds,size,job and job['cancel'])
+    JOBS.step(job)
+    return {'parameters':p,'area':r['grid'],'input_area':r['input_area'],'notes':coverage_notes(p),'hour_utc':hour,'frequency_mhz':frequency,'span':span,'center_lat':lat,'center_lon':lon,'engine':'voacapl 0.7.7','engine_commit':__import__('engine').ENGINE_COMMIT}
+
+# Each grid value is stored as one byte so 11 frequencies x 24 hours of maps stay a few MB:
+# S dBW as 0..-254, SNR as -100..154 dB-Hz, REL as 0..100 %, and 255 for no value.
+AREA_BYTES={'signal_dbw':(-1,0),'snr_db_hz':(1,100),'reliability':(1,0)}
+
+def pack_area(grid):
+    out={}
+    for key,(sign,offset) in AREA_BYTES.items():
+        data=bytes(255 if v is None else max(0,min(254,round(sign*v)+offset)) for row in grid[key] for v in row)
+        out[key]=__import__('base64').b64encode(data).decode('ascii')
+    return out
+
+def covered_percent(grid,target):
+    """Share of the grid's area (cos-latitude weighted) whose REL meets the target."""
+    n=grid['size'];total=hit=0.
+    for y,row in enumerate(grid['reliability']):
+        w=max(0.,__import__('math').cos(__import__('math').radians(grid['lat_min']+(grid['lat_max']-grid['lat_min'])*y/(n-1))))
+        total+=w*n;hit+=w*sum(v is not None and v>=target for v in row)
+    return round(100*hit/total,1) if total else None
+
+# Hours per engine run of a coverage matrix: short runs keep each under the 60 s engine limit and report progress often.
+MATRIX_HOURS=6
+
+def coverage_matrix(p, extra, job=None):
+    # Every requested frequency x 24 hours, as engine runs of MATRIX_HOURS hours each, up to the CPU count at once.
+    lat,lon,span,bounds,size=coverage_region(p,extra,(121,61))
+    runs=[(f,hours) for f in p['frequencies'] for hours in [list(range(h,h+MATRIX_HOURS)) for h in range(0,24,MATRIX_HOURS)]]
+    cancel=job['cancel'] if job else threading.Event()
+    if job: job['total']=len(runs)
+    def run(item):
+        f,hours=item
+        try:r=ENGINE.area_plots(p,[(h,f) for h in hours],bounds,size,cancel)
+        except Exception:
+            cancel.set();raise # stop the other runs
+        JOBS.step(job)
+        return r
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=max(1,min(len(runs),os.cpu_count() or 1))) as pool:
+        futures=[pool.submit(run,item) for item in runs]
+        # A failed run cancels the rest; raise that failure rather than the cancellations it caused.
+        failed=[f.exception() for f in futures if f.exception() is not None]
+        if failed:raise next((e for e in failed if not isinstance(e,Cancelled)),failed[0])
+        done=[f.result() for f in futures]
+    per=24//MATRIX_HOURS
+    grids=[[g for r in done[i*per:i*per+per] for g in r['grids']] for i in range(len(p['frequencies']))]
+    first=grids[0][0]
+    return {'parameters':p,'matrix':dict(size=size,lon_min=first['lon_min'],lon_max=first['lon_max'],lat_min=first['lat_min'],lat_max=first['lat_max'],
+                frequencies=p['frequencies'],hours=list(range(24)),
+                covered_percent=[[covered_percent(g,p['reliability']) for g in row] for row in grids],
+                cells=[[pack_area(g) for g in row] for row in grids]),
+            'input_area':done[0]['input_area'],'notes':coverage_notes(p),'span':span,'center_lat':lat,'center_lon':lon,'engine':'voacapl 0.7.7','engine_commit':__import__('engine').ENGINE_COMMIT}
 
 class Handler(BaseHTTPRequestHandler):
     def send(self,code,body,content_type='application/json; charset=utf-8',filename=None):
@@ -148,6 +229,9 @@ class Handler(BaseHTTPRequestHandler):
                     ext={'application/pdf':'pdf','image/png':'png','image/jpeg':'jpg','image/webp':'webp'}[item['media_type']]
                     return self.send(200,item['content'],item['media_type'],item['id']+'.'+ext)
                 raise InputError('資料が見つかりません')
+            if path.startswith('/api/jobs/'):
+                status=JOBS.status(path[len('/api/jobs/'):])
+                return self.json(200,status) if status else self.json(404,{'error':'計算は実行中ではありません'})
             if path=='/api/health':
                 return self.json(200,{'ok':ENGINE.ready(),'engine':'voacapl 0.7.7'})
             if path=='/api/positions':
@@ -252,8 +336,14 @@ class Handler(BaseHTTPRequestHandler):
                             for h in r['hours']:
                                 for v in h['rows']: w.writerow([h['hour_utc'],v['frequency_mhz'],v.get('reliability'),v.get('snr_db_hz'),v.get('signal_dbw'),v.get('takeoff_deg'),h['muf_mhz']])
                         else:
-                            w.writerow(['latitude','longitude','UTC','MHz','REL_percent','SNR_dBHz','S_dBW'])
-                            if 'area' in r:
+                            if 'matrix' in r:
+                                # The maps stay in the JSON; the CSV lists the covered share of each frequency and hour.
+                                w.writerow(['MHz','UTC','covered_area_percent','REL_target_percent'])
+                                m=r['matrix']
+                                for f,row in zip(m['frequencies'],m['covered_percent']):
+                                    for h,v in zip(m['hours'],row): w.writerow([f,h,v,r['parameters']['reliability']])
+                            elif 'area' in r:
+                                w.writerow(['latitude','longitude','UTC','MHz','REL_percent','SNR_dBHz','S_dBW'])
                                 a=r['area'];n=a['size']
                                 for y in range(n):
                                     for x in range(n):
@@ -261,6 +351,7 @@ class Handler(BaseHTTPRequestHandler):
                                                     a['reliability'][y][x],a['snr_db_hz'][y][x],a['signal_dbw'][y][x]])
                             # Coverage saved before the area run: independent sample points.
                             else:
+                                w.writerow(['latitude','longitude','UTC','MHz','REL_percent','SNR_dBHz','S_dBW'])
                                 for v in r['coverage']: w.writerow([v['lat'],v['lon'],r['hour_utc'],v['frequency_mhz'],v.get('reliability'),v.get('snr_db_hz'),v.get('signal_dbw')])
                         return self.send(200,'\ufeff'+output.getvalue(),'text/csv; charset=utf-8',r['id']+'.csv')
                 return self.json(404,{'error':'出力形式がありません'})
@@ -284,25 +375,30 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/watches': return self.edit_watches()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
         if path=='/api/antenna-patterns' or path.startswith('/api/antenna-patterns/'):return self.edit_patterns(path)
-        if path not in ('/api/predict','/api/coverage','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites'): return self.json(404,{'error':'見つかりません'})
+        if path.startswith('/api/jobs/') and path.endswith('/cancel'):
+            return self.json(200,{'cancelled':JOBS.cancel(path[len('/api/jobs/'):-len('/cancel')])})
+        if path not in ('/api/predict','/api/coverage','/api/coverage-matrix','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
         origin=self.headers.get('Origin')
         if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
             return self.json(403,{'error':'異なるオリジンからの計算要求は受け付けません'})
         if not self.headers.get('Content-Type','').startswith('application/json'):
             return self.json(415,{'error':'application/json が必要です'})
-        locked=False
+        locked=False;token=None
         try:
             length=int(self.headers.get('Content-Length','0'))
             if not 0<length<=16384: raise InputError('リクエストサイズが不正です')
             data=json.loads(self.rfile.read(length))
             if not isinstance(data,dict): raise InputError('JSONオブジェクトが必要です')
+            # Registered before the slow preparation so the page can poll and cancel from the start.
+            job=JOBS.start(data.get('job')) if path in ('/api/coverage','/api/coverage-matrix') else None
+            if job: token=data['job']
             if path=='/api/diversity': data.pop('rx_position',None)
             if path=='/api/mesh':
                 for key in ('tx_position','rx_position','rx_sites'): data.pop(key,None)
             else: data.pop('mesh_sites',None)
             data,position_inputs=POSITIONS.apply(data)
-            if path=='/api/coverage' and 'tx_position' in data:
+            if path in ('/api/coverage','/api/coverage-matrix') and 'tx_position' in data:
                 data.update(center_lat=data['tx_lat'],center_lon=data['tx_lon'])
             sites,independent=diversity.prepare(data) if path=='/api/diversity' else (None,False)
             if sites:
@@ -329,18 +425,20 @@ class Handler(BaseHTTPRequestHandler):
             if not locked: return self.json(409,{'error':'別の計算を実行中です。完了後に再実行してください。'})
             if any(datetime.fromisoformat(v['expires_at']) < datetime.now(timezone.utc) for v in position_inputs.values()):
                 raise InputError('採用した位置情報が準備中に期限切れになりました。再計算してください。')
-            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else power.predict(ENGINE,p) if path=='/api/power' else site_search.predict(ENGINE,p,candidates,site_mode) if path=='/api/sites' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage(p,data)
+            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else power.predict(ENGINE,p) if path=='/api/power' else site_search.predict(ENGINE,p,candidates,site_mode) if path=='/api/sites' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage_matrix(p,data,job) if path=='/api/coverage-matrix' else coverage(p,data,job)
             if weather is not None: r['space_weather']=weather
             if effective is not None: r['effective_ssn']=effective
             if position_inputs: r['position_inputs']=position_inputs
             if isinstance(data.get('ui_selection'),dict): r['ui_selection']=data['ui_selection']
             self.json(200,save(r,'annual' if path=='/api/annual' else 'power' if path=='/api/power' else 'sites' if path=='/api/sites' else 'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
+        except Cancelled as e: self.json(409,{'error':str(e),'cancelled':True})
         except (EngineError,SpaceWeatherError,EffectiveSSNError) as e: self.json(503,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc()
             self.json(500,{'error':'計算に失敗しました。サーバーログを確認してください。'})
         finally:
+            if token: JOBS.finish(token)
             if locked: RUN_LOCK.release()
 
     def configure_ai(self,path):

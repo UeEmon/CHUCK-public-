@@ -136,7 +136,7 @@ class CardsTests(unittest.TestCase):
     def test_area_input_columns_follow_areamap(self):
         # Fixed columns read by areamap.for: System 10x,i5,f10.3,2i5,2f10.3; Tx Ants 10x,1x,a21,1x,f7.3,f6.1,1x,f10.4.
         p=validate(dict(BASE,tx_antenna='isotropic',tx_gain=6,rx_antenna='isotropic',rx_gain=3,noise=145.4,required_snr=37.6,power_w=0.5*1000))
-        lines={line[:10]:line for line in area_input(p,0,8.291,(-180.,180.,-90.,90.),181).splitlines()}
+        lines={line[:10]:line for line in area_input(p,[(0,8.291)],(-180.,180.,-90.,90.),181).splitlines()}
         self.assertEqual(lines['Transmit :'][10:30],' 35.30N   139.67E   ')
         self.assertEqual([float(lines['Area     :'][10+10*i:20+10*i]) for i in range(4)],[-180,180,-90,90])
         self.assertEqual(int(lines['Gridsize :'][10:15]),181)
@@ -239,6 +239,13 @@ class IntegrationTests(unittest.TestCase):
                     self.assertAlmostEqual(grid['signal_dbw'][y][x],point['signal_dbw'],delta=1)
                     self.assertAlmostEqual(grid['reliability'][y][x],point['reliability'],delta=2)
         with self.assertRaises(InputError):e.area(dict(validate(BASE),tx_antenna='pattern_table'),12,8,(100.,200.,-30.,70.),11)
+    def test_cancel_stops_a_running_engine(self):
+        import threading,time
+        from engine import Cancelled
+        e=Engine();cancel=threading.Event();p=validate(BASE)
+        threading.Timer(.5,cancel.set).start();started=time.monotonic()
+        with self.assertRaises(Cancelled):e.area_plots(p,[(h,8) for h in range(24)],(-180.,180.,-90.,90.),121,cancel)
+        self.assertLess(time.monotonic()-started,3)
     def test_decimal_frequency_and_midnight(self):
         p=validate(dict(BASE,frequencies=[8.291,12.29],rx_lat=-33.87,rx_lon=-157.86))
         r=Engine().run(p,0)

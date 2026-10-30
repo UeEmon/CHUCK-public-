@@ -111,6 +111,25 @@ const {chromium}=require('playwright');
   assert.match(out.text,/回線マップ/);assert.doesNotMatch(out.text,/計算には時間がかかります/);
   assert.equal(out.svgs,1);assert.match(out.html,/<image class="coverage-area"[^>]*href="data:image\/png;base64,/);
 
+  // A frequency x time matrix: a cell picks the map, and the UTC bar steps its hours.
+  const matrix=await page.evaluate(()=>{
+   const cell=v=>({signal_dbw:btoa(String.fromCharCode(v,v,v,255)),snr_db_hz:btoa(String.fromCharCode(150,150,150,255)),reliability:btoa(String.fromCharCode(90,90,90,255))});
+   coverageResult={id:'c2',kind:'coverage',created:'2026-10-23T04:00:00+00:00',parameters:{...base,reliability:90},span:360,center_lat:20,center_lon:140,
+    matrix:{size:2,lon_min:-180,lon_max:180,lat_min:-90,lat_max:90,frequencies:[7,10],hours:[...Array(24).keys()],
+     covered_percent:[Array(24).fill(5),Array.from({length:24},(_,h)=>h)],cells:[Array.from({length:24},()=>cell(150)),Array.from({length:24},(_,h)=>cell(100+h))]}};
+   openCoverageMatrix(coverageResult);tab('coverage');showCoverage();
+   document.querySelectorAll('.coverage-matrix tr')[2].querySelectorAll('td button')[5].click();
+   const first=[matrixFrequency,$('cov_hour').value,$('cov_freq').value,coverageArea().signal_dbw[0][0],$('map-time').hidden];
+   setMapHour('coverage',6);
+   return [...first,$('cov_hour').value,coverageArea().signal_dbw[0][0],document.querySelector('.coverage-matrix td.selected button').textContent];
+  });
+  assert.deepEqual(matrix,[1,'5','10',-105,false,'6',-106,'6.0']);
+  // While a calculation runs nothing in the coverage tab can be changed.
+  const locked=await page.evaluate(()=>{const all=()=>[...document.querySelectorAll('#coverage input,#coverage select,#coverage button')];setBusy(true);const on=all().every(e=>e.disabled);setBusy(false);return [on,all().some(e=>e.disabled)];});
+  assert.deepEqual(locked,[true,false]);
+  out=await print('#coverage-exports .report-tab-print','coverage-matrix');
+  assert.match(out.text,/周波数\t10 MHz \/ 6:00 UTC/);assert.match(out.html,/coverage-matrix/);
+
   // Text follows the UI language.
   await page.selectOption('#language','en');
   await page.evaluate(()=>{tab('mesh');});

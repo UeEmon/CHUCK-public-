@@ -11,6 +11,7 @@ AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、�
 | GET | /api/health | 計算エンジン・係数ファイルの配置確認（完全な自己試験ではない） |
 | POST | /api/predict | 24時間地点間予測・履歴保存 |
 | POST | /api/coverage | VOACAPエリア計算（TXから格子全体）・履歴保存 |
+| POST | /api/coverage-matrix | 周波数×24時間のVOACAPエリア計算・履歴保存 |
 | POST | /api/diversity | 単一TX→複数RXの24時間比較・履歴保存 |
 | GET | /api/positions | 移動局の最新位置・局別受信設定 |
 | POST | /api/positions または /api/positions/nmea | 本体では廃止。410、ゲートウェイ18083へ送信する |
@@ -110,6 +111,18 @@ VOACAPのエリア計算を1回実行し、TXから各格子点（受信はRX1�
 `{size, lon_min, lon_max, lat_min, lat_max, signal_dbw, snr_db_hz, reliability}` で、各値は
 南から北の行・西から東の列の2次元配列です。エリア計算の入力形式のため雑音・要求REL・要求SNRは整数に丸め、
 利得表アンテナは400を返します。以前の版で保存した結果は `coverage`（地点の配列）を持ちます。
+
+coverage-matrixは `frequencies` の各周波数について0〜23 UTCの24枚をエリア計算し（6時間分ずつ1回の実行、CPU数まで並列）、
+`span`・`center_lat`・`center_lon` はcoverageと同じです。格子は全世界が121×121（経度3°・緯度1.5°）、それ以外は61×61です。結果の `matrix` は
+`{size, lon_min, lon_max, lat_min, lat_max, frequencies, hours, covered_percent, cells}` で、`covered_percent[周波数][時刻]` は
+REL目標（`reliability`）以上となる格子の面積割合（緯度の余弦で重み付け、%）、`cells[周波数][時刻]` は
+`signal_dbw`・`snr_db_hz`・`reliability` をそれぞれ1値1バイトでbase64にしたもの（南から北の行・西から東の列）です。
+バイトは S dBW＝−値、SNR＝値−100、REL＝値（%）、255は値なしです。CSVは周波数・時刻ごとの面積割合を出力します。
+
+coverage・coverage-matrixの本文に `job`（英数字・`_`・`-` の16〜64文字、呼び出し側が乱数で作る）を付けると、計算中に
+`GET /api/jobs/{job}` が `{done, total, cancelling}`（完了した実行数と全体数）を返し、`POST /api/jobs/{job}/cancel` で
+実行中のエンジンを止めます。中止された計算は409と `{"error":"計算を中止しました","cancelled":true}` を返します。
+計算が終わるとjobは消え、GETは404を返します。
 
 地点間の結果には `parameters, hours, distance_km, bearing_deg, raw_output, input_cards, engine, engine_commit, id, created` が含まれます。
 `hours[].rows[]` は周波数、信頼度%、SNR dB·Hz、信号dBW、打上げ角などを持ち、計算不能値はnullです。

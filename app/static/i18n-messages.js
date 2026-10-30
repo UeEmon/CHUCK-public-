@@ -9388,15 +9388,6 @@ const HF_MESSAGES={
     "Signalstärke S dBW",
     "신호 강도 S dBW"
   ],
-  "計算には数秒かかります。完了後に上の地図へ表示します。": [
-    "The calculation takes a few seconds; the result then appears on the map above.",
-    "Le calcul prend quelques secondes ; le résultat s’affiche ensuite sur la carte.",
-    "El cálculo tarda unos segundos; luego el resultado aparece en el mapa.",
-    "Il calcolo richiede alcuni secondi; poi il risultato appare sulla mappa.",
-    "O cálculo demora alguns segundos; depois o resultado aparece no mapa.",
-    "Die Berechnung dauert einige Sekunden; danach erscheint das Ergebnis auf der Karte.",
-    "계산에는 몇 초가 걸립니다. 완료되면 위 지도에 표시합니다."
-  ],
   "VOACAPのエリア計算でカバー範囲を計算しています。完了までお待ちください。": [
     "Calculating coverage with VOACAP area coverage. Please wait…",
     "Calcul de la couverture par calcul de zone VOACAP. Veuillez patienter…",
@@ -9486,5 +9477,176 @@ const HF_MESSAGES={
     "span: escolha 30, 60, 120 ou 360 (mundo inteiro)",
     "span: 30, 60, 120 oder 360 (ganze Welt) wählen",
     "span: 30·60·120·360(전 세계) 중에서 선택하세요"
+  ],
+  "周波数×時刻マトリックスを計算": [
+    "Calculate frequency × time matrix",
+    "Calculer la matrice fréquence × heure",
+    "Calcular matriz frecuencia × hora",
+    "Calcola matrice frequenza × ora",
+    "Calcular matriz frequência × hora",
+    "Matrix Frequenz × Zeit berechnen",
+    "주파수×시각 매트릭스 계산"
+  ],
+  "カバー範囲の表示時刻（UTC）": [
+    "Coverage display time (UTC)",
+    "Heure affichée de la couverture (UTC)",
+    "Hora mostrada de la cobertura (UTC)",
+    "Ora visualizzata della copertura (UTC)",
+    "Hora exibida da cobertura (UTC)",
+    "Angezeigte Zeit der Abdeckung (UTC)",
+    "커버리지 표시 시각(UTC)"
+  ],
+  "{freq} MHz / {hour}:00 UTC / {label} / {count}周波数×24時間 · セルはREL {target}%以上となる面積の割合（緯度で面積補正）。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます": [
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequencies × 24 hours · Each cell is the share of the area with REL ≥ {target}% (area-weighted by latitude). Select a cell for its map; play UTC to step through the hours",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} fréquences × 24 heures · Chaque case est la part de la zone où la REL ≥ {target} % (pondérée par la latitude). Choisir une case pour sa carte ; lire l’UTC pour faire défiler les heures",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frecuencias × 24 horas · Cada celda es la parte del área con REL ≥ {target}% (ponderada por latitud). Seleccione una celda para su mapa; reproduzca UTC para avanzar las horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequenze × 24 ore · Ogni cella è la quota dell’area con REL ≥ {target}% (pesata per latitudine). Seleziona una cella per la sua mappa; riproduci l’UTC per scorrere le ore",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequências × 24 horas · Cada célula é a parte da área com REL ≥ {target}% (ponderada pela latitude). Selecione uma célula para o seu mapa; reproduza o UTC para avançar as horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} Frequenzen × 24 Stunden · Jede Zelle ist der Flächenanteil mit REL ≥ {target} % (nach Breite gewichtet). Zelle wählen für ihre Karte; UTC abspielen, um die Stunden durchzugehen",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count}개 주파수×24시간 · 셀은 REL {target}% 이상인 면적 비율(위도로 면적 보정). 셀을 선택하면 그 지도를 표시하고 UTC 재생으로 시각을 진행합니다"
+  ],
+  "{freq} MHz / {hour}:00 UTC / REL {target}%以上の面積 {value}%": [
+    "{freq} MHz / {hour}:00 UTC / area with REL ≥ {target}%: {value}%",
+    "{freq} MHz / {hour}:00 UTC / zone avec REL ≥ {target} % : {value} %",
+    "{freq} MHz / {hour}:00 UTC / área con REL ≥ {target}%: {value}%",
+    "{freq} MHz / {hour}:00 UTC / area con REL ≥ {target}%: {value}%",
+    "{freq} MHz / {hour}:00 UTC / área com REL ≥ {target}%: {value}%",
+    "{freq} MHz / {hour}:00 UTC / Fläche mit REL ≥ {target} %: {value} %",
+    "{freq} MHz / {hour}:00 UTC / REL {target}% 이상 면적 {value}%"
+  ],
+  "カバー範囲のマトリックスを計算しました。セルを選ぶとその周波数・時刻の地図を表示し、「▶ 再生」で24時間を順に表示します。": [
+    "Coverage matrix calculated. Select a cell for the map of that frequency and hour; “▶ Play” shows the 24 hours in turn.",
+    "Matrice de couverture calculée. Choisissez une case pour la carte de cette fréquence et heure ; « ▶ Lire » affiche les 24 heures.",
+    "Matriz de cobertura calculada. Seleccione una celda para el mapa de esa frecuencia y hora; «▶ Reproducir» muestra las 24 horas.",
+    "Matrice di copertura calcolata. Seleziona una cella per la mappa di quella frequenza e ora; «▶ Riproduci» mostra le 24 ore.",
+    "Matriz de cobertura calculada. Selecione uma célula para o mapa dessa frequência e hora; «▶ Reproduzir» mostra as 24 horas.",
+    "Abdeckungsmatrix berechnet. Zelle wählen für die Karte dieser Frequenz und Stunde; „▶ Abspielen“ zeigt die 24 Stunden nacheinander.",
+    "커버리지 매트릭스를 계산했습니다. 셀을 선택하면 그 주파수·시각의 지도를 표시하고 '▶ 재생'으로 24시간을 차례로 표시합니다."
+  ],
+  "エリア計算の図の数が範囲外です": [
+    "The number of area plots is out of range",
+    "Le nombre de cartes de zone est hors limites",
+    "El número de mapas de área está fuera de rango",
+    "Il numero di mappe d’area è fuori intervallo",
+    "O número de mapas de área está fora do intervalo",
+    "Die Anzahl der Flächenkarten liegt außerhalb des Bereichs",
+    "영역 지도 수가 범위를 벗어났습니다"
+  ],
+  "カバー範囲の周波数×時刻マトリックスとアニメーション": [
+    "Coverage frequency × time matrix and animation",
+    "Matrice fréquence × heure et animation de la couverture",
+    "Matriz frecuencia × hora y animación de la cobertura",
+    "Matrice frequenza × ora e animazione della copertura",
+    "Matriz frequência × hora e animação da cobertura",
+    "Frequenz-×-Zeit-Matrix und Animation der Abdeckung",
+    "커버리지 주파수×시각 매트릭스와 애니메이션"
+  ],
+  "計算には数秒かかります。完了後に上の地図へ表示します。マトリックスは「予測条件」の周波数ごとに24時間分の地図を計算します（1〜数分）。計算中は進み具合を表示し、中止できます。": [
+    "A map takes a few seconds and then appears on the map above. The matrix calculates 24 hours of maps for each frequency in the prediction conditions (one to a few minutes). Progress is shown during the calculation, which can be cancelled.",
+    "Une carte prend quelques secondes puis s’affiche ci-dessus. La matrice calcule 24 heures de cartes pour chaque fréquence des conditions (une à quelques minutes). La progression s’affiche pendant le calcul, qui peut être annulé.",
+    "Un mapa tarda unos segundos y luego aparece arriba. La matriz calcula 24 horas de mapas para cada frecuencia de las condiciones (de uno a unos minutos). Durante el cálculo se muestra el progreso y se puede cancelar.",
+    "Una mappa richiede alcuni secondi e poi appare sopra. La matrice calcola 24 ore di mappe per ogni frequenza delle condizioni (da uno a qualche minuto). Durante il calcolo si vede l’avanzamento e lo si può annullare.",
+    "Um mapa demora alguns segundos e depois aparece acima. A matriz calcula 24 horas de mapas para cada frequência das condições (de um a alguns minutos). Durante o cálculo o progresso é mostrado e é possível cancelar.",
+    "Eine Karte dauert einige Sekunden und erscheint dann oben. Die Matrix berechnet 24 Stunden Karten für jede Frequenz der Prognosebedingungen (eine bis einige Minuten). Während der Berechnung wird der Fortschritt angezeigt; sie kann abgebrochen werden.",
+    "지도 1장은 몇 초 걸리며 위 지도에 표시합니다. 매트릭스는 예측 조건의 주파수마다 24시간분 지도를 계산합니다(1~몇 분). 계산 중에는 진행 상황을 표시하며 중지할 수 있습니다."
+  ],
+  "周波数{count}波×24時間のカバー範囲を計算しています。1〜数分かかります。": [
+    "Calculating coverage for {count} frequencies × 24 hours. This takes one to a few minutes.",
+    "Calcul de la couverture pour {count} fréquences × 24 heures. Cela prend une à quelques minutes.",
+    "Calculando la cobertura para {count} frecuencias × 24 horas. Tarda de uno a unos minutos.",
+    "Calcolo della copertura per {count} frequenze × 24 ore. Richiede da uno a qualche minuto.",
+    "Calculando a cobertura para {count} frequências × 24 horas. Demora de um a alguns minutos.",
+    "Abdeckung für {count} Frequenzen × 24 Stunden wird berechnet. Das dauert eine bis einige Minuten.",
+    "주파수 {count}개×24시간의 커버리지를 계산하는 중입니다. 1~몇 분 걸립니다."
+  ],
+  "計算を中止": [
+    "Cancel calculation",
+    "Annuler le calcul",
+    "Cancelar cálculo",
+    "Annulla calcolo",
+    "Cancelar cálculo",
+    "Berechnung abbrechen",
+    "계산 중지"
+  ],
+  "計算の準備をしています…": [
+    "Preparing the calculation…",
+    "Préparation du calcul…",
+    "Preparando el cálculo…",
+    "Preparazione del calcolo…",
+    "Preparando o cálculo…",
+    "Berechnung wird vorbereitet…",
+    "계산을 준비하는 중…"
+  ],
+  "計算を中止しています…": [
+    "Cancelling the calculation…",
+    "Annulation du calcul…",
+    "Cancelando el cálculo…",
+    "Annullamento del calcolo…",
+    "Cancelando o cálculo…",
+    "Berechnung wird abgebrochen…",
+    "계산을 중지하는 중…"
+  ],
+  "経過 {count}秒": [
+    "Elapsed {count} s",
+    "Écoulé {count} s",
+    "Transcurrido {count} s",
+    "Trascorsi {count} s",
+    "Decorrido {count} s",
+    "Vergangen {count} s",
+    "경과 {count}초"
+  ],
+  "{done} / {total} 件の計算が完了": [
+    "{done} / {total} calculations done",
+    "{done} / {total} calculs terminés",
+    "{done} / {total} cálculos completados",
+    "{done} / {total} calcoli completati",
+    "{done} / {total} cálculos concluídos",
+    "{done} / {total} Berechnungen fertig",
+    "{done} / {total}건 계산 완료"
+  ],
+  "カバー範囲を計算しています": [
+    "Calculating coverage",
+    "Calcul de la couverture",
+    "Calculando la cobertura",
+    "Calcolo della copertura",
+    "Calculando a cobertura",
+    "Abdeckung wird berechnet",
+    "커버리지를 계산하는 중"
+  ],
+  "周波数×時刻マトリックスを計算しています": [
+    "Calculating the frequency × time matrix",
+    "Calcul de la matrice fréquence × heure",
+    "Calculando la matriz frecuencia × hora",
+    "Calcolo della matrice frequenza × ora",
+    "Calculando a matriz frequência × hora",
+    "Matrix Frequenz × Zeit wird berechnet",
+    "주파수×시각 매트릭스를 계산하는 중"
+  ],
+  "計算を中止しました": [
+    "The calculation was cancelled",
+    "Le calcul a été annulé",
+    "Se canceló el cálculo",
+    "Il calcolo è stato annullato",
+    "O cálculo foi cancelado",
+    "Die Berechnung wurde abgebrochen",
+    "계산을 중지했습니다"
+  ],
+  "計算は実行中ではありません": [
+    "No calculation is running",
+    "Aucun calcul en cours",
+    "No hay ningún cálculo en curso",
+    "Nessun calcolo in corso",
+    "Nenhum cálculo em curso",
+    "Keine Berechnung läuft",
+    "실행 중인 계산이 없습니다"
+  ],
+  "「カバー範囲」に「周波数×時刻マトリックスを計算」を追加しました。予測条件の周波数ごとに24時間分のエリア計算を行い（全世界は経度3°・緯度1.5°の格子）、各セルにREL目標以上となる面積の割合を示します。セルを選ぶとその周波数・時刻の地図を表示し、UTCの「▶ 再生」で24時間をアニメーション表示します。計算中はダイアログで進み具合を表示し、中止できます。": [
+    "“Coverage” has a new “Calculate frequency × time matrix”. It runs the area calculation for 24 hours at each frequency of the prediction conditions (a 3° × 1.5° grid for the whole world) and shows in each cell the share of the area meeting the REL target. Select a cell for the map of that frequency and hour, and use UTC “▶ Play” to animate the 24 hours. A dialog shows progress during the calculation and can cancel it.",
+    "La « Couverture » propose « Calculer la matrice fréquence × heure ». Le calcul de zone est fait sur 24 heures pour chaque fréquence des conditions (grille de 3° × 1,5° pour le monde entier), et chaque case indique la part de la zone atteignant l’objectif de REL. Choisissez une case pour la carte de cette fréquence et heure, et « ▶ Lire » en UTC anime les 24 heures. Une fenêtre affiche la progression du calcul et permet de l’annuler.",
+    "La «Cobertura» incluye «Calcular matriz frecuencia × hora». Realiza el cálculo de área de 24 horas para cada frecuencia de las condiciones (cuadrícula de 3° × 1,5° para todo el mundo) y muestra en cada celda la parte del área que alcanza el objetivo de REL. Seleccione una celda para el mapa de esa frecuencia y hora, y use «▶ Reproducir» en UTC para animar las 24 horas. Un diálogo muestra el progreso y permite cancelar el cálculo.",
+    "La «Copertura» ha ora «Calcola matrice frequenza × ora». Esegue il calcolo d’area per 24 ore a ogni frequenza delle condizioni (griglia di 3° × 1,5° per il mondo intero) e mostra in ogni cella la quota d’area che raggiunge l’obiettivo REL. Seleziona una cella per la mappa di quella frequenza e ora e usa «▶ Riproduci» in UTC per animare le 24 ore. Una finestra mostra l’avanzamento e permette di annullare il calcolo.",
+    "A «Cobertura» tem agora «Calcular matriz frequência × hora». Faz o cálculo de área de 24 horas para cada frequência das condições (grelha de 3° × 1,5° para o mundo inteiro) e mostra em cada célula a parte da área que atinge o objetivo de REL. Selecione uma célula para o mapa dessa frequência e hora e use «▶ Reproduzir» em UTC para animar as 24 horas. Uma janela mostra o progresso e permite cancelar o cálculo.",
+    "„Abdeckung“ hat jetzt „Matrix Frequenz × Zeit berechnen“. Für jede Frequenz der Prognosebedingungen wird die Flächenberechnung über 24 Stunden ausgeführt (weltweit ein Gitter von 3° × 1,5°); jede Zelle zeigt den Flächenanteil, der das REL-Ziel erreicht. Zelle wählen für die Karte dieser Frequenz und Stunde, mit „▶ Abspielen“ unter UTC laufen die 24 Stunden als Animation. Ein Dialog zeigt den Fortschritt und kann die Berechnung abbrechen.",
+    "'커버리지'에 '주파수×시각 매트릭스 계산'을 추가했습니다. 예측 조건의 주파수마다 24시간분 영역 계산을 하고(전 세계는 경도 3°·위도 1.5° 격자) 각 셀에 REL 목표 이상인 면적 비율을 표시합니다. 셀을 선택하면 그 주파수·시각의 지도를 표시하고 UTC '▶ 재생'으로 24시간을 애니메이션으로 표시합니다. 계산 중에는 대화 상자에 진행 상황을 표시하며 중지할 수 있습니다."
   ]
 };

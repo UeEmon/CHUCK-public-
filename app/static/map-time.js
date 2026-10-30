@@ -1,10 +1,12 @@
 'use strict';
-// UTC sliders under the circuit map and above the prediction/diversity heatmaps. Each drives the hour control of its tab,
+// UTC sliders under the circuit map and above the prediction/diversity heatmaps and the coverage matrix. Each drives the hour control of its tab,
 // so the map paths, heatmap column and detail tables follow it. The map slider follows whichever of those tabs is visible.
-const mapTimeTabs={prediction:{control:'hour',event:'change',ready:()=>result},diversity:{control:'diversity-hour',event:'change',ready:()=>diversityResult},mesh:{control:'mesh-hour',event:'input',ready:()=>meshResult}};
+const mapTimeTabs={prediction:{control:'hour',event:'change',ready:()=>result},diversity:{control:'diversity-hour',event:'change',ready:()=>diversityResult},mesh:{control:'mesh-hour',event:'input',ready:()=>meshResult},
+ coverage:{control:'cov_hour',event:'change',ready:()=>coverageResult?.matrix,onlyWhenReady:true}};
 const timeBars=[...document.querySelectorAll('.time-bar')];
 let mapTimer=null;
-function mapTimeTab(){return Object.keys(mapTimeTabs).find(id=>!$(id).hidden)??null;}
+// Coverage has hours to step through only for a frequency x time matrix.
+function mapTimeTab(){return Object.keys(mapTimeTabs).find(id=>!$(id).hidden&&(!mapTimeTabs[id].onlyWhenReady||mapTimeTabs[id].ready()))??null;}
 function barTab(bar){return bar.dataset.timeTab??mapTimeTab();}
 function stopMapPlay(){if(mapTimer){clearInterval(mapTimer);mapTimer=null;}for(const bar of timeBars)bar.querySelector('button').textContent='▶ 再生';}
 function syncMapTime(){

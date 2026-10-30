@@ -23,7 +23,7 @@ class ApiTests(unittest.TestCase):
             thread=threading.Thread(target=http.serve_forever,daemon=True);thread.start()
             url=f'http://127.0.0.1:{http.server_port}'
             def request(path,data=None):
-                req=urllib.request.Request(url+path,data=json.dumps(data).encode() if data else None,headers={'Content-Type':'application/json'})
+                req=urllib.request.Request(url+path,data=json.dumps(data).encode() if data is not None else None,headers={'Content-Type':'application/json'})
                 return urllib.request.urlopen(req)
             try:
                 p=dict(tx_lat=35.3,tx_lon=139.67,rx_lat=13.45,rx_lon=144.75,year=2026,month=10)
@@ -39,7 +39,32 @@ class ApiTests(unittest.TestCase):
                 c=json.load(request('/api/coverage',dict(p,frequency_mhz=8,hour_utc=12,span=60)))
                 self.assertEqual((c['area']['size'],c['area']['lon_min'],c['area']['lon_max'],c['area']['lat_min'],c['area']['lat_max']),(121,109.7,169.7,5.3,65.3))
                 with self.assertRaises(urllib.error.HTTPError):request('/api/coverage',dict(p,span=45))
-                self.assertEqual(len(json.load(request('/api/history'))),3)
+                # The matrix keeps one byte per grid value; each cell decodes to the same map as a single run.
+                m=json.load(request('/api/coverage-matrix',dict(p,frequencies=[7,10],span=30)))
+                self.assertEqual((m['matrix']['frequencies'],m['matrix']['hours'],m['matrix']['size']),([7,10],list(range(24)),61))
+                self.assertEqual((len(m['matrix']['covered_percent']),len(m['matrix']['covered_percent'][1]),len(m['matrix']['cells'][1])),(2,24,24))
+                single=server.ENGINE.area(m['parameters'],13,10,(m['matrix']['lon_min'],m['matrix']['lon_max'],m['matrix']['lat_min'],m['matrix']['lat_max']),61)['grid']
+                packed=server.pack_area(single)
+                self.assertEqual(m['matrix']['cells'][1][13],packed)
+                self.assertEqual(m['matrix']['covered_percent'][1][13],server.covered_percent(single,m['parameters']['reliability']))
+                with request('/api/results/'+m['id']+'/csv') as response:self.assertEqual(sum(l[:1].isdigit() for l in response.read().decode().splitlines()),48)
+                # A job token reports progress while the request runs and can stop it; it is gone afterwards.
+                token='t'*20;seen=[];result={}
+                def run():
+                    try:request('/api/coverage-matrix',dict(p,frequencies=[7,10,14],span=30,job=token))
+                    except urllib.error.HTTPError as e:result.update(code=e.code,body=json.load(e))
+                worker=threading.Thread(target=run);worker.start()
+                while worker.is_alive() and not seen:
+                    try:seen.append(json.load(request('/api/jobs/'+token)))
+                    except urllib.error.HTTPError:pass
+                self.assertEqual(seen[0]['total'],12)
+                self.assertTrue(json.load(request('/api/jobs/'+token+'/cancel',{}))['cancelled'])
+                worker.join(30)
+                self.assertEqual((result['code'],result['body']['cancelled']),(409,True))
+                with self.assertRaises(urllib.error.HTTPError) as gone:request('/api/jobs/'+token)
+                self.assertEqual(gone.exception.code,404)
+                self.assertFalse(json.load(request('/api/jobs/'+token+'/cancel',{}))['cancelled'])
+                self.assertEqual(len(json.load(request('/api/history'))),4)
                 sites=[dict(name='=RX1',lat=13.45,lon=144.75),dict(name='那覇',lat=26.21,lon=127.68,gain=3,noise=145)]
                 multi={key:value for key,value in p.items() if key not in ('rx_lat','rx_lon')}
                 d=json.load(request('/api/diversity',dict(multi,rx_sites=sites,independence_assumption=True)))
@@ -123,3 +148,13 @@ class ApiTests(unittest.TestCase):
                 http.shutdown();http.server_close();thread.join()
 
 if __name__=='__main__':unittest.main()
+
+
+class AreaPackingTests(unittest.TestCase):
+    def test_bytes_and_covered_share(self):
+        import server
+        grid=dict(size=2,lon_min=0,lon_max=10,lat_min=0,lat_max=60,signal_dbw=[[-100.4,None],[-300,5]],snr_db_hz=[[-120,40.6],[None,200]],reliability=[[95,50],[None,90]])
+        packed={k:list(__import__('base64').b64decode(v)) for k,v in server.pack_area(grid).items()}
+        self.assertEqual(packed,{'signal_dbw':[100,255,254,0],'snr_db_hz':[0,141,255,254],'reliability':[95,50,255,90]})
+        # Row at 60° weighs cos 60° = 0.5 of the equator row: (1+0.5)/(2+1) of the area meets 90 %.
+        self.assertEqual(server.covered_percent(grid,90),50.0)
