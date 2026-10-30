@@ -9451,24 +9451,6 @@ const HF_MESSAGES={
     "Angezeigte Zeit der Abdeckung (UTC)",
     "커버리지 표시 시각(UTC)"
   ],
-  "{freq} MHz / {hour}:00 UTC / {label} / {count}周波数×24時間 · セルはREL {target}%以上となる面積の割合（緯度で面積補正）。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます": [
-    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequencies × 24 hours · Each cell is the share of the area with REL ≥ {target}% (area-weighted by latitude). Select a cell for its map; play UTC to step through the hours",
-    "{freq} MHz / {hour}:00 UTC / {label} / {count} fréquences × 24 heures · Chaque case est la part de la zone où la REL ≥ {target} % (pondérée par la latitude). Choisir une case pour sa carte ; lire l’UTC pour faire défiler les heures",
-    "{freq} MHz / {hour}:00 UTC / {label} / {count} frecuencias × 24 horas · Cada celda es la parte del área con REL ≥ {target}% (ponderada por latitud). Seleccione una celda para su mapa; reproduzca UTC para avanzar las horas",
-    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequenze × 24 ore · Ogni cella è la quota dell’area con REL ≥ {target}% (pesata per latitudine). Seleziona una cella per la sua mappa; riproduci l’UTC per scorrere le ore",
-    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequências × 24 horas · Cada célula é a parte da área com REL ≥ {target}% (ponderada pela latitude). Selecione uma célula para o seu mapa; reproduza o UTC para avançar as horas",
-    "{freq} MHz / {hour}:00 UTC / {label} / {count} Frequenzen × 24 Stunden · Jede Zelle ist der Flächenanteil mit REL ≥ {target} % (nach Breite gewichtet). Zelle wählen für ihre Karte; UTC abspielen, um die Stunden durchzugehen",
-    "{freq} MHz / {hour}:00 UTC / {label} / {count}개 주파수×24시간 · 셀은 REL {target}% 이상인 면적 비율(위도로 면적 보정). 셀을 선택하면 그 지도를 표시하고 UTC 재생으로 시각을 진행합니다"
-  ],
-  "{freq} MHz / {hour}:00 UTC / REL {target}%以上の面積 {value}%": [
-    "{freq} MHz / {hour}:00 UTC / area with REL ≥ {target}%: {value}%",
-    "{freq} MHz / {hour}:00 UTC / zone avec REL ≥ {target} % : {value} %",
-    "{freq} MHz / {hour}:00 UTC / área con REL ≥ {target}%: {value}%",
-    "{freq} MHz / {hour}:00 UTC / area con REL ≥ {target}%: {value}%",
-    "{freq} MHz / {hour}:00 UTC / área com REL ≥ {target}%: {value}%",
-    "{freq} MHz / {hour}:00 UTC / Fläche mit REL ≥ {target} %: {value} %",
-    "{freq} MHz / {hour}:00 UTC / REL {target}% 이상 면적 {value}%"
-  ],
   "エリア計算の図の数が範囲外です": [
     "The number of area plots is out of range",
     "Le nombre de cartes de zone est hors limites",
@@ -9685,13 +9667,22 @@ const HF_MESSAGES={
     "{freq} MHz / {hour}:00 UTC / {label} / {count} Frequenzen × 24 Stunden · Jede Zelle ist der Median des SNR im Bereich (dB·Hz, nach Breite gewichtet), gefärbt wie die Kartenlegende. Zelle wählen für ihre Karte; UTC abspielen, um die Stunden durchzugehen",
     "{freq} MHz / {hour}:00 UTC / {label} / {count}개 주파수×24시간 · 셀은 범위 내 SNR의 중앙값(dB·Hz, 위도로 면적 보정)이며 색은 지도 범례와 같습니다. 셀을 선택하면 그 지도를 표시하고 UTC 재생으로 시각을 진행합니다"
   ],
-  "{freq} MHz / {hour}:00 UTC / 中央値 {value} {unit}": [
-    "{freq} MHz / {hour}:00 UTC / median {value} {unit}",
-    "{freq} MHz / {hour}:00 UTC / médiane {value} {unit}",
-    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit}",
-    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit}",
-    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit}",
-    "{freq} MHz / {hour}:00 UTC / Median {value} {unit}",
-    "{freq} MHz / {hour}:00 UTC / 중앙값 {value} {unit}"
+  "{freq} MHz / {hour}:00 UTC / {label} / {count}周波数×24時間 · セルは範囲内のRELの中央値（%、緯度で面積補正）で、色は地図の凡例と同じです。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます": [
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequencies × 24 hours · Each cell is the median REL over the range (%, area-weighted by latitude), coloured like the map legend. Select a cell for its map; play UTC to step through the hours",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} fréquences × 24 heures · Chaque case est la médiane de la REL sur la zone (%, pondérée par la latitude), colorée comme la légende de la carte. Choisir une case pour sa carte ; lire l’UTC pour faire défiler les heures",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frecuencias × 24 horas · Cada celda es la mediana de la REL en el rango (%, ponderada por latitud), con los colores de la leyenda del mapa. Seleccione una celda para su mapa; reproduzca UTC para avanzar las horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequenze × 24 ore · Ogni cella è la mediana della REL nell’intervallo (%, pesata per latitudine), con i colori della legenda della mappa. Seleziona una cella per la sua mappa; riproduci l’UTC per scorrere le ore",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequências × 24 horas · Cada célula é a mediana da REL no intervalo (%, ponderada pela latitude), com as cores da legenda do mapa. Selecione uma célula para o seu mapa; reproduza o UTC para avançar as horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} Frequenzen × 24 Stunden · Jede Zelle ist der Median der REL im Bereich (%, nach Breite gewichtet), gefärbt wie die Kartenlegende. Zelle wählen für ihre Karte; UTC abspielen, um die Stunden durchzugehen",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count}개 주파수×24시간 · 셀은 범위 내 REL의 중앙값(%, 위도로 면적 보정)이며 색은 지도 범례와 같습니다. 셀을 선택하면 그 지도를 표시하고 UTC 재생으로 시각을 진행합니다"
+  ],
+  "{freq} MHz / {hour}:00 UTC / 中央値 {value} {unit} / REL {target}%以上の面積 {share}%": [
+    "{freq} MHz / {hour}:00 UTC / median {value} {unit} / area with REL ≥ {target}%: {share}%",
+    "{freq} MHz / {hour}:00 UTC / médiane {value} {unit} / zone avec REL ≥ {target} % : {share} %",
+    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit} / área con REL ≥ {target}%: {share}%",
+    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit} / area con REL ≥ {target}%: {share}%",
+    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit} / área com REL ≥ {target}%: {share}%",
+    "{freq} MHz / {hour}:00 UTC / Median {value} {unit} / Fläche mit REL ≥ {target} %: {share} %",
+    "{freq} MHz / {hour}:00 UTC / 중앙값 {value} {unit} / REL {target}% 이상 면적 {share}%"
   ]
 };

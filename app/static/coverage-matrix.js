@@ -11,12 +11,9 @@ function matrixArea(){
   r.matrixAreas[key]={size:n,lon_min:m.lon_min,lon_max:m.lon_max,lat_min:m.lat_min,lat_max:m.lat_max,signal_dbw:matrixGrid(cell.signal_dbw,n,-1,0),snr_db_hz:matrixGrid(cell.snr_db_hz,n,1,100),reliability:matrixGrid(cell.reliability,n,1,0)};}
  return r.matrixAreas[key];
 }
-// REL shares are relative to the best cell, since a whole-world share can be small; same ramp as the REL legend bar.
-const matrixRamp=[[24,50,76],[24,124,119],[123,223,172]];
-function matrixFill(v,max){if(v==null)return '#0c1824';const t=max>0?Math.min(1,v/max):0,k=t<.5?0:1,u=t<.5?t*2:(t-.5)*2,a=matrixRamp[k],b=matrixRamp[k+1];return `rgb(${a.map((c,i)=>Math.round(c+(b[i]-c)*u)).join(',')})`;}
 function selectMatrixCell(f,h){matrixFrequency=f;$('cov_hour').value=h;showCoverage();}
-// S dBW and SNR cells give the area-weighted median over the grid points with a value, coloured like the map's bands;
-// REL cells give the share of the area meeting the REL target.
+// Each cell gives the area-weighted median of the selected display over the grid points with a value, coloured like the map's bands.
+// The share of the area meeting the REL target stays in the cell's tooltip.
 function matrixMedian(b64,m,sign,offset){
  const bytes=atob(b64),n=m.size,values=[];let total=0;
  for(let y=0;y<n;y++){const w=Math.max(0,Math.cos((m.lat_min+(m.lat_max-m.lat_min)*y/(n-1))*Math.PI/180));
@@ -24,25 +21,25 @@ function matrixMedian(b64,m,sign,offset){
  if(!values.length)return null;values.sort((a,b)=>a[0]-b[0]);let sum=0;for(const[v,w]of values){sum+=w;if(sum>=total/2)return v;}return values.at(-1)[0];
 }
 function matrixValues(r,metric){
- const m=r.matrix;if(metric==='reliability')return m.covered_percent;r.matrixStats??={};
- return r.matrixStats[metric]??=m.cells.map(row=>row.map(c=>metric==='signal_dbw'?matrixMedian(c.signal_dbw,m,-1,0):matrixMedian(c.snr_db_hz,m,1,100)));
+ const m=r.matrix,[sign,offset]={signal_dbw:[-1,0],snr_db_hz:[1,100],reliability:[1,0]}[metric];r.matrixStats??={};
+ return r.matrixStats[metric]??=m.cells.map(row=>row.map(c=>matrixMedian(c[metric],m,sign,offset)));
 }
 function matrixBandFill(metric,v){const band=coverageBand(coverageScales[metric].steps,v);return band<0?'#0c1824':coverageColors(metric)[band];}
 function matrixInk(fill){const c=fill.match(/\d+/g)?.map(Number)??[12,24,36];return .299*c[0]+.587*c[1]+.114*c[2]>150?'#062c24':'#e6eef5';}
 function renderCoverageMatrix(){
- const r=coverageResult,m=r.matrix,f=Math.min(matrixFrequency,m.frequencies.length-1),h=matrixHour(),target=r.parameters.reliability,metric=$('cov_metric').value,values=matrixValues(r,metric),rel=metric==='reliability',
-  max=rel?Math.max(0,...values.flat().filter(v=>v!=null)):0,label=r.span===360?'全世界':r.span+'° × '+r.span+'°',unit=coverageScales[metric].unit;
- $('coverage-info').replaceChildren(cell('span',rel?`${m.frequencies[f]} MHz / ${h}:00 UTC / ${label} / ${m.frequencies.length}周波数×24時間 · セルはREL ${target}%以上となる面積の割合（緯度で面積補正）。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます`
+ const r=coverageResult,m=r.matrix,f=Math.min(matrixFrequency,m.frequencies.length-1),h=matrixHour(),target=r.parameters.reliability,metric=$('cov_metric').value,values=matrixValues(r,metric),
+  label=r.span===360?'全世界':r.span+'° × '+r.span+'°',unit=coverageScales[metric].unit;
+ $('coverage-info').replaceChildren(cell('span',metric==='reliability'?`${m.frequencies[f]} MHz / ${h}:00 UTC / ${label} / ${m.frequencies.length}周波数×24時間 · セルは範囲内のRELの中央値（%、緯度で面積補正）で、色は地図の凡例と同じです。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます`
   :metric==='signal_dbw'?`${m.frequencies[f]} MHz / ${h}:00 UTC / ${label} / ${m.frequencies.length}周波数×24時間 · セルは範囲内の信号強度の中央値（dBW、緯度で面積補正）で、色は地図の凡例と同じです。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます`
   :`${m.frequencies[f]} MHz / ${h}:00 UTC / ${label} / ${m.frequencies.length}周波数×24時間 · セルは範囲内のSNRの中央値（dB·Hz、緯度で面積補正）で、色は地図の凡例と同じです。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます`),...(r.notes??[]).map(n=>cell('p',n)));
  coverageLegend(metric);
  const table=document.createElement('table');table.className='heat coverage-matrix';const head=document.createElement('tr');head.append(cell('th','MHz / UTC'));
  for(const hour of m.hours){const th=cell('th',String(hour).padStart(2,'0'));th.classList.toggle('selected',hour===h);head.append(th);}table.append(head);
  m.frequencies.forEach((frequency,i)=>{const tr=document.createElement('tr'),label=cell('th',frequency.toFixed(3));label.classList.toggle('selected',i===f);tr.append(label);
-  values[i].forEach((v,hour)=>{const td=document.createElement('td'),text=v==null?'—':rel?(v<10?v.toFixed(1):String(Math.round(v))):String(Math.round(v)),b=cell('button',text);
-   if(rel){td.style.background=matrixFill(v,max);td.style.color=v!=null&&max>0&&v/max>.6?'#062c24':'#e6eef5';}else{const fill=v==null?'#0c1824':matrixBandFill(metric,v);td.style.background=fill;td.style.color=matrixInk(fill);}
+  values[i].forEach((v,hour)=>{const td=document.createElement('td'),text=v==null?'—':String(Math.round(v)),fill=v==null?'#0c1824':matrixBandFill(metric,v),b=cell('button',text);
+   td.style.background=fill;td.style.color=matrixInk(fill);
    td.classList.toggle('selected',i===f&&hour===h);
-   b.title=rel?`${frequency} MHz / ${hour}:00 UTC / REL ${target}%以上の面積 ${fmt(v)}%`:`${frequency} MHz / ${hour}:00 UTC / 中央値 ${fmt(v)} ${unit}`;b.onclick=()=>selectMatrixCell(i,hour);td.append(b);tr.append(td);});table.append(tr);});
+   b.title=`${frequency} MHz / ${hour}:00 UTC / 中央値 ${fmt(v)} ${unit} / REL ${target}%以上の面積 ${fmt(m.covered_percent[i][hour])}%`;b.onclick=()=>selectMatrixCell(i,hour);td.append(b);tr.append(td);});table.append(tr);});
  $('coverage-matrix').replaceChildren(table);
 }
 function openCoverageMatrix(r){let best=-1;r.matrix.covered_percent.forEach((row,f)=>row.forEach((v,h)=>{if(v!=null&&v>best){best=v;matrixFrequency=f;$('cov_hour').value=h;}}));if(best<0){matrixFrequency=0;$('cov_hour').value=12;}}

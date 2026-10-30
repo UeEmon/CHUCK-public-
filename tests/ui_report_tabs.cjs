@@ -126,10 +126,10 @@ const {chromium}=require('playwright');
   });
   // A new matrix opens on its best cell; the default range is 120 degrees.
   assert.deepEqual(matrix,[1,'23','120',1,'5',-105,false,'6',-106,'-106']);
-  // Cells follow the selected display: S dBW medians in the map's S-meter colours, REL as the covered share.
+  // Cells follow the selected display: medians in the map legend's colours.
   const metrics=await page.evaluate(()=>{const td=()=>document.querySelector('.coverage-matrix td.selected');const s=[td().style.background,coverageColors('signal_dbw')[7]];
    $('cov_metric').value='snr_db_hz';$('cov_metric').onchange();const snr=td().textContent;$('cov_metric').value='reliability';$('cov_metric').onchange();return [...s,snr,td().textContent];});
-  assert.equal(metrics[0],metrics[1].replace(/,/g,', '));assert.deepEqual(metrics.slice(2),['50','6.0']);
+  assert.equal(metrics[0],metrics[1].replace(/,/g,', '));assert.deepEqual(metrics.slice(2),['50','90']);
   // The whole world asks first; declining starts nothing.
   const confirm=await page.evaluate(async()=>{const answer=confirmDialog(),open=$('calc-confirm').open;$('calc-confirm-no').click();const no=await answer;const again=confirmDialog();$('calc-confirm-ok').click();return [open,no,await again,$('calc-confirm').open];});
   assert.deepEqual(confirm,[true,false,true,false]);
