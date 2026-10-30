@@ -541,15 +541,6 @@ const HF_MESSAGES={
     "Eingabekarten",
     "입력 카드"
   ],
-  "指定時刻の地域カバー範囲": [
-    "Regional coverage at a selected hour",
-    "Couverture régionale à l’heure choisie",
-    "Cobertura regional a una hora seleccionada",
-    "Copertura regionale all’ora selezionata",
-    "Cobertura regional na hora selecionada",
-    "Regionale Abdeckung zur gewählten Stunde",
-    "지정 시각의 지역 커버리지"
-  ],
   "周波数 MHz": [
     "Frequency MHz",
     "Fréquence MHz",
@@ -9316,15 +9307,6 @@ const HF_MESSAGES={
     "Auf den Reitern 24-Stunden-Prognose, Diversity-Prognose und Mesh-Prognose erscheinen unter der Verbindungskarte ein UTC-Schieberegler und eine Start/Stopp-Taste. Beim Verschieben der Zeit wechseln Pfadfarben und REL-Anzeige der Karte auf diese Stunde.",
     "24시간 예측, 다이버시티 예측, 메시 예측 탭에서는 회선 지도 아래에 UTC 슬라이더와 재생·정지 버튼을 표시합니다. 시각을 움직이면 지도의 경로 색과 REL 표시가 그 시각으로 바뀝니다."
   ],
-  "VOACAPのエリア計算で、TXから範囲内の各格子点までの信号強度・SNR・信頼度を計算します。受信側はRX1のアンテナ・雑音を使います。地図には等値線で区切った色の範囲で表示します。": [
-    "VOACAP area coverage computes signal strength, SNR and reliability from the TX to every grid point in the range, using RX1’s antenna and noise at the receiver. The map shows the result as colour bands separated by contour lines.",
-    "Le calcul de zone VOACAP calcule la force du signal, le SNR et la fiabilité du TX vers chaque point de la grille, avec l’antenne et le bruit de RX1 en réception. La carte affiche des plages de couleur séparées par des isolignes.",
-    "El cálculo de área de VOACAP obtiene la intensidad de señal, el SNR y la fiabilidad desde el TX hasta cada punto de la cuadrícula, con la antena y el ruido de RX1 en recepción. El mapa muestra bandas de color separadas por isolíneas.",
-    "Il calcolo d’area VOACAP ricava intensità del segnale, SNR e affidabilità dal TX a ogni punto della griglia, con antenna e rumore di RX1 in ricezione. La mappa mostra fasce di colore separate da isolinee.",
-    "O cálculo de área do VOACAP obtém a intensidade do sinal, o SNR e a confiabilidade do TX até cada ponto da grelha, com a antena e o ruído de RX1 na receção. O mapa mostra faixas de cor separadas por isolinhas.",
-    "Die VOACAP-Flächenberechnung ermittelt Signalstärke, SNR und Zuverlässigkeit vom TX zu jedem Gitterpunkt im Bereich, mit Antenne und Rauschen von RX1 beim Empfang. Die Karte zeigt Farbbänder, getrennt durch Isolinien.",
-    "VOACAP 영역 계산으로 TX에서 범위 내 각 격자점까지의 신호 강도·SNR·신뢰도를 계산합니다. 수신 측은 RX1의 안테나·잡음을 사용합니다. 지도에는 등치선으로 구분한 색 범위로 표시합니다."
-  ],
   "範囲": [
     "Range",
     "Zone",
@@ -9387,24 +9369,6 @@ const HF_MESSAGES={
     "Intensidade do sinal S dBW",
     "Signalstärke S dBW",
     "신호 강도 S dBW"
-  ],
-  "VOACAPのエリア計算でカバー範囲を計算しています。完了までお待ちください。": [
-    "Calculating coverage with VOACAP area coverage. Please wait…",
-    "Calcul de la couverture par calcul de zone VOACAP. Veuillez patienter…",
-    "Calculando la cobertura con el cálculo de área de VOACAP. Espere…",
-    "Calcolo della copertura con il calcolo d’area VOACAP. Attendere…",
-    "Calculando a cobertura com o cálculo de área do VOACAP. Aguarde…",
-    "Abdeckung wird mit der VOACAP-Flächenberechnung berechnet. Bitte warten…",
-    "VOACAP 영역 계산으로 커버리지를 계산하는 중입니다. 잠시 기다려 주세요."
-  ],
-  "カバー範囲の計算が完了しました。地図の色の範囲を選ぶと、その地点の信号強度・SNR・信頼度を確認できます。": [
-    "Coverage complete. Select a coloured area on the map for the signal strength, SNR and reliability there.",
-    "Couverture calculée. Choisissez une zone colorée pour voir force du signal, SNR et fiabilité.",
-    "Cobertura calculada. Seleccione una zona coloreada para ver intensidad de señal, SNR y fiabilidad.",
-    "Copertura completata. Seleziona un’area colorata per intensità del segnale, SNR e affidabilità.",
-    "Cobertura calculada. Selecione uma área colorida para ver intensidade do sinal, SNR e confiabilidade.",
-    "Abdeckung berechnet. Farbigen Bereich wählen für Signalstärke, SNR und Zuverlässigkeit.",
-    "커버리지 계산 완료. 지도의 색 범위를 선택하면 그 지점의 신호 강도·SNR·신뢰도를 확인합니다."
   ],
   "{freq} MHz / {hour}:00 UTC / {label} / {size}×{size}格子 · TXから各格子点までのVOACAPエリア計算。格子点の間は補間して色分けしています": [
     "{freq} MHz / {hour}:00 UTC / {label} / {size}×{size} grid · VOACAP area coverage from the TX to each grid point, interpolated between grid points into colour bands",
@@ -9478,15 +9442,6 @@ const HF_MESSAGES={
     "span: 30, 60, 120 oder 360 (ganze Welt) wählen",
     "span: 30·60·120·360(전 세계) 중에서 선택하세요"
   ],
-  "周波数×時刻マトリックスを計算": [
-    "Calculate frequency × time matrix",
-    "Calculer la matrice fréquence × heure",
-    "Calcular matriz frecuencia × hora",
-    "Calcola matrice frequenza × ora",
-    "Calcular matriz frequência × hora",
-    "Matrix Frequenz × Zeit berechnen",
-    "주파수×시각 매트릭스 계산"
-  ],
   "カバー範囲の表示時刻（UTC）": [
     "Coverage display time (UTC)",
     "Heure affichée de la couverture (UTC)",
@@ -9514,15 +9469,6 @@ const HF_MESSAGES={
     "{freq} MHz / {hour}:00 UTC / Fläche mit REL ≥ {target} %: {value} %",
     "{freq} MHz / {hour}:00 UTC / REL {target}% 이상 면적 {value}%"
   ],
-  "カバー範囲のマトリックスを計算しました。セルを選ぶとその周波数・時刻の地図を表示し、「▶ 再生」で24時間を順に表示します。": [
-    "Coverage matrix calculated. Select a cell for the map of that frequency and hour; “▶ Play” shows the 24 hours in turn.",
-    "Matrice de couverture calculée. Choisissez une case pour la carte de cette fréquence et heure ; « ▶ Lire » affiche les 24 heures.",
-    "Matriz de cobertura calculada. Seleccione una celda para el mapa de esa frecuencia y hora; «▶ Reproducir» muestra las 24 horas.",
-    "Matrice di copertura calcolata. Seleziona una cella per la mappa di quella frequenza e ora; «▶ Riproduci» mostra le 24 ore.",
-    "Matriz de cobertura calculada. Selecione uma célula para o mapa dessa frequência e hora; «▶ Reproduzir» mostra as 24 horas.",
-    "Abdeckungsmatrix berechnet. Zelle wählen für die Karte dieser Frequenz und Stunde; „▶ Abspielen“ zeigt die 24 Stunden nacheinander.",
-    "커버리지 매트릭스를 계산했습니다. 셀을 선택하면 그 주파수·시각의 지도를 표시하고 '▶ 재생'으로 24시간을 차례로 표시합니다."
-  ],
   "エリア計算の図の数が範囲外です": [
     "The number of area plots is out of range",
     "Le nombre de cartes de zone est hors limites",
@@ -9540,24 +9486,6 @@ const HF_MESSAGES={
     "Matriz frequência × hora e animação da cobertura",
     "Frequenz-×-Zeit-Matrix und Animation der Abdeckung",
     "커버리지 주파수×시각 매트릭스와 애니메이션"
-  ],
-  "計算には数秒かかります。完了後に上の地図へ表示します。マトリックスは「予測条件」の周波数ごとに24時間分の地図を計算します（1〜数分）。計算中は進み具合を表示し、中止できます。": [
-    "A map takes a few seconds and then appears on the map above. The matrix calculates 24 hours of maps for each frequency in the prediction conditions (one to a few minutes). Progress is shown during the calculation, which can be cancelled.",
-    "Une carte prend quelques secondes puis s’affiche ci-dessus. La matrice calcule 24 heures de cartes pour chaque fréquence des conditions (une à quelques minutes). La progression s’affiche pendant le calcul, qui peut être annulé.",
-    "Un mapa tarda unos segundos y luego aparece arriba. La matriz calcula 24 horas de mapas para cada frecuencia de las condiciones (de uno a unos minutos). Durante el cálculo se muestra el progreso y se puede cancelar.",
-    "Una mappa richiede alcuni secondi e poi appare sopra. La matrice calcola 24 ore di mappe per ogni frequenza delle condizioni (da uno a qualche minuto). Durante il calcolo si vede l’avanzamento e lo si può annullare.",
-    "Um mapa demora alguns segundos e depois aparece acima. A matriz calcula 24 horas de mapas para cada frequência das condições (de um a alguns minutos). Durante o cálculo o progresso é mostrado e é possível cancelar.",
-    "Eine Karte dauert einige Sekunden und erscheint dann oben. Die Matrix berechnet 24 Stunden Karten für jede Frequenz der Prognosebedingungen (eine bis einige Minuten). Während der Berechnung wird der Fortschritt angezeigt; sie kann abgebrochen werden.",
-    "지도 1장은 몇 초 걸리며 위 지도에 표시합니다. 매트릭스는 예측 조건의 주파수마다 24시간분 지도를 계산합니다(1~몇 분). 계산 중에는 진행 상황을 표시하며 중지할 수 있습니다."
-  ],
-  "周波数{count}波×24時間のカバー範囲を計算しています。1〜数分かかります。": [
-    "Calculating coverage for {count} frequencies × 24 hours. This takes one to a few minutes.",
-    "Calcul de la couverture pour {count} fréquences × 24 heures. Cela prend une à quelques minutes.",
-    "Calculando la cobertura para {count} frecuencias × 24 horas. Tarda de uno a unos minutos.",
-    "Calcolo della copertura per {count} frequenze × 24 ore. Richiede da uno a qualche minuto.",
-    "Calculando a cobertura para {count} frequências × 24 horas. Demora de um a alguns minutos.",
-    "Abdeckung für {count} Frequenzen × 24 Stunden wird berechnet. Das dauert eine bis einige Minuten.",
-    "주파수 {count}개×24시간의 커버리지를 계산하는 중입니다. 1~몇 분 걸립니다."
   ],
   "計算を中止": [
     "Cancel calculation",
@@ -9613,15 +9541,6 @@ const HF_MESSAGES={
     "Abdeckung wird berechnet",
     "커버리지를 계산하는 중"
   ],
-  "周波数×時刻マトリックスを計算しています": [
-    "Calculating the frequency × time matrix",
-    "Calcul de la matrice fréquence × heure",
-    "Calculando la matriz frecuencia × hora",
-    "Calcolo della matrice frequenza × ora",
-    "Calculando a matriz frequência × hora",
-    "Matrix Frequenz × Zeit wird berechnet",
-    "주파수×시각 매트릭스를 계산하는 중"
-  ],
   "計算を中止しました": [
     "The calculation was cancelled",
     "Le calcul a été annulé",
@@ -9648,5 +9567,104 @@ const HF_MESSAGES={
     "A «Cobertura» tem agora «Calcular matriz frequência × hora». Faz o cálculo de área de 24 horas para cada frequência das condições (grelha de 3° × 1,5° para o mundo inteiro) e mostra em cada célula a parte da área que atinge o objetivo de REL. Selecione uma célula para o mapa dessa frequência e hora e use «▶ Reproduzir» em UTC para animar as 24 horas. Uma janela mostra o progresso e permite cancelar o cálculo.",
     "„Abdeckung“ hat jetzt „Matrix Frequenz × Zeit berechnen“. Für jede Frequenz der Prognosebedingungen wird die Flächenberechnung über 24 Stunden ausgeführt (weltweit ein Gitter von 3° × 1,5°); jede Zelle zeigt den Flächenanteil, der das REL-Ziel erreicht. Zelle wählen für die Karte dieser Frequenz und Stunde, mit „▶ Abspielen“ unter UTC laufen die 24 Stunden als Animation. Ein Dialog zeigt den Fortschritt und kann die Berechnung abbrechen.",
     "'커버리지'에 '주파수×시각 매트릭스 계산'을 추가했습니다. 예측 조건의 주파수마다 24시간분 영역 계산을 하고(전 세계는 경도 3°·위도 1.5° 격자) 각 셀에 REL 목표 이상인 면적 비율을 표시합니다. 셀을 선택하면 그 주파수·시각의 지도를 표시하고 UTC '▶ 재생'으로 24시간을 애니메이션으로 표시합니다. 계산 중에는 대화 상자에 진행 상황을 표시하며 중지할 수 있습니다."
+  ],
+  "カバー範囲（周波数×時刻）": [
+    "Coverage (frequency × time)",
+    "Couverture (fréquence × heure)",
+    "Cobertura (frecuencia × hora)",
+    "Copertura (frequenza × ora)",
+    "Cobertura (frequência × hora)",
+    "Abdeckung (Frequenz × Zeit)",
+    "커버리지(주파수×시각)"
+  ],
+  "VOACAPのエリア計算で、「予測条件」の全周波数について24時間分、TXから範囲内の各格子点までの信号強度・SNR・信頼度を計算します。受信側はRX1のアンテナ・雑音を使います。地図には等値線で区切った色の範囲で表示します。": [
+    "Uses the VOACAP area calculation to compute signal strength, SNR and reliability from the TX to each grid point in the range, for every frequency in the prediction conditions over 24 hours. The receiving side uses RX1's antenna and noise. The map shows the values as colour bands separated by contours.",
+    "Le calcul de zone VOACAP donne, pour toutes les fréquences des conditions de prévision et sur 24 heures, l’intensité du signal, le SNR et la fiabilité depuis le TX jusqu’à chaque point de grille de la zone. La réception utilise l’antenne et le bruit de RX1. La carte affiche les valeurs en plages de couleur séparées par des isolignes.",
+    "Con el cálculo de área VOACAP se obtienen, para todas las frecuencias de las condiciones de predicción y durante 24 horas, la intensidad de señal, la SNR y la fiabilidad desde el TX hasta cada punto de la cuadrícula del rango. La recepción usa la antena y el ruido de RX1. El mapa muestra los valores en bandas de color separadas por isolíneas.",
+    "Con il calcolo d’area VOACAP si ottengono, per tutte le frequenze delle condizioni di previsione e per 24 ore, intensità del segnale, SNR e affidabilità dal TX a ogni punto della griglia nell’intervallo. La ricezione usa l’antenna e il rumore di RX1. La mappa mostra i valori in fasce di colore separate da isolinee.",
+    "O cálculo de área do VOACAP obtém, para todas as frequências das condições de previsão e durante 24 horas, a intensidade do sinal, a SNR e a fiabilidade do TX até cada ponto da grade no intervalo. A recepção usa a antena e o ruído do RX1. O mapa mostra os valores em faixas de cor separadas por isolinhas.",
+    "Die VOACAP-Flächenberechnung ermittelt für alle Frequenzen der Prognosebedingungen über 24 Stunden Signalstärke, SNR und Zuverlässigkeit vom TX zu jedem Gitterpunkt im Bereich. Empfangsseitig werden Antenne und Rauschen von RX1 verwendet. Die Karte zeigt die Werte als durch Isolinien getrennte Farbbereiche.",
+    "VOACAP 영역 계산으로 예측 조건의 모든 주파수에 대해 24시간 동안 TX에서 범위 안 각 격자점까지의 신호 강도·SNR·신뢰도를 계산합니다. 수신 측은 RX1의 안테나·잡음을 사용합니다. 지도에는 등치선으로 나눈 색 범위로 표시합니다."
+  ],
+  "周波数×時刻のマトリックスを計算し、セルを選ぶとその地図を表示します。範囲が狭いほど格子が細かくなります。全世界は1〜2分以上かかります。計算中は進み具合を表示し、中止できます。": [
+    "Calculates the frequency × time matrix; select a cell to show its map. Smaller ranges use a finer grid. The whole world takes one to two minutes or more. Progress is shown during the calculation, and it can be cancelled.",
+    "Calcule la matrice fréquence × heure ; choisissez une cellule pour afficher sa carte. Plus la zone est petite, plus la grille est fine. Le monde entier prend une à deux minutes ou plus. La progression s’affiche pendant le calcul, qui peut être annulé.",
+    "Calcula la matriz frecuencia × hora; seleccione una celda para ver su mapa. Cuanto menor es el rango, más fina es la cuadrícula. El mundo entero tarda uno o dos minutos o más. Durante el cálculo se muestra el progreso y se puede cancelar.",
+    "Calcola la matrice frequenza × ora; selezionare una cella per vederne la mappa. Più piccolo è l’intervallo, più fine è la griglia. Il mondo intero richiede uno o due minuti o più. Durante il calcolo viene mostrato l’avanzamento ed è possibile annullarlo.",
+    "Calcula a matriz frequência × hora; selecione uma célula para ver o mapa. Quanto menor o intervalo, mais fina a grade. O mundo inteiro leva um a dois minutos ou mais. Durante o cálculo o progresso é exibido e é possível cancelar.",
+    "Berechnet die Matrix Frequenz × Zeit; eine Zelle wählen, um ihre Karte anzuzeigen. Je kleiner der Bereich, desto feiner das Gitter. Die ganze Welt dauert ein bis zwei Minuten oder länger. Während der Berechnung wird der Fortschritt angezeigt, und sie kann abgebrochen werden.",
+    "주파수×시각 매트릭스를 계산하고, 셀을 선택하면 그 지도를 표시합니다. 범위가 좁을수록 격자가 촘촘해집니다. 전 세계는 1~2분 이상 걸립니다. 계산 중에는 진행 상황을 표시하며 중지할 수 있습니다."
+  ],
+  "全世界のカバー範囲を計算します": [
+    "Calculate worldwide coverage",
+    "Calculer la couverture mondiale",
+    "Calcular la cobertura mundial",
+    "Calcola la copertura mondiale",
+    "Calcular a cobertura mundial",
+    "Weltweite Abdeckung berechnen",
+    "전 세계 커버리지를 계산합니다"
+  ],
+  "全世界は格子点が多いため、周波数の数やサーバーの性能により1〜数分かかります。計算中は中止できます。計算を始めますか？": [
+    "The whole world has many grid points, so this takes one to several minutes depending on the number of frequencies and the server. You can cancel during the calculation. Start the calculation?",
+    "Le monde entier comporte de nombreux points de grille : selon le nombre de fréquences et le serveur, le calcul prend une à plusieurs minutes. Il peut être annulé en cours. Lancer le calcul ?",
+    "El mundo entero tiene muchos puntos de cuadrícula, por lo que tarda de uno a varios minutos según el número de frecuencias y el servidor. Se puede cancelar durante el cálculo. ¿Iniciar el cálculo?",
+    "Il mondo intero ha molti punti di griglia, quindi servono da uno a diversi minuti a seconda del numero di frequenze e del server. Il calcolo può essere annullato. Avviare il calcolo?",
+    "O mundo inteiro tem muitos pontos de grade, por isso leva de um a vários minutos conforme o número de frequências e o servidor. É possível cancelar durante o cálculo. Iniciar o cálculo?",
+    "Die ganze Welt hat viele Gitterpunkte; je nach Anzahl der Frequenzen und Server dauert die Berechnung eine bis mehrere Minuten. Sie kann währenddessen abgebrochen werden. Berechnung starten?",
+    "전 세계는 격자점이 많아 주파수 수와 서버 성능에 따라 1~수 분이 걸립니다. 계산 중에 중지할 수 있습니다. 계산을 시작하시겠습니까?"
+  ],
+  "計算する": [
+    "Calculate",
+    "Calculer",
+    "Calcular",
+    "Calcola",
+    "Calcular",
+    "Berechnen",
+    "계산"
+  ],
+  "やめる": [
+    "Cancel",
+    "Annuler",
+    "Cancelar",
+    "Annulla",
+    "Cancelar",
+    "Abbrechen",
+    "취소"
+  ],
+  "周波数{count}波×24時間のカバー範囲を計算しています。数十秒〜数分かかります。": [
+    "Calculating coverage for {count} frequencies × 24 hours. This takes tens of seconds to several minutes.",
+    "Calcul de la couverture pour {count} fréquences × 24 heures. Cela prend de quelques dizaines de secondes à plusieurs minutes.",
+    "Calculando la cobertura para {count} frecuencias × 24 horas. Tarda desde decenas de segundos hasta varios minutos.",
+    "Calcolo della copertura per {count} frequenze × 24 ore. Richiede da alcune decine di secondi a diversi minuti.",
+    "Calculando a cobertura para {count} frequências × 24 horas. Leva de dezenas de segundos a vários minutos.",
+    "Abdeckung für {count} Frequenzen × 24 Stunden wird berechnet. Das dauert einige zehn Sekunden bis mehrere Minuten.",
+    "주파수 {count}개×24시간의 커버리지를 계산하고 있습니다. 수십 초~수 분이 걸립니다."
+  ],
+  "カバー範囲を計算しました。セルを選ぶとその周波数・時刻の地図を表示し、「▶ 再生」で24時間を順に表示します。": [
+    "Coverage calculated. Select a cell to show the map for that frequency and hour; “▶ Play” steps through the 24 hours.",
+    "Couverture calculée. Choisissez une cellule pour afficher la carte de cette fréquence et de cette heure ; « ▶ Lire » parcourt les 24 heures.",
+    "Cobertura calculada. Seleccione una celda para ver el mapa de esa frecuencia y hora; «▶ Reproducir» recorre las 24 horas.",
+    "Copertura calcolata. Selezionare una cella per la mappa di quella frequenza e ora; «▶ Riproduci» scorre le 24 ore.",
+    "Cobertura calculada. Selecione uma célula para ver o mapa dessa frequência e hora; “▶ Reproduzir” percorre as 24 horas.",
+    "Abdeckung berechnet. Eine Zelle wählen, um die Karte für diese Frequenz und Stunde anzuzeigen; „▶ Abspielen“ durchläuft die 24 Stunden.",
+    "커버리지를 계산했습니다. 셀을 선택하면 그 주파수·시각의 지도를 표시하고, '▶ 재생'으로 24시간을 차례로 표시합니다."
+  ],
+  "カバー範囲の計算を周波数×時刻に一本化": [
+    "Coverage now always calculates frequency × time",
+    "La couverture calcule désormais toujours fréquence × heure",
+    "La cobertura calcula siempre frecuencia × hora",
+    "La copertura calcola sempre frequenza × ora",
+    "A cobertura agora calcula sempre frequência × hora",
+    "Abdeckung berechnet jetzt immer Frequenz × Zeit",
+    "커버리지 계산을 주파수×시각으로 통일"
+  ],
+  "「カバー範囲を計算」で、予測条件の全周波数×24時間のマトリックスを計算するようにしました。周波数・UTC時刻を指定した単一の計算は廃止しました。範囲の既定はTX中心120°×120°になり、全世界を選ぶと計算時間がかかる旨を確認してから計算します。": [
+    "“Calculate coverage” now calculates the matrix of every frequency in the prediction conditions × 24 hours. The single calculation for a chosen frequency and UTC hour has been removed. The default range is now 120° × 120° around the TX, and choosing the whole world asks for confirmation first because it takes longer.",
+    "« Calculer la couverture » calcule désormais la matrice de toutes les fréquences des conditions de prévision × 24 heures. Le calcul unique pour une fréquence et une heure UTC choisies a été supprimé. La zone par défaut est maintenant de 120° × 120° autour du TX ; le monde entier demande une confirmation, car le calcul est plus long.",
+    "«Calcular cobertura» calcula ahora la matriz de todas las frecuencias de las condiciones de predicción × 24 horas. Se eliminó el cálculo único para una frecuencia y hora UTC elegidas. El rango predeterminado es ahora 120° × 120° alrededor del TX, y al elegir el mundo entero se pide confirmación porque tarda más.",
+    "«Calcola copertura» calcola ora la matrice di tutte le frequenze delle condizioni di previsione × 24 ore. Il calcolo singolo per una frequenza e un’ora UTC scelte è stato rimosso. L’intervallo predefinito è ora 120° × 120° attorno al TX; scegliendo il mondo intero viene chiesta conferma perché richiede più tempo.",
+    "“Calcular cobertura” agora calcula a matriz de todas as frequências das condições de previsão × 24 horas. O cálculo único para uma frequência e hora UTC escolhidas foi removido. O intervalo padrão passa a ser 120° × 120° em torno do TX, e ao escolher o mundo inteiro é pedida confirmação, pois demora mais.",
+    "„Abdeckung berechnen“ berechnet jetzt die Matrix aller Frequenzen der Prognosebedingungen × 24 Stunden. Die Einzelberechnung für eine gewählte Frequenz und UTC-Stunde entfällt. Der Standardbereich ist jetzt 120° × 120° um den TX; bei Auswahl der ganzen Welt wird wegen der längeren Dauer zuerst nachgefragt.",
+    "'커버리지 계산'은 이제 예측 조건의 모든 주파수×24시간 매트릭스를 계산합니다. 주파수·UTC 시각을 지정한 단일 계산은 폐지했습니다. 범위 기본값은 TX 중심 120°×120°이며, 전 세계를 선택하면 계산 시간이 걸린다는 확인을 먼저 표시합니다."
   ]
 };

@@ -14,7 +14,7 @@ function matrixArea(){
 // Shares are relative to the best cell, since a whole-world share can be small; same ramp as the REL legend bar.
 const matrixRamp=[[24,50,76],[24,124,119],[123,223,172]];
 function matrixFill(v,max){if(v==null)return '#0c1824';const t=max>0?Math.min(1,v/max):0,k=t<.5?0:1,u=t<.5?t*2:(t-.5)*2,a=matrixRamp[k],b=matrixRamp[k+1];return `rgb(${a.map((c,i)=>Math.round(c+(b[i]-c)*u)).join(',')})`;}
-function selectMatrixCell(f,h){matrixFrequency=f;$('cov_freq').value=coverageResult.matrix.frequencies[f];$('cov_hour').value=h;showCoverage();}
+function selectMatrixCell(f,h){matrixFrequency=f;$('cov_hour').value=h;showCoverage();}
 function renderCoverageMatrix(){
  const r=coverageResult,m=r.matrix,f=Math.min(matrixFrequency,m.frequencies.length-1),h=matrixHour(),target=r.parameters.reliability,max=Math.max(0,...m.covered_percent.flat().filter(v=>v!=null));
  $('coverage-info').replaceChildren(cell('span',`${m.frequencies[f]} MHz / ${h}:00 UTC / ${r.span===360?'全世界':r.span+'° × '+r.span+'°'} / ${m.frequencies.length}周波数×24時間 · セルはREL ${target}%以上となる面積の割合（緯度で面積補正）。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます`),...(r.notes??[]).map(n=>cell('p',n)));
@@ -26,11 +26,14 @@ function renderCoverageMatrix(){
    b.title=`${frequency} MHz / ${hour}:00 UTC / REL ${target}%以上の面積 ${fmt(v)}%`;b.onclick=()=>selectMatrixCell(i,hour);td.append(b);tr.append(td);});table.append(tr);});
  $('coverage-matrix').replaceChildren(table);
 }
-function openCoverageMatrix(r){matrixFrequency=Math.max(0,r.matrix.frequencies.indexOf(Number($('cov_freq').value)));$('cov_freq').value=r.matrix.frequencies[matrixFrequency];}
+// A new matrix opens on the frequency and hour with the largest covered share.
+function openCoverageMatrix(r){let best=-1;r.matrix.covered_percent.forEach((row,f)=>row.forEach((v,h)=>{if(v!=null&&v>best){best=v;matrixFrequency=f;$('cov_hour').value=h;}}));if(best<0){matrixFrequency=0;$('cov_hour').value=12;}}
 $('cov_hour').addEventListener('change',()=>{if(coverageResult?.matrix&&!$('coverage').hidden)showCoverage();});
-$('compute-coverage-matrix').onclick=async()=>{
+$('compute-coverage').onclick=async()=>{
  if(busy)return;if(!form.checkValidity()){tab('conditions-tab');form.reportValidity();return;}if(!$('station-selection').reportValidity())return;try{validateCircuit();}catch(e){notice(e.message,true);return;}
- const p={...params(),ui_selection:circuitSnapshot()};setBusy(true);notice(`周波数${p.frequencies.length}波×24時間のカバー範囲を計算しています。1〜数分かかります。`);
- try{coverageResult=await postWithDialog('周波数×時刻マトリックスを計算しています','/api/coverage-matrix',{...p,center_lat:p.tx_lat,center_lon:p.tx_lon,span:Number($('cov_span').value)});openCoverageMatrix(coverageResult);fitCoverage();showCoverage();notice('カバー範囲のマトリックスを計算しました。セルを選ぶとその周波数・時刻の地図を表示し、「▶ 再生」で24時間を順に表示します。');}
+ const p={...params(),ui_selection:circuitSnapshot()},span=Number($('cov_span').value);
+ if(span>=360&&!await confirmDialog())return;
+ setBusy(true);notice(`周波数${p.frequencies.length}波×24時間のカバー範囲を計算しています。数十秒〜数分かかります。`);
+ try{coverageResult=await postWithDialog('カバー範囲を計算しています','/api/coverage-matrix',{...p,center_lat:p.tx_lat,center_lon:p.tx_lon,span});openCoverageMatrix(coverageResult);fitCoverage();showCoverage();notice('カバー範囲を計算しました。セルを選ぶとその周波数・時刻の地図を表示し、「▶ 再生」で24時間を順に表示します。');}
  catch(e){notice(e.message,true);}finally{setBusy(false);}
 };

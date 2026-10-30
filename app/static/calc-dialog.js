@@ -22,3 +22,8 @@ async function postWithDialog(title,url,body){
 }
 // Only the cancel button ends the dialog; Esc must not hide a running calculation.
 $('calc-dialog').addEventListener('cancel',e=>e.preventDefault());
+// Asks before a calculation that takes minutes (a whole-world coverage matrix). Resolves true to go ahead.
+function confirmDialog(){
+ const dialog=$('calc-confirm');
+ return new Promise(resolve=>{const done=ok=>{dialog.close();resolve(ok);};$('calc-confirm-ok').onclick=()=>done(true);$('calc-confirm-no').onclick=()=>done(false);dialog.oncancel=e=>{e.preventDefault();done(false);};dialog.showModal();});
+}

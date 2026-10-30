@@ -118,12 +118,17 @@ const {chromium}=require('playwright');
     matrix:{size:2,lon_min:-180,lon_max:180,lat_min:-90,lat_max:90,frequencies:[7,10],hours:[...Array(24).keys()],
      covered_percent:[Array(24).fill(5),Array.from({length:24},(_,h)=>h)],cells:[Array.from({length:24},()=>cell(150)),Array.from({length:24},(_,h)=>cell(100+h))]}};
    openCoverageMatrix(coverageResult);tab('coverage');showCoverage();
+   const opened=[matrixFrequency,$('cov_hour').value,$('cov_span').value];
    document.querySelectorAll('.coverage-matrix tr')[2].querySelectorAll('td button')[5].click();
-   const first=[matrixFrequency,$('cov_hour').value,$('cov_freq').value,coverageArea().signal_dbw[0][0],$('map-time').hidden];
+   const first=[...opened,matrixFrequency,$('cov_hour').value,coverageArea().signal_dbw[0][0],$('map-time').hidden];
    setMapHour('coverage',6);
    return [...first,$('cov_hour').value,coverageArea().signal_dbw[0][0],document.querySelector('.coverage-matrix td.selected button').textContent];
   });
-  assert.deepEqual(matrix,[1,'5','10',-105,false,'6',-106,'6.0']);
+  // A new matrix opens on its best cell; the default range is 120 degrees.
+  assert.deepEqual(matrix,[1,'23','120',1,'5',-105,false,'6',-106,'6.0']);
+  // The whole world asks first; declining starts nothing.
+  const confirm=await page.evaluate(async()=>{const answer=confirmDialog(),open=$('calc-confirm').open;$('calc-confirm-no').click();const no=await answer;const again=confirmDialog();$('calc-confirm-ok').click();return [open,no,await again,$('calc-confirm').open];});
+  assert.deepEqual(confirm,[true,false,true,false]);
   // While a calculation runs nothing in the coverage tab can be changed.
   const locked=await page.evaluate(()=>{const all=()=>[...document.querySelectorAll('#coverage input,#coverage select,#coverage button')];setBusy(true);const on=all().every(e=>e.disabled);setBusy(false);return [on,all().some(e=>e.disabled)];});
   assert.deepEqual(locked,[true,false]);

@@ -119,7 +119,6 @@ const wanted=step=>!only||only.split(',').includes(step);
  }
  if(wanted('coverage')){
   await tab('coverage');
-  await page.fill('#cov_freq','10');await page.selectOption('#cov_hour','3');
   await page.locator('#compute-coverage').click();await page.waitForFunction(()=>!busy&&coverageResult,null,{timeout:600000});
   await focusMap(1);
   await each(async()=>{await shot('.map-panel','15-coverage-map');await shot('#coverage','16-coverage');});
