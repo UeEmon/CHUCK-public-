@@ -77,6 +77,11 @@ POSTの例：
 - `absorption_mode`: 計算エンジン voacapl の `--absorption-mode`。`a`（既定、Alexの改良＋IONCAPの吸収）または `W`（VOACAP標準）。
   `a` はVOACAP Online Marineと同じ値になります（`docs/VALIDATION.md` 2026-10-23）。`W` は吸収指数に下限0.1を設けるため、夜間の低い周波数で受信電力が低めに出ます。
   2026-10-23より前の結果は `W` で計算しており、`parameters` にこの項目がありません。
+
+### 計算方式
+
+- `method`: VOACAPのMETHOD。`30`（既定、Auto：7,000 km未満は短距離モデル、10,000 km超は長距離モデル、その間は平滑化）、`21`（Ducted：長距離モデルに固定）、`22`（Ray-hop：短距離モデルに固定）。VOACAP Online MarineのAuto・Ducted・Ray-hopに相当します。地点間予測とカバー範囲の両方に使います。
+  2026-10-30より前の結果は `30` で計算しており、`parameters` にこの項目がありません。
 - 条件はJSON・CSV冒頭のparameters・履歴に保存します。
   `ui_selection`オブジェクトを指定すると、計算に使うプリセット選択のスナップショットも結果に保存します。
 

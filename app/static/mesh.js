@@ -27,7 +27,7 @@ function meshName(id){const th=resultSiteName(meshSite(id).name,document.createE
 function meshPaint(td,rel){td.style.background=relFill(rel);td.style.color=relInk(rel);}
 function showMesh(){
  const r=meshResult;if(!r)return;const p=r.parameters,powers=r.sites.map(s=>s.power_w),low=Math.min(...powers),high=Math.max(...powers);
- $('mesh-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} (${p.ssn_source}) · ${low===high?low:low+'〜'+high} W · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)} · 拠点 ${r.sites.length} · 表示は計算時点の条件です。`;
+ $('mesh-caption').textContent=`${p.year}/${p.month} · SSN ${p.ssn} (${p.ssn_source}) · ${low===high?low:low+'〜'+high} W · 要求SNR ${p.required_snr} dB·Hz · 目標REL ${p.reliability}% · 吸収モード ${absorptionLabel(p)}${methodCaption(p)} · 拠点 ${r.sites.length} · 表示は計算時点の条件です。`;
  $('mesh-note').textContent=r.note;
  $('mesh-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('mesh-exports').append(a);}$('mesh-exports').append(reportButton('mesh'));$('mesh-exports').hidden=false;
  const select=$('mesh-frequency'),previous=select.value;select.replaceChildren(new Option('最良周波数','best'),...p.frequencies.map(f=>new Option(f.toFixed(3)+' MHz',String(f))));select.value=[...select.options].some(o=>o.value===previous)?previous:'best';

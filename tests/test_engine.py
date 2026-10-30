@@ -132,6 +132,14 @@ class CardsTests(unittest.TestCase):
         self.assertEqual(validate(dict(BASE,absorption_mode='W'))['absorption_mode'],'W')
         for value in ['A','I','w','',1,None]:
             with self.subTest(value=value),self.assertRaises(InputError):validate(dict(BASE,absorption_mode=value))
+    def test_method_defaults_to_auto_and_reaches_both_inputs(self):
+        self.assertEqual(validate(dict(BASE))['method'],30)
+        for method in (30,21,22,'22'):
+            p=validate(dict(BASE,method=method))
+            self.assertIn(f'METHOD    {int(method):5d}    0',cards(p).splitlines())
+            self.assertIn(f'Method   :{int(method):5d}',area_input(p,[(12,10)],(100,180,0,60),11).splitlines())
+        for value in [20,25,31,9,1.5,'auto','',None,True]:
+            with self.subTest(value=value),self.assertRaises(InputError):validate(dict(BASE,method=value))
 
     def test_area_input_columns_follow_areamap(self):
         # Fixed columns read by areamap.for: System 10x,i5,f10.3,2i5,2f10.3; Tx Ants 10x,1x,a21,1x,f7.3,f6.1,1x,f10.4.
@@ -181,6 +189,12 @@ class IntegrationTests(unittest.TestCase):
         self.assertGreater(night['a']['hours'][0]['rows'][0]['signal_dbw']-night['W']['hours'][0]['rows'][0]['signal_dbw'],3)
         day=[e.run(dict(p,absorption_mode=m),1)['hours'][0]['rows'][0]['signal_dbw'] for m in ('a','W')]
         self.assertEqual(day[0],day[1])
+    def test_methods_follow_marine_auto_ducted_and_ray_hop(self):
+        # Beyond 10,000 km Auto (30) is the long-distance (Ducted, 21) model; Ray-hop (22) differs.
+        e=Engine();p=validate(dict(BASE,tx_lat=35.68,tx_lon=139.76,rx_lat=-23.55,rx_lon=-46.63,frequencies=[10,14,18]))
+        rel={m:[r['reliability'] for h in e.run(dict(p,method=m))['hours'] for r in h['rows']] for m in (30,21,22)}
+        self.assertEqual(rel[30],rel[21])
+        self.assertNotEqual(rel[21],rel[22])
     def test_gain_controls(self):
         e=Engine()
         for antenna in ['whip','isotropic','monopole','dipole','vertical_dipole']:

@@ -23,6 +23,8 @@ const {chromium}=require('playwright');
   const page=await browser.newPage({viewport:{width:1500,height:1000}});
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url);await page.waitForFunction(()=>catalog.presets.length>=30);
+  // A manual SSN keeps the check independent of the NOAA feed.
+  await page.evaluate(()=>{fields.ssn_source.value='manual';fields.ssn.value=80;ssnSourceChanged();});
   // Power per station appears only in mesh mode.
   assert.equal(await page.locator('.mesh-power').count(),0);
   await page.locator('#mesh-mode').check();

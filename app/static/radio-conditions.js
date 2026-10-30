@@ -29,5 +29,8 @@ fields.modulation.onchange=()=>{
 };
 for(const key of ['snr_input','bandwidth','inband_snr_db'])fields[key].addEventListener('input',updateRadioConditions);
 updateRadioConditions();
+// VOACAP METHOD 30/21/22 are the Auto/Ducted/Ray-hop choices of VOACAP Online Marine.
+const methodLabels={30:'Auto（30）',21:'Ducted（21）',22:'Ray-hop（22）'};
+function methodCaption(p){return ' · 計算方式 '+(methodLabels[p.method]??methodLabels[30]);}
 function absorptionLabel(p){return p.absorption_mode==='a'?'a（Marine互換）':'W（VOACAP標準）';}
-function radioCaption(p,multiple=false){return ' · '+emissionLabel(p)+' · TX '+(polarizationLabels[p.tx_polarization]??polarizationLabels.model)+' / '+(multiple?'RX1 ':'RX ')+(polarizationLabels[p.rx_polarization]??polarizationLabels.model)+' · 追加偏波損失 '+(p.polarization_loss_db??0)+' dB · 吸収モード '+absorptionLabel(p);}
+function radioCaption(p,multiple=false){return ' · '+emissionLabel(p)+' · TX '+(polarizationLabels[p.tx_polarization]??polarizationLabels.model)+' / '+(multiple?'RX1 ':'RX ')+(polarizationLabels[p.rx_polarization]??polarizationLabels.model)+' · 追加偏波損失 '+(p.polarization_loss_db??0)+' dB · 吸収モード '+absorptionLabel(p)+methodCaption(p);}

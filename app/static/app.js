@@ -7,7 +7,7 @@ for(let m=1;m<=12;m++)$('month').add(new Option(m+'月',m));fields.month.value=i
 for(const id of ['hour','cov_hour'])for(let h=0;h<24;h++)$(id).add(new Option(String(h).padStart(2,'0')+':00',h));
 $('hour').value=initialDate.getUTCHours();$('cov_hour').value=12;
 function params(){const p=Object.fromEntries(new FormData(form));for(const key of Object.keys(p))if(!key.endsWith('_antenna')&&!['frequencies','ssn_source','modulation','snr_input','bandwidth','absorption_mode'].includes(key))p[key]=Number(p[key]);p.frequencies=p.frequencies.split(/[,\s、]+/).filter(Boolean).map(Number);p.power_w=Number($('power_w').value);return typeof circuitParams==='function'?Object.assign(p,circuitParams()):p;}
-function fill(p,selection){for(const [k,v]of Object.entries({modulation:'manual',snr_input:'direct',polarization_loss_db:0,bandwidth:'3K00',inband_snr_db:10}))fields[k].value=v;fields.ssn_source.value='manual';if(p.power_w!==undefined)$('power_w').value=p.power_w;for(const [key,value]of Object.entries(p))if(fields[key])fields[key].value=key==='frequencies'?value.join(', '):key==='modulation'?legacyModulations[value]??(fields.modulation.querySelector(`option[value="${value}"]`)?value:'manual'):value;fields.ssn.readOnly=fields.ssn_source.value!=='manual';updateRadioConditions();restoreCircuit(selection,p);}
+function fill(p,selection){for(const [k,v]of Object.entries({modulation:'manual',snr_input:'direct',polarization_loss_db:0,bandwidth:'3K00',inband_snr_db:10,method:30}))fields[k].value=v;fields.ssn_source.value='manual';if(p.power_w!==undefined)$('power_w').value=p.power_w;for(const [key,value]of Object.entries(p))if(fields[key])fields[key].value=key==='frequencies'?value.join(', '):key==='modulation'?legacyModulations[value]??(fields.modulation.querySelector(`option[value="${value}"]`)?value:'manual'):value;fields.ssn.readOnly=fields.ssn_source.value!=='manual';updateRadioConditions();restoreCircuit(selection,p);}
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function api(url,options){const r=await fetch(url,options);const body=await r.json();if(!r.ok)throw Error(body.error||'通信に失敗しました');return body;}
 function post(url,p){return api(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});}
@@ -39,6 +39,15 @@ function gc(a,b){const rad=Math.PI/180,vec=([lat,lon])=>[Math.cos(lat*rad)*Math.
 // Unit travel direction at point i, ignoring a neighbour across the antimeridian break.
 function pathTangent(pts,i){const near=j=>pts[j]&&Math.abs(pts[j][0]-pts[i][0])<500?pts[j]:pts[i],a=near(i-1),b=near(i+1),dx=b[0]-a[0],dy=b[1]-a[1],n=Math.hypot(dx,dy);return n?[dx/n,dy/n]:null;}
 // The path shifted to the right of its travel direction (y grows downward), so the two directions of a pair sit side by side.
+// Day and night for the hour on the map: the conditions' month (15th) at the time slider's UTC hour, or now when no slider is shown.
+function mapSunTime(){const id=typeof mapTimeTab==='function'?mapTimeTab():null;if(!id)return new Date();const year=Number(fields.year.value)||new Date().getUTCFullYear(),month=Number(fields.month.value)||1;return new Date(Date.UTC(year,month-1,15,Number($(mapTimeTabs[id].control).value)||0));}
+function subsolarPoint(date){const day=(date-Date.UTC(date.getUTCFullYear(),0,1))/864e5+1,b=2*Math.PI*(day-81)/364,eot=9.87*Math.sin(2*b)-7.53*Math.cos(b)-1.5*Math.sin(b),hours=date.getUTCHours()+date.getUTCMinutes()/60;
+ return {lat:23.44*Math.sin(2*Math.PI*(284+day)/365),lon:((-15*(hours-12+eot/60))%360+540)%360-180};}
+function drawTerminator(g){const sun=subsolarPoint(mapSunTime()),rad=Math.PI/180,decl=Math.abs(sun.lat)<.1?(sun.lat<0?-.1:.1):sun.lat,pole=decl>0?-90:90,pts=[];
+ for(let lon=-180;lon<=180;lon+=2)pts.push(xy(lon,Math.atan(-Math.cos((lon-sun.lon)*rad)/Math.tan(decl*rad))/rad));
+ const d='M'+xy(-180,pole).join(',')+' '+pts.map(p=>'L'+p.join(',')).join(' ')+' L'+xy(180,pole).join(',')+' Z';
+ const shade=svg('path',{d,class:'terminator',fill:'#000611',opacity:.38,'pointer-events':'none'},g);svg('title',{},shade).textContent='☾ '+mapSunTime().toISOString().slice(0,16).replace('T',' ')+' UTC';
+ const[x,y]=xy(sun.lon,sun.lat);svg('circle',{cx:x,cy:y,r:4/Math.sqrt(zoom),fill:'#ffd75e',stroke:'#050d16','stroke-width':1/Math.sqrt(zoom),'pointer-events':'none'},g);}
 function sidePath(pts,offset){return pts.map((p,i)=>{const t=pathTangent(pts,i);return t?[p[0]-t[1]*offset,p[1]+t[0]*offset]:p;});}
 function pathArrow(pts,tint,scale,parent){
  const i=Math.round((pts.length-1)*.7),t=pts.length>1&&pathTangent(pts,i);if(!t)return;const[x,y]=pts[i],s=4/scale,r=[-t[1],t[0]];
@@ -75,6 +84,7 @@ function drawCoverageArea(g){const r=coverageResult,dLat=r.span/8,dLon=r.span/12
 const[x1,y1]=xy(r.center_lon-r.span/2-dLon,Math.min(90,r.center_lat+r.span/2+dLat)),[x2,y2]=xy(r.center_lon+r.span/2+dLon,Math.max(-90,r.center_lat-r.span/2-dLat));svg('rect',{x:x1,y:y1,width:x2-x1,height:y2-y1,fill:'none',stroke:'#c0e5de','stroke-width':1/Math.sqrt(zoom),'stroke-dasharray':(5/zoom)+' '+(3/zoom),opacity:.8,'pointer-events':'none'},g);}
 function drawMap(){const map=$('map');if(!map)return;map.replaceChildren();map.setAttribute('viewBox',`${center[0]-500/zoom} ${center[1]-250/zoom} ${1000/zoom} ${500/zoom}`);const g=svg('g',{id:'map-world'},map);for(const offset of [-1000,1000])svg('use',{href:'#map-world',transform:'translate('+offset+' 0)'},map);for(let lon=-180;lon<=180;lon+=30){const x=xy(lon,0)[0];svg('line',{x1:x,y1:0,x2:x,y2:500,stroke:'#1e3347','stroke-width':.6},g);const t=svg('text',{x:x+3,y:490,fill:'#657f96','font-size':8},g);t.textContent=lon+'°';}for(let lat=-60;lat<=60;lat+=30){const y=xy(0,lat)[1];svg('line',{x1:0,y1:y,x2:1000,y2:y,stroke:'#1e3347','stroke-width':.6},g);const t=svg('text',{x:4,y:y-4,fill:'#657f96','font-size':8},g);t.textContent=lat+'°';}
 if(land)for(const feature of land.features){const polys=feature.geometry.type==='Polygon'?[feature.geometry.coordinates]:feature.geometry.coordinates;for(const poly of polys){const d=poly.map(ring=>ring.map((v,i)=>`${i?'L':'M'}${xy(v[0],v[1]).join(',')}`).join(' ')+' Z').join(' ');svg('path',{d,fill:'#20364a',stroke:'#375269','stroke-width':.6,'fill-rule':'evenodd'},g);}}
+if($('show-terminator')?.checked)drawTerminator(g);
 if(typeof drawObservationLayers==='function')drawObservationLayers(g);
 if(typeof drawPositionLayer==='function')drawPositionLayer(g);
 if(coverageResult&&!$('coverage').hidden)(coverageResult.coverage?drawCoverageArea:drawAreaCoverage)(g);
@@ -90,6 +100,7 @@ $('route-info').textContent=mesh?`メッシュ ${endpoints.length}拠点 · ${pa
 if(typeof syncMapTime==='function')syncMapTime();
 }
 function mapPoint(e){const point=$('map').createSVGPoint();point.x=e.clientX;point.y=e.clientY;return point.matrixTransform($('map').getScreenCTM().inverse());}
+$('show-terminator').onchange=drawMap;
 $('reset-map').onclick=()=>{zoom=1;center=[500,250];drawMap();};
 fetch('land.geojson').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{land=data;drawMap();}).catch(()=>notice('地図の陸域データを読み込めませんでした。地点プリセットの選択は利用できます。',true));
 api('/api/health').then(h=>{$('health').textContent=h.ok?'● エンジン準備完了':'エンジン未準備';if(!h.ok)notice('計算エンジンが未準備です。Dockerで起動してください。',true);}).catch(()=>{$('health').textContent='接続できません';notice('サーバーに接続できません。Dockerの起動状態を確認してください。',true);});

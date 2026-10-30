@@ -64,7 +64,8 @@ const {chromium}=require('playwright');
   assert.match(out.text,/^伝搬予測報告書 · 12か月予測\n/);
   assert.match(out.text,/経路\t東京 → グアム/);assert.match(out.text,/周波数 最良周波数/);
   assert.match(out.text,/月の詳細 · 周波数 × UTC · 2026\/10 · SSN 80/);
-  assert.doesNotMatch(out.text,/^SSN\t/m);assert.equal(out.tables,3);
+  assert.match(out.text,/打上げ角分析/);
+  assert.doesNotMatch(out.text,/^SSN\t/m);assert.equal(out.tables,4);
 
   // Required power.
   await page.evaluate(()=>{

@@ -11,7 +11,7 @@ function outlook(request){
  const months=Array.from({length:12},(_,i)=>{const year=2026+Math.floor((9+i)/12),month=(9+i)%12+1;
   if(year===2027&&month===2)return {year,month,ssn:null,missing:'NOAAの新鮮な平滑SSNがありません',hours:[]};
   const summer=month>=5&&month<=9;
-  return {year,month,ssn:80,hours:Array.from({length:24},(_,h)=>({hour_utc:h,muf_mhz:12,rows:[5,10].map(f=>({frequency_mhz:f,snr_db_hz:40+f,
+  return {year,month,ssn:80,hours:Array.from({length:24},(_,h)=>({hour_utc:h,muf_mhz:12,rows:[5,10].map(f=>({frequency_mhz:f,snr_db_hz:40+f,takeoff_deg:f===10?(h<12?12.3:14.8):24.7,
    reliability:f===10?(summer&&h>=6&&h<18?90:40):(!summer&&(h<6||h>=18)?85:30)}))}))};});
  return {id:'a1',kind:'annual',parameters:{...request,ssn_source:'manual'},distance_km:2500,bearing_deg:150,months,note:'note',engine:'voacapl 0.7.7',engine_commit:'x'};
 }
@@ -61,11 +61,23 @@ function outlook(request){
   assert.equal(await page.locator('#annual-month tr').count(),3);
   assert.equal(await page.locator('#annual-month td.selected').count(),2);
   assert.equal(await page.locator('#annual-exports a').count(),2);
+  // Takeoff angles: 10 MHz is at 12.3° before 12 UTC and 14.8° after, in 1° bars; the table follows the period.
+  assert.match(await page.locator('#angle-caption').innerText(),/^2026\/10〜2027\/9 · 10\.000 MHz · REL 1%以上 \d+時間$/);
+  assert.match(await page.locator('#angle-summary').innerText(),/^目標REL以上 \d+時間 · 中央値 (12\.3|14\.8|13\.6)° · 10〜90%の範囲 12\.3〜14\.8° · 最頻 1[24]〜1[35]°$/);
+  assert.equal(await page.locator('#angle-plot rect').count(),4);
+  assert.equal(await page.locator('#angle-table tr').count(),13);
+  await page.selectOption('#angle-period','month');
+  assert.equal(await page.locator('#angle-table tr').count(),2);
+  assert.equal(await page.locator('#angle-table tr').nth(1).locator('th').innerText(),'2027/7');
+  assert.equal(await page.locator('#angle-table tr').nth(1).locator('td').nth(0).innerText(),'12');
   if(process.argv[2]){await page.selectOption('#annual-frequency','best');await page.locator('#annual').screenshot({path:process.argv[2]});}
   await page.selectOption('#language','en');
   assert.equal(await page.locator('.tabs [data-tab="annual"]').innerText(),'12-month forecast');
   assert.match(await page.locator('#annual-caption').innerText(),/^2026\/10〜2027\/9 · SSN 80 \(all months\) · /);
   assert.equal(await rows.nth(0).locator('th').last().innerText(),'At target REL (h)');
+  assert.equal(await page.locator('#angle-panel h3').innerText(),'Takeoff angle analysis');
+  assert.match(await page.locator('#angle-caption').innerText(),/^2027\/7 · (10\.000 MHz|Best frequency) · \d+ h with REL ≥ 1%$/);
+  assert.match(await page.locator('#angle-summary').innerText(),/^At or above target REL: \d+ h · median /);
   assert.deepEqual(errors,[]);
   console.log('Annual outlook UI checks passed');
  }finally{

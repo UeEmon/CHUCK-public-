@@ -17,6 +17,9 @@ ANTENNAS = {'isotropic':'samples/sample.00','whip':'default/swwhip.voa',
 # VOACAP Online Marine service runs; 'W' is the plain VOACAP default with a 0.1 floor on
 # the absorption index, which lowers night-time signals at low frequencies (docs/VALIDATION.md).
 ABSORPTION_MODES=('a','W')
+# VOACAP METHOD: 30 smooths the short- and long-distance models (Marine's Auto), 21 forces the
+# long-distance (ducted) model and 22 the short-distance (ray-hop) model (hfciraf.for).
+METHODS=(30,21,22)
 GEOMETRIC_ANTENNAS=('monopole','dipole','vertical_dipole','log_periodic','inverted_l','sloping_long_wire')
 # Only these have a main-beam azimuth; the others are omnidirectional in azimuth.
 DIRECTIONAL_ANTENNAS=('dipole','log_periodic','inverted_l','sloping_long_wire','pattern_table')
@@ -156,6 +159,8 @@ def validate(data):
         value=data.get(key,default)
         if not isinstance(value,str) or value not in choices: raise InputError(key+': 設定値が不正です')
         p[key]=value
+    p['method']=number(data,'method',21,30,30,integer=True)
+    if p['method'] not in METHODS:raise InputError('method: 設定値が不正です')
     p['polarization_loss_db']=number(data,'polarization_loss_db',0,30,0)
     for prefix in ('tx', 'rx'):
         p[prefix+'_lat'] = number(data,prefix+'_lat',-89,89)
@@ -230,7 +235,7 @@ def cards(p, hour=None):
         # A pattern table is already sliced at the path azimuth, so its card bearing is 0.
         azimuth=0 if p[prefix+'_antenna']=='pattern_table' else round((beam_azimuth(p,prefix)+BEAM_OFFSET_DEG.get(p[prefix+'_antenna'],0))%360,1)
         lines.append(f'ANTENNA   {i:5d}{i:5d}{2:5d}{30:5d}{(p[prefix+'_gain'] if p[prefix+'_antenna']=='isotropic' else 0.):10.3f}{ant}{azimuth:5.1f}{power:10.{max(0,min(6,8-len(str(int(power)))))}f}')
-    lines+=['FREQUENCY $'+''.join(f'{f:6.3f}' for f in (p['frequencies']+[0]*11)[:11]),'METHOD       30    0','EXECUTE','QUIT']
+    lines+=['FREQUENCY $'+''.join(f'{f:6.3f}' for f in (p['frequencies']+[0]*11)[:11]),f'METHOD    {p.get("method",30):5d}    0','EXECUTE','QUIT']
     return '\n'.join(lines)+'\n'
 
 def parse_output(raw, frequencies):
@@ -288,7 +293,7 @@ def area_input(p,plots,bounds,size):
         f'Transmit :{place(p["tx_lat"],p["tx_lon"])}{"TX":<20} Short',
         f'Pcenter  :{place(p["tx_lat"],p["tx_lon"])}TX',
         f'Area     :{lon_min:10.1f}{lon_max:10.1f}{lat_min:10.1f}{lat_max:10.1f}',f'Gridsize :{size:5d}    1',
-        'Method   :   30','Coeffs   :CCIR',f'Months   :'+f'{p["month"]:7.2f}'*len(plots),f'Ssns     :'+f'{round(p["ssn"]):7d}'*len(plots),
+        f'Method   :{p.get("method",30):5d}','Coeffs   :CCIR',f'Months   :'+f'{p["month"]:7.2f}'*len(plots),f'Ssns     :'+f'{round(p["ssn"]):7d}'*len(plots),
         'Hours    :'+''.join(f'{hour or 24:7d}' for hour,_ in plots),'Freqs    :'+''.join(f'{frequency:7.3f}' for _,frequency in plots),
         f'System   :{round(p["noise"]):5d}{fixed(p["min_angle"],10)}{round(p["reliability"]):5d}{round(p["required_snr"]):5d}{3.:10.3f}{.1:10.3f}',
         'Fprob    : 1.00 1.00 1.00 0.00',

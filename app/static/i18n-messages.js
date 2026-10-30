@@ -9684,5 +9684,257 @@ const HF_MESSAGES={
     "{freq} MHz / {hour}:00 UTC / mediana {value} {unit} / área com REL ≥ {target}%: {share}%",
     "{freq} MHz / {hour}:00 UTC / Median {value} {unit} / Fläche mit REL ≥ {target} %: {share} %",
     "{freq} MHz / {hour}:00 UTC / 중앙값 {value} {unit} / REL {target}% 이상 면적 {share}%"
+  ],
+  "昼夜": [
+    "Day/night",
+    "Jour/nuit",
+    "Día/noche",
+    "Giorno/notte",
+    "Dia/noite",
+    "Tag/Nacht",
+    "주야"
+  ],
+  "計算方式": [
+    "Calculation method",
+    "Méthode de calcul",
+    "Método de cálculo",
+    "Metodo di calcolo",
+    "Método de cálculo",
+    "Berechnungsmethode",
+    "계산 방식"
+  ],
+  "Auto（30）：距離で自動": [
+    "Auto (30): by distance",
+    "Auto (30) : selon la distance",
+    "Auto (30): según la distancia",
+    "Auto (30): in base alla distanza",
+    "Auto (30): pela distância",
+    "Auto (30): nach Entfernung",
+    "Auto (30): 거리에 따라 자동"
+  ],
+  "Ducted（21）：長距離モデル": [
+    "Ducted (21): long-distance model",
+    "Ducted (21) : modèle longue distance",
+    "Ducted (21): modelo de larga distancia",
+    "Ducted (21): modello a lunga distanza",
+    "Ducted (21): modelo de longa distância",
+    "Ducted (21): Langstreckenmodell",
+    "Ducted (21): 장거리 모델"
+  ],
+  "Ray-hop（22）：短距離モデル": [
+    "Ray-hop (22): short-distance model",
+    "Ray-hop (22) : modèle courte distance",
+    "Ray-hop (22): modelo de corta distancia",
+    "Ray-hop (22): modello a breve distanza",
+    "Ray-hop (22): modelo de curta distância",
+    "Ray-hop (22): Kurzstreckenmodell",
+    "Ray-hop (22): 단거리 모델"
+  ],
+  "計算方式の選択と昼夜境界線": [
+    "Calculation method and day/night line",
+    "Méthode de calcul et limite jour/nuit",
+    "Método de cálculo y línea día/noche",
+    "Metodo di calcolo e linea giorno/notte",
+    "Método de cálculo e linha dia/noite",
+    "Berechnungsmethode und Tag-Nacht-Grenze",
+    "계산 방식과 주야 경계선"
+  ],
+  "予測条件の詳細条件で、VOACAP Online Marineと同じ計算方式（Auto・Ducted・Ray-hop）を選べるようにしました。回線マップには選んだ時刻の昼夜を表示します。": [
+    "In the detailed conditions you can now choose the same calculation methods as VOACAP Online Marine (Auto, Ducted, Ray-hop). The circuit map shows day and night for the selected hour.",
+    "Dans les conditions détaillées, vous pouvez choisir les mêmes méthodes de calcul que VOACAP Online Marine (Auto, Ducted, Ray-hop). La carte des liaisons affiche le jour et la nuit à l’heure choisie.",
+    "En las condiciones detalladas ahora puede elegir los mismos métodos de cálculo que VOACAP Online Marine (Auto, Ducted, Ray-hop). El mapa de enlaces muestra el día y la noche de la hora seleccionada.",
+    "Nelle condizioni dettagliate ora potete scegliere gli stessi metodi di calcolo di VOACAP Online Marine (Auto, Ducted, Ray-hop). La mappa dei collegamenti mostra giorno e notte all’ora selezionata.",
+    "Nas condições detalhadas agora é possível escolher os mesmos métodos de cálculo do VOACAP Online Marine (Auto, Ducted, Ray-hop). O mapa de enlaces mostra o dia e a noite da hora selecionada.",
+    "In den Detailbedingungen lassen sich jetzt dieselben Berechnungsmethoden wie bei VOACAP Online Marine (Auto, Ducted, Ray-hop) wählen. Die Verbindungskarte zeigt Tag und Nacht zur gewählten Stunde.",
+    "상세 조건에서 VOACAP Online Marine과 같은 계산 방식(Auto·Ducted·Ray-hop)을 선택할 수 있습니다. 회선 지도에는 선택한 시각의 주야를 표시합니다."
+  ],
+  "計算方式はVOACAP Online MarineのAuto・Ducted・Ray-hopと同じです。Autoは7,000 km未満で短距離モデル、10,000 kmを超えると長距離モデルを使い、その間は両方を平滑化します。カバー範囲も同じ計算方式で計算します。": [
+    "The calculation methods are the same as Auto, Ducted and Ray-hop in VOACAP Online Marine. Auto uses the short-distance model below 7,000 km and the long-distance model beyond 10,000 km, and smooths between the two in between. Coverage uses the same method.",
+    "Les méthodes de calcul sont les mêmes que Auto, Ducted et Ray-hop de VOACAP Online Marine. Auto utilise le modèle courte distance en dessous de 7 000 km et le modèle longue distance au-delà de 10 000 km, et lisse les deux entre ces distances. La couverture utilise la même méthode.",
+    "Los métodos de cálculo son los mismos que Auto, Ducted y Ray-hop de VOACAP Online Marine. Auto usa el modelo de corta distancia por debajo de 7.000 km y el de larga distancia por encima de 10.000 km, y suaviza ambos entre esas distancias. La cobertura usa el mismo método.",
+    "I metodi di calcolo sono gli stessi di Auto, Ducted e Ray-hop di VOACAP Online Marine. Auto usa il modello a breve distanza sotto i 7.000 km e quello a lunga distanza oltre i 10.000 km, e li raccorda tra le due distanze. La copertura usa lo stesso metodo.",
+    "Os métodos de cálculo são os mesmos que Auto, Ducted e Ray-hop do VOACAP Online Marine. Auto usa o modelo de curta distância abaixo de 7.000 km e o de longa distância acima de 10.000 km, e suaviza ambos entre essas distâncias. A cobertura usa o mesmo método.",
+    "Die Berechnungsmethoden entsprechen Auto, Ducted und Ray-hop von VOACAP Online Marine. Auto verwendet unter 7.000 km das Kurzstreckenmodell und über 10.000 km das Langstreckenmodell und glättet dazwischen zwischen beiden. Die Abdeckung verwendet dieselbe Methode.",
+    "계산 방식은 VOACAP Online Marine의 Auto·Ducted·Ray-hop과 같습니다. Auto는 7,000 km 미만에서 단거리 모델, 10,000 km를 넘으면 장거리 모델을 사용하고, 그 사이에서는 두 모델을 평활화합니다. 커버리지도 같은 계산 방식으로 계산합니다."
+  ],
+  "Auto（30）": [
+    "Auto (30)",
+    "Auto (30)",
+    "Auto (30)",
+    "Auto (30)",
+    "Auto (30)",
+    "Auto (30)",
+    "Auto (30)"
+  ],
+  "Ducted（21）": [
+    "Ducted (21)",
+    "Ducted (21)",
+    "Ducted (21)",
+    "Ducted (21)",
+    "Ducted (21)",
+    "Ducted (21)",
+    "Ducted (21)"
+  ],
+  "Ray-hop（22）": [
+    "Ray-hop (22)",
+    "Ray-hop (22)",
+    "Ray-hop (22)",
+    "Ray-hop (22)",
+    "Ray-hop (22)",
+    "Ray-hop (22)",
+    "Ray-hop (22)"
+  ],
+  "打上げ角分析": [
+    "Takeoff angle analysis",
+    "Analyse de l’angle de départ",
+    "Análisis del ángulo de salida",
+    "Analisi dell’angolo di partenza",
+    "Análise do ângulo de saída",
+    "Abstrahlwinkel-Analyse",
+    "발사각 분석"
+  ],
+  "期間": [
+    "Period",
+    "Période",
+    "Período",
+    "Periodo",
+    "Período",
+    "Zeitraum",
+    "기간"
+  ],
+  "12か月": [
+    "12 months",
+    "12 mois",
+    "12 meses",
+    "12 mesi",
+    "12 meses",
+    "12 Monate",
+    "12개월"
+  ],
+  "選択した月": [
+    "Selected month",
+    "Mois sélectionné",
+    "Mes seleccionado",
+    "Mese selezionato",
+    "Mês selecionado",
+    "Gewählter Monat",
+    "선택한 월"
+  ],
+  "12か月予測の計算後に、打上げ角の分布を表示します。": [
+    "After the 12-month forecast is calculated, the distribution of takeoff angles is shown here.",
+    "Après le calcul de la prévision sur 12 mois, la répartition des angles de départ s’affiche ici.",
+    "Tras calcular el pronóstico de 12 meses, aquí se muestra la distribución de los ángulos de salida.",
+    "Dopo il calcolo della previsione a 12 mesi, qui viene mostrata la distribuzione degli angoli di partenza.",
+    "Após calcular a previsão de 12 meses, a distribuição dos ângulos de saída é exibida aqui.",
+    "Nach Berechnung der 12-Monats-Prognose wird hier die Verteilung der Abstrahlwinkel angezeigt.",
+    "12개월 예측을 계산하면 발사각 분포를 표시합니다."
+  ],
+  "目標REL以上": [
+    "At or above target REL",
+    "REL cible atteinte",
+    "REL objetivo o superior",
+    "REL obiettivo o superiore",
+    "REL alvo ou acima",
+    "Ziel-REL erreicht",
+    "목표 REL 이상"
+  ],
+  "REL 1%以上・目標未満": [
+    "REL 1% or more, below target",
+    "REL ≥ 1 %, sous la cible",
+    "REL ≥ 1%, bajo el objetivo",
+    "REL ≥ 1%, sotto l’obiettivo",
+    "REL ≥ 1%, abaixo do alvo",
+    "REL ≥ 1 %, unter dem Ziel",
+    "REL 1% 이상·목표 미만"
+  ],
+  "REL 1%以上": [
+    "REL 1% or more",
+    "REL ≥ 1 %",
+    "REL ≥ 1%",
+    "REL ≥ 1%",
+    "REL ≥ 1%",
+    "REL ≥ 1 %",
+    "REL 1% 이상"
+  ],
+  "打上げ角は各時刻で最も信頼度の高い伝搬モードの打上げ角（VOACAPのTANGLE）です。周波数は上の12か月予測で選んだもの（最良周波数ではその時刻のREL最大の周波数）を使います。棒の高さは1°ごとの時間数で、RELが0%の時間は数えません。アンテナの垂直面の最大放射角をこの範囲に合わせる目安になります。": [
+    "The takeoff angle is that of the most reliable propagation mode at each hour (VOACAP TANGLE). The frequency is the one chosen in the 12-month forecast above (for the best frequency, the one with the highest REL at that hour). Bar height is the number of hours per 1°; hours with 0% REL are not counted. Use it as a guide to match the antenna’s maximum vertical radiation angle to this range.",
+    "L’angle de départ est celui du mode de propagation le plus fiable à chaque heure (TANGLE de VOACAP). La fréquence est celle choisie dans la prévision sur 12 mois ci-dessus (pour la meilleure fréquence, celle ayant la REL la plus élevée à cette heure). La hauteur des barres est le nombre d’heures par 1° ; les heures à REL 0 % ne sont pas comptées. Servez-vous-en pour faire correspondre l’angle de rayonnement vertical maximal de l’antenne à cette plage.",
+    "El ángulo de salida es el del modo de propagación más fiable en cada hora (TANGLE de VOACAP). La frecuencia es la elegida en el pronóstico de 12 meses de arriba (para la mejor frecuencia, la de mayor REL en esa hora). La altura de las barras es el número de horas por cada 1°; no se cuentan las horas con REL 0%. Sirve de guía para ajustar el ángulo máximo de radiación vertical de la antena a este rango.",
+    "L’angolo di partenza è quello del modo di propagazione più affidabile in ogni ora (TANGLE di VOACAP). La frequenza è quella scelta nella previsione a 12 mesi sopra (per la frequenza migliore, quella con la REL più alta in quell’ora). L’altezza delle barre è il numero di ore per ogni 1°; le ore con REL 0% non sono contate. Serve come guida per far coincidere l’angolo massimo di radiazione verticale dell’antenna con questo intervallo.",
+    "O ângulo de saída é o do modo de propagação mais confiável em cada hora (TANGLE do VOACAP). A frequência é a escolhida na previsão de 12 meses acima (para a melhor frequência, a de maior REL naquela hora). A altura das barras é o número de horas por 1°; horas com REL 0% não são contadas. Serve de referência para ajustar o ângulo máximo de radiação vertical da antena a esta faixa.",
+    "Der Abstrahlwinkel ist der des zuverlässigsten Ausbreitungsmodus zur jeweiligen Stunde (VOACAP TANGLE). Die Frequenz ist die oben in der 12-Monats-Prognose gewählte (bei der besten Frequenz die mit der höchsten REL zu dieser Stunde). Die Balkenhöhe ist die Zahl der Stunden je 1°; Stunden mit REL 0 % werden nicht gezählt. Als Anhaltspunkt, um den maximalen vertikalen Abstrahlwinkel der Antenne auf diesen Bereich abzustimmen.",
+    "발사각은 각 시각에서 가장 신뢰도가 높은 전파 모드의 발사각(VOACAP의 TANGLE)입니다. 주파수는 위 12개월 예측에서 선택한 주파수(최적 주파수에서는 그 시각의 REL 최대 주파수)를 사용합니다. 막대 높이는 1°마다의 시간 수이며, REL 0%인 시간은 세지 않습니다. 안테나 수직면의 최대 방사각을 이 범위에 맞추는 기준이 됩니다."
+  ],
+  "表のセルはその月・UTCの打上げ角（°）で、色はRELです。": [
+    "Each table cell is the takeoff angle (°) for that month and UTC hour, coloured by REL.",
+    "Chaque cellule du tableau est l’angle de départ (°) pour ce mois et cette heure UTC, coloré selon la REL.",
+    "Cada celda de la tabla es el ángulo de salida (°) de ese mes y hora UTC, coloreada según la REL.",
+    "Ogni cella della tabella è l’angolo di partenza (°) per quel mese e ora UTC, colorata in base alla REL.",
+    "Cada célula da tabela é o ângulo de saída (°) daquele mês e hora UTC, colorida pela REL.",
+    "Jede Tabellenzelle ist der Abstrahlwinkel (°) für diesen Monat und diese UTC-Stunde, nach REL eingefärbt.",
+    "표의 셀은 해당 월·UTC의 발사각(°)이며, 색은 REL입니다."
+  ],
+  "打上げ角の分布": [
+    "Distribution of takeoff angles",
+    "Répartition des angles de départ",
+    "Distribución de los ángulos de salida",
+    "Distribuzione degli angoli di partenza",
+    "Distribuição dos ângulos de saída",
+    "Verteilung der Abstrahlwinkel",
+    "발사각 분포"
+  ],
+  "時間": [
+    "Hours",
+    "Heures",
+    "Horas",
+    "Ore",
+    "Horas",
+    "Stunden",
+    "시간"
+  ],
+  "伝搬する時間がありません。": [
+    "There are no hours with propagation.",
+    "Aucune heure avec propagation.",
+    "No hay horas con propagación.",
+    "Non ci sono ore con propagazione.",
+    "Não há horas com propagação.",
+    "Es gibt keine Stunden mit Ausbreitung.",
+    "전파되는 시간이 없습니다."
+  ],
+  "{period} · {label} · REL 1%以上 {n}時間": [
+    "{period} · {label} · {n} h with REL ≥ 1%",
+    "{period} · {label} · {n} h avec REL ≥ 1 %",
+    "{period} · {label} · {n} h con REL ≥ 1%",
+    "{period} · {label} · {n} h con REL ≥ 1%",
+    "{period} · {label} · {n} h com REL ≥ 1%",
+    "{period} · {label} · {n} h mit REL ≥ 1 %",
+    "{period} · {label} · REL 1% 이상 {n}시간"
+  ],
+  "{label} {n}時間 · 中央値 {median}° · 10〜90%の範囲 {low}〜{high}° · 最頻 {mode}〜{top}°": [
+    "{label}: {n} h · median {median}° · 10–90% range {low}–{high}° · most frequent {mode}–{top}°",
+    "{label} : {n} h · médiane {median}° · plage 10–90 % {low}–{high}° · plus fréquent {mode}–{top}°",
+    "{label}: {n} h · mediana {median}° · rango 10–90% {low}–{high}° · más frecuente {mode}–{top}°",
+    "{label}: {n} h · mediana {median}° · intervallo 10–90% {low}–{high}° · più frequente {mode}–{top}°",
+    "{label}: {n} h · mediana {median}° · faixa 10–90% {low}–{high}° · mais frequente {mode}–{top}°",
+    "{label}: {n} h · Median {median}° · 10–90-%-Bereich {low}–{high}° · häufigster {mode}–{top}°",
+    "{label} {n}시간 · 중앙값 {median}° · 10~90% 범위 {low}~{high}° · 최빈 {mode}~{top}°"
+  ],
+  "打上げ角分析を追加": [
+    "Takeoff angle analysis added",
+    "Analyse de l’angle de départ ajoutée",
+    "Análisis del ángulo de salida añadido",
+    "Analisi dell’angolo di partenza aggiunta",
+    "Análise do ângulo de saída adicionada",
+    "Abstrahlwinkel-Analyse hinzugefügt",
+    "발사각 분석 추가"
+  ],
+  "「12か月予測」に打上げ角分析を追加しました。12か月または選んだ月について、各時刻の最も信頼度の高い伝搬モードの打上げ角を1°ごとの分布と月×UTCの表で示し、中央値と10〜90%の範囲を表示します。": [
+    "The 12-month forecast now has a takeoff angle analysis. For the 12 months or a selected month it shows the takeoff angle of the most reliable mode at each hour as a 1° distribution and a month × UTC table, with the median and the 10–90% range.",
+    "La prévision sur 12 mois comporte désormais une analyse de l’angle de départ. Pour les 12 mois ou un mois choisi, elle montre l’angle de départ du mode le plus fiable à chaque heure sous forme de répartition par 1° et de tableau mois × UTC, avec la médiane et la plage 10–90 %.",
+    "El pronóstico de 12 meses incluye ahora un análisis del ángulo de salida. Para los 12 meses o un mes elegido, muestra el ángulo de salida del modo más fiable en cada hora como distribución por 1° y como tabla mes × UTC, con la mediana y el rango 10–90%.",
+    "La previsione a 12 mesi include ora un’analisi dell’angolo di partenza. Per i 12 mesi o un mese scelto mostra l’angolo di partenza del modo più affidabile in ogni ora come distribuzione per 1° e tabella mese × UTC, con mediana e intervallo 10–90%.",
+    "A previsão de 12 meses agora inclui uma análise do ângulo de saída. Para os 12 meses ou um mês escolhido, mostra o ângulo de saída do modo mais confiável em cada hora como distribuição por 1° e tabela mês × UTC, com a mediana e a faixa 10–90%.",
+    "Die 12-Monats-Prognose enthält jetzt eine Abstrahlwinkel-Analyse. Für 12 Monate oder einen gewählten Monat zeigt sie den Abstrahlwinkel des zuverlässigsten Modus je Stunde als Verteilung in 1°-Schritten und als Tabelle Monat × UTC, mit Median und 10–90-%-Bereich.",
+    "「12개월 예측」에 발사각 분석을 추가했습니다. 12개월 또는 선택한 월에 대해 각 시각의 가장 신뢰도 높은 전파 모드의 발사각을 1°마다의 분포와 월×UTC 표로 보여 주고, 중앙값과 10~90% 범위를 표시합니다."
   ]
 };
