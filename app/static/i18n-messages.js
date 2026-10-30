@@ -9666,5 +9666,32 @@ const HF_MESSAGES={
     "“Calcular cobertura” agora calcula a matriz de todas as frequências das condições de previsão × 24 horas. O cálculo único para uma frequência e hora UTC escolhidas foi removido. O intervalo padrão passa a ser 120° × 120° em torno do TX, e ao escolher o mundo inteiro é pedida confirmação, pois demora mais.",
     "„Abdeckung berechnen“ berechnet jetzt die Matrix aller Frequenzen der Prognosebedingungen × 24 Stunden. Die Einzelberechnung für eine gewählte Frequenz und UTC-Stunde entfällt. Der Standardbereich ist jetzt 120° × 120° um den TX; bei Auswahl der ganzen Welt wird wegen der längeren Dauer zuerst nachgefragt.",
     "'커버리지 계산'은 이제 예측 조건의 모든 주파수×24시간 매트릭스를 계산합니다. 주파수·UTC 시각을 지정한 단일 계산은 폐지했습니다. 범위 기본값은 TX 중심 120°×120°이며, 전 세계를 선택하면 계산 시간이 걸린다는 확인을 먼저 표시합니다."
+  ],
+  "{freq} MHz / {hour}:00 UTC / {label} / {count}周波数×24時間 · セルは範囲内の信号強度の中央値（dBW、緯度で面積補正）で、色は地図の凡例と同じです。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます": [
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequencies × 24 hours · Each cell is the median signal strength over the range (dBW, area-weighted by latitude), coloured like the map legend. Select a cell for its map; play UTC to step through the hours",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} fréquences × 24 heures · Chaque case est la médiane de l’intensité du signal sur la zone (dBW, pondérée par la latitude), colorée comme la légende de la carte. Choisir une case pour sa carte ; lire l’UTC pour faire défiler les heures",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frecuencias × 24 horas · Cada celda es la mediana de la intensidad de señal en el rango (dBW, ponderada por latitud), con los colores de la leyenda del mapa. Seleccione una celda para su mapa; reproduzca UTC para avanzar las horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequenze × 24 ore · Ogni cella è la mediana dell’intensità del segnale nell’intervallo (dBW, pesata per latitudine), con i colori della legenda della mappa. Seleziona una cella per la sua mappa; riproduci l’UTC per scorrere le ore",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequências × 24 horas · Cada célula é a mediana da intensidade do sinal no intervalo (dBW, ponderada pela latitude), com as cores da legenda do mapa. Selecione uma célula para o seu mapa; reproduza o UTC para avançar as horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} Frequenzen × 24 Stunden · Jede Zelle ist der Median der Signalstärke im Bereich (dBW, nach Breite gewichtet), gefärbt wie die Kartenlegende. Zelle wählen für ihre Karte; UTC abspielen, um die Stunden durchzugehen",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count}개 주파수×24시간 · 셀은 범위 내 신호 강도의 중앙값(dBW, 위도로 면적 보정)이며 색은 지도 범례와 같습니다. 셀을 선택하면 그 지도를 표시하고 UTC 재생으로 시각을 진행합니다"
+  ],
+  "{freq} MHz / {hour}:00 UTC / {label} / {count}周波数×24時間 · セルは範囲内のSNRの中央値（dB·Hz、緯度で面積補正）で、色は地図の凡例と同じです。セルを選ぶとその地図を表示し、UTCの再生で時刻を進めます": [
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequencies × 24 hours · Each cell is the median SNR over the range (dB·Hz, area-weighted by latitude), coloured like the map legend. Select a cell for its map; play UTC to step through the hours",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} fréquences × 24 heures · Chaque case est la médiane du SNR sur la zone (dB·Hz, pondérée par la latitude), colorée comme la légende de la carte. Choisir une case pour sa carte ; lire l’UTC pour faire défiler les heures",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frecuencias × 24 horas · Cada celda es la mediana de la SNR en el rango (dB·Hz, ponderada por latitud), con los colores de la leyenda del mapa. Seleccione una celda para su mapa; reproduzca UTC para avanzar las horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequenze × 24 ore · Ogni cella è la mediana dell’SNR nell’intervallo (dB·Hz, pesata per latitudine), con i colori della legenda della mappa. Seleziona una cella per la sua mappa; riproduci l’UTC per scorrere le ore",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} frequências × 24 horas · Cada célula é a mediana da SNR no intervalo (dB·Hz, ponderada pela latitude), com as cores da legenda do mapa. Selecione uma célula para o seu mapa; reproduza o UTC para avançar as horas",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count} Frequenzen × 24 Stunden · Jede Zelle ist der Median des SNR im Bereich (dB·Hz, nach Breite gewichtet), gefärbt wie die Kartenlegende. Zelle wählen für ihre Karte; UTC abspielen, um die Stunden durchzugehen",
+    "{freq} MHz / {hour}:00 UTC / {label} / {count}개 주파수×24시간 · 셀은 범위 내 SNR의 중앙값(dB·Hz, 위도로 면적 보정)이며 색은 지도 범례와 같습니다. 셀을 선택하면 그 지도를 표시하고 UTC 재생으로 시각을 진행합니다"
+  ],
+  "{freq} MHz / {hour}:00 UTC / 中央値 {value} {unit}": [
+    "{freq} MHz / {hour}:00 UTC / median {value} {unit}",
+    "{freq} MHz / {hour}:00 UTC / médiane {value} {unit}",
+    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit}",
+    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit}",
+    "{freq} MHz / {hour}:00 UTC / mediana {value} {unit}",
+    "{freq} MHz / {hour}:00 UTC / Median {value} {unit}",
+    "{freq} MHz / {hour}:00 UTC / 중앙값 {value} {unit}"
   ]
 };
