@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "操作要領の第4版": [
+    "Manual, 4th edition",
+    "Manuel, 4e édition",
+    "Manual, 4.ª edición",
+    "Manuale, 4ª edizione",
+    "Manual, 4.ª edição",
+    "Handbuch, 4. Ausgabe",
+    "조작 요령 제4판"
+  ],
+  "操作要領（第4版）を最新の画面に合わせて更新しました。ヒートマップで選んだセルの枠表示と、結果のサイト名の多言語表示を反映し、8言語すべての画面図を撮り直しました。": [
+    "The manual (4th edition) has been updated to the current screens. It covers the outline of the selected heatmap cell and the site names in results shown in the screen language, and all figures were retaken in all 8 languages.",
+    "Le manuel (4e édition) a été mis à jour selon les écrans actuels. Il couvre le cadre de la cellule choisie dans les cartes de chaleur et les noms de sites des résultats affichés dans la langue de l’écran ; toutes les figures ont été refaites dans les 8 langues.",
+    "El manual (4.ª edición) se ha actualizado con las pantallas actuales. Incluye el marco de la celda elegida en los mapas de calor y los nombres de sitios de los resultados en el idioma de la pantalla, y todas las figuras se han vuelto a tomar en los 8 idiomas.",
+    "Il manuale (4ª edizione) è stato aggiornato alle schermate attuali. Tratta il riquadro della cella scelta nelle mappe di calore e i nomi dei siti nei risultati mostrati nella lingua della schermata; tutte le figure sono state rifatte in tutte le 8 lingue.",
+    "O manual (4.ª edição) foi atualizado para os ecrãs atuais. Abrange a moldura da célula escolhida nos mapas de calor e os nomes dos locais nos resultados no idioma do ecrã, e todas as figuras foram refeitas nos 8 idiomas.",
+    "Das Handbuch (4. Ausgabe) wurde an die aktuellen Bildschirme angepasst. Es behandelt den Rahmen der gewählten Heatmap-Zelle und die Standortnamen in Ergebnissen in der Bildschirmsprache; alle Abbildungen wurden in allen 8 Sprachen neu aufgenommen.",
+    "조작 요령(제4판)을 최신 화면에 맞추어 갱신했습니다. 히트맵에서 선택한 셀의 테두리 표시와 결과의 사이트 이름 다국어 표시를 반영하고, 8개 언어의 그림을 모두 다시 찍었습니다."
+  ],
   "結果のサイト名の多言語化": [
     "Site names in results translated",
     "Noms de sites traduits dans les résultats",
