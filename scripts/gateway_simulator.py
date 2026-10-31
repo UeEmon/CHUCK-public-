@@ -17,6 +17,9 @@ Commands:
   setup   Register the stations and issue their stream keys only.
   serve   Open a control panel in the browser (http://127.0.0.1:8090/) to
           start/stop stations, steer them, inject faults and run the check.
+  serial  Act as a GPS receiver on a pseudo serial port (Linux, macOS) and
+          print its path, to test scripts/serial_bridge.py without hardware.
+          Needs no gateway or tokens.
 
 Environment: HF_POSITION_INGEST_TOKEN (sending) and HF_POSITION_GATEWAY_TOKEN
 (station setup, issuing stream keys and reading positions back).
@@ -343,9 +346,34 @@ def run(gateway, stations, interval, duration, log):
         gateway.close()
 
 
+def serial_device(station, interval, duration, log, ready=None, stop=lambda: False):
+    """Act as a GPS receiver on a pseudo serial port (Linux, macOS) to test serial_bridge.py without hardware."""
+    import pty
+    import tty
+    master, slave = pty.openpty()
+    tty.setraw(slave)
+    path = os.ttyname(slave)
+    log(f'疑似シリアルポート: {path}（{station["id"]} のRMC・GGAを{interval:g}秒ごとに出力）')
+    if ready: ready(path)
+    started = last = time.time()
+    try:
+        while not stop() and (not duration or time.time() - started < duration):
+            now = time.time()
+            advance(station, now - last)
+            last = now
+            try: os.write(master, (rmc(station, now) + gga(station, now)).encode('ascii'))
+            except OSError: pass  # Nobody has the port open yet and the buffer is full.
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        os.close(master)
+        os.close(slave)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('command', choices=('check', 'run', 'setup', 'serve'))
+    parser.add_argument('command', choices=('check', 'run', 'setup', 'serve', 'serial'))
     parser.add_argument('--url', default='http://127.0.0.1:18083', help='ゲートウェイのURL（既定 http://127.0.0.1:18083）')
     parser.add_argument('--nmea-host', help='TCP・UDPの送信先ホスト（既定は--urlのホスト）')
     parser.add_argument('--nmea-port', type=int, default=10110, help='TCP・UDPの送信先ポート（既定10110）')
@@ -359,13 +387,19 @@ def main(argv=None):
     parser.add_argument('--port', type=int, default=8090, help='serveの管制画面のポート（既定8090）')
     parser.add_argument('--bind', default='127.0.0.1', help='serveの待ち受けアドレス（既定127.0.0.1。コンテナで認証付きプロキシの裏に置く場合だけ0.0.0.0）')
     parser.add_argument('--allow-host', action='append', default=[], help='管制画面を開くときのホスト名（プロキシ越しの公開名。複数指定可）')
+    parser.add_argument('--station', help='serialで出力する局のID（既定は最初の局）')
     parser.add_argument('--keys', type=lambda p: __import__('pathlib').Path(p), help='setupで受信キーを書き出す/runで読み込むJSONファイル')
     args = parser.parse_args(argv)
     log = lambda text: print(text, flush=True)
     try:
         stations = load_scenario(args.scenario)
         if args.only: stations = [s for s in stations if s['transport'] in args.only]
+        if args.station: stations = [s for s in stations if s['id'] == args.station]
         if not stations: raise JigError('対象の局がありません')
+        if args.command == 'serial':
+            if os.name == 'nt': raise JigError('疑似シリアルポートはLinuxとmacOSだけで使えます')
+            serial_device(stations[0], min(args.interval, 1.0), args.duration, log)
+            return 0
         gateway = Gateway(args.url, os.environ.get('HF_POSITION_INGEST_TOKEN', ''), os.environ.get('HF_POSITION_GATEWAY_TOKEN', ''),
                           args.nmea_host, args.nmea_port, args.source, udp_port=args.udp_port)
         if args.command == 'check':

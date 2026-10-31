@@ -86,6 +86,15 @@ python3 scripts/gateway_simulator.py run --only tcp --only udp --duration 600
 
 runは起動時に模擬局を登録し、受信キーを発行し直します。キーを固定したいときは、先に `setup --keys keys.json` でキーを書き出し、`run --no-setup --keys keys.json` で読み込みます。キーのファイルは所有者だけが読める権限で作ります。
 
+## 疑似シリアルポート（serial）
+
+```sh
+python3 scripts/gateway_simulator.py serial --station car-nmea
+```
+
+LinuxとmacOSで疑似シリアルポートを作り、そのパスを表示して、指定した局（`--station`、既定は最初の局）のRMC・GGAをGPS受信機のように毎秒出力します。ゲートウェイやトークンは不要です。
+表示されたポートを[シリアル中継](SERIAL_BRIDGE.md)（`scripts/serial_bridge.py`）に指定すると、GPS機器なしでシリアル→TCP・UDP→ゲートウェイの経路を確認できます。
+
 ## 遠隔のゲートウェイ
 
 ```sh

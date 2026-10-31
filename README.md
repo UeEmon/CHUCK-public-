@@ -246,6 +246,7 @@ RXサイトダイバーシティーにも連動可能。期限切れを拒否し
 外部受信用 `HF_POSITION_INGEST_TOKEN` と本体連携用 `HF_POSITION_GATEWAY_TOKEN` に、それぞれ別の32文字以上の秘密値を設定します。
 `docker compose up -d --build` で本体・ゲートウェイを起動します。旧本体への位置POSTは410となるため送信先を変更してください。
 接続手順・単位・サンプルは [POSITION_INTERFACE.md](docs/POSITION_INTERFACE.md) を参照してください。
+シリアル（RS-232・USB）のGPS等は、機器をつないだPCの [シリアル中継](docs/SERIAL_BRIDGE.md)（`scripts/serial_bridge.py`）から受信キー付きで送ります。
 本体18082・ゲートウェイ18083・内部API8001は別ポートです。ゲートウェイのhealthy表示は認証成功を保証しません。[接続確認と障害の切り分け](docs/POSITION_INTERFACE.md#接続確認と障害の切り分け)に従って本体側の位置一覧まで確認してください。
 本体との連接は[HTTP(S) + 共通JSON v1](docs/GATEWAY_PROTOCOL.md)に統一し、外部形式の変換はゲートウェイが担当します。
 位置は要求時点で固定し、移動経路や航空機高度による伝搬補正は計算しません。

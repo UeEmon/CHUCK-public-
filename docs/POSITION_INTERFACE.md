@@ -224,6 +224,8 @@ $GNRMC,120001,A,3500.0010,N,13930.0000,E,10.0,90.0,311026,,,A*hh
 送信元IPアドレス方式は、特にUDPでは送信元を偽装できるため、閉域網・VPN・ファイアウォールで送信元を限定した環境だけで使ってください。
 Dockerの公開ポート経由では、同じホストからの接続の送信元IPがDockerのブリッジアドレス（例 172.17.0.1）に見えることがあります。
 
+シリアル（RS-232・USB）でNMEAを出すGPS等は、機器をつないだPCで `scripts/serial_bridge.py` を動かし、受信キーを付けてこの入力へ送ります。手順は[GPS等のシリアル接続](SERIAL_BRIDGE.md)を参照してください。
+
 ## 更新・欠測の扱い
 
 - 1バッチ1〜100局、上限256 KiB。NMEAは本文256文字まで。
@@ -273,7 +275,7 @@ python3 scripts/send_positions.py position.nmea --protocol nmea0183 --source gps
 
 既定宛先はhttp://127.0.0.1:18083/api/positions。遠隔宛先は `--url https://example.org/api/positions` で指定。
 サンプルは遠隔HTTP平文とリダイレクトを拒否します。単発送信用であり、周期送信は外部送信側が実装します。
-TCP・UDPのNMEA 0183ストリームは[TCP・UDPでのNMEA受信](#tcpudpでのnmea受信)で直接受け付けます。シリアル接続、AIS/ADS-Bの生フレーム、NMEA 2000への直接接続は未実装です。
+TCP・UDPのNMEA 0183ストリームは[TCP・UDPでのNMEA受信](#tcpudpでのnmea受信)で直接受け付けます。シリアル接続のGPS等は、機器をつないだPCの[シリアル中継](SERIAL_BRIDGE.md)からTCP・UDPで送ります。AIS/ADS-Bの生フレーム、NMEA 2000への直接接続は未実装です。
 そのような機器・既存システムは、送信側アダプターで対応形式へ変換し、このゲートウェイへHTTP(S)送信してください。
 
 ## 旧本体DBからの移行

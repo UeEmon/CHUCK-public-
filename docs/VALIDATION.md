@@ -380,3 +380,11 @@ HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
 - 「予察」と「〜結果」の表記を「予測」に揃えた（タブ：ダイバーシティー予測・メッシュ予測・12か月予測・予測条件・宇宙天気、Propagation Chartの「表示する予測：地点間予測／ダイバーシティー予測」、送信地点からの方位）。文中の一般的な「結果」（計算結果、比較結果など）は変更していない。
 - 8言語の辞書・README・docs・操作要領（Word）を合わせ、PDFはLibreOfficeで再出力（23ページ、レイアウト変化なし）。操作要領の画面写真は旧表記のまま。
 - `python3 -m unittest discover -s tests` が成功。`tests/ui_annual.cjs`・`ui_report_tabs.cjs`・`ui_report.cjs`・`ui_whats_new.cjs` ほかをChromium（Playwright）で実行し成功。`ui_mesh.cjs`・`ui_workbench.cjs` は計算エンジンが必要なため未実行（変更前のmainでも同じ）。
+
+## GPS等のシリアル接続（2026-10-31、x86-64 Linux）
+
+- `scripts/serial_bridge.py` を追加。シリアル（Linux・macOSは標準ライブラリのtermios、Windowsはpyserial）からNMEAを読み、受信キー付きでゲートウェイのTCP・UDP入力へ送る。
+- `tests/test_serial_bridge.py`：チェックサム検査、読み取りをまたぐ行の結合、RMCだけの転送と間引き、通信速度違いのゴミの破棄、接続失敗時の再試行間隔、受信キーを環境変数・ファイルだけから読むことを確認。
+  シミュレーターの疑似シリアルポート（`gateway_simulator.py serial`）→中継→受信キー必須のゲートウェイを、TCPとUDPの両方で結合確認し、局の位置が保存され、受信キーがログに出ないことを確認。
+- 実際のGPS受信機・USBシリアル変換器・Windowsでの動作は未確認。
+
