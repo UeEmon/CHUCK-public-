@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="simulator-token" content="{{TOKEN}}">
+<title>CHUCK · ゲートウェイ試験シミュレーター</title><link rel="stylesheet" href="simulator.css"></head><body>
+<header><div><strong>CHUCK</strong><span>POSITION GATEWAY SIMULATOR</span></div><h1>ゲートウェイ試験シミュレーター 管制画面</h1><p id="config"></p></header>
+<main>
+<div id="notice" role="status" aria-live="polite"></div>
+<section class="panel controls">
+ <button id="start" class="primary">送信開始</button><button id="stop">停止</button><button id="step">1回だけ送信</button>
+ <label>送信間隔（秒）<input id="interval" type="number" min="0.5" max="3600" step="0.5"></label>
+ <button id="setup">局を登録・受信キー発行</button><button id="check">機能確認を実行</button>
+ <span id="run-state" class="badge"></span>
+</section>
+<div class="layout">
+ <section class="panel map-panel"><div class="title"><h2>位置</h2><span><button id="zoom-in" aria-label="拡大">＋</button><button id="zoom-out" aria-label="縮小">－</button><button id="zoom-fit">全局を表示</button></span></div>
+  <svg id="map" viewBox="0 0 800 520" role="img" aria-label="模擬局とゲートウェイ受信位置の地図"></svg>
+  <p class="hint"><span class="dot sent"></span>送信した位置と航跡　<span class="dot received"></span>ゲートウェイが受信した位置（本体連携APIで読み戻し）。海岸線は概略です。</p></section>
+ <section class="panel"><h2>機能確認の結果</h2><div id="check-results"><p class="hint">「機能確認を実行」で、全方式の送信・読み戻しと異常入力の拒否を確かめます。</p></div>
+  <h2>ログ</h2><ol id="log"></ol></section>
+</div>
+<section class="panel"><h2>模擬局</h2><div class="table-wrap"><table id="stations"></table></div>
+ <p class="hint">速度・針路は入力欄を変えるとすぐ反映します。異常送信の結果は「最後の結果」に出ます。TCP・UDPの拒否はゲートウェイ管理画面の「認証失敗」「不正」の件数で確認してください。誤った受信キーは10分間に10回でその送信元IPが無視されます。</p></section>
+<section class="panel"><h2>局を追加</h2><form id="add-form" class="grid">
+ <label>局ID<input name="id" required pattern="[A-Za-z0-9_.:\-]{1,64}" maxlength="64"></label>
+ <label>局名<input name="name" maxlength="80"></label>
+ <label>種別<select name="kind"><option value="vessel">船舶</option><option value="aircraft">航空機</option><option value="vehicle">車両</option></select></label>
+ <label>入力方式<select name="transport"><option>http-json</option><option>http-geojson</option><option>http-nmea</option><option>tcp</option><option>udp</option></select></label>
+ <label>緯度<input name="lat" type="number" step="any" min="-85" max="85" required value="35.3"></label>
+ <label>経度<input name="lon" type="number" step="any" min="-180" max="180" required value="139.7"></label>
+ <label>速度 kt<input name="speed_knots" type="number" step="any" min="0" max="3000" value="10"></label>
+ <label>針路 °<input name="course_deg" type="number" step="any" min="0" max="359.9" value="0"></label>
+ <label>高度 m<input name="altitude_m" type="number" step="any" min="-1000" max="100000" placeholder="航空機のみ"></label>
+ <button type="submit">追加</button></form></section>
+</main><script src="simulator.js"></script></body></html>

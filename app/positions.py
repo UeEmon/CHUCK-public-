@@ -1,7 +1,10 @@
 """Authenticated push input stores only the latest WGS84 position per identity."""
 from datetime import datetime, timezone
+import hashlib
+import ipaddress
 import json
 import re
+import secrets
 import time
 from engine import InputError
 from position_contract import identifier, numeric, utc, apply_snapshot
@@ -57,6 +60,34 @@ def normalize(data, now):
     return result
 
 
+def peer_address(value):
+    """Normalize a stream sender address; '' or None means no TCP/UDP sender."""
+    if value is None or value == '': return None
+    if not isinstance(value, str) or len(value) > 64: raise InputError('送信元IPアドレスが不正です')
+    try: address = ipaddress.ip_address(value.strip())
+    except ValueError: raise InputError('送信元IPアドレスはIPv4またはIPv6の単一アドレスで指定してください')
+    if address.is_unspecified or address.is_multicast: raise InputError('送信元IPアドレスに未指定・マルチキャストアドレスは使用できません')
+    mapped = getattr(address, 'ipv4_mapped', None)
+    return str(mapped or address)
+
+
+def key_hash(key):
+    return hashlib.sha256(key.encode()).hexdigest()
+
+
+def public_station(station):
+    """Station settings as shown to clients: the stream key hash never leaves the gateway."""
+    station = dict(station)
+    station['stream_key_set'] = bool(station.pop('stream_key_hash', None))
+    return station
+
+
+def nmea_sentence_type(line):
+    """Return the sentence formatter (RMC, GGA, ...) of a $-sentence, or None."""
+    match = re.match(r'\$[A-Z]{2}([A-Z]{3}),', line)
+    return match.group(1) if match else None
+
+
 def parse_rmc(text):
     line = text.strip('\r\n')
     if not re.fullmatch(r'\$[A-Z]{2}RMC,[\x20-\x7e]+\*[0-9A-Fa-f]{2}', line) or len(line) > 256:
@@ -108,15 +139,37 @@ class PositionStore:
         if p['kind'] not in KINDS or p['protocol'] not in PROTOCOLS or not isinstance(p['enabled'],bool): raise InputError('局種別・プロトコル・有効設定が不正です')
         if not isinstance(p['name'],str) or not 1 <= len(p['name'].strip()) <= 80 or not p['name'].isprintable(): raise InputError('局名は表示可能な1〜80文字です')
         p['name'] = p['name'].strip()
+        peer = peer_address(data['peer']) if 'peer' in data else None
         with self.connect() as c:
             c.execute('BEGIN IMMEDIATE')
             old = c.execute('SELECT payload FROM position_stations WHERE source=? AND identifier=?',(p['source'],p['id'])).fetchone()
+            previous_station = json.loads(old[0]) if old else {}
+            # Clients that do not know the fields (older main app screens) keep the stored values.
+            if 'peer' not in data: peer = previous_station.get('peer')
+            key = data.get('stream_key')
+            new_key = None
+            if key is None: hashed = previous_station.get('stream_key_hash')
+            elif key == '': hashed = None
+            elif key == 'generate':
+                new_key = secrets.token_urlsafe(24)
+                hashed = key_hash(new_key)
+            else: raise InputError('受信キーは発行（generate）または解除（空文字）だけを指定できます')
+            if (peer or hashed) and p['protocol'] != 'nmea0183': raise InputError('TCP・UDPの送信元IPアドレスと受信キーはNMEA 0183局にだけ設定できます')
+            if hashed: p['stream_key_hash'] = hashed
+            if peer:
+                for (payload,) in c.execute('SELECT payload FROM position_stations'):
+                    other = json.loads(payload)
+                    if other.get('peer') == peer and (other['source'],other['id']) != (p['source'],p['id']):
+                        raise InputError('この送信元IPアドレスは別の局に設定済みです: '+other['source']+'/'+other['id'])
+                p['peer'] = peer
             c.execute('INSERT OR REPLACE INTO position_stations VALUES (?,?,?)',(p['source'],p['id'],json.dumps(p)))
             if c.execute('SELECT COUNT(*) FROM position_stations').fetchone()[0] > 2000: raise InputError('局設定の上限は2000件です')
             previous = json.loads(old[0]) if old else None
             if not p['enabled'] or previous and (previous['protocol']!=p['protocol'] or previous['kind']!=p['kind']):
                 c.execute('DELETE FROM positions WHERE source=? AND identifier=?',(p['source'],p['id']))
-        return p
+        result = public_station(p)
+        if new_key: result['stream_key'] = new_key  # Shown once; only the hash is stored.
+        return result
 
     def ingest_nmea(self, source, key, text, now=None):
         source, key = identifier(source,'source'), identifier(key,'id')
@@ -126,6 +179,33 @@ class PositionStore:
         station = json.loads(row[0])
         p = dict(parse_rmc(text), id=key, name=station['name'],kind=station['kind'])
         return self.ingest(dict(source=source,positions=[p]),now,protocol='nmea0183')
+
+    def stream_station(self, peer, key=None, require_key=False):
+        """Return the enabled NMEA station a TCP/UDP sender may write to, or None.
+
+        With a key, the station holding that key is used; a sender IP registered on
+        the same station must then also match. Without a key, the sender IP alone
+        identifies a station that has no key (closed networks), unless keys are required.
+        """
+        try: peer = peer_address(peer)
+        except InputError: peer = None
+        hashed = key_hash(key) if key else None
+        with self.connect() as c:
+            stations = [json.loads(payload) for (payload,) in c.execute('SELECT payload FROM position_stations')]
+        for station in stations:
+            if hashed:
+                if not secrets.compare_digest(station.get('stream_key_hash') or '', hashed): continue
+                if station.get('peer') and station['peer'] != peer: return None
+            elif require_key or station.get('stream_key_hash') or not peer or station.get('peer') != peer: continue
+            return station if station['enabled'] and station['protocol'] == 'nmea0183' else None
+        return None
+
+    def ingest_stream(self, station, text, now=None):
+        """Store an RMC fix for an authorized TCP/UDP station. Other NMEA sentences are skipped."""
+        line = text.strip('\r\n')
+        if not line.startswith(('$', '!')): raise InputError('NMEAセンテンスではありません')
+        if nmea_sentence_type(line) != 'RMC': return dict(accepted=0, ignored_old_or_equal=0, skipped=1)
+        return self.ingest_nmea(station['source'], station['id'], line, now)
 
     def ingest(self, data, now=None, protocol=None):
         now = time.time() if now is None else now
@@ -168,7 +248,7 @@ class PositionStore:
         with self.connect() as c:
             c.execute('BEGIN')
             rows = c.execute('SELECT observed,received,payload FROM positions ORDER BY source,identifier').fetchall()
-            stations = [json.loads(row[0]) for row in c.execute('SELECT payload FROM position_stations ORDER BY source,identifier')]
+            stations = [public_station(json.loads(row[0])) for row in c.execute('SELECT payload FROM position_stations ORDER BY source,identifier')]
         return dict(positions=[self.decorate(row, now) for row in rows], max_age_seconds=self.max_age,
                     stations=stations, protocols=list(PROTOCOLS), server_time=datetime.fromtimestamp(now, timezone.utc).isoformat())
 

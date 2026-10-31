@@ -10566,5 +10566,293 @@ const HF_MESSAGES={
     "Baixar arquivo de vínculo",
     "Verknüpfungsdatei herunterladen",
     "연계 파일 다운로드"
+  ],
+  "送信元IPアドレス（TCP・UDP）": [
+    "Sender IP address (TCP/UDP)",
+    "Adresse IP de l’émetteur (TCP/UDP)",
+    "Dirección IP del emisor (TCP/UDP)",
+    "Indirizzo IP del mittente (TCP/UDP)",
+    "Endereço IP do emissor (TCP/UDP)",
+    "Absender-IP-Adresse (TCP/UDP)",
+    "송신원 IP 주소(TCP·UDP)"
+  ],
+  "例 192.0.2.10": [
+    "e.g. 192.0.2.10",
+    "ex. 192.0.2.10",
+    "p. ej. 192.0.2.10",
+    "es. 192.0.2.10",
+    "ex. 192.0.2.10",
+    "z. B. 192.0.2.10",
+    "예: 192.0.2.10"
+  ],
+  "TCP・UDP受信 無効（HF_GATEWAY_NMEA_STREAM=1で有効）": [
+    "TCP/UDP input off (enable with HF_GATEWAY_NMEA_STREAM=1)",
+    "Réception TCP/UDP désactivée (activer avec HF_GATEWAY_NMEA_STREAM=1)",
+    "Recepción TCP/UDP desactivada (actívela con HF_GATEWAY_NMEA_STREAM=1)",
+    "Ricezione TCP/UDP disattivata (attivare con HF_GATEWAY_NMEA_STREAM=1)",
+    "Receção TCP/UDP desativada (ativar com HF_GATEWAY_NMEA_STREAM=1)",
+    "TCP/UDP-Empfang aus (mit HF_GATEWAY_NMEA_STREAM=1 aktivieren)",
+    "TCP·UDP 수신 비활성(HF_GATEWAY_NMEA_STREAM=1로 활성화)"
+  ],
+  "TCP・UDP受信": [
+    "TCP/UDP input",
+    "Réception TCP/UDP",
+    "Recepción TCP/UDP",
+    "Ricezione TCP/UDP",
+    "Receção TCP/UDP",
+    "TCP/UDP-Empfang",
+    "TCP·UDP 수신"
+  ],
+  "接続": [
+    "Connections",
+    "Connexions",
+    "Conexiones",
+    "Connessioni",
+    "Ligações",
+    "Verbindungen",
+    "연결"
+  ],
+  "古い報告": [
+    "Old reports",
+    "Rapports anciens",
+    "Informes antiguos",
+    "Rapporti vecchi",
+    "Relatórios antigos",
+    "Alte Meldungen",
+    "오래된 보고"
+  ],
+  "読み飛ばし": [
+    "Skipped",
+    "Ignorées",
+    "Omitidas",
+    "Ignorate",
+    "Ignoradas",
+    "Übersprungen",
+    "건너뜀"
+  ],
+  "不正": [
+    "Invalid",
+    "Invalides",
+    "No válidas",
+    "Non valide",
+    "Inválidas",
+    "Ungültig",
+    "부정"
+  ],
+  "流量超過": [
+    "Rate limited",
+    "Débit dépassé",
+    "Límite de caudal",
+    "Limite di flusso",
+    "Limite de caudal",
+    "Ratenbegrenzt",
+    "유량 초과"
+  ],
+  "最後のエラー": [
+    "Last error",
+    "Dernière erreur",
+    "Último error",
+    "Ultimo errore",
+    "Último erro",
+    "Letzter Fehler",
+    "마지막 오류"
+  ],
+  "送信元IP": [
+    "Sender IP",
+    "IP émetteur",
+    "IP del emisor",
+    "IP mittente",
+    "IP do emissor",
+    "Absender-IP",
+    "송신원 IP"
+  ],
+  "ASCII以外の文字を含む行です": [
+    "The line contains non-ASCII characters",
+    "La ligne contient des caractères non ASCII",
+    "La línea contiene caracteres no ASCII",
+    "La riga contiene caratteri non ASCII",
+    "A linha contém caracteres não ASCII",
+    "Die Zeile enthält Nicht-ASCII-Zeichen",
+    "ASCII 이외의 문자를 포함한 행입니다"
+  ],
+  "UDPデータグラムが大きすぎます": [
+    "The UDP datagram is too large",
+    "Le datagramme UDP est trop grand",
+    "El datagrama UDP es demasiado grande",
+    "Il datagramma UDP è troppo grande",
+    "O datagrama UDP é demasiado grande",
+    "Das UDP-Datagramm ist zu groß",
+    "UDP 데이터그램이 너무 큽니다"
+  ],
+  "NMEAの1行が長すぎます": [
+    "The NMEA line is too long",
+    "La ligne NMEA est trop longue",
+    "La línea NMEA es demasiado larga",
+    "La riga NMEA è troppo lunga",
+    "A linha NMEA é demasiado longa",
+    "Die NMEA-Zeile ist zu lang",
+    "NMEA 한 행이 너무 깁니다"
+  ],
+  "送信元IPアドレスが不正です": [
+    "The sender IP address is invalid",
+    "L’adresse IP de l’émetteur n’est pas valide",
+    "La dirección IP del emisor no es válida",
+    "L’indirizzo IP del mittente non è valido",
+    "O endereço IP do emissor é inválido",
+    "Die Absender-IP-Adresse ist ungültig",
+    "송신원 IP 주소가 올바르지 않습니다"
+  ],
+  "送信元IPアドレスに未指定・マルチキャストアドレスは使用できません": [
+    "Unspecified and multicast addresses cannot be used as the sender IP address",
+    "Les adresses non spécifiées et multicast ne peuvent pas servir d’adresse IP d’émetteur",
+    "No se pueden usar direcciones no especificadas ni multicast como IP del emisor",
+    "Gli indirizzi non specificati e multicast non possono essere usati come IP del mittente",
+    "Endereços não especificados e multicast não podem ser usados como IP do emissor",
+    "Unspezifizierte und Multicast-Adressen können nicht als Absender-IP verwendet werden",
+    "미지정·멀티캐스트 주소는 송신원 IP 주소로 사용할 수 없습니다"
+  ],
+  "送信元IPアドレスはIPv4またはIPv6の単一アドレスで指定してください": [
+    "Enter the sender IP address as a single IPv4 or IPv6 address",
+    "Indiquez l’adresse IP de l’émetteur sous forme d’une seule adresse IPv4 ou IPv6",
+    "Indique la IP del emisor como una única dirección IPv4 o IPv6",
+    "Indica l’IP del mittente come singolo indirizzo IPv4 o IPv6",
+    "Indique o IP do emissor como um único endereço IPv4 ou IPv6",
+    "Die Absender-IP als einzelne IPv4- oder IPv6-Adresse angeben",
+    "송신원 IP 주소는 IPv4 또는 IPv6 단일 주소로 지정하세요"
+  ],
+  "この送信元IPアドレスは別の局に設定済みです": [
+    "This sender IP address is already set on another station",
+    "Cette adresse IP d’émetteur est déjà définie pour une autre station",
+    "Esta IP del emisor ya está definida en otra estación",
+    "Questo IP del mittente è già impostato su un’altra stazione",
+    "Este IP do emissor já está definido noutra estação",
+    "Diese Absender-IP ist bereits bei einer anderen Station gesetzt",
+    "이 송신원 IP 주소는 다른 국에 이미 설정되어 있습니다"
+  ],
+  "NMEAセンテンスではありません": [
+    "The line is not an NMEA sentence",
+    "La ligne n’est pas une phrase NMEA",
+    "La línea no es una sentencia NMEA",
+    "La riga non è una frase NMEA",
+    "A linha não é uma sentença NMEA",
+    "Die Zeile ist kein NMEA-Satz",
+    "NMEA 문장이 아닙니다"
+  ],
+  "受信キー": [
+    "Stream key",
+    "Clé de réception",
+    "Clave de recepción",
+    "Chiave di ricezione",
+    "Chave de receção",
+    "Empfangsschlüssel",
+    "수신 키"
+  ],
+  "設定済み": [
+    "Set",
+    "Définie",
+    "Definida",
+    "Impostata",
+    "Definida",
+    "Gesetzt",
+    "설정됨"
+  ],
+  "なし": [
+    "None",
+    "Aucune",
+    "Ninguna",
+    "Nessuna",
+    "Nenhuma",
+    "Keiner",
+    "없음"
+  ],
+  "発行": [
+    "Issue",
+    "Émettre",
+    "Emitir",
+    "Emetti",
+    "Emitir",
+    "Ausstellen",
+    "발행"
+  ],
+  "再発行": [
+    "Reissue",
+    "Réémettre",
+    "Volver a emitir",
+    "Riemetti",
+    "Reemitir",
+    "Neu ausstellen",
+    "재발행"
+  ],
+  "解除": [
+    "Remove",
+    "Retirer",
+    "Quitar",
+    "Rimuovi",
+    "Remover",
+    "Entfernen",
+    "해제"
+  ],
+  "認証失敗": [
+    "Auth failures",
+    "Échecs d’authentification",
+    "Fallos de autenticación",
+    "Autenticazioni fallite",
+    "Falhas de autenticação",
+    "Authentifizierungsfehler",
+    "인증 실패"
+  ],
+  "受信キー必須": [
+    "Stream key required",
+    "Clé de réception obligatoire",
+    "Clave de recepción obligatoria",
+    "Chiave di ricezione obbligatoria",
+    "Chave de receção obrigatória",
+    "Empfangsschlüssel erforderlich",
+    "수신 키 필수"
+  ],
+  "受信キーまたは送信元IP": [
+    "Stream key or sender IP",
+    "Clé de réception ou IP de l’émetteur",
+    "Clave de recepción o IP del emisor",
+    "Chiave di ricezione o IP del mittente",
+    "Chave de receção ou IP do emissor",
+    "Empfangsschlüssel oder Absender-IP",
+    "수신 키 또는 송신원 IP"
+  ],
+  "TCP・UDPで受信するNMEA 0183局は、一覧で受信キーを発行し、送信機から最初の1行（UDPは各データグラムの先頭行）としてキーを送ります。閉域網では受信キーの代わりに送信元IPアドレスでも識別できます。保存するのはRMCだけで、他のセンテンスは読み飛ばします。": [
+    "For NMEA 0183 stations received over TCP/UDP, issue a stream key in the list and have the sender send it as its first line (for UDP, the first line of each datagram). On closed networks the sender IP address can be used instead of a key. Only RMC is stored; other sentences are skipped.",
+    "Pour les stations NMEA 0183 reçues en TCP/UDP, émettez une clé de réception dans la liste ; l’émetteur l’envoie en première ligne (en UDP, première ligne de chaque datagramme). Sur un réseau fermé, l’adresse IP de l’émetteur peut remplacer la clé. Seules les phrases RMC sont conservées ; les autres sont ignorées.",
+    "Para las estaciones NMEA 0183 recibidas por TCP/UDP, emita una clave de recepción en la lista; el emisor la envía como primera línea (en UDP, primera línea de cada datagrama). En redes cerradas puede usarse la IP del emisor en lugar de la clave. Solo se guarda RMC; las demás sentencias se omiten.",
+    "Per le stazioni NMEA 0183 ricevute via TCP/UDP, emetti una chiave di ricezione nell’elenco; il mittente la invia come prima riga (in UDP, prima riga di ogni datagramma). Nelle reti chiuse si può usare l’IP del mittente al posto della chiave. Si salva solo RMC; le altre frasi vengono ignorate.",
+    "Para estações NMEA 0183 recebidas por TCP/UDP, emita uma chave de receção na lista; o emissor envia-a como primeira linha (em UDP, primeira linha de cada datagrama). Em redes fechadas pode usar-se o IP do emissor em vez da chave. Só é guardado RMC; as restantes sentenças são ignoradas.",
+    "Für NMEA-0183-Stationen per TCP/UDP in der Liste einen Empfangsschlüssel ausstellen; der Sender schickt ihn als erste Zeile (bei UDP als erste Zeile jedes Datagramms). In geschlossenen Netzen kann statt des Schlüssels die Absender-IP verwendet werden. Nur RMC wird gespeichert; andere Sätze werden übersprungen.",
+    "TCP·UDP로 수신하는 NMEA 0183 국은 목록에서 수신 키를 발행하고, 송신기가 첫 행(UDP는 각 데이터그램의 첫 행)으로 키를 보냅니다. 폐쇄망에서는 수신 키 대신 송신원 IP 주소로도 식별할 수 있습니다. RMC만 저장하고 다른 문장은 건너뜁니다."
+  ],
+  "受信キーはこの画面でだけ表示し、ゲートウェイには照合用の値しか残しません。送信機に設定してから画面を閉じてください。": [
+    "The stream key is shown only here; the gateway keeps only a value for checking it. Set it on the sender before closing this page.",
+    "La clé n’est affichée qu’ici ; la passerelle ne garde qu’une valeur de vérification. Configurez-la sur l’émetteur avant de fermer cette page.",
+    "La clave solo se muestra aquí; la pasarela guarda solo un valor de comprobación. Configúrela en el emisor antes de cerrar esta página.",
+    "La chiave è mostrata solo qui; il gateway conserva solo un valore di verifica. Impostala sul mittente prima di chiudere questa pagina.",
+    "A chave só é mostrada aqui; o gateway guarda apenas um valor de verificação. Configure-a no emissor antes de fechar esta página.",
+    "Der Schlüssel wird nur hier angezeigt; das Gateway speichert nur einen Prüfwert. Vor dem Schließen dieser Seite am Sender eintragen.",
+    "수신 키는 이 화면에서만 표시되며 게이트웨이에는 대조용 값만 남습니다. 송신기에 설정한 뒤 화면을 닫으세요."
+  ],
+  "受信キーは発行（generate）または解除（空文字）だけを指定できます": [
+    "The stream key can only be issued (generate) or removed (empty string)",
+    "La clé ne peut qu’être émise (generate) ou retirée (chaîne vide)",
+    "La clave solo puede emitirse (generate) o quitarse (cadena vacía)",
+    "La chiave può solo essere emessa (generate) o rimossa (stringa vuota)",
+    "A chave só pode ser emitida (generate) ou removida (cadeia vazia)",
+    "Der Schlüssel kann nur ausgestellt (generate) oder entfernt (leere Zeichenkette) werden",
+    "수신 키는 발행(generate) 또는 해제(빈 문자열)만 지정할 수 있습니다"
+  ],
+  "TCP・UDPの送信元IPアドレスと受信キーはNMEA 0183局にだけ設定できます": [
+    "A TCP/UDP sender IP address and stream key can only be set on NMEA 0183 stations",
+    "L’adresse IP d’émetteur et la clé TCP/UDP ne peuvent être définies que pour les stations NMEA 0183",
+    "La IP del emisor y la clave TCP/UDP solo se pueden definir en estaciones NMEA 0183",
+    "IP del mittente e chiave TCP/UDP si possono impostare solo per stazioni NMEA 0183",
+    "O IP do emissor e a chave TCP/UDP só podem ser definidos em estações NMEA 0183",
+    "Absender-IP und TCP/UDP-Schlüssel können nur bei NMEA-0183-Stationen gesetzt werden",
+    "TCP·UDP 송신원 IP 주소와 수신 키는 NMEA 0183 국에만 설정할 수 있습니다"
   ]
 };

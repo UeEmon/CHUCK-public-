@@ -6,7 +6,7 @@ HTTPS終端は遠隔配置時の前段で行い、Compose内は専用サービ�
 
 | 区間 | 形式・責任 |
 |---|---|
-| 外部局とゲートウェイ | 局別にJSON / GeoJSON / NMEA 0183 RMCを選択。現在の伝送はHTTP(S) |
+| 外部局とゲートウェイ | 局別にJSON / GeoJSON / NMEA 0183 RMCを選択。伝送はHTTP(S)。NMEA 0183はTCP・UDP（局ごとの受信キー、閉域網では送信元IPで識別）でも受信可 |
 | ゲートウェイ内部 | 入力アダプターでWGS84・UTC・共通単位へ正規化、局設定・順序逆転・品質を検査、最新DBへ保存 |
 | ゲートウェイと本体 | 以下のinternal/v1 APIで共通JSONのみを交換 |
 | 本体 | 共通レコードの妥当性・鮮度を検査し、固定座標としてVOACAPへ渡す。外部センテンスを解析しない |
@@ -46,7 +46,7 @@ ComposeのhealthcheckはDB生存確認のみで、連接トークンの正しさ
 | max_age_seconds | 整数10〜86400。観測時刻を起点とする有効期限 |
 | ingest_enabled | 外部受信が有効かどうかの真偽値 |
 | positions | 最大2000件の共通位置レコード |
-| stations | 最大2000件の局設定（source/id/name/kind/protocol/enabled） |
+| stations | 最大2000件の局設定（source/id/name/kind/protocol/enabled、TCP・UDP受信局は任意のpeerと受信キーの有無stream_key_set） |
 | protocols | ゲートウェイが扱える入力形式名の一覧。本体で固定列挙しない |
 
 位置レコードの規定：

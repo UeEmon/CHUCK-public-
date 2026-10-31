@@ -1,0 +1,24 @@
+:root{color-scheme:dark;--bg:#09121d;--panel:#111e2c;--line:#2a4054;--text:#e6eef5;--accent:#56d9b0;--muted:#9aafc1;--warn:#ffcf70;--bad:#ff9d9d;--recv:#7cb7ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 "Hiragino Sans","Hiragino Kaku Gothic ProN","Meiryo","Noto Sans JP",sans-serif}
+header{padding:16px 24px;border-bottom:1px solid var(--line)}header strong{color:var(--accent);font-size:22px;letter-spacing:3px}header span{display:block;color:var(--muted);font-size:10px;letter-spacing:2px}
+h1{font-size:20px;margin:8px 0 2px}h2{font-size:16px;margin:0 0 10px}#config{color:var(--muted);font-size:12px;margin:0}
+main{max-width:1500px;margin:auto;padding:16px}.panel{padding:16px;border:1px solid var(--line);background:var(--panel);border-radius:8px;margin:14px 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:end}.controls label{margin:0}.controls input{width:90px}
+.layout{display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:14px}.layout .panel{margin:0}
+.title{display:flex;justify-content:space-between;align-items:center}
+label{display:block;font-size:12px;color:var(--muted)}input,select,button{font:inherit;border:1px solid #39536a;border-radius:5px;padding:6px 9px;background:#0a1725;color:var(--text)}
+input,select{display:block;margin-top:3px}button{cursor:pointer;background:#17372f}button:hover{border-color:var(--accent)}button:disabled{opacity:.5;cursor:wait}button.primary{background:#1f5a49}
+button:focus-visible,input:focus,select:focus{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end}.grid input,.grid select{width:100%}
+.hint{color:var(--muted);font-size:12px}.badge{padding:4px 10px;border-radius:12px;border:1px solid var(--line);font-size:12px}.badge.on{color:var(--accent);border-color:var(--accent)}
+#notice{min-height:24px;color:var(--accent)}#notice.error{color:var(--bad)}
+#map{width:100%;height:auto;background:#0b1928;border-radius:6px;border:1px solid var(--line)}
+#map .land{fill:#1b3042;stroke:#2c4a63;stroke-width:.6}#map .grid line{stroke:#1f3446;stroke-width:.6}#map .grid text{fill:#5f7a90;font-size:10px}
+#map .track{fill:none;stroke-width:1.6;opacity:.7}#map .sent{stroke:#0b1928;stroke-width:1.5}#map .received{fill:none;stroke:var(--recv);stroke-width:2}#map .label{fill:var(--text);font-size:11px;paint-order:stroke;stroke:#0b1928;stroke-width:3px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:middle;margin-right:3px}.dot.sent{background:var(--accent)}.dot.received{border:2px solid var(--recv)}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}th,td{padding:6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}th{color:var(--muted)}
+td input{width:76px;display:inline-block;margin:0}td select{display:inline-block;margin:0}.ok{color:var(--accent)}.ng{color:var(--bad)}.warn{color:var(--warn)}
+#log{list-style:none;margin:0;padding:0;max-height:300px;overflow:auto;font:12px/1.5 ui-monospace,Menlo,monospace;color:var(--muted)}
+#check-results ul{list-style:none;padding:0;margin:0 0 14px}#check-results li{padding:2px 0}
+[hidden]{display:none!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}main{padding:10px}header{padding:12px}}

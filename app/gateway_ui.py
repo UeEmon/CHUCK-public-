@@ -67,7 +67,8 @@ class GatewayUI:
             snapshot=self.gateway_store().snapshot()
             tokens=[os.environ.get(k,'') for k in ('HF_POSITION_INGEST_TOKEN','HF_POSITION_GATEWAY_TOKEN')]
             enabled=all(len(t)>=32 for t in tokens) and tokens[0]!=tokens[1]
-            self.ui_json(200,dict(snapshot,ingest_enabled=enabled,client_enabled=enabled,role='position-gateway'));return True
+            stream=self.gateway_stream() if hasattr(self,'gateway_stream') else None
+            self.ui_json(200,dict(snapshot,ingest_enabled=enabled,client_enabled=enabled,role='position-gateway',stream=stream));return True
         self.ui_json(404,dict(error='見つかりません'));return True
 
     def ui_post(self,path):

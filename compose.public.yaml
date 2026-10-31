@@ -24,3 +24,8 @@ services:
   public-data:
     environment:
       HF_PUBLIC_DATA_TOKEN: "${HF_PUBLIC_DATA_TOKEN:?set HF_PUBLIC_DATA_TOKEN (32+ random characters)}"
+  position-gateway:
+    environment:
+      # TCP/UDP NMEA senders reach a public server over the internet, so a
+      # per-station stream key is required; a sender IP alone is not accepted.
+      HF_GATEWAY_NMEA_REQUIRE_KEY: "${HF_GATEWAY_NMEA_REQUIRE_KEY:-1}"

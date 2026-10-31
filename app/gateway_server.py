@@ -10,6 +10,7 @@ from engine import InputError
 from positions import PositionStore
 from position_contract import POSITIONS_PATH, STATIONS_PATH, SCHEMA_VERSION
 from gateway_ui import GatewayUI
+import gateway_stream
 
 DATA=Path(os.environ.get('HF_GATEWAY_DATA_DIR',os.environ.get('DATA_DIR','./gateway-data')))
 DATA.mkdir(parents=True,exist_ok=True)
@@ -21,10 +22,22 @@ def connection():
 
 
 STORE=PositionStore(connection,os.environ.get('HF_POSITION_MAX_AGE_SECONDS','300'))
+STREAM=gateway_stream.StreamStats()
+STREAM_PORT=10110  # Customary NMEA-over-IP port, published by Compose.
+
+
+def stream_enabled():
+    return os.environ.get('HF_GATEWAY_NMEA_STREAM','0')=='1'
+
+
+def stream_key_required():
+    # Internet-facing deployments accept only senders with a per-station key.
+    return os.environ.get('HF_GATEWAY_NMEA_REQUIRE_KEY','0')=='1'
 
 
 class Handler(GatewayUI,BaseHTTPRequestHandler):
     def gateway_store(self):return STORE
+    def gateway_stream(self):return dict(STREAM.snapshot(),enabled=stream_enabled(),require_key=stream_key_required())
     def json(self, code, obj):
         body=json.dumps(obj,ensure_ascii=False,allow_nan=False).encode()
         self.send_response(code)
@@ -94,4 +107,7 @@ class Handler(GatewayUI,BaseHTTPRequestHandler):
 
 if __name__=='__main__':
     print('Position gateway: :8001',flush=True)
+    if stream_enabled():
+        gateway_stream.start(STORE,STREAM,tcp_port=STREAM_PORT,udp_port=STREAM_PORT,require_key=stream_key_required())
+        print(f'NMEA 0183 TCP/UDP input: :{STREAM_PORT}',flush=True)
     ThreadingHTTPServer(('0.0.0.0',8001),Handler).serve_forever()
