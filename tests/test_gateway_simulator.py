@@ -43,7 +43,7 @@ class SimulatorTests(unittest.TestCase):
 
     def test_check_passes_on_every_input_path(self):
         code,out=self.jig('check')
-        self.assertEqual(code,0,out);self.assertIn('結果: 11/11 合格',out)
+        self.assertEqual(code,0,out);self.assertIn('結果: 15/15 合格',out)
         self.assertNotIn('FAIL',out)
 
     def test_run_moves_stations_and_keys_file_is_private(self):

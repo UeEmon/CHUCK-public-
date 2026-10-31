@@ -31,7 +31,7 @@ DBの共有マウントや本体側の最新位置キャッシュへのフォー
 | TCP・UDP | NMEA 0183局のみ、生のセンテンス列を受信（既定無効、ポート10110）。局ごとの受信キー、または閉域網では送信元IPアドレスで識別する。[TCP・UDPでのNMEA受信](#tcpudpでのnmea受信)を参照 |
 | JSON | 本システムの共通位置スキーマ。複数局を1バッチで送信可能 |
 | GeoJSON | RFC 7946のFeatureCollection / Point。coordinatesは[経度,緯度,任意のWGS84楕円体高m] |
-| NMEA 0183 | RMCのみ。チェックサム・測位有効性・日時を検査。1リクエスト1センテンス |
+| NMEA 0183 | 位置はRMC、船首方位はHDT・HDG・THS。チェックサム・測位有効性・日時を検査。1リクエスト1センテンス |
 | 局識別 | source＋id。異なるsourceの同じidは別局 |
 | 局種別 | vessel / aircraft / vehicle |
 | 座標・時刻 | WGS84十進緯経度、ISO日時（タイムゾーン必須、内部UTC） |
@@ -105,7 +105,7 @@ Composeの既定URLは固定のため、別ホスト構成ではComposeオーバ
 | GET | /internal/v1/positions | 本体連携用Bearer。共通JSONによる最新位置・局設定・対応形式・有効期限 |
 | POST | /internal/v1/stations | 本体連携用Bearer。局の登録・更新（JSON、上限4 KiB） |
 | POST | /api/positions | 外部受信用Bearer。JSONまたはGeoJSONの受信 |
-| POST | /api/positions/nmea?source=gps&id=car-1 | 外部受信用Bearer。登録済み1局のRMC受信（text/plain） |
+| POST | /api/positions/nmea?source=gps&id=car-1 | 外部受信用Bearer。登録済み1局のRMC・HDT・HDG・THS受信（text/plain） |
 
 本体のGET /api/positionsとPOST /api/position-stationsは画面向けの代理接続です。
 ゲートウェイの旧GET /api/positions・POST /api/position-stationsは410となり、内部APIへ統一しました。
@@ -133,7 +133,7 @@ Content-Type: application/json
   "source":"gateway-1",
   "positions":[
     {"id":"ship-1","kind":"vessel","name":"試験船","lat":35.1,"lon":139.2,
-     "observed_at":"2026-10-15T09:45:00Z","speed_knots":12.5,"course_deg":90},
+     "observed_at":"2026-10-15T09:45:00Z","speed_knots":12.5,"course_deg":90,"heading_deg":84.5},
     {"id":"aircraft-1","kind":"aircraft","lat":34.9,"lon":140.2,
      "observed_at":"2026-10-15T09:45:00Z","altitude_m":3000,"altitude_reference":"msl"},
     {"id":"vehicle-1","kind":"vehicle","lat":35.3,"lon":139.4,
@@ -144,7 +144,8 @@ Content-Type: application/json
 
 例の時刻は現在の観測時刻に置き換えてください。座標は説明用です。
 latは±90、lonは±180。真偽値・文字列数値・NaN・Infinityは拒否します。
-任意値は未取得なら省略またはnull。speed_knots=0〜3000、course_deg=0以上360未満、altitude_m=−1000〜100000。
+任意値は未取得なら省略またはnull。speed_knots=0〜3000、course_deg=0以上360未満、heading_deg（真方位の船首方位）=0以上360未満、altitude_m=−1000〜100000。
+heading_degはその位置と同じ観測時刻の値として扱い、次の報告で省略すると船首方位なしになります。GeoJSONではpropertiesに入れます。
 高度基準はunknown（既定）/ msl / wgs84_ellipsoid / pressure。異なる高度基準を自動変換しません。
 
 ### GeoJSON
@@ -174,6 +175,22 @@ GP/GN等の2文字Talker IDに対応。XORチェックサム必須、status=Aの
 UTC時刻とddmmyy日付、ddmm/dddmm形式の緯経度、N/S/E/W、対地速度kt・対地針路を正規化します。
 秒は0〜59（うるう秒60は未対応）。日付はPythonの2桁年解釈を使い、観測時刻の許容窓も検査します。
 RMCから高度は取得できません。GGA/GLLやAIS !AIVDM/!AIVDOのデコードは含めません。
+
+### NMEA 0183 船首方位（HDT・HDG・THS）
+
+RMCの対地針路は潮流や風で流される分だけ船首の向きとずれ、停泊中や低速では不安定です。ジャイロコンパスやGNSSコンパスの船首方位を同じ局へ送ると、「自局の船首方位に合わせる（移動局）」のアンテナはその船首方位を基準に向きを計算します。
+
+| センテンス | 例 | 扱い |
+|---|---|---|
+| HDT（真方位） | `$HEHDT,274.5,T*hh` | そのまま真方位として保存 |
+| THS（真方位とモード） | `$GPTHS,274.5,A*hh` | モードA（自律）だけ保存。推測E・手動M・シミュレーションS・無効Vは拒否 |
+| HDG（磁針方位） | `$HCHDG,101.2,1.5,E,7.3,W*hh` | 磁針方位＋自差＋偏差（東を正）で真方位に換算。偏差が空のHDGは換算できないため拒否 |
+
+HTTPの`/api/positions/nmea`ではRMCと同じく1リクエスト1センテンスで、応答は`{"accepted":0,"ignored_old_or_equal":0,"headings":1}`です。TCP・UDPではRMCと混ぜて流せます。
+
+- 船首方位のセンテンスには時刻がないため、ゲートウェイの受信時刻で管理し、局ごとに最新の1件だけ持ちます。位置TTL（既定300秒）より古い船首方位は使わず、対地針路に戻ります。
+- 船首方位だけでは位置になりません。RMCが届いて有効な位置があるときに、その位置へ付けて本体へ渡します。
+- 局の無効化・形式や種別の変更では、位置と一緒に船首方位も破棄します。
 
 ### TCP・UDPでのNMEA受信
 
@@ -205,6 +222,7 @@ docker compose up -d --build
 Q2x…（受信キー）
 $GNRMC,120000,A,3500.0000,N,13930.0000,E,10.0,90.0,311026,,,A*hh
 $GNRMC,120001,A,3500.0010,N,13930.0000,E,10.0,90.0,311026,,,A*hh
+$HEHDT,84.5,T*hh
 ```
 
 | 項目 | 仕様 |
@@ -213,12 +231,12 @@ $GNRMC,120001,A,3500.0010,N,13930.0000,E,10.0,90.0,311026,,,A*hh
 | 受信キー | 発行時に32文字のランダムな値を生成。ゲートウェイにはSHA-256の照合値だけを保存し、画面・本体連携APIには設定の有無しか返さない |
 | TCP | 機器からゲートウェイへ接続して送り続ける。最初の1行を15秒以内に送る。認証できない接続は即切断。同時64接続、無通信300秒で切断。長すぎる行で切断。局の無効化・キーの解除や再発行でも切断 |
 | UDP | 1データグラム2048バイトまで、複数センテンスを含めてよい。受信キー方式では各データグラムの1行目がキー。ユニキャストのみ |
-| 保存対象 | RMCだけを上記「NMEA 0183 RMC」と同じ検査で保存。GGA・GSV・AIS等の他のセンテンスは読み飛ばす。`$`・`!`で始まらない行は不正として数える |
+| 保存対象 | RMCと船首方位（HDT・HDG・THS）を上記と同じ検査で保存。GGA・GSV・AIS等の他のセンテンスは読み飛ばす。`$`・`!`で始まらない行は不正として数える |
 | 流量 | 送信元IPごとに毎秒20行まで。超過分は解析せずに捨てる |
 | 失敗の制限 | 認証に10回失敗した送信元IPは、10分間すべて無視する |
 | 有効性 | 局が無効、または形式がNMEA 0183以外になった時点で受信しない。同じ局へHTTPの`/api/positions/nmea`でも送信できる |
 
-受信件数（保存・古い報告・読み飛ばし・認証失敗・不正・流量超過）、TCP接続数、最後のエラーは管理画面の「ゲートウェイ状態」に表示します。カウンタは再起動で0に戻ります。
+受信件数（保存・船首方位・古い報告・読み飛ばし・認証失敗・不正・流量超過）、TCP接続数、最後のエラーは管理画面の「ゲートウェイ状態」に表示します。カウンタは再起動で0に戻ります。
 
 **注意：** TCP・UDPの通信は暗号化されません。受信キーは経路上で盗み見られるおそれがあるため、漏れたと思ったらすぐ再発行してください。位置そのものも平文で流れます。暗号化が必要な機器はHTTPSの`/api/positions`・`/api/positions/nmea`を使ってください。
 送信元IPアドレス方式は、特にUDPでは送信元を偽装できるため、閉域網・VPN・ファイアウォールで送信元を限定した環境だけで使ってください。
@@ -260,6 +278,7 @@ coverageでrx_positionを指定すると中心点もそのRXの位置に合わ�
 
 **位置は要求時点の固定座標です。24時間分の航路・飛行経路の追跡予測ではありません。**
 航空機高度のHF伝搬補正、速度・針路による推測位置、実受信品質の評価は行いません。
+船首方位（heading_deg）はアンテナの向きの基準にだけ使い、位置の推測には使いません。
 
 ## 送信サンプル
 

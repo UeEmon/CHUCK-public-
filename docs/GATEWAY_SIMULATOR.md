@@ -6,9 +6,11 @@
 |---|---|---|
 | http-json | `POST /api/positions`（共通JSON） | 受信トークン |
 | http-geojson | `POST /api/positions`（GeoJSON） | 受信トークン |
-| http-nmea | `POST /api/positions/nmea`（RMC 1行） | 受信トークン |
-| tcp | TCP 10110、NMEA 0183（GGAとRMC） | 局ごとの受信キー |
-| udp | UDP 10110、NMEA 0183（GGAとRMC） | 局ごとの受信キー |
+| http-nmea | `POST /api/positions/nmea`（RMC 1行。船首方位のある局は先にHDT等を1行） | 受信トークン |
+| tcp | TCP 10110、NMEA 0183（GGAとRMC、船首方位のある局はHDT・HDG・THS） | 局ごとの受信キー |
+| udp | UDP 10110、NMEA 0183（GGAとRMC、船首方位のある局はHDT・HDG・THS） | 局ごとの受信キー |
+
+既定の模擬局のうち `ship-json` はJSONの `heading_deg`、`ship-tcp` はHDTで船首方位も送ります（針路から数度ずらし、潮流で流される船を模擬）。
 
 ## 準備
 
@@ -38,6 +40,9 @@ python3 scripts/gateway_simulator.py check
 | 誤った受信トークン | HTTP 401で拒否される |
 | 誤った受信キーのUDP | 位置が更新されない |
 | TCPでGGAとRMCを混ぜて送る | GGAを読み飛ばし、RMCの位置が保存される |
+| 船首方位のある局の船首方位が反映 | JSONの`heading_deg`、TCPのHDTが位置一覧の`heading_deg`に載る |
+| HDG（磁針方位＋偏差） | http-nmeaの局へ送ったHDGが真方位に換算されて載る（`heading_source`がHDG） |
+| 偏差のないHDG | HTTP 400で拒否される |
 
 誤った受信キーの確認は、ゲートウェイの「認証失敗」を1回増やします。同じ送信元IPから10分間に10回失敗すると、そのIPは10分間無視されるので、checkを短時間に何度も繰り返さないでください。
 
@@ -92,7 +97,7 @@ runは起動時に模擬局を登録し、受信キーを発行し直します�
 python3 scripts/gateway_simulator.py serial --station car-nmea
 ```
 
-LinuxとmacOSで疑似シリアルポートを作り、そのパスを表示して、指定した局（`--station`、既定は最初の局）のRMC・GGAをGPS受信機のように毎秒出力します。ゲートウェイやトークンは不要です。
+LinuxとmacOSで疑似シリアルポートを作り、そのパスを表示して、指定した局（`--station`、既定は最初の局）のRMC・GGA（船首方位のある局はHDT等も）をGPS受信機のように毎秒出力します。ゲートウェイやトークンは不要です。
 表示されたポートを[シリアル中継](SERIAL_BRIDGE.md)（`scripts/serial_bridge.py`）に指定すると、GPS機器なしでシリアル→TCP・UDP→ゲートウェイの経路を確認できます。
 
 ## 遠隔のゲートウェイ
@@ -114,4 +119,4 @@ python3 scripts/gateway_simulator.py check --url https://gateway.example.org --n
 ]
 ```
 
-`id`・`kind`（vessel / aircraft / vehicle）・`transport`・`lat`・`lon` は必須です。`--only` で入力方式を絞り込めます。高度はJSON・GeoJSONで送り、NMEAのRMCには含めません。
+`id`・`kind`（vessel / aircraft / vehicle）・`transport`・`lat`・`lon` は必須です。`heading_offset_deg`（−180〜180）を付けた局は、針路にその角度を足した船首方位も送ります。NMEAで送るセンテンスは `heading_sentence` で `HDT`（既定）・`HDG`（偏差7.5°W付き）・`THS` から選びます。`--only` で入力方式を絞り込めます。高度はJSON・GeoJSONで送り、NMEAのRMCには含めません。

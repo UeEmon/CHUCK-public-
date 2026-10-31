@@ -11,9 +11,9 @@ stream key, reconnecting when either side drops.
   python3 scripts/serial_bridge.py --list                           (candidate ports)
 
 The stream key is read from HF_GATEWAY_STREAM_KEY or --key-file, never from
-the command line, so it does not show up in the process list. Only RMC is
-forwarded by default (the gateway stores RMC only); --sentences all sends
-everything. Lines with a wrong checksum are dropped here. On Linux and macOS
+the command line, so it does not show up in the process list. Only RMC (position)
+and HDT/HDG/THS (heading) are forwarded by default, which is what the gateway
+stores; --sentences all sends everything. Lines with a wrong checksum are dropped here. On Linux and macOS
 only the Python standard library is used.
 """
 import argparse
@@ -177,10 +177,13 @@ class Sender:
         self.sock = None
 
 
+DEFAULT_SENTENCES = ('RMC', 'HDT', 'HDG', 'THS')  # What the gateway stores.
+
+
 class Bridge:
     """Split the byte stream into lines, check and filter them, keep under the gateway's rate limit."""
 
-    def __init__(self, sender, sentences=('RMC',), max_rate=5.0, log=print):
+    def __init__(self, sender, sentences=DEFAULT_SENTENCES, max_rate=5.0, log=print):
         self.sender, self.sentences, self.log = sender, sentences, log
         self.interval = 1.0 / max_rate if max_rate else 0
         self.buffer = b''
@@ -274,7 +277,7 @@ def main(argv=None):
     parser.add_argument('--port', type=int, default=10120, help='ゲートウェイのTCP・UDPポート（既定10120）')
     parser.add_argument('--udp', action='store_true', help='TCPの代わりにUDPで送る')
     parser.add_argument('--key-file', help='受信キーを書いたファイル（既定は環境変数 HF_GATEWAY_STREAM_KEY）')
-    parser.add_argument('--sentences', default='RMC', help='転送するセンテンス（カンマ区切り。既定RMC、allで全部）')
+    parser.add_argument('--sentences', default=','.join(DEFAULT_SENTENCES), help='転送するセンテンス（カンマ区切り。既定RMC,HDT,HDG,THS、allで全部）')
     parser.add_argument('--max-rate', type=float, default=5, help='センテンスの種類ごとの最大送信回数/秒（既定5。ゲートウェイの上限は送信元ごとに毎秒20行）')
     parser.add_argument('--report', type=float, default=60, help='件数を表示する間隔秒（既定60、0で表示しない）')
     args = parser.parse_args(argv)

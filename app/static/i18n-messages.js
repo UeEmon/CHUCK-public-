@@ -10819,14 +10819,14 @@ const HF_MESSAGES={
     "Empfangsschlüssel oder Absender-IP",
     "수신 키 또는 송신원 IP"
   ],
-  "TCP・UDPで受信するNMEA 0183局は、一覧で受信キーを発行し、送信機から最初の1行（UDPは各データグラムの先頭行）としてキーを送ります。閉域網では受信キーの代わりに送信元IPアドレスでも識別できます。保存するのはRMCだけで、他のセンテンスは読み飛ばします。": [
-    "For NMEA 0183 stations received over TCP/UDP, issue a stream key in the list and have the sender send it as its first line (for UDP, the first line of each datagram). On closed networks the sender IP address can be used instead of a key. Only RMC is stored; other sentences are skipped.",
-    "Pour les stations NMEA 0183 reçues en TCP/UDP, émettez une clé de réception dans la liste ; l’émetteur l’envoie en première ligne (en UDP, première ligne de chaque datagramme). Sur un réseau fermé, l’adresse IP de l’émetteur peut remplacer la clé. Seules les phrases RMC sont conservées ; les autres sont ignorées.",
-    "Para las estaciones NMEA 0183 recibidas por TCP/UDP, emita una clave de recepción en la lista; el emisor la envía como primera línea (en UDP, primera línea de cada datagrama). En redes cerradas puede usarse la IP del emisor en lugar de la clave. Solo se guarda RMC; las demás sentencias se omiten.",
-    "Per le stazioni NMEA 0183 ricevute via TCP/UDP, emetti una chiave di ricezione nell’elenco; il mittente la invia come prima riga (in UDP, prima riga di ogni datagramma). Nelle reti chiuse si può usare l’IP del mittente al posto della chiave. Si salva solo RMC; le altre frasi vengono ignorate.",
-    "Para estações NMEA 0183 recebidas por TCP/UDP, emita uma chave de receção na lista; o emissor envia-a como primeira linha (em UDP, primeira linha de cada datagrama). Em redes fechadas pode usar-se o IP do emissor em vez da chave. Só é guardado RMC; as restantes sentenças são ignoradas.",
-    "Für NMEA-0183-Stationen per TCP/UDP in der Liste einen Empfangsschlüssel ausstellen; der Sender schickt ihn als erste Zeile (bei UDP als erste Zeile jedes Datagramms). In geschlossenen Netzen kann statt des Schlüssels die Absender-IP verwendet werden. Nur RMC wird gespeichert; andere Sätze werden übersprungen.",
-    "TCP·UDP로 수신하는 NMEA 0183 국은 목록에서 수신 키를 발행하고, 송신기가 첫 행(UDP는 각 데이터그램의 첫 행)으로 키를 보냅니다. 폐쇄망에서는 수신 키 대신 송신원 IP 주소로도 식별할 수 있습니다. RMC만 저장하고 다른 문장은 건너뜁니다."
+  "TCP・UDPで受信するNMEA 0183局は、一覧で受信キーを発行し、送信機から最初の1行（UDPは各データグラムの先頭行）としてキーを送ります。閉域網では受信キーの代わりに送信元IPアドレスでも識別できます。保存するのはRMC（位置）とHDT・HDG・THS（真方位の船首方位）で、他のセンテンスは読み飛ばします。HDGは偏差（磁気偏角）付きのものだけを真方位に換算して使います。": [
+    "For NMEA 0183 stations received over TCP/UDP, issue a stream key in the list and have the sender send it as its first line (for UDP, the first line of each datagram). On closed networks the sender IP address can be used instead of a key. RMC (position) and HDT/HDG/THS (true heading) are stored; other sentences are skipped. HDG is used only when it carries the magnetic variation, which converts it to a true heading.",
+    "Pour les stations NMEA 0183 reçues en TCP/UDP, émettez une clé de réception dans la liste ; l’émetteur l’envoie en première ligne (en UDP, première ligne de chaque datagramme). Sur un réseau fermé, l’adresse IP de l’émetteur peut remplacer la clé. Les phrases RMC (position) et HDT/HDG/THS (cap vrai) sont conservées ; les autres sont ignorées. HDG n’est utilisée que si elle comporte la déclinaison magnétique, qui permet de la convertir en cap vrai.",
+    "Para las estaciones NMEA 0183 recibidas por TCP/UDP, emita una clave de recepción en la lista; el emisor la envía como primera línea (en UDP, primera línea de cada datagrama). En redes cerradas puede usarse la IP del emisor en lugar de la clave. Se guardan RMC (posición) y HDT/HDG/THS (proa verdadera); las demás sentencias se omiten. HDG solo se usa si incluye la declinación magnética, con la que se convierte a proa verdadera.",
+    "Per le stazioni NMEA 0183 ricevute via TCP/UDP, emetti una chiave di ricezione nell’elenco; il mittente la invia come prima riga (in UDP, prima riga di ogni datagramma). Nelle reti chiuse si può usare l’IP del mittente al posto della chiave. Si salvano RMC (posizione) e HDT/HDG/THS (prua vera); le altre frasi vengono ignorate. HDG si usa solo se contiene la declinazione magnetica, con cui si converte in prua vera.",
+    "Para estações NMEA 0183 recebidas por TCP/UDP, emita uma chave de receção na lista; o emissor envia-a como primeira linha (em UDP, primeira linha de cada datagrama). Em redes fechadas pode usar-se o IP do emissor em vez da chave. São guardados RMC (posição) e HDT/HDG/THS (proa verdadeira); as restantes sentenças são ignoradas. HDG só é usado se trouxer a declinação magnética, que o converte em proa verdadeira.",
+    "Für NMEA-0183-Stationen per TCP/UDP in der Liste einen Empfangsschlüssel ausstellen; der Sender schickt ihn als erste Zeile (bei UDP als erste Zeile jedes Datagramms). In geschlossenen Netzen kann statt des Schlüssels die Absender-IP verwendet werden. Gespeichert werden RMC (Position) und HDT/HDG/THS (rechtweisender Steuerkurs); andere Sätze werden übersprungen. HDG wird nur mit Missweisung verwendet, mit der es in einen rechtweisenden Steuerkurs umgerechnet wird.",
+    "TCP·UDP로 수신하는 NMEA 0183 국은 목록에서 수신 키를 발행하고, 송신기가 첫 행(UDP는 각 데이터그램의 첫 행)으로 키를 보냅니다. 폐쇄망에서는 수신 키 대신 송신원 IP 주소로도 식별할 수 있습니다. RMC(위치)와 HDT·HDG·THS(진방위 선수 방위)를 저장하고 다른 문장은 건너뜁니다. HDG는 편차(자기 편각)가 포함된 경우에만 진방위로 환산해 사용합니다."
   ],
   "受信キーはこの画面でだけ表示し、ゲートウェイには照合用の値しか残しません。送信機に設定してから画面を閉じてください。": [
     "The stream key is shown only here; the gateway keeps only a value for checking it. Set it on the sender before closing this page.",
@@ -10855,32 +10855,32 @@ const HF_MESSAGES={
     "Absender-IP und TCP/UDP-Schlüssel können nur bei NMEA-0183-Stationen gesetzt werden",
     "TCP·UDP 송신원 IP 주소와 수신 키는 NMEA 0183 국에만 설정할 수 있습니다"
   ],
-  "自局の針路に合わせる（移動局）": [
-    "Follow own course (mobile station)",
-    "Suivre le cap de la station (mobile)",
-    "Seguir el rumbo propio (estación móvil)",
-    "Segui la rotta propria (stazione mobile)",
-    "Seguir o rumo próprio (estação móvel)",
-    "Eigenem Kurs folgen (mobile Station)",
-    "자국 침로에 맞춤 (이동국)"
+  "自局の船首方位に合わせる（移動局）": [
+    "Follow own heading (mobile station)",
+    "Suivre le cap compas de la station (mobile)",
+    "Seguir la proa propia (estación móvil)",
+    "Segui la prua propria (stazione mobile)",
+    "Seguir a proa própria (estação móvel)",
+    "Eigenem Steuerkurs folgen (mobile Station)",
+    "자국 선수 방위에 맞춤 (이동국)"
   ],
-  "主放射方位 °（真北基準。針路に合わせる場合は船首・機首から右回り）": [
-    "Main-beam bearing ° (true north; clockwise from bow/nose when following course)",
-    "Azimut du lobe ° (nord vrai ; sens horaire depuis l’étrave/le nez en suivant le cap)",
-    "Azimut principal ° (norte verdadero; en sentido horario desde proa/morro al seguir el rumbo)",
-    "Azimut principale ° (nord vero; in senso orario da prua/muso se segue la rotta)",
-    "Azimute principal ° (norte verdadeiro; sentido horário a partir da proa/nariz ao seguir o rumo)",
-    "Hauptstrahlrichtung ° (geografisch Nord; bei Kursbezug im Uhrzeigersinn ab Bug/Nase)",
-    "주 방사 방위 ° (진북 기준. 침로에 맞추는 경우 선수·기수에서 시계 방향)"
+  "主放射方位 °（真北基準。船首方位に合わせる場合は船首・機首から右回り）": [
+    "Main-beam bearing ° (true north; clockwise from bow/nose when following heading)",
+    "Azimut du lobe ° (nord vrai ; sens horaire depuis l’étrave/le nez en suivant le cap compas)",
+    "Azimut principal ° (norte verdadero; en sentido horario desde proa/morro al seguir la proa)",
+    "Azimut principale ° (nord vero; in senso orario da prua/muso se segue la prua)",
+    "Azimute principal ° (norte verdadeiro; sentido horário a partir da proa/nariz ao seguir a proa)",
+    "Hauptstrahlrichtung ° (geografisch Nord; bei Steuerkursbezug im Uhrzeigersinn ab Bug/Nase)",
+    "주 방사 방위 ° (진북 기준. 선수 방위에 맞추는 경우 선수·기수에서 시계 방향)"
   ],
-  "針路基準": [
-    "relative to course",
-    "relatif au cap",
-    "relativo al rumbo",
-    "relativo alla rotta",
-    "relativo ao rumo",
-    "relativ zum Kurs",
-    "침로 기준"
+  "船首基準": [
+    "relative to bow",
+    "relatif à l’étrave",
+    "relativo a la proa",
+    "relativo alla prua",
+    "relativo à proa",
+    "relativ zum Bug",
+    "선수 기준"
   ],
   "針路 / 速力": [
     "Course / speed",
@@ -10891,23 +10891,23 @@ const HF_MESSAGES={
     "Kurs / Fahrt",
     "침로 / 속력"
   ],
-  "針路に合わせるアンテナには、針路を含む移動局の位置情報が必要です": [
-    "An antenna that follows the course needs a mobile-station position that includes the course",
-    "Une antenne qui suit le cap nécessite une position de station mobile comportant le cap",
-    "Una antena que sigue el rumbo necesita una posición de estación móvil que incluya el rumbo",
-    "Un’antenna che segue la rotta richiede una posizione di stazione mobile con la rotta",
-    "Uma antena que segue o rumo precisa de uma posição de estação móvel que inclua o rumo",
-    "Eine kursbezogene Antenne braucht eine Position einer mobilen Station mit Kursangabe",
-    "침로에 맞추는 안테나에는 침로가 포함된 이동국 위치 정보가 필요합니다"
+  "船首方位に合わせるアンテナには、船首方位または針路を含む移動局の位置情報が必要です": [
+    "An antenna that follows the heading needs a mobile-station position that includes a heading or course",
+    "Une antenne qui suit le cap compas nécessite une position de station mobile comportant un cap compas ou un cap fond",
+    "Una antena que sigue la proa necesita una posición de estación móvil que incluya la proa o el rumbo",
+    "Un’antenna che segue la prua richiede una posizione di stazione mobile con prua o rotta",
+    "Uma antena que segue a proa precisa de uma posição de estação móvel que inclua a proa ou o rumo",
+    "Eine steuerkursbezogene Antenne braucht eine Position einer mobilen Station mit Steuerkurs oder Kurs",
+    "선수 방위에 맞추는 안테나에는 선수 방위 또는 침로가 포함된 이동국 위치 정보가 필요합니다"
   ],
-  "RX1のアンテナは全格子点で、RX1の針路を基準にした向きのままです": [
-    "At every grid point, RX1's antenna keeps the orientation based on RX1's course",
-    "À chaque point de grille, l’antenne de RX1 garde l’orientation fondée sur le cap de RX1",
-    "En todos los puntos de la cuadrícula, la antena de RX1 mantiene la orientación basada en el rumbo de RX1",
-    "In ogni punto della griglia l’antenna di RX1 mantiene l’orientamento basato sulla rotta di RX1",
-    "Em todos os pontos da grade, a antena de RX1 mantém a orientação baseada no rumo de RX1",
-    "An allen Gitterpunkten behält die Antenne von RX1 die Ausrichtung nach dem Kurs von RX1",
-    "모든 격자점에서 RX1 안테나는 RX1 침로 기준 방향을 유지합니다"
+  "RX1のアンテナは全格子点で、RX1の船首方位（なければ針路）を基準にした向きのままです": [
+    "At every grid point, RX1's antenna keeps the orientation based on RX1's heading (or course if no heading)",
+    "À chaque point de grille, l’antenne de RX1 garde l’orientation fondée sur le cap compas de RX1 (ou son cap fond à défaut)",
+    "En todos los puntos de la cuadrícula, la antena de RX1 mantiene la orientación basada en la proa de RX1 (o su rumbo si no la hay)",
+    "In ogni punto della griglia l’antenna di RX1 mantiene l’orientamento basato sulla prua di RX1 (o sulla rotta se manca)",
+    "Em todos os pontos da grade, a antena de RX1 mantém a orientação baseada na proa de RX1 (ou no rumo, se não houver)",
+    "An allen Gitterpunkten behält die Antenne von RX1 die Ausrichtung nach dem Steuerkurs von RX1 (ersatzweise dem Kurs)",
+    "모든 격자점에서 RX1 안테나는 RX1 선수 방위(없으면 침로) 기준 방향을 유지합니다"
   ],
   "azimuth_mode: fixed/path/headingで指定してください": [
     "azimuth_mode: use fixed, path or heading",
@@ -11133,5 +11133,140 @@ const HF_MESSAGES={
     "Os resultados ponto a ponto agora marcam as horas e frequências que o clima espacial de hoje (R, S, G e D-RAP) pode degradar, e mostram a frequência recomendada nas condições de hoje.",
     "Punkt-zu-Punkt-Ergebnisse markieren jetzt die Stunden und Frequenzen, die das heutige Weltraumwetter (R, S, G und D-RAP) verschlechtern kann, und zeigen die empfohlene Frequenz unter heutigen Bedingungen.",
     "지점 간 예측 결과에 오늘의 우주 기상(R·S·G, D-RAP)으로 나빠질 수 있는 시각과 주파수를 표시하고, 오늘 상황에서의 추천 주파수를 보여 줍니다."
+  ],
+  "船首方位": [
+    "Heading",
+    "Cap compas",
+    "Proa",
+    "Prua",
+    "Proa",
+    "Steuerkurs",
+    "선수 방위"
+  ],
+  "船首方位 °": [
+    "Heading °",
+    "Cap compas °",
+    "Proa °",
+    "Prua °",
+    "Proa °",
+    "Steuerkurs °",
+    "선수 방위 °"
+  ],
+  "船首方位は360未満です": [
+    "Heading must be less than 360",
+    "Le cap compas doit être inférieur à 360",
+    "La proa debe ser menor que 360",
+    "La prua deve essere inferiore a 360",
+    "A proa deve ser menor que 360",
+    "Der Steuerkurs muss unter 360 liegen",
+    "선수 방위는 360 미만입니다"
+  ],
+  "heading_degは360未満で指定してください": [
+    "heading_deg must be less than 360",
+    "heading_deg doit être inférieur à 360",
+    "heading_deg debe ser menor que 360",
+    "heading_deg deve essere inferiore a 360",
+    "heading_deg deve ser menor que 360",
+    "heading_deg muss unter 360 liegen",
+    "heading_deg는 360 미만으로 지정하세요"
+  ],
+  "チェックサム付きのHDT・HDG・THSセンテンスを1行指定してください": [
+    "Send one HDT, HDG or THS sentence with a checksum",
+    "Envoyez une seule phrase HDT, HDG ou THS avec somme de contrôle",
+    "Envíe una sola sentencia HDT, HDG o THS con suma de verificación",
+    "Invia una sola frase HDT, HDG o THS con checksum",
+    "Envie uma única sentença HDT, HDG ou THS com soma de verificação",
+    "Einen einzelnen HDT-, HDG- oder THS-Satz mit Prüfsumme senden",
+    "체크섬이 있는 HDT·HDG·THS 문장을 1행 지정하세요"
+  ],
+  "{sentence}の角度が空か、書式・範囲が不正です": [
+    "{sentence} angle is empty, malformed or out of range",
+    "Angle {sentence} vide, mal formé ou hors plage",
+    "El ángulo de {sentence} está vacío, mal formado o fuera de rango",
+    "Angolo {sentence} vuoto, malformato o fuori intervallo",
+    "O ângulo de {sentence} está vazio, mal formado ou fora do intervalo",
+    "{sentence}-Winkel fehlt, ist fehlerhaft oder außerhalb des Bereichs",
+    "{sentence}의 각도가 비어 있거나 형식·범위가 올바르지 않습니다"
+  ],
+  "HDTの書式が不正です（方位,T）": [
+    "Invalid HDT format (heading,T)",
+    "Format HDT invalide (cap,T)",
+    "Formato HDT no válido (proa,T)",
+    "Formato HDT non valido (prua,T)",
+    "Formato HDT inválido (proa,T)",
+    "Ungültiges HDT-Format (Steuerkurs,T)",
+    "HDT 형식이 올바르지 않습니다 (방위,T)"
+  ],
+  "THSの書式が不正です（方位,モード）": [
+    "Invalid THS format (heading,mode)",
+    "Format THS invalide (cap,mode)",
+    "Formato THS no válido (proa,modo)",
+    "Formato THS non valido (prua,modo)",
+    "Formato THS inválido (proa,modo)",
+    "Ungültiges THS-Format (Steuerkurs,Modus)",
+    "THS 형식이 올바르지 않습니다 (방위,모드)"
+  ],
+  "THSの推測・手動・シミュレーション・無効の船首方位は使用しません": [
+    "Estimated, manual, simulated or invalid THS headings are not used",
+    "Les caps THS estimés, manuels, simulés ou invalides ne sont pas utilisés",
+    "No se usan proas THS estimadas, manuales, simuladas o no válidas",
+    "Le prue THS stimate, manuali, simulate o non valide non vengono usate",
+    "Não são usadas proas THS estimadas, manuais, simuladas ou inválidas",
+    "Geschätzte, manuelle, simulierte oder ungültige THS-Steuerkurse werden nicht verwendet",
+    "THS의 추측·수동·시뮬레이션·무효 선수 방위는 사용하지 않습니다"
+  ],
+  "HDGの書式が不正です（方位,自差,E/W,偏差,E/W）": [
+    "Invalid HDG format (heading,deviation,E/W,variation,E/W)",
+    "Format HDG invalide (cap,déviation,E/W,déclinaison,E/W)",
+    "Formato HDG no válido (proa,desvío,E/W,declinación,E/W)",
+    "Formato HDG non valido (prua,deviazione,E/W,declinazione,E/W)",
+    "Formato HDG inválido (proa,desvio,E/W,declinação,E/W)",
+    "Ungültiges HDG-Format (Steuerkurs,Deviation,E/W,Missweisung,E/W)",
+    "HDG 형식이 올바르지 않습니다 (방위,자차,E/W,편차,E/W)"
+  ],
+  "HDGの自差・偏差の東西（E/W）が不正です": [
+    "Invalid E/W for HDG deviation or variation",
+    "E/W invalide pour la déviation ou la déclinaison HDG",
+    "E/W no válido en el desvío o la declinación de HDG",
+    "E/W non valido per deviazione o declinazione HDG",
+    "E/W inválido no desvio ou declinação de HDG",
+    "Ungültiges E/W bei HDG-Deviation oder -Missweisung",
+    "HDG 자차·편차의 동서(E/W)가 올바르지 않습니다"
+  ],
+  "HDGに偏差（磁気偏角）がないため真方位に換算できません。HDTを送るか、偏差付きのHDGを出力してください": [
+    "HDG has no magnetic variation, so it cannot be converted to a true heading. Send HDT, or output HDG with variation",
+    "HDG ne comporte pas de déclinaison magnétique et ne peut pas être converti en cap vrai. Envoyez HDT ou une HDG avec déclinaison",
+    "HDG no incluye la declinación magnética y no puede convertirse a proa verdadera. Envíe HDT o una HDG con declinación",
+    "HDG non contiene la declinazione magnetica e non può essere convertita in prua vera. Invia HDT oppure HDG con declinazione",
+    "HDG não traz a declinação magnética e não pode ser convertido em proa verdadeira. Envie HDT ou HDG com declinação",
+    "HDG enthält keine Missweisung und kann nicht in einen rechtweisenden Steuerkurs umgerechnet werden. HDT senden oder HDG mit Missweisung ausgeben",
+    "HDG에 편차(자기 편각)가 없어 진방위로 환산할 수 없습니다. HDT를 보내거나 편차가 포함된 HDG를 출력하세요"
+  ],
+  "船首方位の保持上限2000件を超えます": [
+    "Exceeds the limit of 2000 stored headings",
+    "Dépasse la limite de 2000 caps conservés",
+    "Supera el límite de 2000 proas guardadas",
+    "Supera il limite di 2000 prue memorizzate",
+    "Excede o limite de 2000 proas guardadas",
+    "Überschreitet die Grenze von 2000 gespeicherten Steuerkursen",
+    "선수 방위 보관 상한 2000건을 초과합니다"
+  ],
+  "船首方位（HDT・HDG）を受信してアンテナの向きに使用": [
+    "Heading (HDT/HDG) received and used for antenna orientation",
+    "Cap compas (HDT/HDG) reçu et utilisé pour l’orientation de l’antenne",
+    "Proa (HDT/HDG) recibida y usada para orientar la antena",
+    "Prua (HDT/HDG) ricevuta e usata per orientare l’antenna",
+    "Proa (HDT/HDG) recebida e usada para orientar a antena",
+    "Steuerkurs (HDT/HDG) empfangen und für die Antennenausrichtung verwendet",
+    "선수 방위(HDT·HDG)를 수신해 안테나 방향에 사용"
+  ],
+  "位置ゲートウェイがNMEA 0183のHDT・HDG・THS（船首方位）を局ごとに受信するようになりました。JSON・GeoJSONでもheading_degで送れます。「自局の船首方位に合わせる（移動局）」のアンテナは、届いた真方位の船首方位を基準に向きを計算し、船首方位がない局や古い局では従来どおり対地針路を使います。HDGは偏差（磁気偏角）付きのものを真方位に換算します。位置受信の一覧とゲートウェイ管理画面に船首方位を表示します。": [
+    "The position gateway now receives NMEA 0183 HDT, HDG and THS (heading) per station; JSON and GeoJSON can send heading_deg. Antennas set to “Follow own heading (mobile station)” are oriented from the received true heading, and stations without a heading or with an old one fall back to the course over ground as before. HDG is converted to a true heading when it carries the magnetic variation. The received positions list and the gateway management page show the heading.",
+    "La passerelle de positions reçoit désormais les phrases NMEA 0183 HDT, HDG et THS (cap compas) par station ; JSON et GeoJSON peuvent envoyer heading_deg. Les antennes réglées sur « Suivre le cap compas de la station (mobile) » sont orientées selon le cap vrai reçu ; sans cap compas ou s’il est trop ancien, le cap fond est utilisé comme auparavant. HDG est converti en cap vrai lorsqu’il comporte la déclinaison magnétique. La liste des positions reçues et la page de gestion de la passerelle affichent le cap compas.",
+    "La pasarela de posiciones recibe ahora NMEA 0183 HDT, HDG y THS (proa) por estación; JSON y GeoJSON pueden enviar heading_deg. Las antenas con «Seguir la proa propia (estación móvil)» se orientan según la proa verdadera recibida, y las estaciones sin proa o con una antigua usan el rumbo sobre el fondo como antes. HDG se convierte a proa verdadera cuando incluye la declinación magnética. La lista de posiciones recibidas y la página de gestión de la pasarela muestran la proa.",
+    "Il gateway delle posizioni riceve ora NMEA 0183 HDT, HDG e THS (prua) per stazione; JSON e GeoJSON possono inviare heading_deg. Le antenne impostate su «Segui la prua propria (stazione mobile)» sono orientate in base alla prua vera ricevuta; le stazioni senza prua o con una prua vecchia usano la rotta sul fondo come prima. HDG viene convertita in prua vera quando contiene la declinazione magnetica. L’elenco delle posizioni ricevute e la pagina di gestione del gateway mostrano la prua.",
+    "O gateway de posições recebe agora NMEA 0183 HDT, HDG e THS (proa) por estação; JSON e GeoJSON podem enviar heading_deg. As antenas com «Seguir a proa própria (estação móvel)» são orientadas pela proa verdadeira recebida, e as estações sem proa ou com uma antiga usam o rumo sobre o fundo como antes. HDG é convertido em proa verdadeira quando traz a declinação magnética. A lista de posições recebidas e a página de gestão do gateway mostram a proa.",
+    "Das Positions-Gateway empfängt jetzt NMEA 0183 HDT, HDG und THS (Steuerkurs) je Station; JSON und GeoJSON können heading_deg senden. Antennen mit „Eigenem Steuerkurs folgen (mobile Station)“ werden nach dem empfangenen rechtweisenden Steuerkurs ausgerichtet; Stationen ohne oder mit veraltetem Steuerkurs verwenden wie bisher den Kurs über Grund. HDG wird mit Missweisung in einen rechtweisenden Steuerkurs umgerechnet. Die Liste empfangener Positionen und die Gateway-Verwaltung zeigen den Steuerkurs.",
+    "위치 게이트웨이가 NMEA 0183 HDT·HDG·THS(선수 방위)를 국별로 수신합니다. JSON·GeoJSON에서도 heading_deg로 보낼 수 있습니다. 「자국 선수 방위에 맞춤 (이동국)」 안테나는 수신한 진방위 선수 방위를 기준으로 방향을 계산하고, 선수 방위가 없거나 오래된 국은 종전처럼 대지 침로를 사용합니다. HDG는 편차(자기 편각)가 포함된 경우 진방위로 환산합니다. 위치 수신 목록과 게이트웨이 관리 화면에 선수 방위를 표시합니다."
   ]
 };

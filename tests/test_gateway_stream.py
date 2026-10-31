@@ -88,6 +88,10 @@ class PeerSettingTests(unittest.TestCase):
         position=self.store.snapshot(now)['positions'][0]
         self.assertEqual((position['source'],position['id'],position['protocol'],position['lat']),('gps','car','nmea0183',35))
         with self.assertRaises(InputError):self.store.ingest_stream(station,'garbage',now)
+        body='HEHDT,123.4,T';checksum=0
+        for char in body:checksum^=ord(char)
+        self.assertEqual(self.store.ingest_stream(station,'$'+body+'*%02X'%checksum,now)['headings'],1)
+        self.assertEqual(self.store.snapshot(now)['positions'][0]['heading_deg'],123.4)
 
 
 class SocketTests(unittest.TestCase):

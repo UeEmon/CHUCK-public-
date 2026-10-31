@@ -388,3 +388,11 @@ HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
   シミュレーターの疑似シリアルポート（`gateway_simulator.py serial`）→中継→受信キー必須のゲートウェイを、TCPとUDPの両方で結合確認し、局の位置が保存され、受信キーがログに出ないことを確認。
 - 実際のGPS受信機・USBシリアル変換器・Windowsでの動作は未確認。
 
+
+## 船首方位（HDT・HDG・THS）の受信（2026-10-31、x86-64 Linux）
+
+- ゲートウェイがNMEA 0183のHDT・HDG・THSを局ごとに受信し、最新の真方位の船首方位を位置とは別に保持。位置TTL以内のものだけを位置一覧の `heading_deg` に付け、JSON・GeoJSONでは `heading_deg` を位置と一緒に受信。
+- 「自局の船首方位に合わせる（移動局）」のアンテナは `heading_deg` を、なければ対地針路 `course_deg` を基準方向に使う（TX・RX・ダイバーシティー・メッシュ）。
+- `tests/test_positions.py`：HDT・THS（モードA）・HDG（磁針方位＋自差＋偏差）の換算と、偏差なしHDG・THSのE/M/S/V・チェックサム誤り等の拒否。船首方位の付与、TTL超過で対地針路へ戻ること、局の無効化で破棄されること、JSONの `heading_deg`。`tests/test_gateway_contract.py`：船首方位のない旧ゲートウェイの応答を受け付けること。
+- `python3 -m unittest discover -s tests` が成功。ゲートウェイを実起動して `gateway_simulator.py check`（15項目）が全項目合格。管理画面の最新位置一覧に船首方位と来歴（HDT・HDG・json）が出ることをChromium（Playwright）で確認。
+- 実際のジャイロコンパス・GNSSコンパスでの受信、ネイティブエンジンを使うブラウザ結合試験（`tests/ui_workbench.cjs`）は未実行。

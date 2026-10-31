@@ -13,7 +13,7 @@ from unittest.mock import patch
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'app'))
-from positions import PositionStore, normalize, parse_rmc
+from positions import PositionStore, normalize, parse_heading, parse_rmc
 from engine import InputError
 
 
@@ -25,6 +25,12 @@ def report(now, **kw):
 def rmc(now, status='A', mode='A', lat='3500.0000', hemisphere='N'):
     dt = datetime.fromtimestamp(now,timezone.utc)
     body = f'GNRMC,{dt:%H%M%S},{status},{lat},{hemisphere},13930.0000,E,10.0,90.0,{dt:%d%m%y},,,{mode}'
+    checksum = 0
+    for char in body: checksum ^= ord(char)
+    return '$'+body+'*'+format(checksum,'02X')+'\r\n'
+
+
+def nmea(body):
     checksum = 0
     for char in body: checksum ^= ord(char)
     return '$'+body+'*'+format(checksum,'02X')+'\r\n'
@@ -125,6 +131,54 @@ class PositionTests(unittest.TestCase):
         with self.assertRaises(InputError): self.store.ingest(bad,self.now+1)
         ship = next(p for p in self.store.snapshot(self.now)['positions'] if p['id']=='ship-1')
         self.assertEqual(ship['lat'],0)
+
+    def test_heading_sentences_are_true_headings(self):
+        self.assertEqual(parse_heading(nmea('HEHDT,274.5,T')), dict(heading_deg=274.5, heading_sentence='HDT'))
+        self.assertEqual(parse_heading(nmea('GPTHS,12.0,A'))['heading_deg'], 12.0)
+        self.assertEqual(parse_heading(nmea('HEHDT,360.0,T'))['heading_deg'], 0)
+        # Magnetic sensor 101.2 + deviation 1.5E + variation 7.3W = true 95.4.
+        self.assertAlmostEqual(parse_heading(nmea('HCHDG,101.2,1.5,E,7.3,W'))['heading_deg'], 95.4)
+        self.assertEqual(parse_heading(nmea('HCHDG,355.0,,,8.0,E'))['heading_deg'], 3.0)
+        for sentence in [nmea('HCHDG,101.2,,,,'), nmea('HCHDG,101.2,1.5,E,,'), nmea('HCHDG,101.2,,,7.3,X'), nmea('HEHDT,,T'), nmea('HEHDT,361,T'),
+                         nmea('HEHDT,90,M'), nmea('GPTHS,90.0,E'), nmea('GPTHS,90.0,V'), nmea('HEHDT,90.0,T').split('*')[0]+'*00', rmc(self.now)]:
+            with self.subTest(sentence=sentence), self.assertRaises(InputError): parse_heading(sentence)
+
+    def test_nmea_heading_is_attached_while_fresh_and_used_for_antennas(self):
+        station = dict(source='gateway',id='ship-1',kind='vessel',name='試験船',protocol='nmea0183')
+        self.store.configure(station)
+        self.assertEqual(self.store.ingest_nmea('gateway','ship-1',nmea('HEHDT,80.0,T'),self.now-100)['headings'], 1)
+        self.store.ingest_nmea('gateway','ship-1',rmc(self.now),self.now)
+        p = self.store.snapshot(self.now)['positions'][0]
+        self.assertEqual((p['course_deg'],p['heading_deg'],p['heading_source']), (90.0,80.0,'HDT'))
+        query = dict(tx_position=dict(source='gateway',id='ship-1'),rx_sites=[dict(position_ref=dict(source='gateway',id='ship-1'))])
+        data, inputs = self.store.apply(query, self.now)
+        self.assertEqual((data['tx_course_deg'],data['rx_sites'][0]['course_deg'],inputs['tx']['heading_deg']), (80.0,80.0,80.0))
+        # A heading older than the position TTL is dropped and the course over ground is used again.
+        later = self.now+250
+        self.store.ingest_nmea('gateway','ship-1',rmc(later),later)
+        p = self.store.snapshot(later)['positions'][0]
+        self.assertIsNone(p['heading_deg']);self.assertIsNone(p['heading_source'])
+        self.assertEqual(self.store.apply(query, later)[0]['tx_course_deg'], 90.0)
+        self.store.ingest_nmea('gateway','ship-1',nmea('HCHDG,90.0,,,7.0,W'),later)
+        self.assertEqual(self.store.apply(query, later)[0]['tx_course_deg'], 83.0)
+        # Disabling the station forgets the heading as well as the fix.
+        self.store.configure(dict(station,enabled=False))
+        with self.assertRaises(InputError): self.store.ingest_nmea('gateway','ship-1',nmea('HEHDT,80.0,T'),later)
+        self.store.configure(station)
+        self.store.ingest_nmea('gateway','ship-1',rmc(later+1),later+1)
+        self.assertIsNone(self.store.snapshot(later+1)['positions'][0]['heading_deg'])
+
+    def test_json_heading_travels_with_the_position(self):
+        self.store.ingest(report(self.now, course_deg=10, heading_deg=355.5), self.now)
+        p = self.store.snapshot(self.now)['positions'][0]
+        self.assertEqual((p['heading_deg'],p['heading_source'],p['heading_at']), (355.5,'json',p['observed_at']))
+        self.assertEqual(self.store.apply(dict(tx_position=dict(source='gateway',id='ship-1')), self.now)[0]['tx_course_deg'], 355.5)
+        self.store.ingest(report(self.now+1, course_deg=10), self.now+1)
+        p = self.store.snapshot(self.now+1)['positions'][0]
+        self.assertIsNone(p['heading_deg'])
+        self.assertEqual(self.store.apply(dict(tx_position=dict(source='gateway',id='ship-1')), self.now+1)[0]['tx_course_deg'], 10)
+        for value in (360, -1, True, 'north'):
+            with self.subTest(value=value), self.assertRaises(InputError): self.store.ingest(report(self.now+2, heading_deg=value), self.now+2)
 
 
 class PositionHttpTests(unittest.TestCase):

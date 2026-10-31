@@ -40,7 +40,8 @@ ANTENNA_FIELDS=('length_m','height_m','azimuth_deg','azimuth_mode','ground_permi
                 *(field for fields in MODEL_FIELDS.values() for field in fields))
 # 'path' aims the main beam at the other end of each circuit (VOACAP beam_main = path bearing).
 # 'heading' fixes the antenna to a mobile station's hull or airframe: azimuth_deg is then
-# relative to the station's course (0 = bow/nose, 90 = starboard), taken from its position report.
+# relative to the station's heading (0 = bow/nose, 90 = starboard), taken from its position report
+# (true heading when reported, else course over ground).
 AZIMUTH_MODES=('fixed','path','heading')
 POLARIZATIONS = ('model','vertical','horizontal','rhcp','lhcp','linear_other')
 # Emission classes follow the Radio Regulations Appendix 1 / 電波法施行規則第4条の2 notation:
@@ -173,11 +174,12 @@ def validate(data):
         p[prefix+'_antenna'] = ant
         p[prefix+'_gain'] = number(data,prefix+'_gain',-20,30,0)
         p.update({prefix+'_'+k:v for k,v in antenna_parameters(data,ant,prefix+'_').items()})
-        # Course over ground of a mobile station (true degrees), filled from its gateway position.
+        # Hull reference direction of a mobile station (true degrees), filled from its gateway position:
+        # the reported true heading (HDT/HDG/THS or heading_deg), else the course over ground.
         course=data.get(prefix+'_course_deg')
         p[prefix+'_course_deg']=None if course is None else number(data,prefix+'_course_deg',0,360)%360
         if ant in DIRECTIONAL_ANTENNAS and p[prefix+'_azimuth_mode']=='heading' and p[prefix+'_course_deg'] is None:
-            raise InputError(prefix.upper()+': 針路に合わせるアンテナには、針路を含む移動局の位置情報が必要です')
+            raise InputError(prefix.upper()+': 船首方位に合わせるアンテナには、船首方位または針路を含む移動局の位置情報が必要です')
     p['year'] = number(data,'year',1900,2100,integer=True)
     p['month'] = number(data,'month',1,12,integer=True)
     for key,lo,hi,default in [('ssn',0,250,80),('power_w',1,100000,1000),('noise',100,180,150),('min_angle',0.1,45,3),('required_snr',0,99,40),('reliability',1,99,90)]:

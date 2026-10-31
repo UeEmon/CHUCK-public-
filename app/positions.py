@@ -1,4 +1,9 @@
-"""Authenticated push input stores only the latest WGS84 position per identity."""
+"""Authenticated push input stores only the latest WGS84 position per identity.
+
+NMEA heading sentences (HDT, HDG, THS) carry no time or position. They are kept
+apart from the positions, one latest true heading per station, and attached to
+the station's position while they are no older than the position TTL.
+"""
 from datetime import datetime, timezone
 import hashlib
 import ipaddress
@@ -53,6 +58,10 @@ def normalize(data, now):
             value = row.get(field)
             p[field] = numeric(value, field, low, high) if value is not None else None
         if p['course_deg'] is not None and p['course_deg'] >= 360: raise InputError('course_degは360未満で指定してください')
+        # True heading (bow/nose direction) observed together with the position; optional.
+        if row.get('heading_deg') is not None:
+            p['heading_deg'] = numeric(row['heading_deg'], 'heading_deg', 0, 360)
+            if p['heading_deg'] >= 360: raise InputError('heading_degは360未満で指定してください')
         reference = row.get('altitude_reference', 'unknown')
         if reference not in ('unknown', 'msl', 'wgs84_ellipsoid', 'pressure'): raise InputError('altitude_referenceが不正です')
         p['altitude_reference'] = reference
@@ -88,15 +97,54 @@ def nmea_sentence_type(line):
     return match.group(1) if match else None
 
 
-def parse_rmc(text):
+HEADING_SENTENCES = ('HDT', 'HDG', 'THS')
+
+
+def nmea_fields(text, kinds, message):
+    """Checksum-verified fields of one $-sentence whose formatter is in kinds."""
     line = text.strip('\r\n')
-    if not re.fullmatch(r'\$[A-Z]{2}RMC,[\x20-\x7e]+\*[0-9A-Fa-f]{2}', line) or len(line) > 256:
-        raise InputError('チェックサム付きのRMCセンテンスを1行指定してください')
+    if not re.fullmatch(r'\$[A-Z]{2}(?:'+'|'.join(kinds)+r'),[\x20-\x7e]+\*[0-9A-Fa-f]{2}', line) or len(line) > 256:
+        raise InputError(message)
     body, checksum = line[1:].rsplit('*', 1)
     actual = 0
     for char in body: actual ^= ord(char)
     if actual != int(checksum, 16): raise InputError('NMEAチェックサムが一致しません')
-    f = body.split(',')
+    return body.split(',')
+
+
+def parse_heading(text):
+    """True heading from HDT, THS (mode A) or HDG with magnetic variation."""
+    f = nmea_fields(text, HEADING_SENTENCES, 'チェックサム付きのHDT・HDG・THSセンテンスを1行指定してください')
+    kind = f[0][2:]
+    def angle(token, high):
+        if not re.fullmatch(r'\d{1,3}(?:\.\d+)?', token or '') or float(token) > high:
+            raise InputError(kind+'の角度が空か、書式・範囲が不正です')
+        return float(token)
+    if kind == 'HDT':
+        if len(f) != 3 or f[2] != 'T': raise InputError('HDTの書式が不正です（方位,T）')
+        heading = angle(f[1], 360)
+    elif kind == 'THS':
+        if len(f) != 3: raise InputError('THSの書式が不正です（方位,モード）')
+        if f[2] != 'A': raise InputError('THSの推測・手動・シミュレーション・無効の船首方位は使用しません')
+        heading = angle(f[1], 360)
+    else:
+        if len(f) != 6: raise InputError('HDGの書式が不正です（方位,自差,E/W,偏差,E/W）')
+        sensor = angle(f[1], 360)
+        def signed(value, hemisphere):
+            if value == '' and hemisphere == '': return None
+            if hemisphere not in ('E', 'W'): raise InputError('HDGの自差・偏差の東西（E/W）が不正です')
+            number = angle(value, 180)
+            return -number if hemisphere == 'W' else number
+        deviation = signed(f[2], f[3]) or 0.0
+        variation = signed(f[4], f[5])
+        # Without variation the magnetic heading cannot be turned into a true one.
+        if variation is None: raise InputError('HDGに偏差（磁気偏角）がないため真方位に換算できません。HDTを送るか、偏差付きのHDGを出力してください')
+        heading = sensor+deviation+variation
+    return dict(heading_deg=round(heading % 360, 2) % 360, heading_sentence=kind)
+
+
+def parse_rmc(text):
+    f = nmea_fields(text, ('RMC',), 'チェックサム付きのRMCセンテンスを1行指定してください')
     if not 12 <= len(f) <= 14 or f[2] != 'A': raise InputError('有効なRMC位置（status=A）が必要です')
     if len(f) >= 13 and f[12] not in ('', 'A', 'D', 'F', 'R', 'P'):
         raise InputError('RMCの推測・手動・無効・シミュレーション位置は使用しません')
@@ -130,6 +178,7 @@ class PositionStore:
         c = self.connection()
         c.execute('CREATE TABLE IF NOT EXISTS positions (source TEXT NOT NULL, identifier TEXT NOT NULL, observed REAL NOT NULL, received REAL NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(source,identifier))')
         c.execute('CREATE TABLE IF NOT EXISTS position_stations (source TEXT NOT NULL, identifier TEXT NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(source,identifier))')
+        c.execute('CREATE TABLE IF NOT EXISTS position_headings (source TEXT NOT NULL, identifier TEXT NOT NULL, received REAL NOT NULL, payload TEXT NOT NULL, PRIMARY KEY(source,identifier))')
         return c
 
     def configure(self, data):
@@ -167,6 +216,7 @@ class PositionStore:
             previous = json.loads(old[0]) if old else None
             if not p['enabled'] or previous and (previous['protocol']!=p['protocol'] or previous['kind']!=p['kind']):
                 c.execute('DELETE FROM positions WHERE source=? AND identifier=?',(p['source'],p['id']))
+                c.execute('DELETE FROM position_headings WHERE source=? AND identifier=?',(p['source'],p['id']))
         result = public_station(p)
         if new_key: result['stream_key'] = new_key  # Shown once; only the hash is stored.
         return result
@@ -177,8 +227,22 @@ class PositionStore:
             row = c.execute('SELECT payload FROM position_stations WHERE source=? AND identifier=?',(source,key)).fetchone()
         if not row: raise InputError('NMEA局は先に登録してください')
         station = json.loads(row[0])
+        if nmea_sentence_type(text.strip('\r\n')) in HEADING_SENTENCES:
+            return self.ingest_heading(station, text, now)
         p = dict(parse_rmc(text), id=key, name=station['name'],kind=station['kind'])
         return self.ingest(dict(source=source,positions=[p]),now,protocol='nmea0183')
+
+    def ingest_heading(self, station, text, now=None):
+        """Keep the latest true heading of an enabled NMEA station (HDT, HDG, THS)."""
+        now = time.time() if now is None else now
+        heading = parse_heading(text)
+        if not station['enabled'] or station['protocol'] != 'nmea0183':
+            raise InputError('局の受信形式・種別・有効設定と一致しません: '+station['id'])
+        with self.connect() as c:
+            c.execute('INSERT OR REPLACE INTO position_headings VALUES (?,?,?,?)',(station['source'],station['id'],now,json.dumps(heading)))
+            c.execute('DELETE FROM position_headings WHERE received < ?', (now-7*86400,))
+            if c.execute('SELECT COUNT(*) FROM position_headings').fetchone()[0] > 2000: raise InputError('船首方位の保持上限2000件を超えます')
+        return dict(accepted=0, ignored_old_or_equal=0, headings=1)
 
     def stream_station(self, peer, key=None, require_key=False):
         """Return the enabled NMEA station a TCP/UDP sender may write to, or None.
@@ -201,10 +265,10 @@ class PositionStore:
         return None
 
     def ingest_stream(self, station, text, now=None):
-        """Store an RMC fix for an authorized TCP/UDP station. Other NMEA sentences are skipped."""
+        """Store an RMC fix or HDT/HDG/THS heading for an authorized TCP/UDP station. Other NMEA sentences are skipped."""
         line = text.strip('\r\n')
         if not line.startswith(('$', '!')): raise InputError('NMEAセンテンスではありません')
-        if nmea_sentence_type(line) != 'RMC': return dict(accepted=0, ignored_old_or_equal=0, skipped=1)
+        if nmea_sentence_type(line) not in ('RMC',)+HEADING_SENTENCES: return dict(accepted=0, ignored_old_or_equal=0, skipped=1)
         return self.ingest_nmea(station['source'], station['id'], line, now)
 
     def ingest(self, data, now=None, protocol=None):
@@ -234,9 +298,18 @@ class PositionStore:
             if c.execute('SELECT COUNT(*) FROM position_stations').fetchone()[0] > 2000: raise InputError('局設定の上限は2000件です')
         return dict(accepted=accepted, ignored_old_or_equal=ignored)
 
-    def decorate(self, row, now):
+    def decorate(self, row, now, headings=None):
         stamp, received, payload = row
         p = json.loads(payload)
+        if p.get('heading_deg') is not None:
+            # Reported with the position (JSON/GeoJSON): same time and TTL as the fix.
+            p.update(heading_source=p['protocol'], heading_at=p['observed_at'])
+        else:
+            heading = (headings or {}).get((p['source'], p['id']))
+            fresh = heading and now-heading[0] <= self.max_age
+            p.update(heading_deg=heading[1]['heading_deg'] if fresh else None,
+                     heading_source=heading[1]['heading_sentence'] if fresh else None,
+                     heading_at=datetime.fromtimestamp(heading[0], timezone.utc).isoformat() if fresh else None)
         p.update(received_at=datetime.fromtimestamp(received, timezone.utc).isoformat(),
                  age_seconds=round(now-stamp, 1), stale=now-stamp > self.max_age,
                  prediction_compatible=abs(p['lat']) <= 89,
@@ -249,7 +322,8 @@ class PositionStore:
             c.execute('BEGIN')
             rows = c.execute('SELECT observed,received,payload FROM positions ORDER BY source,identifier').fetchall()
             stations = [public_station(json.loads(row[0])) for row in c.execute('SELECT payload FROM position_stations ORDER BY source,identifier')]
-        return dict(positions=[self.decorate(row, now) for row in rows], max_age_seconds=self.max_age,
+            headings = {(source, key): (received, json.loads(payload)) for source, key, received, payload in c.execute('SELECT source,identifier,received,payload FROM position_headings')}
+        return dict(positions=[self.decorate(row, now, headings) for row in rows], max_age_seconds=self.max_age,
                     stations=stations, protocols=list(PROTOCOLS), server_time=datetime.fromtimestamp(now, timezone.utc).isoformat())
 
     def apply(self, data, now=None):

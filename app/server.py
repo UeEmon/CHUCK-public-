@@ -155,7 +155,7 @@ def coverage_notes(p):
     if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='path':
         return ['RX1のアンテナは全格子点で、RX1からTXへの方位に向けています']
     if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='heading':
-        return ['RX1のアンテナは全格子点で、RX1の針路を基準にした向きのままです']
+        return ['RX1のアンテナは全格子点で、RX1の船首方位（なければ針路）を基準にした向きのままです']
     return []
 
 def coverage(p, extra, job=None):

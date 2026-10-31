@@ -48,7 +48,7 @@ GPS ──シリアル/USB── PC（serial_bridge.py） ──TCP/UDP 10120＋
 | `--host` | （必須） | ゲートウェイのホスト名またはIPアドレス |
 | `--port` | 10120 | ゲートウェイのTCP・UDPポート |
 | `--udp` | TCP | UDPで送る。携帯回線で接続が切れやすい場合など |
-| `--sentences` | RMC | 送るセンテンスの種類（カンマ区切り）。ゲートウェイはRMCだけを保存するので通常は既定のまま。`all` で全部 |
+| `--sentences` | RMC,HDT,HDG,THS | 送るセンテンスの種類（カンマ区切り）。ゲートウェイが保存するのは位置のRMCと船首方位のHDT・HDG・THSなので通常は既定のまま。`all` で全部 |
 | `--max-rate` | 5 | 種類ごとの最大送信回数/秒。10 Hzの受信機でも5回/秒に間引く。ゲートウェイの上限は送信元ごとに毎秒20行 |
 | `--report` | 60 | 件数を表示する間隔秒。0で表示しない |
 
@@ -98,7 +98,7 @@ WantedBy=multi-user.target
 
 ## 機器なしで試す
 
-試験用シミュレーターの `serial` コマンドが、疑似シリアルポート（LinuxとmacOS）にGPSのようにRMC・GGAを毎秒出力します。
+試験用シミュレーターの `serial` コマンドが、疑似シリアルポート（LinuxとmacOS）にGPSのようにRMC・GGAを毎秒出力します（`--station ship-tcp` ならHDTも）。
 
 ```sh
 python3 scripts/gateway_simulator.py serial --station car-nmea
@@ -110,4 +110,5 @@ python3 scripts/serial_bridge.py /dev/pts/3 --host 127.0.0.1 --port 10110   # �
 
 - TCP・UDPは暗号化されません。受信キーと位置は平文で流れるため、漏れたと思ったら管理画面で再発行してください。暗号化が必要な場合はHTTPSの `/api/positions/nmea` を使う送信機を検討してください。
 - PCの時計は位置の時刻に使いません（RMCの時刻をそのまま送ります）。受信機が測位していない間（RMCの状態V）はゲートウェイが保存しません。
-- AIS（`!AIVDM`）は `--sentences all` で送れますが、ゲートウェイは現在RMCだけを保存し、AISは読み飛ばします。
+- ジャイロコンパス・GNSSコンパスのHDT・HDG・THSが同じシリアル線（マルチプレクサ経由など）に流れていれば、そのまま船首方位としてゲートウェイへ届きます。別のポートにつながっている場合は、同じ受信キーで中継をもう1つ動かしてください。HDGは偏差付きのものだけが使われます。
+- AIS（`!AIVDM`）は `--sentences all` で送れますが、ゲートウェイは現在RMCと船首方位だけを保存し、AISは読み飛ばします。

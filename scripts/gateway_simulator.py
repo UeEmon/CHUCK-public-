@@ -5,9 +5,13 @@ to the position gateway over each supported input:
 
   http-json     POST /api/positions (common JSON)
   http-geojson  POST /api/positions (GeoJSON FeatureCollection)
-  http-nmea     POST /api/positions/nmea (one RMC sentence)
+  http-nmea     POST /api/positions/nmea (one RMC sentence, then the heading)
   tcp           NMEA 0183 stream over TCP with a stream key line
   udp           NMEA 0183 datagrams over UDP with a stream key line
+
+A station with heading_offset_deg also reports a true heading (course plus the
+offset, like a ship crabbing in a cross current): heading_deg over JSON/GeoJSON,
+and HDT, HDG (with magnetic variation) or THS over NMEA (heading_sentence).
 
 Commands:
   check   Register the simulated stations, send one report on every path, read
@@ -43,10 +47,10 @@ NMEA_TRANSPORTS = ('http-nmea', 'tcp', 'udp')
 # One station per input path around Tokyo Bay. Edit or pass --scenario FILE
 # (a JSON list of objects with the same keys) to simulate other traffic.
 DEFAULT_SCENARIO = [
-    dict(id='ship-json', name='模擬船舶 JSON', kind='vessel', transport='http-json', lat=35.00, lon=139.80, speed_knots=12, course_deg=45),
+    dict(id='ship-json', name='模擬船舶 JSON', kind='vessel', transport='http-json', lat=35.00, lon=139.80, speed_knots=12, course_deg=45, heading_offset_deg=-3),
     dict(id='plane-geojson', name='模擬航空機 GeoJSON', kind='aircraft', transport='http-geojson', lat=35.50, lon=139.70, speed_knots=450, course_deg=270, altitude_m=10000),
     dict(id='car-nmea', name='模擬車両 NMEA', kind='vehicle', transport='http-nmea', lat=35.68, lon=139.76, speed_knots=30, course_deg=90),
-    dict(id='ship-tcp', name='模擬船舶 TCP', kind='vessel', transport='tcp', lat=34.90, lon=139.90, speed_knots=15, course_deg=180),
+    dict(id='ship-tcp', name='模擬船舶 TCP', kind='vessel', transport='tcp', lat=34.90, lon=139.90, speed_knots=15, course_deg=180, heading_offset_deg=6, heading_sentence='HDT'),
     dict(id='car-udp', name='模擬車両 UDP', kind='vehicle', transport='udp', lat=35.40, lon=139.60, speed_knots=40, course_deg=0),
 ]
 
@@ -118,6 +122,28 @@ def gga(station, stamp):
     return sentence(f'GNGGA,{dt:%H%M%S},{lat},{ns},{lon},{ew},1,10,0.8,{station.get("altitude_m") or 0:.1f},M,39.0,M,,')
 
 
+HEADING_SENTENCES = ('HDT', 'HDG', 'THS')
+MAGNETIC_VARIATION = -7.5  # Degrees, east positive: about 7.5°W around Tokyo Bay.
+
+
+def heading(station):
+    """True heading of a station that reports one, else None."""
+    if station.get('heading_offset_deg') is None: return None
+    return round((station['course_deg'] + station['heading_offset_deg']) % 360, 1) % 360
+
+
+def heading_line(station, variation=MAGNETIC_VARIATION):
+    """HDT, HDG (magnetic + variation) or THS sentence for the station's heading."""
+    value = heading(station)
+    kind = station.get('heading_sentence', 'HDT')
+    if kind == 'HDG':
+        if variation is None: return sentence(f'HCHDG,{value:.1f},,,,')  # Compass without variation (refused).
+        magnetic = (value - variation) % 360
+        return sentence(f"HCHDG,{magnetic:.1f},,,{abs(variation):.1f},{'E' if variation >= 0 else 'W'}")
+    if kind == 'THS': return sentence(f'GPTHS,{value:.1f},A')
+    return sentence(f'HEHDT,{value:.1f},T')
+
+
 def advance(station, seconds):
     """Dead reckoning on a sphere, good enough for a few hours of simulation."""
     distance = station['speed_knots'] * seconds / 3600 / 60  # Degrees of arc (1 nm = 1').
@@ -181,6 +207,7 @@ class Gateway:
         if transport in ('http-json', 'http-geojson'):
             record = dict(id=station['id'], name=station['name'], kind=station['kind'], observed_at=iso(stamp),
                           speed_knots=station['speed_knots'], course_deg=station['course_deg'])
+            if heading(station) is not None: record['heading_deg'] = heading(station)
             if station.get('altitude_m') is not None:
                 record.update(altitude_m=station['altitude_m'], altitude_reference='msl')
             if transport == 'http-json':
@@ -195,10 +222,14 @@ class Gateway:
                 content_type = 'application/geo+json'
             return self.request('/api/positions', self.ingest_token, json.dumps(payload, ensure_ascii=False), content_type)
         if transport == 'http-nmea':
+            query = dict(source=self.source, id=station['id'])
+            if not extra_lines and heading(station) is not None:  # One sentence per request: heading first, then the fix.
+                status, body = self.request('/api/positions/nmea', self.ingest_token, heading_line(station), 'text/plain', query)
+                if status != 200: return status, body
             return self.request('/api/positions/nmea', self.ingest_token, extra_lines[0] if extra_lines else rmc(station, stamp),
-                                'text/plain', dict(source=self.source, id=station['id']))
+                                'text/plain', query)
         key = key_override if key_override is not None else station.get('stream_key')
-        lines = list(extra_lines) or [gga(station, stamp), rmc(station, stamp)]
+        lines = list(extra_lines) or [gga(station, stamp), rmc(station, stamp)] + ([heading_line(station)] if heading(station) is not None else [])
         if transport == 'udp':
             payload = ((key + '\r\n') if key else '') + ''.join(lines)
             family = socket.AF_INET6 if ':' in self.nmea_host else socket.AF_INET
@@ -244,6 +275,10 @@ def load_scenario_list(stations):
             value = s.get(field, 0)
             if isinstance(value, bool) or not isinstance(value, (int, float)) or not low <= value <= high:
                 raise JigError(f"{s['id']}の{field}は{low}〜{high}の数値です")
+        offset = s.get('heading_offset_deg')
+        if offset is not None and (isinstance(offset, bool) or not isinstance(offset, (int, float)) or not -180 <= offset <= 180):
+            raise JigError(f"{s['id']}のheading_offset_degは-180〜180の数値です")
+        if s.get('heading_sentence', 'HDT') not in HEADING_SENTENCES: raise JigError(f"{s['id']}のheading_sentenceはHDT・HDG・THSです")
         if s['id'] in seen: raise JigError(f"シナリオの局IDが重複しています: {s['id']}")
         seen.add(s['id'])
         s.setdefault('name', s['id']); s.setdefault('speed_knots', 0); s.setdefault('course_deg', 0)
@@ -292,6 +327,10 @@ def check(gateway, stations, log):
         if ok and station.get('altitude_m') is not None and station['transport'] == 'http-json':
             ok = position['altitude_m'] == station['altitude_m']; detail = '' if ok else '高度が一致しません'
         record(f"{station['transport']} {station['id']} が位置一覧に反映", ok, detail)
+        if heading(station) is not None and position:
+            got = position.get('heading_deg')
+            ok = got is not None and abs((got - heading(station) + 180) % 360 - 180) < 0.11
+            record(f"{station['transport']} {station['id']} の船首方位が反映", ok, '' if ok else f'heading_deg {got} 期待値 {heading(station)}')
 
     by_transport = {s['transport']: s for s in stations}
     later = stamp + 2
@@ -305,6 +344,13 @@ def check(gateway, stations, log):
         record('チェックサム誤りのNMEAは拒否される', status == 400, f'HTTP {status}')
         status, body = gateway.send(s, later, extra_lines=[rmc(s, later, status='V')])
         record('測位無効（status=V）のRMCは拒否される', status == 400, f'HTTP {status}')
+        probe = dict(s, heading_offset_deg=10, heading_sentence='HDG')
+        status, body = gateway.send(s, later, extra_lines=[heading_line(probe)])
+        position = gateway.snapshot().get(s['id']) or {}
+        ok = status == 200 and position.get('heading_source') == 'HDG' and abs((position.get('heading_deg') or 0) - heading(probe)) < 0.11
+        record('HDG（磁針方位＋偏差）を真方位に換算する', ok, f"HTTP {status} heading_deg {position.get('heading_deg')} 期待値 {heading(probe)}")
+        status, body = gateway.send(s, later, extra_lines=[heading_line(probe, variation=None)])
+        record('偏差のないHDGは拒否される', status == 400, f'HTTP {status}')
     status, body = gateway.request('/api/positions', 'x' * 40, json.dumps(dict(source=gateway.source, positions=[])))
     record('誤った受信トークンは拒否される', status == 401, f'HTTP {status}')
     if 'udp' in by_transport:
@@ -353,7 +399,8 @@ def serial_device(station, interval, duration, log, ready=None, stop=lambda: Fal
     master, slave = pty.openpty()
     tty.setraw(slave)
     path = os.ttyname(slave)
-    log(f'疑似シリアルポート: {path}（{station["id"]} のRMC・GGAを{interval:g}秒ごとに出力）')
+    extra = '・' + station.get('heading_sentence', 'HDT') if heading(station) is not None else ''
+    log(f'疑似シリアルポート: {path}（{station["id"]} のRMC・GGA{extra}を{interval:g}秒ごとに出力）')
     if ready: ready(path)
     started = last = time.time()
     try:
@@ -361,7 +408,8 @@ def serial_device(station, interval, duration, log, ready=None, stop=lambda: Fal
             now = time.time()
             advance(station, now - last)
             last = now
-            try: os.write(master, (rmc(station, now) + gga(station, now)).encode('ascii'))
+            lines = rmc(station, now) + gga(station, now) + (heading_line(station) if heading(station) is not None else '')
+            try: os.write(master, lines.encode('ascii'))
             except OSError: pass  # Nobody has the port open yet and the buffer is full.
             time.sleep(interval)
     except KeyboardInterrupt:

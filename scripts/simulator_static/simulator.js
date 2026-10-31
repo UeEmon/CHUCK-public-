@@ -36,7 +36,7 @@ function renderStations(){
   tr.append(td(el('span',`${s.lat.toFixed(5)}, ${s.lon.toFixed(5)}`)));
   for(const field of['speed_knots','course_deg']){const input=el('input');input.type='number';input.step='any';input.min=0;input.max=field==='speed_knots'?3000:359.9;input.value=s[field];
    input.onfocus=()=>editing=true;input.onblur=()=>{editing=false;};input.onchange=()=>{editing=false;act({action:'update',id:s.id,[field]:Number(input.value)},`${s.id}の${field==='speed_knots'?'速度':'針路'}を変えました`);};tr.append(td(input));}
-  const r=s.received;tr.append(td(r?el('span',`${r.lat.toFixed(5)}, ${r.lon.toFixed(5)} · ${r.age_seconds}秒前${r.stale?' · 期限切れ':''}`,r.stale?'warn':'ok'):el('span','未受信','warn')));
+  const r=s.received;tr.append(td(r?el('span',`${r.lat.toFixed(5)}, ${r.lon.toFixed(5)}${r.heading_deg!=null?` · 船首 ${r.heading_deg}°`:''} · ${r.age_seconds}秒前${r.stale?' · 期限切れ':''}`,r.stale?'warn':'ok'):el('span','未受信','warn')));
   tr.append(td(el('span',String(s.sent))));
   tr.append(td(el('span',s.last||'—',/HTTP 4|HTTP 5|できません|なし/.test(s.last)?'ng':'')));
   const ops=document.createElement('span');

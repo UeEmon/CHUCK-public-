@@ -46,7 +46,7 @@ class GatewayContractTests(unittest.TestCase):
 
     def test_invalid_common_records_are_rejected_as_gateway_errors(self):
         original=self.snapshot()
-        for field,value in [('lat',True),('lon',float('nan')),('expires_at','bad'),('speed_knots',-1),('prediction_compatible',False)]:
+        for field,value in [('lat',True),('lon',float('nan')),('expires_at','bad'),('speed_knots',-1),('prediction_compatible',False),('heading_deg',360),('heading_deg','x')]:
             snapshot=copy.deepcopy(original);snapshot['positions'][0][field]=value
             with self.subTest(field=field),patch.object(GatewayClient,'request',return_value=snapshot):
                 with self.assertRaises(GatewayError):GatewayClient().snapshot()
@@ -56,6 +56,12 @@ class GatewayContractTests(unittest.TestCase):
         duplicate=copy.deepcopy(original);duplicate['positions']*=2
         with patch.object(GatewayClient,'request',return_value=duplicate):
             with self.assertRaises(GatewayError):GatewayClient().snapshot()
+
+    def test_heading_is_optional_for_gateways_without_heading_support(self):
+        snapshot=self.snapshot()
+        for key in ('heading_deg','heading_source','heading_at'):del snapshot['positions'][0][key]
+        with patch.object(GatewayClient,'request',return_value=snapshot):
+            self.assertNotIn('heading_deg',GatewayClient().snapshot()['positions'][0])
 
     def test_new_adapter_name_needs_no_application_enum_change(self):
         snapshot=self.snapshot();snapshot['protocols'].append('future-adapter')

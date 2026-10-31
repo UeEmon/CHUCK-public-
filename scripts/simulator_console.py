@@ -241,10 +241,10 @@ class Console:
                 received = self.received.get(s['id'])
                 stations.append(dict(
                     id=s['id'], name=s['name'], kind=s['kind'], transport=s['transport'], lat=s['lat'], lon=s['lon'],
-                    speed_knots=s['speed_knots'], course_deg=s['course_deg'], altitude_m=s.get('altitude_m'),
+                    speed_knots=s['speed_knots'], course_deg=s['course_deg'], heading_deg=jig.heading(s), altitude_m=s.get('altitude_m'),
                     active=s['active'], last=s['last'], sent=s['sent'], track=s['track'],
                     key_ready=bool(s.get('stream_key')) if s['transport'] in ('tcp', 'udp') else None,
-                    received=dict(lat=received['lat'], lon=received['lon'], observed_at=received['observed_at'],
+                    received=dict(lat=received['lat'], lon=received['lon'], observed_at=received['observed_at'], heading_deg=received.get('heading_deg'),
                                   age_seconds=round(now - jig.parse_iso(received['observed_at']), 1), stale=received['stale']) if received else None))
             return dict(running=self.running, interval=self.interval, busy=self.busy, log=list(self.log), check=self.check_results,
                         stations=stations, received_error=self.received_error,

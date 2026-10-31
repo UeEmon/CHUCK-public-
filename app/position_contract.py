@@ -63,6 +63,10 @@ def validate_snapshot(snapshot):
             if key not in p: raise InputError('共通位置フィールドが不足しています: '+key)
             if p[key] is not None: numeric(p[key],key,low,high)
         if p['course_deg'] is not None and p['course_deg']>=360: raise InputError('針路は360未満です')
+        # Optional since gateways before heading support do not send it.
+        if p.get('heading_deg') is not None:
+            numeric(p['heading_deg'],'heading_deg',0,360)
+            if p['heading_deg']>=360: raise InputError('船首方位は360未満です')
         if p.get('altitude_reference') not in ('unknown','msl','wgs84_ellipsoid','pressure'): raise InputError('高度基準が不正です')
         observed=utc(p.get('observed_at'))[0];expires=utc(p.get('expires_at'))[0];utc(p.get('received_at'))
         if abs(expires-observed-snapshot['max_age_seconds'])>0.01: raise InputError('観測時刻と有効期限が一致しません')
@@ -86,6 +90,11 @@ def has_references(data):
         for key in ('rx_sites','mesh_sites'))
 
 
+def hull_direction(p):
+    """Direction a hull-fixed antenna turns with: true heading when reported, else course over ground."""
+    return p['heading_deg'] if p.get('heading_deg') is not None else p.get('course_deg')
+
+
 def apply_snapshot(data, snapshot, now=None):
     now=time.time() if now is None else now
     data=copy.deepcopy(data)
@@ -103,11 +112,11 @@ def apply_snapshot(data, snapshot, now=None):
         if prefix+'_position' in data:
             p=resolve(data[prefix+'_position'])
             data[prefix+'_lat'],data[prefix+'_lon']=p['lat'],p['lon'];inputs[prefix]=p
-            # The reported course replaces any typed one; a report without course clears it.
-            data[prefix+'_course_deg']=p.get('course_deg')
+            # The reported heading (else course) replaces any typed one; a report without either clears it.
+            data[prefix+'_course_deg']=hull_direction(p)
     for key,label in (('rx_sites','rx_site_'),('mesh_sites','mesh_site_')):
         if isinstance(data.get(key),list):
             for i,site in enumerate(data[key]):
                 if isinstance(site,dict) and 'position_ref' in site:
-                    p=resolve(site['position_ref']);site.update(lat=p['lat'],lon=p['lon'],course_deg=p.get('course_deg'));inputs[label+str(i+1)]=p
+                    p=resolve(site['position_ref']);site.update(lat=p['lat'],lon=p['lon'],course_deg=hull_direction(p));inputs[label+str(i+1)]=p
     return data,inputs

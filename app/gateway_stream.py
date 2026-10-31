@@ -4,8 +4,8 @@ Devices that stream plain NMEA (GPS receivers, marine multiplexers, AVL units)
 cannot send an HTTP Bearer token. A sender is authorized either by a per-station
 stream key sent as the first line (TCP: once per connection, UDP: first line of
 each datagram), or, on closed networks, by the sender IP address registered on
-a station without a key. Only RMC sentences are stored; other sentences are
-counted and skipped.
+a station without a key. RMC fixes and HDT/HDG/THS headings are stored; other
+sentences are counted and skipped.
 """
 import re
 import socket
@@ -31,7 +31,7 @@ class StreamStats:
     def __init__(self):
         self.lock = threading.Lock()
         self.listeners = {}
-        self.counts = dict(accepted=0, ignored=0, skipped=0, rejected=0, unauthorized=0, rate_limited=0)
+        self.counts = dict(accepted=0, headings=0, ignored=0, skipped=0, rejected=0, unauthorized=0, rate_limited=0)
         self.connections = 0
         self.last_error = None
         self.windows = {}
@@ -113,6 +113,7 @@ def handle_line(server, station, peer, line):
     stats.add('accepted', result.get('accepted', 0))
     stats.add('ignored', result.get('ignored_old_or_equal', 0))
     stats.add('skipped', result.get('skipped', 0))
+    stats.add('headings', result.get('headings', 0))
 
 
 class _TCPHandler(socketserver.StreamRequestHandler):

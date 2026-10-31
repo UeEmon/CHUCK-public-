@@ -60,7 +60,7 @@ docker compose logs --tail=100 -f
 
 GIRO는 기본 비활성화입니다. 이용 조건을 충족하거나 필요한 허가를 받은 경우에만 공개 데이터 수집 컨테이너의 관리 화면(`http://localhost:18084/`, `.env`의 `HF_PUBLIC_DATA_UI_PASSWORD`로 로그인)에서 활성화하십시오. 비활성 상태에서는 GIRO에 연결하지 않습니다.
 
-독립 게이트웨이(기본 **http://localhost:18083**)는 국별 JSON·GeoJSON·NMEA 0183 RMC를 수신하고 본체와 HTTP(S)/공통 JSON v1으로 연결합니다. 수신한 이동국을 위치 프리셋으로 등록할 수 있습니다. 계산마다 위치를 고정하며 이동 경로·고도 효과는 계산하지 않습니다. `HF_POSITION_INGEST_TOKEN`과 `HF_POSITION_GATEWAY_TOKEN`에 서로 다른 32자 이상 비밀값을 설정하십시오. 웹 관리 화면에는 추가로 16자 이상의 `HF_GATEWAY_UI_PASSWORD`가 필요합니다. [위치 입력](docs/POSITION_INTERFACE.md), [연결 프로토콜](docs/GATEWAY_PROTOCOL.md), [게이트웨이 웹](docs/GATEWAY_WEB_UI.md)을 참조하십시오.
+독립 게이트웨이(기본 **http://localhost:18083**)는 국별 JSON·GeoJSON·NMEA 0183 RMC(선체 고정 안테나 방향용 HDT·HDG·THS 선수 방위 포함)를 수신하고 본체와 HTTP(S)/공통 JSON v1으로 연결합니다. 수신한 이동국을 위치 프리셋으로 등록할 수 있습니다. 계산마다 위치를 고정하며 이동 경로·고도 효과는 계산하지 않습니다. `HF_POSITION_INGEST_TOKEN`과 `HF_POSITION_GATEWAY_TOKEN`에 서로 다른 32자 이상 비밀값을 설정하십시오. 웹 관리 화면에는 추가로 16자 이상의 `HF_GATEWAY_UI_PASSWORD`가 필요합니다. [위치 입력](docs/POSITION_INTERFACE.md), [연결 프로토콜](docs/GATEWAY_PROTOCOL.md), [게이트웨이 웹](docs/GATEWAY_WEB_UI.md)을 참조하십시오.
 
 안테나 카탈로그 OCR은 OpenAI·Claude·Gemini·로컬 LLM(Ollama/OpenAI 호환), 모델 조회·선택과 키 설정을 지원합니다. 키는 환경 변수나 저장 설정에서 불러오며 자동 발급하지 않습니다. 저장 키는 디스크에서 암호화되지 않습니다. 클라우드 전송에는 명시적 동의가 필요합니다. 로컬 OCR은 이미지만 지원하므로 PDF 페이지를 먼저 이미지로 변환하십시오. 원본·근거·모델 가정을 확인한 후 등록하십시오. [AI 설정·키 발급 절차](docs/AI_SETTINGS.md), [OCR](docs/ANTENNA_OCR.md), [안테나 모델](docs/ANTENNA_PRESETS.md)을 참조하십시오.
 

@@ -6,7 +6,7 @@ HTTPS終端は遠隔配置時の前段で行い、Compose内は専用サービ�
 
 | 区間 | 形式・責任 |
 |---|---|
-| 外部局とゲートウェイ | 局別にJSON / GeoJSON / NMEA 0183 RMCを選択。伝送はHTTP(S)。NMEA 0183はTCP・UDP（局ごとの受信キー、閉域網では送信元IPで識別）でも受信可 |
+| 外部局とゲートウェイ | 局別にJSON / GeoJSON / NMEA 0183（RMC、船首方位はHDT・HDG・THS）を選択。伝送はHTTP(S)。NMEA 0183はTCP・UDP（局ごとの受信キー、閉域網では送信元IPで識別）でも受信可 |
 | ゲートウェイ内部 | 入力アダプターでWGS84・UTC・共通単位へ正規化、局設定・順序逆転・品質を検査、最新DBへ保存 |
 | ゲートウェイと本体 | 以下のinternal/v1 APIで共通JSONのみを交換 |
 | 本体 | 共通レコードの妥当性・鮮度を検査し、固定座標としてVOACAPへ渡す。外部センテンスを解析しない |
@@ -63,9 +63,13 @@ ComposeのhealthcheckはDB生存確認のみで、連接トークンの正しさ
 | prediction_compatible | 緯度±89°のエンジン範囲内かの真偽値 |
 | speed_knots | 対地速度kt、0〜3000またはnull |
 | course_deg | 真方位の対地針路、0以上360未満またはnull |
+| heading_deg | 真方位の船首方位（船首・機首の向き）、0以上360未満またはnull。NMEAのHDT・HDG・THSは位置TTL以内に受信したものだけ。省略可（船首方位に未対応のゲートウェイ） |
+| heading_source / heading_at | 船首方位の来歴（json / geojson / HDT / HDG / THS）と時刻（JSON・GeoJSONは観測時刻、NMEAはゲートウェイ受信時刻）。船首方位がなければnull |
 | altitude_m | 高度m、−1000〜100000またはnull |
 | altitude_reference | unknown / msl / wgs84_ellipsoid / pressure。自動変換しない |
 | protocol | 入力形式の来歴。座標の並びや単位はこの値に依存させない |
+
+主放射方向を「自局の船首方位に合わせる（移動局）」にしたアンテナは、heading_degがあればそれを、なければcourse_degを基準方向に使います。
 
 欠測値はnull、0は有効値です。NaN/Infinity/数値文字列/真偽値座標を禁止します。
 同じsource/idの重複レコード、期限の不整合、型・範囲の違反、未対応schema_versionは本体が503で拒否。
