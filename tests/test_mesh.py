@@ -4,8 +4,8 @@ from pathlib import Path
 import unittest
 from unittest.mock import Mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'app'))
-from mesh import prepare, predict
-from engine import InputError, validate
+from mesh import prepare, predict, pair
+from engine import InputError, validate, beam_azimuth
 from position_contract import apply_snapshot, has_references
 
 
@@ -95,10 +95,19 @@ class MeshTests(unittest.TestCase):
         data = copy.deepcopy(self.data)
         data['mesh_sites'][2]['position_ref'] = dict(source='gw', id='ship')
         self.assertTrue(has_references(data))
-        snapshot = dict(positions=[dict(source='gw', id='ship', lat=20, lon=140, stale=False,
+        snapshot = dict(positions=[dict(source='gw', id='ship', lat=20, lon=140, stale=False, course_deg=45,
                                         expires_at='2999-01-01T00:00:00Z', prediction_compatible=True)])
         resolved, inputs = apply_snapshot(data, snapshot)
         self.assertEqual((resolved['mesh_sites'][2]['lat'], resolved['mesh_sites'][2]['lon']), (20, 140))
+        self.assertEqual(resolved['mesh_sites'][2]['course_deg'], 45)
+        # A node antenna fixed to the hull turns with the reported course.
+        resolved['mesh_sites'][2].update(antenna='dipole', length_m=20, azimuth_deg=0, azimuth_mode='heading')
+        sites = prepare(resolved)
+        self.assertEqual(sites[2]['course_deg'], 45)
+        q = pair(validate(dict(resolved, tx_lat=sites[0]['lat'], tx_lon=sites[0]['lon'], rx_lat=sites[1]['lat'], rx_lon=sites[1]['lon'])), sites[2], sites[0])
+        self.assertEqual(beam_azimuth(q, 'tx'), 45)
+        resolved['mesh_sites'][2].pop('course_deg')
+        with self.assertRaises(InputError): prepare(resolved)
         self.assertIn('mesh_site_3', inputs)
         self.assertEqual(data['mesh_sites'][2]['lat'], 13.45)
 

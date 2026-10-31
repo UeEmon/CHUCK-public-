@@ -10854,5 +10854,86 @@ const HF_MESSAGES={
     "O IP do emissor e a chave TCP/UDP só podem ser definidos em estações NMEA 0183",
     "Absender-IP und TCP/UDP-Schlüssel können nur bei NMEA-0183-Stationen gesetzt werden",
     "TCP·UDP 송신원 IP 주소와 수신 키는 NMEA 0183 국에만 설정할 수 있습니다"
+  ],
+  "自局の針路に合わせる（移動局）": [
+    "Follow own course (mobile station)",
+    "Suivre le cap de la station (mobile)",
+    "Seguir el rumbo propio (estación móvil)",
+    "Segui la rotta propria (stazione mobile)",
+    "Seguir o rumo próprio (estação móvel)",
+    "Eigenem Kurs folgen (mobile Station)",
+    "자국 침로에 맞춤 (이동국)"
+  ],
+  "主放射方位 °（真北基準。針路に合わせる場合は船首・機首から右回り）": [
+    "Main-beam bearing ° (true north; clockwise from bow/nose when following course)",
+    "Azimut du lobe ° (nord vrai ; sens horaire depuis l’étrave/le nez en suivant le cap)",
+    "Azimut principal ° (norte verdadero; en sentido horario desde proa/morro al seguir el rumbo)",
+    "Azimut principale ° (nord vero; in senso orario da prua/muso se segue la rotta)",
+    "Azimute principal ° (norte verdadeiro; sentido horário a partir da proa/nariz ao seguir o rumo)",
+    "Hauptstrahlrichtung ° (geografisch Nord; bei Kursbezug im Uhrzeigersinn ab Bug/Nase)",
+    "주 방사 방위 ° (진북 기준. 침로에 맞추는 경우 선수·기수에서 시계 방향)"
+  ],
+  "針路基準": [
+    "relative to course",
+    "relatif au cap",
+    "relativo al rumbo",
+    "relativo alla rotta",
+    "relativo ao rumo",
+    "relativ zum Kurs",
+    "침로 기준"
+  ],
+  "針路 / 速力": [
+    "Course / speed",
+    "Cap / vitesse",
+    "Rumbo / velocidad",
+    "Rotta / velocità",
+    "Rumo / velocidade",
+    "Kurs / Fahrt",
+    "침로 / 속력"
+  ],
+  "針路に合わせるアンテナには、針路を含む移動局の位置情報が必要です": [
+    "An antenna that follows the course needs a mobile-station position that includes the course",
+    "Une antenne qui suit le cap nécessite une position de station mobile comportant le cap",
+    "Una antena que sigue el rumbo necesita una posición de estación móvil que incluya el rumbo",
+    "Un’antenna che segue la rotta richiede una posizione di stazione mobile con la rotta",
+    "Uma antena que segue o rumo precisa de uma posição de estação móvel que inclua o rumo",
+    "Eine kursbezogene Antenne braucht eine Position einer mobilen Station mit Kursangabe",
+    "침로에 맞추는 안테나에는 침로가 포함된 이동국 위치 정보가 필요합니다"
+  ],
+  "RX1のアンテナは全格子点で、RX1の針路を基準にした向きのままです": [
+    "At every grid point, RX1's antenna keeps the orientation based on RX1's course",
+    "À chaque point de grille, l’antenne de RX1 garde l’orientation fondée sur le cap de RX1",
+    "En todos los puntos de la cuadrícula, la antena de RX1 mantiene la orientación basada en el rumbo de RX1",
+    "In ogni punto della griglia l’antenna di RX1 mantiene l’orientamento basato sulla rotta di RX1",
+    "Em todos os pontos da grade, a antena de RX1 mantém a orientação baseada no rumo de RX1",
+    "An allen Gitterpunkten behält die Antenne von RX1 die Ausrichtung nach dem Kurs von RX1",
+    "모든 격자점에서 RX1 안테나는 RX1 침로 기준 방향을 유지합니다"
+  ],
+  "azimuth_mode: fixed/path/headingで指定してください": [
+    "azimuth_mode: use fixed, path or heading",
+    "azimuth_mode : utilisez fixed, path ou heading",
+    "azimuth_mode: use fixed, path o heading",
+    "azimuth_mode: usa fixed, path o heading",
+    "azimuth_mode: use fixed, path ou heading",
+    "azimuth_mode: fixed, path oder heading angeben",
+    "azimuth_mode: fixed/path/heading으로 지정하세요"
+  ],
+  "移動局の針路をアンテナの向きに反映": [
+    "Mobile-station course applied to antenna orientation",
+    "Cap des stations mobiles appliqué à l’orientation de l’antenne",
+    "Rumbo de las estaciones móviles aplicado a la orientación de la antena",
+    "Rotta delle stazioni mobili applicata all’orientamento dell’antenna",
+    "Rumo das estações móveis aplicado à orientação da antena",
+    "Kurs mobiler Stationen für die Antennenausrichtung",
+    "이동국 침로를 안테나 방향에 반영"
+  ],
+  "アンテナプリセットの主放射方向に「自局の針路に合わせる（移動局）」を追加しました。船舶・航空機・車両に固定した指向性アンテナや利得表の向きを、位置ゲートウェイから届く針路（対地針路）を基準に、船首・機首から右回りの角度で指定できます。予測のたびに最新の針路で向きを計算します。位置受信の一覧には針路と速力も表示します。": [
+    "The main-beam setting of antenna presets now offers “Follow own course (mobile station)”. For a directional antenna or gain table fixed to a vessel, aircraft or vehicle, set the angle clockwise from the bow or nose, and the orientation follows the course (over ground) received through the position gateway. Each prediction uses the latest course. The received positions list also shows course and speed.",
+    "Le réglage du lobe principal des préréglages d’antenne propose désormais « Suivre le cap de la station (mobile) ». Pour une antenne directive ou une table de gain fixée sur un navire, un aéronef ou un véhicule, indiquez l’angle dans le sens horaire depuis l’étrave ou le nez ; l’orientation suit le cap (fond) reçu par la passerelle de positions. Chaque prévision utilise le dernier cap. La liste des positions reçues affiche aussi le cap et la vitesse.",
+    "El ajuste del lóbulo principal de los preajustes de antena ofrece ahora «Seguir el rumbo propio (estación móvil)». Para una antena directiva o una tabla de ganancia fija a un buque, aeronave o vehículo, indique el ángulo en sentido horario desde la proa o el morro, y la orientación sigue el rumbo (sobre el fondo) recibido por la pasarela de posiciones. Cada predicción usa el rumbo más reciente. La lista de posiciones recibidas también muestra rumbo y velocidad.",
+    "L’impostazione del lobo principale dei preset d’antenna offre ora «Segui la rotta propria (stazione mobile)». Per un’antenna direttiva o una tabella di guadagno fissata a nave, aeromobile o veicolo, indica l’angolo in senso orario da prua o muso: l’orientamento segue la rotta (sul fondo) ricevuta dal gateway delle posizioni. Ogni previsione usa la rotta più recente. L’elenco delle posizioni ricevute mostra anche rotta e velocità.",
+    "A configuração do lóbulo principal dos predefinidos de antena oferece agora «Seguir o rumo próprio (estação móvel)». Para uma antena diretiva ou tabela de ganho fixa a um navio, aeronave ou veículo, indique o ângulo no sentido horário a partir da proa ou do nariz, e a orientação segue o rumo (sobre o fundo) recebido pelo gateway de posições. Cada previsão usa o rumo mais recente. A lista de posições recebidas também mostra rumo e velocidade.",
+    "Die Hauptstrahlrichtung von Antennenvorlagen bietet jetzt „Eigenem Kurs folgen (mobile Station)“. Für eine Richtantenne oder Gewinntabelle, die an einem Schiff, Luftfahrzeug oder Fahrzeug befestigt ist, geben Sie den Winkel im Uhrzeigersinn ab Bug oder Nase an; die Ausrichtung folgt dem über das Positions-Gateway empfangenen Kurs über Grund. Jede Vorhersage verwendet den neuesten Kurs. Die Liste der empfangenen Positionen zeigt auch Kurs und Fahrt.",
+    "안테나 프리셋의 주 방사 방향에 「자국 침로에 맞춤 (이동국)」을 추가했습니다. 선박·항공기·차량에 고정된 지향성 안테나나 이득표의 방향을 선수·기수에서 시계 방향 각도로 지정하면, 위치 게이트웨이로 받은 침로(대지 침로)를 기준으로 계산합니다. 예측할 때마다 최신 침로를 사용합니다. 위치 수신 목록에도 침로와 속력을 표시합니다."
   ]
 };

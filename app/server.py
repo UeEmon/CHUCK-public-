@@ -153,6 +153,8 @@ def coverage_region(p, extra, size):
 def coverage_notes(p):
     if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='path':
         return ['RX1のアンテナは全格子点で、RX1からTXへの方位に向けています']
+    if p['rx_antenna'] in DIRECTIONAL_ANTENNAS and p.get('rx_azimuth_mode')=='heading':
+        return ['RX1のアンテナは全格子点で、RX1の針路を基準にした向きのままです']
     return []
 
 def coverage(p, extra, job=None):
@@ -426,7 +428,7 @@ class Handler(BaseHTTPRequestHandler):
             sites,independent=diversity.prepare(data) if path=='/api/diversity' else (None,False)
             if sites:
                 first=sites[0]
-                data=dict(data,rx_lat=first['lat'],rx_lon=first['lon'],rx_antenna=first['antenna'],rx_gain=first['gain'],noise=first['noise'])
+                data=dict(data,rx_lat=first['lat'],rx_lon=first['lon'],rx_antenna=first['antenna'],rx_gain=first['gain'],noise=first['noise'],rx_course_deg=first.get('course_deg'))
                 data.update({'rx_'+key:first[key] for key in __import__('engine').ANTENNA_FIELDS})
             nodes=mesh.prepare(data) if path=='/api/mesh' else None
             candidates,site_mode=site_search.prepare(data) if path=='/api/sites' else (None,None)

@@ -14,7 +14,8 @@ def endpoint(site, data, prefix):
     q = {prefix+'_lat': site.get('lat'), prefix+'_lon': site.get('lon'),
          prefix+'_antenna': site.get('antenna', data.get(prefix+'_antenna', 'whip')),
          prefix+'_gain': site.get('gain', data.get(prefix+'_gain', 0)),
-         prefix+'_polarization': site.get('polarization', data.get(prefix+'_polarization', 'model'))}
+         prefix+'_polarization': site.get('polarization', data.get(prefix+'_polarization', 'model')),
+         prefix+'_course_deg': site.get('course_deg')}
     q.update({prefix+'_'+key: site[key] for key in ANTENNA_FIELDS if key in site})
     return q
 
@@ -52,7 +53,7 @@ def prepare(data):
             if not isinstance(receive, dict):
                 raise InputError(name+': receiveはJSONオブジェクトで指定してください')
             q = dict(data, **endpoint(other, data, 'tx'),
-                     **endpoint(dict(receive, lat=site.get('lat'), lon=site.get('lon'),
+                     **endpoint(dict(receive, lat=site.get('lat'), lon=site.get('lon'), course_deg=site.get('course_deg'),
                                      polarization=site.get('polarization', data.get('rx_polarization', 'model'))), data, 'rx'),
                      power_w=other.get('power_w', data.get('power_w', 1000)))
             if data.get('ssn_source') in ('noaa', 'effective'): q['ssn'] = 0
@@ -63,7 +64,7 @@ def prepare(data):
             receive = dict(antenna=r['rx_antenna'], gain=r['rx_gain'], **{key: r['rx_'+key] for key in ANTENNA_FIELDS})
         sites.append(dict(id='n'+str(i+1), name=name, lat=p['tx_lat'], lon=p['tx_lon'],
                           antenna=p['tx_antenna'], gain=p['tx_gain'], noise=noise,
-                          power_w=p['power_w'], polarization=p['tx_polarization'], receive=receive,
+                          power_w=p['power_w'], polarization=p['tx_polarization'], receive=receive, course_deg=p['tx_course_deg'],
                           **{key: p['tx_'+key] for key in ANTENNA_FIELDS}))
         if 'position_ref' in site: sites[-1]['position_ref'] = site['position_ref']
     for i, a in enumerate(sites):
@@ -78,7 +79,8 @@ def pair(p, tx, rx):
     q = dict(p, power_w=tx['power_w'], noise=rx['noise'])
     for prefix, site, antenna in (('tx', tx, tx), ('rx', rx, rx.get('receive') or rx)):
         q.update({prefix+'_lat': site['lat'], prefix+'_lon': site['lon'], prefix+'_antenna': antenna['antenna'],
-                  prefix+'_gain': antenna['gain'], prefix+'_polarization': site['polarization']})
+                  prefix+'_gain': antenna['gain'], prefix+'_polarization': site['polarization'],
+                  prefix+'_course_deg': site.get('course_deg')})
         q.update({prefix+'_'+key: antenna[key] for key in ANTENNA_FIELDS})
     q = validate(q)
     q['ssn_source'] = p.get('ssn_source', 'manual')

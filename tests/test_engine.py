@@ -65,6 +65,17 @@ class CardsTests(unittest.TestCase):
         self.assertEqual(float(next(x for x in cards(omni).splitlines() if x.startswith('ANTENNA'))[63:68]),0)
         for mode in ['north',1,None]:
             with self.assertRaises(InputError):validate(dict(BASE,tx_antenna='dipole',tx_length_m=20,tx_azimuth_mode=mode))
+    def test_heading_azimuth_mode_turns_with_the_course(self):
+        q=dict(BASE,tx_antenna='dipole',tx_length_m=20,tx_azimuth_deg=90,tx_azimuth_mode='heading',tx_course_deg=300)
+        p=validate(q)
+        self.assertEqual(p['tx_course_deg'],300)
+        self.assertEqual(float(next(x for x in cards(p).splitlines() if x.startswith('ANTENNA'))[63:68]),30) # starboard beam
+        self.assertEqual(float(next(x for x in cards(validate(dict(q,tx_course_deg=10))).splitlines() if x.startswith('ANTENNA'))[63:68]),100)
+        self.assertIsNone(validate(dict(BASE))['tx_course_deg'])
+        for bad in [dict(q,tx_course_deg=None),{k:v for k,v in q.items() if k!='tx_course_deg'},dict(q,tx_course_deg=361),dict(q,tx_course_deg='x')]:
+            with self.subTest(bad=bad.get('tx_course_deg')),self.assertRaises(InputError):validate(bad)
+        # Omnidirectional antennas do not need a course.
+        self.assertEqual(validate(dict(BASE,tx_antenna='monopole',tx_length_m=10,tx_azimuth_mode='heading'))['tx_azimuth_mode'],'heading')
     def test_upstream_reference_output(self):
         raw=(Path(__file__).resolve().parents[1]/'vendor/tests/p2p/test01.out').read_text()
         result=parse_output(raw,[6.07,7.2,9.7,11.85,13.7,15.35,17.73,21.65,25.89])

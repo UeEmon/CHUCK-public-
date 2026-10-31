@@ -31,14 +31,16 @@ def prepare(data):
                  rx_antenna=site.get('antenna', data.get('rx_antenna', 'whip')),
                  rx_gain=site.get('gain', data.get('rx_gain', 0)),
                  noise=site.get('noise', data.get('noise', 150)),
-                 rx_polarization=site.get('polarization',data.get('rx_polarization','model')))
+                 rx_polarization=site.get('polarization',data.get('rx_polarization','model')),
+                 rx_course_deg=site.get('course_deg'))
         for key in ANTENNA_FIELDS:
             if key in site:q['rx_'+key]=site[key]
         if data.get('ssn_source') == 'noaa':
             q['ssn'] = 0  # Validate all sites before accessing external data.
         p = validate(q)
         sites.append(dict(id='rx'+str(i+1), name=name, lat=p['rx_lat'], lon=p['rx_lon'],
-                          antenna=p['rx_antenna'], gain=p['rx_gain'], noise=p['noise'],polarization=p['rx_polarization']))
+                          antenna=p['rx_antenna'], gain=p['rx_gain'], noise=p['noise'],polarization=p['rx_polarization'],
+                          course_deg=p['rx_course_deg']))
         sites[-1].update({key:p['rx_'+key] for key in ANTENNA_FIELDS})
         if 'position_ref' in site: sites[-1]['position_ref']=site['position_ref']
     return sites, independent
@@ -68,6 +70,7 @@ def predict(engine, p, sites, independent=False):
     for site in sites:
         q = validate(dict(p, rx_lat=site['lat'], rx_lon=site['lon'],
                           rx_antenna=site['antenna'], rx_gain=site['gain'], noise=site['noise'],rx_polarization=site.get('polarization','model'),
+                          rx_course_deg=site.get('course_deg'),
                           **{'rx_'+key:site[key] for key in ANTENNA_FIELDS if key in site}))
         q['ssn_source'] = p.get('ssn_source', 'manual')
         results.append(dict(id=site['id'], name=site['name'], **engine.run(q)))

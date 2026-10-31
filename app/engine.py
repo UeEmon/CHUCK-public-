@@ -39,7 +39,9 @@ BEAM_OFFSET_DEG={'sloping_long_wire':180}
 ANTENNA_FIELDS=('length_m','height_m','azimuth_deg','azimuth_mode','ground_permittivity','ground_conductivity','pattern_id',
                 *(field for fields in MODEL_FIELDS.values() for field in fields))
 # 'path' aims the main beam at the other end of each circuit (VOACAP beam_main = path bearing).
-AZIMUTH_MODES=('fixed','path')
+# 'heading' fixes the antenna to a mobile station's hull or airframe: azimuth_deg is then
+# relative to the station's course (0 = bow/nose, 90 = starboard), taken from its position report.
+AZIMUTH_MODES=('fixed','path','heading')
 POLARIZATIONS = ('model','vertical','horizontal','rhcp','lhcp','linear_other')
 # Emission classes follow the Radio Regulations Appendix 1 / 電波法施行規則第4条の2 notation:
 # main carrier modulation, nature of modulating signal, type of information.
@@ -111,7 +113,7 @@ def antenna_parameters(data,model,prefix=''):
                               ('ground_conductivity',.00003,5,.005)]:
         p[field]=number(data,prefix+field,lo,hi,default)
     mode=data.get(prefix+'azimuth_mode','fixed')
-    if not isinstance(mode,str) or mode not in AZIMUTH_MODES:raise InputError('azimuth_mode: fixed/pathで指定してください')
+    if not isinstance(mode,str) or mode not in AZIMUTH_MODES:raise InputError('azimuth_mode: fixed/path/headingで指定してください')
     p['azimuth_mode']=mode
     for owner,fields in MODEL_FIELDS.items():
         for field,(_,lo,hi,default) in fields.items():
@@ -171,6 +173,11 @@ def validate(data):
         p[prefix+'_antenna'] = ant
         p[prefix+'_gain'] = number(data,prefix+'_gain',-20,30,0)
         p.update({prefix+'_'+k:v for k,v in antenna_parameters(data,ant,prefix+'_').items()})
+        # Course over ground of a mobile station (true degrees), filled from its gateway position.
+        course=data.get(prefix+'_course_deg')
+        p[prefix+'_course_deg']=None if course is None else number(data,prefix+'_course_deg',0,360)%360
+        if ant in DIRECTIONAL_ANTENNAS and p[prefix+'_azimuth_mode']=='heading' and p[prefix+'_course_deg'] is None:
+            raise InputError(prefix.upper()+': 針路に合わせるアンテナには、針路を含む移動局の位置情報が必要です')
     p['year'] = number(data,'year',1900,2100,integer=True)
     p['month'] = number(data,'month',1,12,integer=True)
     for key,lo,hi,default in [('ssn',0,250,80),('power_w',1,100000,1000),('noise',100,180,150),('min_angle',0.1,45,3),('required_snr',0,99,40),('reliability',1,99,90)]:
@@ -221,6 +228,7 @@ def beam_azimuth(p,prefix):
     """Main-beam (or reference heading) bearing in true degrees; 0 for omnidirectional models."""
     if p[prefix+'_antenna'] not in DIRECTIONAL_ANTENNAS:return 0
     if p.get(prefix+'_azimuth_mode')=='path':return round(path_bearing(p,prefix),1)%360
+    if p.get(prefix+'_azimuth_mode')=='heading':return round(p[prefix+'_course_deg']+p.get(prefix+'_azimuth_deg',0),1)%360
     return p.get(prefix+'_azimuth_deg',0)
 
 def cards(p, hour=None):
