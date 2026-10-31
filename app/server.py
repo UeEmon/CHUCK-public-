@@ -15,6 +15,7 @@ import uuid
 from engine import Engine, InputError, EngineError, Cancelled, validate, number, distance, DIRECTIONAL_ANTENNAS
 
 import public_data
+import space_weather_view
 from space_weather import ENGINE_SSN_SCALE, MAX_FILE as SPACE_WEATHER_MAX_FILE, SpaceWeather, SpaceWeatherError, engine_ssn
 from observations import Observations, GIRO_STATIONS
 from effective_ssn import EffectiveSSN, EffectiveSSNError
@@ -266,6 +267,8 @@ class Handler(BaseHTTPRequestHandler):
             if path=='/api/public-data/status':
                 # Whether CHUCK reaches the fetcher; shown next to the acquisition times.
                 return self.json(200,public_data.link_status())
+            if path=='/api/space-weather/overview':
+                return self.json(200,space_weather_view.overview(SPACE_WEATHER))
             if path=='/api/public-data/export':
                 # The bundle an administrator carries from the public site to an on-premises CHUCK.
                 raw,_=public_data.request('/api/export')

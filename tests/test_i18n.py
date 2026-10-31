@@ -49,6 +49,8 @@ class LocalesTests(unittest.TestCase):
                 self.assertEqual(set(re.findall(r'\{[a-z]+\}',value)),variables,source)
         parser=Texts()
         for page in [STATIC/'index.html',STATIC.parent/'gateway_static/index.html',STATIC.parent/'public_data_static/index.html']:parser.feed(page.read_text())
+        # The space weather tab brings its own dictionary, merged into the shared one before i18n.js runs.
+        messages=load_messages('space-weather-messages.js')
         for text in parser.texts:
             if text=='日本語':continue # Language names always remain native.
             self.assertTrue(text in messages,text)
@@ -71,7 +73,7 @@ class LocalesTests(unittest.TestCase):
             self.assertTrue(text in messages,text)
 
     def test_page_dictionaries_cover_their_pages(self):
-        for page,extra in [('index.html',()),('../gateway_static/index.html',()),('../public_data_static/index.html',()),('catalog.html',('public-messages.js',)),
+        for page,extra in [('index.html',('space-weather-messages.js',)),('../gateway_static/index.html',()),('../public_data_static/index.html',()),('catalog.html',('public-messages.js',)),
                            ('support-admin.html',('support-messages.js',)),('limits-admin.html',('support-messages.js',)),('data-licenses.html',('data-licenses-messages.js',))]:
             messages=load_messages(*extra);covered=translatable(messages)
             for name in extra:
@@ -86,7 +88,7 @@ class LocalesTests(unittest.TestCase):
 
     def test_server_messages_are_translated(self):
         # Error messages and notes that the server sends to the browser are shown in the UI language.
-        covered=translatable(load_messages('public-messages.js','support-messages.js'))
+        covered=translatable(load_messages('public-messages.js','support-messages.js','space-weather-messages.js'))
         def render(node):
             if isinstance(node,ast.Constant):return node.value if isinstance(node.value,str) else 'x'
             if isinstance(node,ast.JoinedStr):return ''.join(render(v) for v in node.values)
