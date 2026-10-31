@@ -57,7 +57,7 @@ docker compose logs --tail=100 -f
 
 예측 조건·우주 기상 탭에서 NOAA(SSN/F10.7/R/S/G), D-RAP, NICT 및 선택적 GIRO를 사용합니다. 관측/발표 시각과 마지막 수집 성공 시각을 구분하며 개별·일괄 갱신할 수 있습니다. 자동 SSN은 대상 월과 정확히 일치해야 하며 만료된 값으로 조용히 대체하지 않습니다. 다른 관측값은 VOACAP 결과를 자동 보정하지 않습니다. NOAA SSN(SILSO V2 척도)은 VOACAP Online Marine과 같이 0.7배하여 계산에 사용하며, 수동 SSN과 실효 SSN은 그대로 사용합니다. [우주 기상](docs/SPACE_WEATHER.md), [국외 데이터 조사](docs/INTERNATIONAL_IONOSPHERE.md)를 참조하십시오.
 
-GIRO는 기본 비활성화입니다. 이용 조건을 충족하거나 필요한 허가를 받은 경우에만 `.env`에 `HF_GIRO_ENABLED=1`을 설정하십시오. 비활성 상태에서는 GIRO에 연결하지 않습니다.
+GIRO는 기본 비활성화입니다. 이용 조건을 충족하거나 필요한 허가를 받은 경우에만 공개 데이터 수집 컨테이너의 관리 화면(`http://localhost:18084/`, `.env`의 `HF_PUBLIC_DATA_UI_PASSWORD`로 로그인)에서 활성화하십시오. 비활성 상태에서는 GIRO에 연결하지 않습니다.
 
 독립 게이트웨이(기본 **http://localhost:18083**)는 국별 JSON·GeoJSON·NMEA 0183 RMC를 수신하고 본체와 HTTP(S)/공통 JSON v1으로 연결합니다. 수신한 이동국을 위치 프리셋으로 등록할 수 있습니다. 계산마다 위치를 고정하며 이동 경로·고도 효과는 계산하지 않습니다. `HF_POSITION_INGEST_TOKEN`과 `HF_POSITION_GATEWAY_TOKEN`에 서로 다른 32자 이상 비밀값을 설정하십시오. 웹 관리 화면에는 추가로 16자 이상의 `HF_GATEWAY_UI_PASSWORD`가 필요합니다. [위치 입력](docs/POSITION_INTERFACE.md), [연결 프로토콜](docs/GATEWAY_PROTOCOL.md), [게이트웨이 웹](docs/GATEWAY_WEB_UI.md)을 참조하십시오.
 

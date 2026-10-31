@@ -36,7 +36,7 @@ DATA.mkdir(parents=True,exist_ok=True)
 DB=DATA/'predictions.sqlite3'
 ENGINE=Engine()
 SPACE_WEATHER=SpaceWeather(DATA/'space-weather')
-OBSERVATIONS=Observations(DATA/'observations',os.environ.get('HF_GIRO_ENABLED','0')=='1')
+OBSERVATIONS=Observations(DATA/'observations',public_data.giro_enabled)
 EFFECTIVE_SSN=EffectiveSSN(ENGINE,OBSERVATIONS)
 RUN_LOCK=threading.Lock()
 
@@ -251,18 +251,21 @@ class Handler(BaseHTTPRequestHandler):
             if path=='/api/presets':
                 return self.json(200,PRESETS.snapshot())
             if path=='/api/observations':
-                return self.json(200,OBSERVATIONS.snapshot(force=parse_qs(urlparse(self.path).query).get('refresh')==['1']))
+                return self.json(200,OBSERVATIONS.snapshot())
             if path=='/api/observations/giro':
                 code=parse_qs(urlparse(self.path).query).get('station',['JR055'])[0]
                 if code not in GIRO_STATIONS: raise InputError('海外観測局が不正です')
-                return self.json(200,OBSERVATIONS.giro(code,force=parse_qs(urlparse(self.path).query).get('refresh')==['1']))
+                return self.json(200,OBSERVATIONS.giro(code))
             if path=='/api/space-weather':
                 query=parse_qs(urlparse(self.path).query)
                 now=datetime.now(timezone.utc)
                 date={k:query.get(k,[v])[0] for k,v in [('year',now.year),('month',now.month)]}
                 year=number(date,'year',1900,2100,integer=True)
                 month=number(date,'month',1,12,integer=True)
-                return self.json(200,SPACE_WEATHER.snapshot(year,month,force=query.get('refresh')==['1']))
+                return self.json(200,SPACE_WEATHER.snapshot(year,month))
+            if path=='/api/public-data/status':
+                # Whether CHUCK reaches the fetcher; shown next to the acquisition times.
+                return self.json(200,public_data.link_status())
             if path=='/api/public-data/export':
                 # The bundle an administrator carries from the public site to an on-premises CHUCK.
                 raw,_=public_data.request('/api/export')
@@ -273,7 +276,7 @@ class Handler(BaseHTTPRequestHandler):
                 date={k:query.get(k,[v])[0] for k,v in [('year',now.year),('month',now.month)]}
                 year=number(date,'year',1900,2100,integer=True)
                 month=number(date,'month',1,12,integer=True)
-                return self.json(200,EFFECTIVE_SSN.snapshot(year,month,force=query.get('refresh')==['1']))
+                return self.json(200,EFFECTIVE_SSN.snapshot(year,month))
             if path=='/api/watches':
                 return self.json(200,dict(interval_hours=WATCH_INTERVAL_HOURS,max=watch.MAX_WATCHES,note=watch.NOTE,watches=WATCHES.list()))
             if path=='/api/history':

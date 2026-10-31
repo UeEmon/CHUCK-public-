@@ -352,15 +352,6 @@ const HF_MESSAGES={
     "D-RAP nicht abgerufen. Messstationen: Lila = abgerufen, Grau = veraltet.",
     "D-RAP 미취득. 관측소: 보라=가져옴, 회색=오래됨."
   ],
-  "D-RAPは古い情報のため薄く表示。国内外の灰色観測局も古い情報です。取得ボタンで更新してください。": [
-    "D-RAP is stale and shown faded. Gray stations in Japan and abroad are also stale. Press a fetch button to refresh.",
-    "D-RAP est ancien et affiché atténué. Les stations grises au Japon et à l’étranger sont aussi anciennes. Utilisez un bouton de chargement pour actualiser.",
-    "D-RAP es antiguo y se muestra atenuado. Las estaciones grises de Japón y del extranjero también son antiguas. Pulse un botón de obtención para actualizar.",
-    "D-RAP è obsoleto e mostrato attenuato. Anche le stazioni grigie in Giappone e all’estero sono obsolete. Premi un pulsante di scaricamento per aggiornare.",
-    "D-RAP está antigo e aparece esmaecido. As estações cinza no Japão e no exterior também estão antigas. Pressione um botão de obtenção para atualizar.",
-    "D-RAP ist veraltet und blass dargestellt. Graue Messstationen in Japan und im Ausland sind ebenfalls veraltet. Zum Aktualisieren eine Abruf-Schaltfläche drücken.",
-    "D-RAP이 오래되어 흐리게 표시됩니다. 국내외 회색 관측소도 오래된 정보입니다. 가져오기 버튼으로 갱신하세요."
-  ],
   "地点と条件を確認して、計算を開始してください。": [
     "Check locations and conditions, then calculate.",
     "Vérifier les lieux et conditions, puis calculer.",
@@ -5473,15 +5464,6 @@ const HF_MESSAGES={
     "D-RAP {time} / veraltet (über 1 Stunde seit der Messung oder ungültige Zeit)",
     "D-RAP {time} / 오래됨(관측 시각에서 1시간 초과 또는 시각 오류)"
   ],
-  "{station} {time} / 古い観測値。再取得してください。": [
-    "{station} {time} / stale observation. Please fetch again.",
-    "{station} {time} / observation ancienne. Rechargez-la.",
-    "{station} {time} / observación antigua. Vuelva a obtenerla.",
-    "{station} {time} / osservazione obsoleta. Scaricala di nuovo.",
-    "{station} {time} / observação antiga. Obtenha novamente.",
-    "{station} {time} / veraltete Messung. Bitte erneut abrufen.",
-    "{station} {time} / 오래된 관측값입니다. 다시 가져오세요."
-  ],
   "HAF: 垂直伝搬で1 dB吸収の影響を受ける最高周波数（MHz）": [
     "HAF: highest frequency affected by 1 dB absorption on vertical propagation (MHz)",
     "HAF : fréquence maximale affectée par 1 dB d’absorption en propagation verticale (MHz)",
@@ -10089,5 +10071,500 @@ const HF_MESSAGES={
     "Escolha um arquivo de até 16 MB",
     "Wählen Sie eine Datei mit höchstens 16 MB",
     "16MB 이하의 파일을 지정하세요"
+  ],
+  "表示をまとめて更新": [
+    "Refresh all displays",
+    "Actualiser tous les affichages",
+    "Actualizar todas las vistas",
+    "Aggiorna tutte le visualizzazioni",
+    "Atualizar todas as exibições",
+    "Alle Anzeigen aktualisieren",
+    "표시를 한꺼번에 새로 고침"
+  ],
+  "表示を更新": [
+    "Refresh display",
+    "Actualiser l’affichage",
+    "Actualizar la vista",
+    "Aggiorna la visualizzazione",
+    "Atualizar exibição",
+    "Anzeige aktualisieren",
+    "표시 새로 고침"
+  ],
+  "公開データは取得用コンテナが定期的に取得します（NOAAの月間系列は6時間、ほかは5分ごと）。オンプレミスでは管理者が管理画面で取り込みます。画面の更新ボタンはサーバーにある最新のデータを表示し直すもので、提供元から取得し直すことはしません。取得時刻は提供元からの取得に成功した時刻で、観測・発行時刻とは異なります。": [
+    "Public data is fetched on a schedule by the fetcher container (NOAA monthly series every 6 hours, the rest every 5 minutes). On premises, an administrator uploads it on the admin page. The refresh buttons here redisplay the latest data held by the server and never fetch again from the providers. The fetch time is when the data was last fetched successfully from the provider, which differs from the observation or issue time.",
+    "Les données publiques sont récupérées régulièrement par le conteneur de récupération (séries mensuelles NOAA toutes les 6 heures, le reste toutes les 5 minutes). Sur site, un administrateur les importe sur la page d’administration. Les boutons d’actualisation réaffichent les données les plus récentes du serveur et ne les récupèrent jamais de nouveau auprès des fournisseurs. L’heure de récupération est celle de la dernière récupération réussie auprès du fournisseur ; elle diffère de l’heure d’observation ou de publication.",
+    "Los datos públicos los obtiene periódicamente el contenedor de obtención (series mensuales de NOAA cada 6 horas; el resto, cada 5 minutos). En instalaciones locales, un administrador los importa en la página de administración. Los botones de actualizar vuelven a mostrar los datos más recientes del servidor y nunca los obtienen de nuevo de los proveedores. La hora de obtención es la del último éxito al obtenerlos del proveedor y difiere de la hora de observación o publicación.",
+    "I dati pubblici vengono scaricati periodicamente dal container di download (serie mensili NOAA ogni 6 ore, il resto ogni 5 minuti). In sede, un amministratore li importa nella pagina di amministrazione. I pulsanti di aggiornamento mostrano di nuovo i dati più recenti del server e non li scaricano mai di nuovo dai fornitori. L’ora di download è quella dell’ultimo download riuscito dal fornitore e differisce dall’ora di osservazione o di emissione.",
+    "Os dados públicos são obtidos periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas; o restante a cada 5 minutos). No local, um administrador os importa na página de administração. Os botões de atualizar exibem novamente os dados mais recentes do servidor e nunca os obtêm de novo dos provedores. O horário de obtenção é o do último sucesso ao obter do provedor e difere do horário de observação ou de emissão.",
+    "Öffentliche Daten ruft der Abrufcontainer regelmäßig ab (NOAA-Monatsreihen alle 6 Stunden, alles andere alle 5 Minuten). Vor Ort lädt ein Administrator sie auf der Verwaltungsseite hoch. Die Aktualisierungsschaltflächen zeigen die neuesten Daten des Servers erneut an und rufen nie erneut bei den Anbietern ab. Die Abrufzeit ist der letzte erfolgreiche Abruf beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
+    "공개 데이터는 가져오기 컨테이너가 정기적으로 가져옵니다(NOAA 월간 계열은 6시간, 그 밖에는 5분마다). 온프레미스에서는 관리자가 관리 화면에서 가져옵니다. 화면의 새로 고침 버튼은 서버에 있는 최신 데이터를 다시 표시할 뿐이며, 제공처에서 다시 가져오지 않습니다. 취득 시각은 제공처에서 마지막으로 가져오기에 성공한 시각으로, 관측·발행 시각과 다릅니다."
+  ],
+  "表示を更新を押すと、対象月の平滑SSNと現在のR/S/Gを表示します。": [
+    "Press Refresh display to show the smoothed SSN for the target month and the current R/S/G.",
+    "Appuyez sur Actualiser l’affichage pour afficher le SSN lissé du mois cible et les R/S/G actuels.",
+    "Pulse Actualizar la vista para mostrar el SSN suavizado del mes objetivo y los R/S/G actuales.",
+    "Premi Aggiorna la visualizzazione per mostrare l’SSN smussato del mese scelto e gli R/S/G attuali.",
+    "Pressione Atualizar exibição para mostrar o SSN suavizado do mês alvo e os R/S/G atuais.",
+    "Drücken Sie „Anzeige aktualisieren“, um die geglättete SSN des Zielmonats und die aktuellen R/S/G anzuzeigen.",
+    "표시 새로 고침을 누르면 대상 월의 평활 SSN과 현재 R/S/G를 표시합니다."
+  ],
+  "国内観測・D-RAPを表示": [
+    "Show domestic observations and D-RAP",
+    "Afficher les observations japonaises et D-RAP",
+    "Mostrar observaciones de Japón y D-RAP",
+    "Mostra osservazioni giapponesi e D-RAP",
+    "Mostrar observações do Japão e D-RAP",
+    "Japanische Beobachtungen und D-RAP anzeigen",
+    "국내 관측·D-RAP 표시"
+  ],
+  "表示するとD-RAPを地図に重ね、NICTの国内4観測局を表示します。": [
+    "Showing them overlays D-RAP on the map and lists the four NICT stations in Japan.",
+    "L’affichage superpose D-RAP sur la carte et présente les quatre stations NICT au Japon.",
+    "Al mostrarlos, D-RAP se superpone al mapa y se muestran las cuatro estaciones de NICT en Japón.",
+    "La visualizzazione sovrappone D-RAP alla mappa e mostra le quattro stazioni NICT in Giappone.",
+    "Ao exibir, o D-RAP é sobreposto ao mapa e as quatro estações da NICT no Japão são mostradas.",
+    "Beim Anzeigen wird D-RAP über die Karte gelegt und die vier NICT-Stationen in Japan werden gezeigt.",
+    "표시하면 D-RAP을 지도에 겹치고 NICT 국내 4개 관측소를 표시합니다."
+  ],
+  "海外観測を表示": [
+    "Show overseas observations",
+    "Afficher les observations étrangères",
+    "Mostrar observaciones del extranjero",
+    "Mostra osservazioni estere",
+    "Mostrar observações do exterior",
+    "Auslandsbeobachtungen anzeigen",
+    "해외 관측 표시"
+  ],
+  "対象年月が変わりました。表示を更新を押してください。": [
+    "The target month changed. Press Refresh display.",
+    "Le mois cible a changé. Appuyez sur Actualiser l’affichage.",
+    "El mes objetivo cambió. Pulse Actualizar la vista.",
+    "Il mese scelto è cambiato. Premi Aggiorna la visualizzazione.",
+    "O mês alvo mudou. Pressione Atualizar exibição.",
+    "Der Zielmonat hat sich geändert. Drücken Sie „Anzeige aktualisieren“.",
+    "대상 연월이 바뀌었습니다. 표시 새로 고침을 누르세요."
+  ],
+  "表示を更新しています。": [
+    "Refreshing the display.",
+    "Actualisation de l’affichage.",
+    "Actualizando la vista.",
+    "Aggiornamento della visualizzazione.",
+    "Atualizando a exibição.",
+    "Anzeige wird aktualisiert.",
+    "표시를 새로 고치는 중입니다."
+  ],
+  "表示を更新しました。各ソースの取得状態を確認してください。": [
+    "Display refreshed. Check the status of each source.",
+    "Affichage actualisé. Vérifiez l’état de chaque source.",
+    "Vista actualizada. Revise el estado de cada fuente.",
+    "Visualizzazione aggiornata. Controlla lo stato di ogni fonte.",
+    "Exibição atualizada. Verifique o estado de cada fonte.",
+    "Anzeige aktualisiert. Prüfen Sie den Status jeder Quelle.",
+    "표시를 새로 고쳤습니다. 각 소스의 취득 상태를 확인하세요."
+  ],
+  "反映中": [
+    "In use",
+    "Utilisées",
+    "En uso",
+    "In uso",
+    "Em uso",
+    "In Verwendung",
+    "반영 중"
+  ],
+  "反映中（ファイル取り込み）": [
+    "In use (uploaded file)",
+    "Utilisées (fichier importé)",
+    "En uso (archivo importado)",
+    "In uso (file importato)",
+    "Em uso (arquivo importado)",
+    "In Verwendung (hochgeladene Datei)",
+    "반영 중(파일 가져오기)"
+  ],
+  "D-RAPは古い情報のため薄く表示。国内外の灰色観測局も古い情報です。": [
+    "D-RAP is old and shown faded. Gray domestic and overseas stations are also old.",
+    "D-RAP est ancien et affiché en transparence. Les stations grises, nationales et étrangères, sont aussi anciennes.",
+    "D-RAP es antiguo y se muestra atenuado. Las estaciones grises, nacionales y extranjeras, también son antiguas.",
+    "D-RAP è datato ed è mostrato attenuato. Anche le stazioni grigie, nazionali ed estere, sono datate.",
+    "D-RAP está desatualizado e aparece esmaecido. As estações cinzentas, nacionais e estrangeiras, também estão desatualizadas.",
+    "D-RAP ist veraltet und wird blass angezeigt. Graue in- und ausländische Stationen sind ebenfalls veraltet.",
+    "D-RAP은 오래된 정보라 흐리게 표시합니다. 회색 국내·해외 관측소도 오래된 정보입니다."
+  ],
+  "{station} {time} / 古い観測値。": [
+    "{station} {time} / Old observation.",
+    "{station} {time} / Observation ancienne.",
+    "{station} {time} / Observación antigua.",
+    "{station} {time} / Osservazione datata.",
+    "{station} {time} / Observação antiga.",
+    "{station} {time} / Veraltete Beobachtung.",
+    "{station} {time} / 오래된 관측값."
+  ],
+  "GIROの取得は無効です。公開データ取得用コンテナの管理画面で有効にすると、海外観測を表示します。": [
+    "GIRO retrieval is disabled. Enable it on the public-data fetcher admin page to show overseas observations.",
+    "La récupération GIRO est désactivée. Activez-la sur la page d’administration du conteneur de collecte des données publiques pour afficher les observations étrangères.",
+    "La obtención de GIRO está desactivada. Actívela en la página de administración del contenedor de obtención de datos públicos para mostrar las observaciones extranjeras.",
+    "L’acquisizione GIRO è disattivata. Abilitarla nella pagina di amministrazione del container di acquisizione dei dati pubblici per mostrare le osservazioni estere.",
+    "A obtenção do GIRO está desativada. Ative-a na página de administração do contêiner de obtenção de dados públicos para mostrar as observações estrangeiras.",
+    "Der GIRO-Abruf ist deaktiviert. Aktivieren Sie ihn auf der Verwaltungsseite des Abrufcontainers für öffentliche Daten, um ausländische Beobachtungen anzuzeigen.",
+    "GIRO 수집이 비활성입니다. 공개 데이터 수집 컨테이너의 관리 화면에서 활성화하면 해외 관측을 표시합니다."
+  ],
+  "公開データ取得用コンテナの管理画面でGIROの取得を有効にしてください。": [
+    "Enable GIRO retrieval on the public-data fetcher admin page.",
+    "Activez la récupération GIRO sur la page d’administration du conteneur de collecte des données publiques.",
+    "Active la obtención de GIRO en la página de administración del contenedor de obtención de datos públicos.",
+    "Abilitare l’acquisizione GIRO nella pagina di amministrazione del container di acquisizione dei dati pubblici.",
+    "Ative a obtenção do GIRO na página de administração do contêiner de obtenção de dados públicos.",
+    "Aktivieren Sie den GIRO-Abruf auf der Verwaltungsseite des Abrufcontainers für öffentliche Daten.",
+    "공개 데이터 수집 컨테이너의 관리 화면에서 GIRO 수집을 활성화하십시오."
+  ],
+  "海外観測は、公開データ取得用コンテナの管理画面でGIROの取得を有効にすると表示されます。": [
+    "Overseas observations appear once GIRO retrieval is enabled on the public-data fetcher admin page.",
+    "Les observations étrangères s’affichent une fois la récupération GIRO activée sur la page d’administration du conteneur de collecte des données publiques.",
+    "Las observaciones extranjeras se muestran cuando se activa la obtención de GIRO en la página de administración del contenedor de obtención de datos públicos.",
+    "Le osservazioni estere compaiono dopo aver abilitato l’acquisizione GIRO nella pagina di amministrazione del container di acquisizione dei dati pubblici.",
+    "As observações estrangeiras aparecem quando a obtenção do GIRO é ativada na página de administração do contêiner de obtenção de dados públicos.",
+    "Ausländische Beobachtungen erscheinen, sobald der GIRO-Abruf auf der Verwaltungsseite des Abrufcontainers für öffentliche Daten aktiviert ist.",
+    "해외 관측은 공개 데이터 수집 컨테이너의 관리 화면에서 GIRO 수집을 활성화하면 표시됩니다."
+  ],
+  "取得用コンテナの応答が不正です": [
+    "Invalid response from the fetcher container",
+    "Réponse invalide du conteneur de collecte",
+    "Respuesta no válida del contenedor de obtención",
+    "Risposta non valida dal container di acquisizione",
+    "Resposta inválida do contêiner de obtenção",
+    "Ungültige Antwort des Abrufcontainers",
+    "수집 컨테이너의 응답이 올바르지 않습니다"
+  ],
+  "giro_enabledにtrueまたはfalseを指定してください": [
+    "Set giro_enabled to true or false",
+    "Indiquez true ou false pour giro_enabled",
+    "Indique true o false en giro_enabled",
+    "Specificare true o false per giro_enabled",
+    "Informe true ou false em giro_enabled",
+    "Geben Sie für giro_enabled true oder false an",
+    "giro_enabled에 true 또는 false를 지정하십시오"
+  ],
+  "GIROの利用条件への適合を確認してください": [
+    "Confirm that your use meets the GIRO terms",
+    "Confirmez que votre usage respecte les conditions de GIRO",
+    "Confirme que su uso cumple las condiciones de GIRO",
+    "Confermare che l’uso rispetta le condizioni di GIRO",
+    "Confirme que seu uso cumpre as condições do GIRO",
+    "Bestätigen Sie, dass Ihre Nutzung die GIRO-Bedingungen erfüllt",
+    "GIRO 이용 조건에 적합한지 확인하십시오"
+  ],
+  "取得中です。しばらく待ってください。": [
+    "Retrieval in progress. Please wait.",
+    "Récupération en cours. Veuillez patienter.",
+    "Obtención en curso. Espere un momento.",
+    "Acquisizione in corso. Attendere.",
+    "Obtenção em andamento. Aguarde.",
+    "Abruf läuft. Bitte warten.",
+    "수집 중입니다. 잠시 기다려 주십시오."
+  ],
+  "1分ごとに、更新間隔を過ぎたデータを提供元から取得します。「今すぐ取得」は間隔にかかわらず全データを取得します（失敗したデータは60秒待ってから再試行します）。連携ファイルはオンプレミスのCHUCKの管理画面で取り込みます。": [
+    "Every minute, data past its refresh interval is downloaded from the provider. “Fetch now” downloads all data regardless of the interval (failed data is retried after 60 seconds). Import the link file on the admin page of the on-premises CHUCK.",
+    "Chaque minute, les données dont l’intervalle de mise à jour est dépassé sont téléchargées auprès du fournisseur. « Récupérer maintenant » télécharge toutes les données quel que soit l’intervalle (les données en échec sont retentées après 60 secondes). Importez le fichier de liaison sur la page d’administration du CHUCK sur site.",
+    "Cada minuto se descargan del proveedor los datos cuyo intervalo de actualización ha vencido. «Obtener ahora» descarga todos los datos sin importar el intervalo (los datos fallidos se reintentan tras 60 segundos). Importe el archivo de enlace en la página de administración del CHUCK local.",
+    "Ogni minuto i dati con intervallo di aggiornamento scaduto vengono scaricati dal fornitore. «Acquisisci ora» scarica tutti i dati indipendentemente dall’intervallo (i dati non riusciti vengono ritentati dopo 60 secondi). Importare il file di collegamento nella pagina di amministrazione del CHUCK on-premise.",
+    "A cada minuto, os dados com intervalo de atualização vencido são baixados do provedor. “Obter agora” baixa todos os dados independentemente do intervalo (os dados com falha são tentados novamente após 60 segundos). Importe o arquivo de vínculo na página de administração do CHUCK local.",
+    "Jede Minute werden Daten mit abgelaufenem Aktualisierungsintervall vom Anbieter abgerufen. „Jetzt abrufen“ ruft alle Daten unabhängig vom Intervall ab (fehlgeschlagene Daten werden nach 60 Sekunden erneut versucht). Importieren Sie die Verknüpfungsdatei auf der Verwaltungsseite des lokalen CHUCK.",
+    "1분마다 갱신 간격이 지난 데이터를 제공처에서 수집합니다. ‘지금 수집’은 간격과 관계없이 모든 데이터를 수집합니다(실패한 데이터는 60초 후 재시도). 연계 파일은 온프레미스 CHUCK의 관리 화면에서 가져옵니다."
+  ],
+  "GIROの利用条件": [
+    "GIRO terms of use",
+    "conditions d’utilisation de GIRO",
+    "condiciones de uso de GIRO",
+    "condizioni d’uso di GIRO",
+    "condições de uso do GIRO",
+    "GIRO-Nutzungsbedingungen",
+    "GIRO 이용 조건"
+  ],
+  "GIROの取得は有効です。": [
+    "GIRO retrieval is enabled.",
+    "La récupération GIRO est activée.",
+    "La obtención de GIRO está activada.",
+    "L’acquisizione GIRO è abilitata.",
+    "A obtenção do GIRO está ativada.",
+    "Der GIRO-Abruf ist aktiviert.",
+    "GIRO 수집이 활성입니다."
+  ],
+  "GIROの取得は無効です。": [
+    "GIRO retrieval is disabled.",
+    "La récupération GIRO est désactivée.",
+    "La obtención de GIRO está desactivada.",
+    "L’acquisizione GIRO è disattivata.",
+    "A obtenção do GIRO está desativada.",
+    "Der GIRO-Abruf ist deaktiviert.",
+    "GIRO 수집이 비활성입니다."
+  ],
+  "GIROの取得を有効にしました。次の取得から反映します。": [
+    "GIRO retrieval enabled. It takes effect from the next retrieval.",
+    "Récupération GIRO activée. Elle s’applique à partir de la prochaine récupération.",
+    "Obtención de GIRO activada. Se aplica desde la próxima obtención.",
+    "Acquisizione GIRO abilitata. Si applica dalla prossima acquisizione.",
+    "Obtenção do GIRO ativada. Vale a partir da próxima obtenção.",
+    "GIRO-Abruf aktiviert. Er gilt ab dem nächsten Abruf.",
+    "GIRO 수집을 활성화했습니다. 다음 수집부터 반영됩니다."
+  ],
+  "GIROの取得を有効にする": [
+    "Enable GIRO retrieval",
+    "Activer la récupération GIRO",
+    "Activar la obtención de GIRO",
+    "Abilita l’acquisizione GIRO",
+    "Ativar a obtenção do GIRO",
+    "GIRO-Abruf aktivieren",
+    "GIRO 수집 활성화"
+  ],
+  "GIROの取得を無効にしました。": [
+    "GIRO retrieval disabled.",
+    "Récupération GIRO désactivée.",
+    "Obtención de GIRO desactivada.",
+    "Acquisizione GIRO disattivata.",
+    "Obtenção do GIRO desativada.",
+    "GIRO-Abruf deaktiviert.",
+    "GIRO 수집을 비활성화했습니다."
+  ],
+  "GIROの取得を無効にする": [
+    "Disable GIRO retrieval",
+    "Désactiver la récupération GIRO",
+    "Desactivar la obtención de GIRO",
+    "Disattiva l’acquisizione GIRO",
+    "Desativar a obtenção do GIRO",
+    "GIRO-Abruf deaktivieren",
+    "GIRO 수집 비활성화"
+  ],
+  "HF_PUBLIC_DATA_UI_PASSWORDに16文字以上の専用パスワードを設定してください。CHUCK連携用トークンは使用しません。": [
+    "Set a dedicated password of at least 16 characters in HF_PUBLIC_DATA_UI_PASSWORD. The CHUCK link token is not used.",
+    "Définissez un mot de passe dédié d’au moins 16 caractères dans HF_PUBLIC_DATA_UI_PASSWORD. Le jeton de liaison CHUCK n’est pas utilisé.",
+    "Defina una contraseña dedicada de al menos 16 caracteres en HF_PUBLIC_DATA_UI_PASSWORD. No se usa el token de enlace de CHUCK.",
+    "Impostare una password dedicata di almeno 16 caratteri in HF_PUBLIC_DATA_UI_PASSWORD. Il token di collegamento CHUCK non viene usato.",
+    "Defina uma senha dedicada de pelo menos 16 caracteres em HF_PUBLIC_DATA_UI_PASSWORD. O token de vínculo do CHUCK não é usado.",
+    "Legen Sie in HF_PUBLIC_DATA_UI_PASSWORD ein eigenes Passwort mit mindestens 16 Zeichen fest. Das CHUCK-Verknüpfungstoken wird nicht verwendet.",
+    "HF_PUBLIC_DATA_UI_PASSWORD에 16자 이상의 전용 비밀번호를 설정하십시오. CHUCK 연계용 토큰은 사용하지 않습니다."
+  ],
+  "NOAA・NICT・GIROの公開データを定期的に取得し、CHUCKへ渡します。": [
+    "Regularly downloads public data from NOAA, NICT and GIRO and passes it to CHUCK.",
+    "Télécharge régulièrement les données publiques de NOAA, NICT et GIRO et les transmet à CHUCK.",
+    "Descarga periódicamente los datos públicos de NOAA, NICT y GIRO y los entrega a CHUCK.",
+    "Scarica periodicamente i dati pubblici di NOAA, NICT e GIRO e li passa a CHUCK.",
+    "Baixa periodicamente os dados públicos da NOAA, NICT e GIRO e os entrega ao CHUCK.",
+    "Ruft regelmäßig öffentliche Daten von NOAA, NICT und GIRO ab und übergibt sie an CHUCK.",
+    "NOAA·NICT·GIRO의 공개 데이터를 정기적으로 수집해 CHUCK에 전달합니다."
+  ],
+  "CHUCK連携": [
+    "CHUCK link",
+    "Liaison CHUCK",
+    "Enlace con CHUCK",
+    "Collegamento CHUCK",
+    "Vínculo com o CHUCK",
+    "CHUCK-Verknüpfung",
+    "CHUCK 연계"
+  ],
+  "この環境での利用が": [
+    "I have confirmed that use in this environment meets the",
+    "J’ai confirmé que l’utilisation dans cet environnement respecte les",
+    "He confirmado que el uso en este entorno cumple las",
+    "Ho confermato che l’uso in questo ambiente rispetta le",
+    "Confirmei que o uso neste ambiente cumpre as",
+    "Ich habe bestätigt, dass die Nutzung in dieser Umgebung die",
+    "이 환경에서의 이용이"
+  ],
+  "に適合することを確認しました": [
+    ".",
+    ".",
+    ".",
+    ".",
+    ".",
+    "erfüllt.",
+    "에 적합함을 확인했습니다"
+  ],
+  "ファイル連携：管理者が取り込んだ連携ファイルを使用しています。": [
+    "File link: using the link file imported by an administrator.",
+    "Liaison par fichier : utilisation du fichier de liaison importé par un administrateur.",
+    "Enlace por archivo: se usa el archivo de enlace importado por un administrador.",
+    "Collegamento tramite file: si usa il file di collegamento importato da un amministratore.",
+    "Vínculo por arquivo: usando o arquivo de vínculo importado por um administrador.",
+    "Dateiverknüpfung: Es wird die von einem Administrator importierte Verknüpfungsdatei verwendet.",
+    "파일 연계: 관리자가 가져온 연계 파일을 사용하고 있습니다."
+  ],
+  "今すぐ取得": [
+    "Fetch now",
+    "Récupérer maintenant",
+    "Obtener ahora",
+    "Acquisisci ora",
+    "Obter agora",
+    "Jetzt abrufen",
+    "지금 수집"
+  ],
+  "全データを取得しました。": [
+    "All data downloaded.",
+    "Toutes les données ont été récupérées.",
+    "Se obtuvieron todos los datos.",
+    "Tutti i dati sono stati acquisiti.",
+    "Todos os dados foram obtidos.",
+    "Alle Daten wurden abgerufen.",
+    "모든 데이터를 수집했습니다."
+  ],
+  "公開データは取得用コンテナが定期的に取得します（NOAAの月間系列は6時間、ほかは5分ごと）。オンプレミスでは管理者が管理画面で取り込みます。この画面は開いたときと5分ごとに、サーバーにある最新のデータを自動で表示します。取得時刻は提供元からの取得に成功した時刻で、観測・発行時刻とは異なります。": [
+    "Public data is downloaded regularly by the fetcher container (NOAA monthly series every 6 hours, others every 5 minutes). On premises, an administrator imports it on the admin page. This screen automatically shows the latest data on the server when opened and every 5 minutes. The acquisition time is when the download from the provider succeeded, which differs from the observation or issue time.",
+    "Les données publiques sont téléchargées régulièrement par le conteneur de collecte (séries mensuelles NOAA toutes les 6 heures, les autres toutes les 5 minutes). Sur site, un administrateur les importe sur la page d’administration. Cet écran affiche automatiquement les dernières données du serveur à l’ouverture et toutes les 5 minutes. L’heure d’acquisition est celle du téléchargement réussi auprès du fournisseur, distincte de l’heure d’observation ou de publication.",
+    "El contenedor de obtención descarga periódicamente los datos públicos (series mensuales de NOAA cada 6 horas, el resto cada 5 minutos). En entornos locales, un administrador los importa en la página de administración. Esta pantalla muestra automáticamente los datos más recientes del servidor al abrirse y cada 5 minutos. La hora de obtención es cuando la descarga del proveedor tuvo éxito y difiere de la hora de observación o emisión.",
+    "I dati pubblici vengono scaricati periodicamente dal container di acquisizione (serie mensili NOAA ogni 6 ore, gli altri ogni 5 minuti). On-premise, un amministratore li importa nella pagina di amministrazione. Questa schermata mostra automaticamente i dati più recenti del server all’apertura e ogni 5 minuti. L’ora di acquisizione è quella del download riuscito dal fornitore, diversa dall’ora di osservazione o emissione.",
+    "Os dados públicos são baixados periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas, os demais a cada 5 minutos). Em ambiente local, um administrador os importa na página de administração. Esta tela mostra automaticamente os dados mais recentes do servidor ao abrir e a cada 5 minutos. O horário de obtenção é quando o download do provedor teve êxito, diferente do horário de observação ou emissão.",
+    "Öffentliche Daten werden regelmäßig vom Abrufcontainer abgerufen (NOAA-Monatsreihen alle 6 Stunden, andere alle 5 Minuten). Lokal importiert ein Administrator sie auf der Verwaltungsseite. Diese Ansicht zeigt beim Öffnen und alle 5 Minuten automatisch die neuesten Daten des Servers. Die Abrufzeit ist der Zeitpunkt des erfolgreichen Abrufs beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
+    "공개 데이터는 수집 컨테이너가 정기적으로 수집합니다(NOAA 월간 계열은 6시간, 그 외는 5분마다). 온프레미스에서는 관리자가 관리 화면에서 가져옵니다. 이 화면은 열 때와 5분마다 서버의 최신 데이터를 자동으로 표시합니다. 수집 시각은 제공처에서 수집에 성공한 시각으로, 관측·발행 시각과 다릅니다."
+  ],
+  "公開データ取得用コンテナの管理": [
+    "Public-data fetcher administration",
+    "Administration du conteneur de collecte des données publiques",
+    "Administración del contenedor de obtención de datos públicos",
+    "Amministrazione del container di acquisizione dei dati pubblici",
+    "Administração do contêiner de obtenção de dados públicos",
+    "Verwaltung des Abrufcontainers für öffentliche Daten",
+    "공개 데이터 수집 컨테이너 관리"
+  ],
+  "{value} 分": [
+    "{value} min",
+    "{value} min",
+    "{value} min",
+    "{value} min",
+    "{value} min",
+    "{value} Min.",
+    "{value}분"
+  ],
+  "取得できなかったデータがあります。状態を確認してください。": [
+    "Some data could not be downloaded. Check the status.",
+    "Certaines données n’ont pas pu être récupérées. Vérifiez l’état.",
+    "Algunos datos no se pudieron obtener. Compruebe el estado.",
+    "Alcuni dati non sono stati acquisiti. Controllare lo stato.",
+    "Alguns dados não puderam ser obtidos. Verifique o status.",
+    "Einige Daten konnten nicht abgerufen werden. Prüfen Sie den Status.",
+    "수집하지 못한 데이터가 있습니다. 상태를 확인하십시오."
+  ],
+  "取得済み": [
+    "Downloaded",
+    "Récupéré",
+    "Obtenido",
+    "Acquisito",
+    "Obtido",
+    "Abgerufen",
+    "수집됨"
+  ],
+  "取得用コンテナとのAPI連携：接続できません": [
+    "API link with the fetcher container: cannot connect",
+    "Liaison API avec le conteneur de collecte : connexion impossible",
+    "Enlace API con el contenedor de obtención: no se puede conectar",
+    "Collegamento API con il container di acquisizione: connessione non riuscita",
+    "Vínculo por API com o contêiner de obtenção: sem conexão",
+    "API-Verknüpfung mit dem Abrufcontainer: keine Verbindung",
+    "수집 컨테이너와의 API 연계: 연결할 수 없음"
+  ],
+  "取得用コンテナとのAPI連携：接続中": [
+    "API link with the fetcher container: connected",
+    "Liaison API avec le conteneur de collecte : connecté",
+    "Enlace API con el contenedor de obtención: conectado",
+    "Collegamento API con il container di acquisizione: connesso",
+    "Vínculo por API com o contêiner de obtenção: conectado",
+    "API-Verknüpfung mit dem Abrufcontainer: verbunden",
+    "수집 컨테이너와의 API 연계: 연결됨"
+  ],
+  "取得用コンテナとの連携を確認しています。": [
+    "Checking the link with the fetcher container.",
+    "Vérification de la liaison avec le conteneur de collecte.",
+    "Comprobando el enlace con el contenedor de obtención.",
+    "Verifica del collegamento con il container di acquisizione.",
+    "Verificando o vínculo com o contêiner de obtenção.",
+    "Verknüpfung mit dem Abrufcontainer wird geprüft.",
+    "수집 컨테이너와의 연계를 확인하고 있습니다."
+  ],
+  "取得用コンテナとの連携状況を確認できません。": [
+    "Cannot check the link with the fetcher container.",
+    "Impossible de vérifier la liaison avec le conteneur de collecte.",
+    "No se puede comprobar el enlace con el contenedor de obtención.",
+    "Impossibile verificare il collegamento con il container di acquisizione.",
+    "Não é possível verificar o vínculo com o contêiner de obtenção.",
+    "Die Verknüpfung mit dem Abrufcontainer kann nicht geprüft werden.",
+    "수집 컨테이너와의 연계 상태를 확인할 수 없습니다."
+  ],
+  "提供元": [
+    "Provider",
+    "Fournisseur",
+    "Proveedor",
+    "Fornitore",
+    "Provedor",
+    "Anbieter",
+    "제공처"
+  ],
+  "提供元から取得しています。": [
+    "Downloading from the providers.",
+    "Récupération auprès des fournisseurs.",
+    "Obteniendo de los proveedores.",
+    "Acquisizione dai fornitori in corso.",
+    "Obtendo dos provedores.",
+    "Abruf von den Anbietern läuft.",
+    "제공처에서 수집하고 있습니다."
+  ],
+  "更新間隔": [
+    "Refresh interval",
+    "Intervalle de mise à jour",
+    "Intervalo de actualización",
+    "Intervallo di aggiornamento",
+    "Intervalo de atualização",
+    "Aktualisierungsintervall",
+    "갱신 간격"
+  ],
+  "最後に接続できた時刻": [
+    "Last connected",
+    "Dernière connexion",
+    "Última conexión",
+    "Ultima connessione",
+    "Última conexão",
+    "Zuletzt verbunden",
+    "마지막 연결 시각"
+  ],
+  "最終取り込み": [
+    "Last import",
+    "Dernière importation",
+    "Última importación",
+    "Ultima importazione",
+    "Última importação",
+    "Letzter Import",
+    "마지막 가져오기"
+  ],
+  "有効にすると、Guam・Juliusruh・Millstone Hillの3局を5分ごとに取得し、CHUCKの海外観測と実効SSNで使えるようになります。無効にすると取得を止め、CHUCKでは海外観測を表示しません。設定は取得用コンテナのデータ領域に保存され、再起動後も保持されます。": [
+    "When enabled, the three stations Guam, Juliusruh and Millstone Hill are downloaded every 5 minutes and become available for CHUCK’s overseas observations and effective SSN. When disabled, downloading stops and CHUCK shows no overseas observations. The setting is saved in the fetcher container’s data area and kept across restarts.",
+    "Une fois activée, les trois stations Guam, Juliusruh et Millstone Hill sont récupérées toutes les 5 minutes et deviennent utilisables pour les observations étrangères et le SSN effectif de CHUCK. Désactivée, la récupération s’arrête et CHUCK n’affiche pas d’observations étrangères. Le réglage est enregistré dans la zone de données du conteneur de collecte et conservé après redémarrage.",
+    "Al activarla, las tres estaciones Guam, Juliusruh y Millstone Hill se obtienen cada 5 minutos y quedan disponibles para las observaciones extranjeras y el SSN efectivo de CHUCK. Al desactivarla, la obtención se detiene y CHUCK no muestra observaciones extranjeras. El ajuste se guarda en el área de datos del contenedor de obtención y se conserva tras reiniciar.",
+    "Se abilitata, le tre stazioni Guam, Juliusruh e Millstone Hill vengono acquisite ogni 5 minuti e diventano utilizzabili per le osservazioni estere e l’SSN effettivo di CHUCK. Se disattivata, l’acquisizione si ferma e CHUCK non mostra osservazioni estere. L’impostazione è salvata nell’area dati del container di acquisizione e mantenuta dopo il riavvio.",
+    "Quando ativada, as três estações Guam, Juliusruh e Millstone Hill são obtidas a cada 5 minutos e ficam disponíveis para as observações estrangeiras e o SSN efetivo do CHUCK. Quando desativada, a obtenção para e o CHUCK não mostra observações estrangeiras. A configuração é salva na área de dados do contêiner de obtenção e mantida após reiniciar.",
+    "Wenn aktiviert, werden die drei Stationen Guam, Juliusruh und Millstone Hill alle 5 Minuten abgerufen und stehen für CHUCKs ausländische Beobachtungen und die effektive SSN zur Verfügung. Wenn deaktiviert, stoppt der Abruf und CHUCK zeigt keine ausländischen Beobachtungen. Die Einstellung wird im Datenbereich des Abrufcontainers gespeichert und bleibt nach einem Neustart erhalten.",
+    "활성화하면 Guam·Juliusruh·Millstone Hill 3개 관측소를 5분마다 수집해 CHUCK의 해외 관측과 실효 SSN에 사용할 수 있습니다. 비활성화하면 수집을 멈추고 CHUCK에서 해외 관측을 표시하지 않습니다. 설정은 수집 컨테이너의 데이터 영역에 저장되어 재시작 후에도 유지됩니다."
+  ],
+  "確認": [
+    "checked",
+    "vérifié",
+    "comprobado",
+    "verificato",
+    "verificado",
+    "geprüft",
+    "확인"
+  ],
+  "連携ファイルは未取り込みです。": [
+    "No link file has been imported.",
+    "Aucun fichier de liaison n’a été importé.",
+    "No se ha importado ningún archivo de enlace.",
+    "Nessun file di collegamento è stato importato.",
+    "Nenhum arquivo de vínculo foi importado.",
+    "Es wurde noch keine Verknüpfungsdatei importiert.",
+    "연계 파일을 아직 가져오지 않았습니다."
+  ],
+  "連携ファイルをダウンロード": [
+    "Download link file",
+    "Télécharger le fichier de liaison",
+    "Descargar archivo de enlace",
+    "Scarica il file di collegamento",
+    "Baixar arquivo de vínculo",
+    "Verknüpfungsdatei herunterladen",
+    "연계 파일 다운로드"
   ]
 };

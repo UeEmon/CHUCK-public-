@@ -9,6 +9,8 @@ url, sha256).
 * File link: CHUCK runs on premises without internet (HF_PUBLIC_DATA_MODE=file).
   After every cycle the fetcher writes export/chuck-public-data.json, also
   served at GET /api/export; an administrator uploads it on the CHUCK admin page.
+
+The fetcher's own admin page (public_data_ui.py) shows the sources and turns GIRO on or off.
 """
 from datetime import datetime, timezone
 import hashlib
@@ -24,12 +26,15 @@ from urllib.parse import urlparse, parse_qs
 from urllib.request import Request, urlopen
 
 from observations import DRAP_URL, NICT_URL, GIRO_URL, GIRO_STATIONS, giro_body, parse_drap, parse_nict, parse_giro
+from public_data_ui import PublicDataUI
 from public_data import BUNDLE_FORMAT, KEY, MAX_RAW, PublicDataError, make_bundle, read_file, write_file
 from space_weather import FEEDS, ROOT, check_schema
 
 DATA = Path(os.environ.get('HF_PUBLIC_DATA_DIR', os.environ.get('DATA_DIR', './public-data')))
+# Initial GIRO setting only; the fetcher admin page saves the choice to settings.json.
 GIRO_ENABLED = os.environ.get('HF_GIRO_ENABLED', '0') == '1'
 RETRY_SECONDS = 60
+SETTINGS = 'settings.json'
 
 
 def json_check(key):
@@ -54,9 +59,29 @@ def sources(giro_enabled=None):
 class Fetcher:
     def __init__(self, directory, table=None):
         self.directory = Path(directory)
-        self.table = sources() if table is None else table
-        self.locks = {key: threading.Lock() for key in self.table}
+        self.table = sources(self.settings()['giro_enabled']) if table is None else table
+        self.locks = {key: threading.Lock() for key in sources(True)} | {key: threading.Lock() for key in self.table}
         self.retry_after = {}
+        self.errors = {}
+
+    def settings(self):
+        try:
+            value = json.loads((self.directory / SETTINGS).read_text())
+            return {'giro_enabled': value['giro_enabled'] is True}
+        except (OSError, ValueError, KeyError, TypeError):
+            return {'giro_enabled': GIRO_ENABLED}
+
+    def giro_enabled(self):
+        return any(code in self.table for code in GIRO_STATIONS)
+
+    def set_giro(self, enabled):
+        """Save the GIRO choice and start or stop downloading the GIRO stations."""
+        self.directory.mkdir(parents=True, exist_ok=True)
+        temporary = self.directory / (SETTINGS + '.tmp')
+        temporary.write_text(json.dumps({'giro_enabled': bool(enabled), 'updated_at': time.time()}))
+        temporary.replace(self.directory / SETTINGS)
+        self.table = sources(bool(enabled))
+        self.export()
 
     def meta(self, key):
         try:
@@ -70,7 +95,10 @@ class Fetcher:
 
     def fetch(self, key):
         """Download one source now; returns an error message or None. Failures keep the previous files."""
-        url, body, _, check = self.table[key]
+        entry = self.table.get(key)
+        if entry is None:
+            return '取得対象ではありません'
+        url, body, _, check = entry
         with self.locks[key]:
             now = time.time()
             if now < self.retry_after.get(key, 0):
@@ -85,8 +113,10 @@ class Fetcher:
             except Exception as e:
                 self.retry_after[key] = now + RETRY_SECONDS
                 print(f'public-data: {key} failed: {type(e).__name__}', flush=True)
-                return '提供元から取得できませんでした'
+                self.errors[key] = '提供元から取得できませんでした'
+                return self.errors[key]
             write_file(self.directory, key, raw, {'key': key, 'url': url, 'fetched_at': time.time(), 'sha256': hashlib.sha256(raw).hexdigest()})
+            self.errors.pop(key, None)
             return None
 
     def latest(self, key):
@@ -97,7 +127,9 @@ class Fetcher:
         return raw, fetched_at
 
     def bundle(self):
-        return json.dumps(make_bundle(self.directory, self.table)).encode()
+        bundle = make_bundle(self.directory, list(self.table))
+        bundle['settings'] = {'giro_enabled': self.giro_enabled()}
+        return json.dumps(bundle).encode()
 
     def export(self):
         """Write the bundle for the file link; returns its path."""
@@ -108,10 +140,10 @@ class Fetcher:
         temporary.replace(path)
         return path
 
-    def refresh_due(self):
+    def refresh_due(self, every=False):
         changed = False
-        for key in self.table:
-            if self.due(key):
+        for key in list(self.table):
+            if every or self.due(key):
                 changed = self.fetch(key) is None or changed
         if changed or not (self.directory / 'export' / (BUNDLE_FORMAT + '.json')).exists():
             self.export()
@@ -119,12 +151,12 @@ class Fetcher:
     def status(self):
         now = time.time()
         result = {}
-        for key, (url, _, ttl, _) in self.table.items():
+        for key, (url, _, ttl, _) in list(self.table.items()):
             meta = self.meta(key) or {}
             fetched = meta.get('fetched_at')
             result[key] = {'url': url, 'refresh_seconds': ttl,
                            'fetched_at': datetime.fromtimestamp(fetched, timezone.utc).isoformat() if fetched else None,
-                           'age_seconds': round(now - fetched) if fetched else None}
+                           'age_seconds': round(now - fetched) if fetched else None, 'error': self.errors.get(key)}
         return result
 
 
@@ -140,7 +172,10 @@ def loop():
         time.sleep(60)
 
 
-class Handler(BaseHTTPRequestHandler):
+class Handler(PublicDataUI, BaseHTTPRequestHandler):
+    def fetcher(self):
+        return FETCHER
+
     def send(self, code, body, kind, headers=()):
         self.send_response(code)
         self.send_header('Content-Type', kind)
@@ -172,11 +207,15 @@ class Handler(BaseHTTPRequestHandler):
             if url.path == '/api/health':
                 return self.json(200, {'ok': True, 'role': 'public-data', 'client_enabled': len(os.environ.get('HF_PUBLIC_DATA_TOKEN', '')) >= 32})
             if url.path == '/api/status':
-                if self.authorize():self.json(200, {'sources': FETCHER.status()})
+                if self.authorize():
+                    self.json(200, {'sources': FETCHER.status(), 'giro_enabled': FETCHER.giro_enabled(),
+                                    'server_time': datetime.now(timezone.utc).isoformat()})
                 return
             if url.path == '/api/export':
                 if self.authorize():
                     self.send(200, FETCHER.bundle(), 'application/json', [('Content-Disposition', f'attachment; filename="{BUNDLE_FORMAT}.json"')])
+                return
+            if self.ui_get(url.path):
                 return
             if not url.path.startswith('/api/data/'):
                 return self.json(404, {'error': '見つかりません'})
@@ -193,6 +232,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send(200, raw, 'application/octet-stream', [('X-Fetched-At', repr(fetched_at))])
         except Exception:
             __import__('traceback').print_exc();self.json(500, {'error': '読み込みに失敗しました'})
+
+    def do_POST(self):
+        if not self.ui_post(urlparse(self.path).path):
+            self.json(404, {'error': '見つかりません'})
 
 
 if __name__ == '__main__':

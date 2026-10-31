@@ -83,7 +83,7 @@
 ## GIRO / Lowell GIRO Data Center（各観測局のデータ）
 
 - **使用対象**：海外局のfoF2、MUF(3000)、CS、限定符
-- **接続状況**：接続機能あり。既定無効（HF_GIRO_ENABLED=0）
+- **接続状況**：接続機能あり。既定無効（公開データ取得用コンテナの管理画面で有効化）
 - **適用条件・確認状況**：CC BY-NC-SA 4.0、およびLGDC Rules of the Road
 - **出典表示**：GIRO / Lowell GIRO Data Center and the identified station data provider. Reference: Reinisch & Galkin (2011), DOI: 10.5047/eps.2011.03.001; resource: http://spase.info/SMWG/Observatory/GIRO.
 

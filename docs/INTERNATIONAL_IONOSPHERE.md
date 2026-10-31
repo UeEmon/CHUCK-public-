@@ -4,7 +4,7 @@
 
 | ソース | 内容・形式 | 本システムへの適合と制約 |
 |---|---|---|
-| GIRO / Lowell DIDBase | 世界のイオノゾンデ観測。foF2、MUF(D)、信頼度等。既存のscaled.php応答を解析 | 現行連携済み。Guam・Juliusruh・Millstone Hillを選択可能。局ごとの欠測・自動読取品質・時刻を確認。利用条件への適合を確認してHF_GIRO_ENABLED=1を設定 |
+| GIRO / Lowell DIDBase | 世界のイオノゾンデ観測。foF2、MUF(D)、信頼度等。既存のscaled.php応答を解析 | 現行連携済み。Guam・Juliusruh・Millstone Hillを選択可能。局ごとの欠測・自動読取品質・時刻を確認。利用条件への適合を確認して公開データ取得用コンテナの管理画面で有効化 |
 | 豪州ASWFC / WDC | foF2・M(3000)F2・MUF(3000)F2等。5分値・時間値・月中央値。SCL、固定列、SAO、月別ZIP等 | 型式・単位・品質フラグが公開され、参考観測としての追加候補。autoとvalidで列順が異なり、再処理による重複・時刻の乱れあり。品質管理と重複整理が必要 |
 | 豪州Space Weather API | 登録キー付きHTTPS POST/JSON。A/K/Dst指数、磁気警報・オーロラ情報 | 確認した公開仕様にはfoF2取得メソッドがない。電離圏観測値のJSON APIと混同しない。磁気擾乱の参考指標候補 |
 | IGS Global Ionosphere Maps | GNSS由来の鉛直TEC。最終・速報・リアルタイム・予測の製品群、IONEX等 | 全球の電離圏状況表示・検証の候補。TECはfoF2やHF回線MUFとは別物で、そのままSSNや回線MUFへ代入しない。製品別の遅延・入手方法・解析センター条件を確認する必要あり |

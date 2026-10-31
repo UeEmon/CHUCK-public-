@@ -150,7 +150,8 @@ class WeatherHttpTests(unittest.TestCase):
                     with urlopen(base+'/api/space-weather?year=2026&month=10') as response:
                         self.assertEqual(json.load(response)['ssn']['value'],87.5)
                     with urlopen(base+'/api/space-weather?year=2026&month=10&refresh=1') as response:json.load(response)
-                    server.SPACE_WEATHER.snapshot.assert_called_with(2026,10,force=True)
+                    # Visitors cannot make the server fetch again; refresh=1 is ignored.
+                    server.SPACE_WEATHER.snapshot.assert_called_with(2026,10)
                     with self.assertRaises(HTTPError) as error:urlopen(base+'/api/space-weather?month=1.5')
                     self.assertEqual(error.exception.code,400)
                     payload={'tx_lat':35.3,'tx_lon':139.67,'rx_lat':13.45,'rx_lon':144.75,'year':2026,'month':10,'ssn_source':'noaa'}

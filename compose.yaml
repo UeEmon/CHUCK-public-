@@ -5,7 +5,6 @@ services:
     ports:
       - "${HF_BIND:-127.0.0.1}:${HF_PORT:-18082}:8000"
     environment:
-      HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
       # Public data (NOAA, NICT, GIRO) comes from the public-data fetcher: api when both run in the
       # public environment, file when CHUCK runs on premises. See docs/PUBLIC_DATA.md.
       HF_PUBLIC_DATA_MODE: "${HF_PUBLIC_DATA_MODE:-api}"
@@ -75,6 +74,10 @@ services:
       - "${HF_PUBLIC_DATA_BIND:-127.0.0.1}:${HF_PUBLIC_DATA_PORT:-18084}:8002"
     environment:
       HF_PUBLIC_DATA_TOKEN: "${HF_PUBLIC_DATA_TOKEN:-}"
+      # Admin page at http://localhost:18084/ (16+ characters, not the token). GIRO is switched on there;
+      # HF_GIRO_ENABLED only sets the initial choice before the page saves one.
+      HF_PUBLIC_DATA_UI_PASSWORD: "${HF_PUBLIC_DATA_UI_PASSWORD:-}"
+      HF_PUBLIC_DATA_UI_SECURE_COOKIE: "${HF_PUBLIC_DATA_UI_SECURE_COOKIE:-0}"
       HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
     volumes:
       - public-data:/data

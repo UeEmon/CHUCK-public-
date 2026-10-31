@@ -18,11 +18,17 @@ import math
 import os
 from pathlib import Path
 import re
+import threading
+import time
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, HTTPRedirectHandler, ProxyHandler, build_opener
 
 MODES = ('api', 'file')
+STATUS_SECONDS = 30
+SETTINGS = 'settings.json'
+LINK_LOCK = threading.Lock()
+LINK = {}
 MAX_RAW = 2_000_000
 MAX_BUNDLE = 16_000_000
 BUNDLE_FORMAT = 'chuck-public-data'
@@ -49,6 +55,38 @@ def directory():
 def describe():
     m = mode()
     return {'mode': m, 'url': os.environ.get('HF_PUBLIC_DATA_URL', 'http://public-data:8002') if m == 'api' else None}
+
+
+def link_status(refresh=False):
+    """Whether CHUCK reaches the fetcher, and the fetcher's settings; checked at most every 30 seconds.
+
+    In the file link the settings come from the last imported bundle."""
+    if mode() == 'file':
+        try:
+            settings = json.loads((directory() / SETTINGS).read_text())
+        except (OSError, ValueError):
+            settings = {}
+        return {'mode': 'file', 'connected': None, 'checked_at': timestamp(settings.get('imported_at')), 'error': None,
+                'giro_enabled': settings.get('giro_enabled') is True}
+    with LINK_LOCK:
+        now = time.time()
+        if refresh or not LINK or not 0 <= now - LINK['checked_at'] < STATUS_SECONDS:
+            try:
+                status = json.loads(request('/api/status')[0])
+                if not isinstance(status, dict):
+                    raise PublicDataError('取得用コンテナの応答が不正です')
+                LINK.update(connected=True, error=None, giro_enabled=status.get('giro_enabled') is True, connected_at=now)
+            except (PublicDataError, ValueError) as e:
+                # Keep the last known GIRO setting while the fetcher cannot be reached.
+                LINK.update(connected=False, error=str(e) if isinstance(e, PublicDataError) else '取得用コンテナの応答が不正です')
+                LINK.setdefault('giro_enabled', False)
+            LINK['checked_at'] = now
+        return {'mode': 'api', 'connected': LINK['connected'], 'checked_at': LINK['checked_at'], 'connected_at': LINK.get('connected_at'),
+                'error': LINK['error'], 'giro_enabled': LINK['giro_enabled']}
+
+
+def giro_enabled():
+    return link_status()['giro_enabled']
 
 
 def timestamp(value):
@@ -143,6 +181,13 @@ def import_bundle(content, folder, validators):
         result['imported'].append(key)
     if not result['imported'] and not result['skipped']:
         raise ValueError('取り込める公開データがありません')
+    settings = bundle.get('settings')
+    if isinstance(settings, dict) and isinstance(settings.get('giro_enabled'), bool):
+        # The fetcher's GIRO choice travels with the file link.
+        folder.mkdir(parents=True, exist_ok=True)
+        temporary = folder / (SETTINGS + '.tmp')
+        temporary.write_text(json.dumps({'giro_enabled': settings['giro_enabled'], 'imported_at': time.time()}))
+        temporary.replace(folder / SETTINGS)
     return result
 
 

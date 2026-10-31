@@ -65,10 +65,9 @@ function drawObservationLayers(parent){
 }
 $('show-drap').onchange=drawMap;$('show-stations').onchange=drawMap;
 $('observation-distance').onchange=renderNict;
-$('observations-refresh').onclick=async()=>{
- const button=$('observations-refresh');button.disabled=true;$('observations-status').textContent='国内観測とD-RAPを取得中…';
+async function refreshObservations(){
  try{
-  observationData=await api('/api/observations?refresh=1');const d=observationData.drap,n=observationData.nict;
+  observationData=await api('/api/observations');const d=observationData.drap,n=observationData.nict;
   $('observations-status').replaceChildren(`国内観測: ${n.data?n.data.stations.length+'局':'欠測'}${n.stale?' [古い／取得失敗]':''}。`,' ',document.createTextNode(observationData.note));
   $('drap-status').textContent=d.data?`D-RAP ${observedTime(d.data.observed_at)} / ${d.stale?'古い／取得失敗':'取得済'} / 取得 ${observedTime(d.fetched_at?new Date(d.fetched_at*1000).toISOString():null)}`:(d.error||'欠測');
   $('observation-map-legend').textContent=d.data?`D-RAP HAF: 黄＝低、赤＝高（0〜30 MHz以上）、透明＝0、灰＝欠測。${d.stale?'期限切れのため薄く表示。':''}観測局: 紫＝取得済、灰＝古い。`:'D-RAP未取得。観測局は紫＝取得済、灰＝古い。';
@@ -77,11 +76,10 @@ $('observations-refresh').onclick=async()=>{
    const a=cell('a',name+'出典');a.href=source.source_url;a.target='_blank';a.rel='noopener noreferrer';
    $('observation-sources').append(a,document.createTextNode(` 取得 ${source.fetched_at?new Date(source.fetched_at*1000).toISOString():'未取得'}${source.error?' / '+source.error:''} `));
   }
-  $('giro-refresh').disabled=!observationData.giro.enabled;
-  if(!observationData.giro.enabled)$('giro-status').textContent='GIRO接続は無効です。利用条件に適合する環境でHF_GIRO_ENABLED=1を設定して再起動すると、海外観測を取得できます。';
+  if(!observationData.giro.enabled){overseasData=null;$('giro-observations').replaceChildren();$('giro-chart').replaceChildren();$('giro-status').textContent='GIROの取得は無効です。公開データ取得用コンテナの管理画面で有効にすると、海外観測を表示します。';}
   renderNict();drawMap();
- }catch(e){$('observations-status').textContent=e.message;}finally{button.disabled=false;if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();}
-};
+ }catch(e){$('observations-status').textContent=e.message;}finally{if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();}
+}
 function renderGiroChart(series){
  const box=$('giro-chart');box.replaceChildren();const values=series.filter(r=>r.fof2_mhz!==null);
  if(!values.length)return;
@@ -99,10 +97,10 @@ function renderGiroChart(series){
  for(const [x,time,anchor] of [[45,start,'start'],[585,end,'end']]){const t=svg('text',{x,y:172,fill:'#a8b8c9','font-size':11,'text-anchor':anchor},plot);t.textContent=new Date(time).toISOString().slice(11,16)+' UTC';}
  const label=svg('text',{x:45,y:14,fill:'#a8b8c9','font-size':11},plot);label.textContent='foF2（MHz）';
 }
-$('giro-refresh').onclick=async()=>{
- const button=$('giro-refresh'),code=$('giro-station').value;button.disabled=true;$('giro-status').textContent='海外観測を取得中…';
+async function refreshGiro(){
+ const code=$('giro-station').value;if(!overseasData)$('giro-status').textContent='読み込み中…';
  try{
-  const response=await api('/api/observations/giro?station='+encodeURIComponent(code)+'&refresh=1');
+  const response=await api('/api/observations/giro?station='+encodeURIComponent(code));
   if(code!==$('giro-station').value)return;
   overseasData=response;
   const d=response.data;
@@ -111,9 +109,9 @@ $('giro-refresh').onclick=async()=>{
   $('giro-status').textContent=`${d.name} ${d.code} / ${observedTime(r.observed_at)} / ${response.stale?'古い／取得失敗':'取得済'} / ${d.credit} / 取得 ${response.fetched_at?new Date(response.fetched_at*1000).toISOString():'不明'}${response.error?' / '+response.error:''}`;
   $('giro-observations').replaceChildren(observationTable(['foF2 MHz','MUF(3000) MHz','CS','foF2限定符','MUF限定符'],[[fmt(r.fof2_mhz,2),fmt(r.muf3000_mhz,2),r.confidence??'不明',r.fof2_qualifier,r.muf_qualifier]]));
   renderGiroChart(d.series);drawMap();
- }catch(e){$('giro-status').textContent=e.message;}finally{button.disabled=observationData?.giro.enabled===false;if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();}
-};
-$('giro-station').onchange=()=>{overseasData=null;if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();$('giro-observations').replaceChildren();$('giro-chart').replaceChildren();$('giro-status').textContent='観測局を変更しました。海外観測を取得してください。';drawMap();};
+ }catch(e){$('giro-status').textContent=e.message;}finally{if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();}
+}
+$('giro-station').onchange=()=>{overseasData=null;if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();$('giro-observations').replaceChildren();$('giro-chart').replaceChildren();drawMap();if(observationData?.giro?.enabled)refreshGiro();};
 renderObservationComparison();
 // Age the display even when the page remains open without another network fetch.
 function ageObservationDisplay(){
@@ -122,12 +120,12 @@ function ageObservationDisplay(){
  if(d?.data&&old(d.data.observed_at)){
   d.stale=true;
   $('drap-status').textContent=`D-RAP ${observedTime(d.data.observed_at)} / 古い（観測時刻から1時間超または時刻不正）`;
-  $('observation-map-legend').textContent='D-RAPは古い情報のため薄く表示。国内外の灰色観測局も古い情報です。取得ボタンで更新してください。';
+  $('observation-map-legend').textContent='D-RAPは古い情報のため薄く表示。国内外の灰色観測局も古い情報です。';
  }
  for(const station of observationData?.nict?.data?.stations||[])if(old(station.observed_at))station.stale=true;
  if(overseasData?.data&&old(overseasData.data.observed_at)){
   overseasData.stale=true;
-  $('giro-status').textContent=`${overseasData.data.name} ${observedTime(overseasData.data.observed_at)} / 古い観測値。再取得してください。`;
+  $('giro-status').textContent=`${overseasData.data.name} ${observedTime(overseasData.data.observed_at)} / 古い観測値。`;
  }
  renderNict();drawMap();if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();
 }

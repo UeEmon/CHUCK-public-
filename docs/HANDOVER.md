@@ -71,6 +71,7 @@ flowchart TD
 | `app/gateway_client.py` と `position_contract.py` | 内部JSON v1の取得・検証、位置参照の解決 |
 | `app/gateway_server.py` と `positions.py` | 外部形式の解析、局設定、最新位置、認証付き内部API |
 | `app/public_data_server.py` と `public_data.py` | 公開データの取得用コンテナ（定期取得・検証・連携ファイル）と、CHUCK側のAPI連携・ファイル連携。CHUCKは提供元へ直接接続しない（[PUBLIC_DATA.md](PUBLIC_DATA.md)） |
+| `app/public_data_ui.py` と `public_data_static/` | 取得用コンテナの管理画面（`HF_PUBLIC_DATA_UI_PASSWORD`、取得状態、今すぐ取得、GIROの有効化）。GIRO設定は取得用コンテナの `/data/settings.json` に保存し、CHUCKは `/api/status` で従う |
 | `app/gateway_ui.py` と `gateway_static/` | 管理パスワード、セッション、局設定・受信状態表示 |
 | `app/presets.py` と `diversity.py` | カタログ保存・改訂管理、RXごとの計算と理論範囲 |
 | `app/space_weather.py` と `observations.py` | 外部データ取得・正規化・キャッシュ・鮮度 |
@@ -147,11 +148,11 @@ OCRの旧DBはprovider列を追加し、既存資料をopenaiとして扱う。D
 | GIRO JR055／MHJ45／GU513 | foF2、MUF(3000)、CS等。既定無効、欠測を許容 |
 | ASWFC・IGS TEC | 利用候補と条件を調査済み。自動取得は未実装 |
 
-月別SSNは6時間、現在指標・観測は基本5分キャッシュ。明示的な `refresh=1` はTTLを待たず再取得するが、失敗後60秒の再試行抑制は維持する。通信失敗では古いデータと最後の取得成功時刻を保持し、失敗状態を明示する。
+月別SSNは6時間、現在指標・観測は基本5分キャッシュ。利用者からの再取得要求（`refresh=1`）は2026-10-31から無視し、取得は取得用コンテナの定期取得か管理者の取り込みだけで行う（PUBLIC_DATA.md）。通信失敗では古いデータと最後の取得成功時刻を保持し、失敗状態を明示する。
 
 観測／発行時刻と取得時刻を分ける。取得成功時刻が新しくても提供元の観測が新しいとは限らない。自動計算で期限切れSSNを採用せず503で停止する。観測値やHAFからREL/SNRを自動補正しない。
 
-GIROを有効にする場合は利用条件を確認して `HF_GIRO_ENABLED=1` を設定する。コードMITとデータ利用条件は別。条件表示は `app/static/data-licenses.json` が編集元で、`python3 scripts/build_data_notices.py` によりMarkdown／画面を生成する。
+GIROを有効にする場合は利用条件を確認して、公開データ取得用コンテナの管理画面で有効にする（`HF_GIRO_ENABLED` は管理画面で一度も設定していないときの初期値だけ）。コードMITとデータ利用条件は別。条件表示は `app/static/data-licenses.json` が編集元で、`python3 scripts/build_data_notices.py` によりMarkdown／画面を生成する。
 
 ## 8 AIと生成AI OCR
 

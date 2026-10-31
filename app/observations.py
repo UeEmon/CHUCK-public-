@@ -150,11 +150,16 @@ def giro_body(code, now=None):
 
 class Observations:
     def __init__(self, directory, giro_enabled=False):
+        """giro_enabled is a bool or a function asked on every use (the fetcher's setting)."""
         self.directory = Path(directory)
-        self.giro_enabled = giro_enabled
+        self.giro_setting = giro_enabled
         self.memory = {}
         self.retry_after = {}
         self.locks = {key: threading.Lock() for key in ['drap', 'nict', *GIRO_STATIONS]}
+
+    @property
+    def giro_enabled(self):
+        return bool(self.giro_setting() if callable(self.giro_setting) else self.giro_setting)
 
     def fetch(self, key, url, parser, force=False):
         with self.locks[key]:
@@ -221,7 +226,7 @@ class Observations:
             raise ValueError('海外観測局が不正です')
         if not self.giro_enabled:
             return {'enabled': False, 'data': None, 'stale': True, 'data_terms': terms_for('giro'),
-                    'error': 'GIRO利用条件に適合する環境でHF_GIRO_ENABLED=1を設定してください。', 'terms_url': GIRO_TERMS}
+                    'error': '公開データ取得用コンテナの管理画面でGIROの取得を有効にしてください。', 'terms_url': GIRO_TERMS}
         result = self.fetch(code, GIRO_URL, lambda text: parse_giro(text, code), force=force)
         result['enabled'] = True
         return result

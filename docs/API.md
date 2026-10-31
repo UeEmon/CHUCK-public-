@@ -1,6 +1,6 @@
 # API v1.0
 
-AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、外部データの`refresh=1`と取得時刻は[SPACE_WEATHER.md](SPACE_WEATHER.md)を参照してください。
+AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、外部データの取得時刻（`refresh=1`は2026-10-31から無視）は[SPACE_WEATHER.md](SPACE_WEATHER.md)を参照してください。
 
 画面の操作は同一オリジン。JSONの数値は有限値のみ。通常POSTはContent-Type: application/jsonを指定します。
 画面・計算にはログイン認証がなく、既定の公開先はlocalhostのみです。
@@ -275,6 +275,8 @@ observed_at=UTC ISO時刻, stale, source_url, fetched_at）、sources, note。
 - NOAA SWPCのJSONファイル（2 MB以下）：内容から観測平滑SSN（`smoothed_ssn`）・予測平滑SSN（`predicted_ssn`）・障害レベル（`"0"` を持つオブジェクト）を判別して置き換えます。応答 kind（observed/predicted/scales）、rows、months、fetched_at。
 判別できない・JSONでない・有効なデータがないファイルは400です。
 
+`GET /api/public-data/status` は取得用コンテナとの連携状況を返します。mode（api／file）、connected（API連携で接続できたか。ファイル連携ではnull）、checked_at（確認時刻、ファイル連携では最終取り込み時刻、UNIX秒）、connected_at（最後に接続できた時刻）、error、giro_enabled（取得用コンテナのGIRO設定）。確認は30秒に1回までで、接続できない間はGIROの設定に最後に確認できた値を使います。
+
 `GET /api/public-data/export`（公開版では管理者だけ）は、API連携中の取得用コンテナから連携ファイルを取り出してダウンロードさせます。取得用コンテナ自体のAPIは[PUBLIC_DATA.md](PUBLIC_DATA.md)を参照してください。
 
 `POST /api/predict` と `/api/coverage` に `ssn_source: "manual" | "noaa"` を追加。
@@ -307,7 +309,7 @@ stations（code, name, provider, lat, lon, observed_at, fof2_mhz, model_fof2_mhz
 `GET /api/observations/giro?station=JR055`
 
 stationはGU513／JR055／MHJ45のみ。省略時JR055、不正局は400。
-HF_GIRO_ENABLED=1の場合、過去2時間のデータを取得し、data.series、data.latest、局位置（提供された場合）、出典・利用条件・取得メタデータを返します。
+公開データ取得用コンテナでGIROの取得が有効な場合、過去2時間のデータを取得し、data.series、data.latest、局位置（提供された場合）、出典・利用条件・取得メタデータを返します。
 無効時は外部接続せず200、enabled=false、data=nullと設定説明を返します。
 取得失敗や対象期間欠測はdata=null（古いキャッシュがあればそちら）、stale=true。
 指定局と応答内URSIコードを照合。外部の任意URLや認証情報をクライアントから受け付けません。

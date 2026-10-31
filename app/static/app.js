@@ -107,11 +107,11 @@ api('/api/health').then(h=>{$('health').textContent=h.ok?'● エンジン準備
 function clock(){$('clock').textContent=new Date().toISOString().slice(11,19)+' UTC';}clock();setInterval(clock,1000);
 
 let weatherRequest=0,weatherSnapshot=null;
-async function refreshWeather(force=false){
+async function refreshWeather(){
  const request=++weatherRequest,year=fields.year.value,month=fields.month.value;
- $('weather-refresh').disabled=true;$('weather-summary').textContent='NOAAデータを取得中…';
+ if(!weatherSnapshot)$('weather-summary').textContent='読み込み中…';
  try{
-  const w=await api(`/api/space-weather?year=${encodeURIComponent(year)}&month=${encodeURIComponent(month)}${force===true?'&refresh=1':''}`);
+  const w=await api(`/api/space-weather?year=${encodeURIComponent(year)}&month=${encodeURIComponent(month)}`);
   if(request!==weatherRequest||year!==fields.year.value||month!==fields.month.value)return;
   weatherSnapshot=w;const s=w.ssn,c=w.current;
   const levels=['R','S','G'].map(k=>k+(c.scales[k]===null?' 不明':c.scales[k])).join(' / ');
@@ -122,9 +122,8 @@ async function refreshWeather(force=false){
   }
   if(fields.ssn_source.value==='noaa'&&s&&!s.stale)fields.ssn.value=s.engine_value;
  }catch(e){if(request===weatherRequest)$('weather-summary').textContent=e.message;}
- finally{if(request===weatherRequest)$('weather-refresh').disabled=false;if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();}
+ finally{if(typeof renderExternalDataTimes==='function')renderExternalDataTimes();}
 }
-$('weather-refresh').onclick=()=>refreshWeather(true);
 // Results saved before the 0.7 conversion carry no scale.
 function noaaSSNText(s){return '('+s.kind+')'+(s.scale?' '+s.value+'×'+s.scale:'');}
 function effectiveCaption(){return '実効SSN（観測局の中央値）';}
@@ -144,7 +143,7 @@ async function refreshEffectiveSSN(){
 }
 function ssnSourceChanged(){const mode=fields.ssn_source.value;fields.ssn.readOnly=mode!=='manual';$('effective-ssn-summary').hidden=mode!=='effective';if(mode==='noaa')refreshWeather();if(mode==='effective')refreshEffectiveSSN();}
 fields.ssn_source.onchange=ssnSourceChanged;
-for(const field of [fields.year,fields.month])field.addEventListener('change',()=>{if(fields.ssn_source.value==='noaa')refreshWeather();else{$('weather-summary').textContent='対象年月が変わりました。取得・表示で更新してください。';}if(fields.ssn_source.value==='effective')refreshEffectiveSSN();});
+for(const field of [fields.year,fields.month])field.addEventListener('change',()=>{refreshWeather();if(fields.ssn_source.value==='effective')refreshEffectiveSSN();});
 fields.ssn.readOnly=fields.ssn_source.value!=='manual';
 
 document.addEventListener('DOMContentLoaded',async()=>{try{await loadCatalog();const saved=localStorage.getItem('hf-propagation-settings');if(saved){const p=JSON.parse(saved);fill(p,p.ui_selection);}renderCircuit();}catch(e){notice(e.message,true);}refreshPositions();});
