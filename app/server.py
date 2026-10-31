@@ -14,7 +14,8 @@ from urllib.parse import urlparse, parse_qs
 import uuid
 from engine import Engine, InputError, EngineError, Cancelled, validate, number, distance, DIRECTIONAL_ANTENNAS
 
-from space_weather import ENGINE_SSN_SCALE, SpaceWeather, SpaceWeatherError, engine_ssn
+import public_data
+from space_weather import ENGINE_SSN_SCALE, MAX_FILE as SPACE_WEATHER_MAX_FILE, SpaceWeather, SpaceWeatherError, engine_ssn
 from observations import Observations, GIRO_STATIONS
 from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
@@ -77,6 +78,17 @@ def noaa_ssn(year, month):
     except Exception: ssn=None
     if not ssn or ssn['stale']: return None,'NOAAの新鮮な平滑SSNがありません'
     return engine_ssn(ssn['value']),dict(kind=ssn['kind'],month=ssn['month'],published=ssn['value'],scale=ENGINE_SSN_SCALE)
+
+def import_public_data(raw):
+    """Unpack the fetcher's bundle (file link) and let the next reads use it at once."""
+    import public_data_server
+    validators={key:check for key,(_,_,_,check) in public_data_server.sources(giro_enabled=True).items()}
+    result=public_data.import_bundle(raw,public_data.directory(),validators)
+    SPACE_WEATHER.retry_after.clear();OBSERVATIONS.retry_after.clear()
+    if public_data.mode()=='file':
+        now=datetime.now(timezone.utc)
+        SPACE_WEATHER.snapshot(now.year,now.month,force=True);OBSERVATIONS.snapshot(force=True)
+    return result
 
 def run_watch(identifier, blocking=False):
     """Recalculate one watched condition; False when another calculation holds the engine."""
@@ -251,6 +263,10 @@ class Handler(BaseHTTPRequestHandler):
                 year=number(date,'year',1900,2100,integer=True)
                 month=number(date,'month',1,12,integer=True)
                 return self.json(200,SPACE_WEATHER.snapshot(year,month,force=query.get('refresh')==['1']))
+            if path=='/api/public-data/export':
+                # The bundle an administrator carries from the public site to an on-premises CHUCK.
+                raw,_=public_data.request('/api/export')
+                return self.send(200,raw,'application/json',public_data.BUNDLE_FORMAT+'.json')
             if path=='/api/effective-ssn':
                 query=parse_qs(urlparse(self.path).query)
                 now=datetime.now(timezone.utc)
@@ -360,7 +376,7 @@ class Handler(BaseHTTPRequestHandler):
             if not file.is_relative_to((BASE/'static').resolve()) or not file.is_file():
                 return self.json(404,{'error':'見つかりません'})
             return self.send(200,file.read_bytes(),mimetypes.guess_type(str(file))[0] or 'application/octet-stream')
-        except (GatewayError,ai_providers.AIError,EngineError) as e: self.json(503,{'error':str(e)})
+        except (GatewayError,ai_providers.AIError,EngineError,public_data.PublicDataError) as e: self.json(503,{'error':str(e)})
         except InputError as e: self.json(400 if path in ('/api/space-weather','/api/effective-ssn','/api/observations/giro') else 404,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc()
@@ -373,6 +389,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/position-stations': return self.configure_position_station()
         if path=='/api/presets': return self.edit_presets()
         if path=='/api/watches': return self.edit_watches()
+        if path=='/api/space-weather/upload': return self.upload_space_weather()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
         if path=='/api/antenna-patterns' or path.startswith('/api/antenna-patterns/'):return self.edit_patterns(path)
         if path.startswith('/api/jobs/') and path.endswith('/cancel'):
@@ -505,6 +522,22 @@ class Handler(BaseHTTPRequestHandler):
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc();self.json(500,{'error':'定時の再計算を更新できません'})
+
+    def upload_space_weather(self):
+        # On-premises sites bring public data as files: the fetcher's bundle (file link) or a NOAA JSON file itself.
+        if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
+            return self.json(403,{'error':'同一オリジンの画面から操作してください'})
+        if self.headers.get('Content-Type','').split(';')[0].strip()!='application/json':return self.json(415,{'error':'application/jsonが必要です'})
+        try:
+            length=int(self.headers.get('Content-Length','0'))
+            if not 0<length<=public_data.MAX_BUNDLE: raise InputError('ファイルは16 MB以下にしてください')
+            raw=self.rfile.read(length)
+            if b'"'+public_data.BUNDLE_FORMAT.encode()+b'"' in raw[:4096] or len(raw)>SPACE_WEATHER_MAX_FILE:
+                return self.json(200,dict(bundle=import_public_data(raw)))
+            self.json(200,SPACE_WEATHER.upload(raw))
+        except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
+        except Exception:
+            __import__('traceback').print_exc();self.json(500,{'error':'宇宙天気データを取り込めませんでした'})
 
     def edit_patterns(self,path):
         if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):

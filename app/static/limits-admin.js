@@ -7,7 +7,7 @@
   '/api/mesh':'メッシュ予測','/api/annual':'12か月予測','/api/power':'必要な送信電力','/api/sites':'拠点の候補'};
  async function call(body){
   const r=await fetch('/api/admin/rate-limit',body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});
-  const v=await r.json().catch(()=>({}));if(!r.ok)throw Error(v.error||'失敗しました');return v;
+  const v=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(Error(v.error||'失敗しました'),{status:r.status});return v;
  }
  const when=iso=>new Date(iso).toLocaleString('sv-SE',{timeZone:'Asia/Tokyo'}).slice(0,16)+' JST';
  function counts(){
@@ -43,5 +43,6 @@
    .then(s=>{show(s);say('保存しました');}).catch(e=>say(e.message,true));
  };
  document.getElementById('rate-reset').onclick=()=>call({reset:true}).then(s=>{show(s);say('既定値に戻しました');}).catch(e=>say(e.message,true));
- call().then(show).catch(e=>say(e.message,true));
+ // The local app (server.py) has no public calculation limit; only the space-weather section applies there.
+ call().then(show).catch(e=>{if(e.status!==404)return say(e.message,true);form.hidden=true;form.style.display='none';});
 })();

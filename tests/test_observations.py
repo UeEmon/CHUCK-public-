@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'app'))
-from observations import Observations, parse_drap, parse_nict, parse_giro, is_old, DRAP_URL, NICT_URL
+from observations import Observations, giro_body, parse_drap, parse_nict, parse_giro, is_old, DRAP_URL, NICT_URL
 
 # Synthetic fixtures: no third-party observations are redistributed with tests.
 DRAP='''# DRAP Tabular Values
@@ -74,49 +74,50 @@ class CacheTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
         self.o=Observations(self.tmp.name)
-    def download(self,request,**kwargs):
-        return io.BytesIO((DRAP if request.full_url==DRAP_URL else NICT).encode())
+    def download(self,key,force=False):
+        return (DRAP if key=='drap' else NICT).encode(),time.time()
     def test_partial_failure_returns_domestic_data(self):
-        def get(req,**kwargs):
-            if req.full_url==DRAP_URL:raise OSError('offline')
-            return self.download(req)
-        with patch('observations.urlopen',side_effect=get):
+        def get(key,force=False):
+            if key=='drap':raise OSError('offline')
+            return self.download(key)
+        with patch('public_data.download',side_effect=get):
             s=self.o.snapshot()
         self.assertIsNone(s['drap']['data']);self.assertTrue(s['drap']['stale'])
         self.assertEqual(len(s['nict']['data']['stations']),1)
     def test_force_reloads_fresh_cache_and_failure_retains_fetch_time(self):
-        with patch('observations.urlopen',side_effect=self.download) as get:
+        with patch('public_data.download',side_effect=self.download) as get:
             a=self.o.fetch('drap',DRAP_URL,parse_drap)
             b=self.o.fetch('drap',DRAP_URL,parse_drap)
             self.assertEqual(get.call_count,1);self.assertEqual(b['fetch_state'],'cache')
             c=self.o.fetch('drap',DRAP_URL,parse_drap,force=True)
             self.assertEqual(get.call_count,2);self.assertEqual(c['fetch_state'],'downloaded')
-        with patch('observations.urlopen',side_effect=OSError('offline')) as get:
+        with patch('public_data.download',side_effect=OSError('offline')) as get:
             failed=self.o.fetch('drap',DRAP_URL,parse_drap,force=True)
             self.assertEqual(failed['fetched_at'],c['fetched_at']);self.assertEqual(failed['fetch_state'],'failed')
             self.o.fetch('drap',DRAP_URL,parse_drap,force=True);self.assertEqual(get.call_count,1)
     def test_disk_cache_and_failure_retry(self):
-        with patch('observations.urlopen',side_effect=self.download) as get:
+        with patch('public_data.download',side_effect=self.download) as get:
             self.o.fetch('drap',DRAP_URL,parse_drap)
             fresh=Observations(self.tmp.name).fetch('drap',DRAP_URL,parse_drap)
             self.assertEqual(get.call_count,1)
             self.assertIsNotNone(fresh['data'])
         self.o.memory['drap']['fetched_at']=time.time()-400
-        with patch('observations.urlopen',side_effect=OSError('offline')) as get:
+        with patch('public_data.download',side_effect=OSError('offline')) as get:
             a=self.o.fetch('drap',DRAP_URL,parse_drap)
             b=self.o.fetch('drap',DRAP_URL,parse_drap)
             self.assertTrue(a['stale']);self.assertEqual(a['data'],b['data']);self.assertEqual(get.call_count,1)
     def test_giro_disabled_does_not_contact_provider(self):
-        with patch('observations.urlopen',side_effect=AssertionError('must not contact')):
+        with patch('public_data.download',side_effect=AssertionError('must not contact')):
             self.assertFalse(self.o.giro('GU513')['enabled'])
         with self.assertRaises(ValueError):self.o.giro('../../test')
     def test_giro_enabled_posts_fixed_query(self):
         o=Observations(self.tmp.name,giro_enabled=True)
-        with patch('observations.urlopen',return_value=io.BytesIO(GIRO.encode())) as get:
+        with patch('public_data.download',return_value=(GIRO.encode(),time.time())) as get:
             data=o.giro('JR055')
         self.assertTrue(data['enabled']);self.assertEqual(data['data']['code'],'JR055')
-        req=get.call_args.args[0]
-        self.assertIn(b'location=JR055',req.data);self.assertIn(b'DMUF=3000',req.data)
+        self.assertEqual(get.call_args.args[0],'JR055')
+        body=giro_body('JR055')
+        self.assertIn(b'location=JR055',body);self.assertIn(b'DMUF=3000',body)
 
 class EndpointTests(unittest.TestCase):
     def test_observation_endpoints_and_invalid_station(self):

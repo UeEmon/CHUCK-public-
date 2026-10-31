@@ -3,7 +3,7 @@ function fetchedTime(value){return typeof value==='number'&&Number.isFinite(valu
 function renderExternalDataTimes(){
  const rows=[];
  function add(name,source,observed){
-  const state=source?.fetch_state==='failed'?'取得失敗':source?.stale?'古いデータ':source?.fetch_state==='downloaded'?'最新取得':source?.fetched_at?'キャッシュ':'未取得';
+  const state=source?.fetch_state==='failed'?'取得失敗':source?.stale?'古いデータ':source?.fetch_state==='downloaded'?'最新取得':source?.fetch_state==='uploaded'?'ファイル取り込み':source?.fetched_at?'キャッシュ':'未取得';
   rows.push([name,observed||'時刻不明',fetchedTime(source?.fetched_at),state+(source?.error?' / '+source.error:'')]);
  }
  for(const [key,label]of [['observed','NOAA / SSN observed'],['predicted','NOAA / SSN predicted'],['scales','NOAA / R-S-G']])add(label,weatherSnapshot?.sources?.[key],key==='scales'?weatherSnapshot?.current?.observed_at:weatherSnapshot?'月間系列・発行時刻不明':null);

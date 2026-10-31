@@ -6,6 +6,11 @@ services:
       - "${HF_BIND:-127.0.0.1}:${HF_PORT:-18082}:8000"
     environment:
       HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
+      # Public data (NOAA, NICT, GIRO) comes from the public-data fetcher: api when both run in the
+      # public environment, file when CHUCK runs on premises. See docs/PUBLIC_DATA.md.
+      HF_PUBLIC_DATA_MODE: "${HF_PUBLIC_DATA_MODE:-api}"
+      HF_PUBLIC_DATA_URL: "${HF_PUBLIC_DATA_URL:-http://public-data:8002}"
+      HF_PUBLIC_DATA_TOKEN: "${HF_PUBLIC_DATA_TOKEN:-}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       HF_ANTENNA_OCR_MODEL: "${HF_ANTENNA_OCR_MODEL:-}"
       HF_ANTENNA_OCR_PROVIDER: "${HF_ANTENNA_OCR_PROVIDER:-openai}"
@@ -59,6 +64,31 @@ services:
       - /tmp:size=32m,mode=1777
     security_opt:
       - no-new-privileges:true
+  # Public-data fetcher: the only service that contacts NOAA, NICT and GIRO, on a schedule.
+  # On premises (HF_PUBLIC_DATA_MODE=file) it runs in the public environment instead:
+  #   docker compose up -d public-data
+  public-data:
+    build: .
+    image: hf-propagation:local
+    command: ["python", "public_data_server.py"]
+    ports:
+      - "${HF_PUBLIC_DATA_BIND:-127.0.0.1}:${HF_PUBLIC_DATA_PORT:-18084}:8002"
+    environment:
+      HF_PUBLIC_DATA_TOKEN: "${HF_PUBLIC_DATA_TOKEN:-}"
+      HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
+    volumes:
+      - public-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:8002/api/health'))['ok']"]
+      interval: 20s
+      start_period: 10s
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
   position-migrate:
     profiles: ["tools"]
     build: .
@@ -73,3 +103,4 @@ services:
 volumes:
   hf-data:
   gateway-data:
+  public-data:

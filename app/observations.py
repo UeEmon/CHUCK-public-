@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 import copy
 from data_terms import terms_for
+import public_data
 import json
 import math
 from pathlib import Path
@@ -10,7 +11,6 @@ import re
 import threading
 import time
 from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
 UTC = timezone.utc
 DRAP_URL = 'https://services.swpc.noaa.gov/text/drap_global_frequencies.txt'
@@ -139,6 +139,15 @@ def parse_giro(text, expected):
     return result
 
 
+def giro_body(code, now=None):
+    """GIRO query for the last two hours of one station."""
+    now = now or datetime.now(UTC)
+    return urlencode([('date_start', (now-timedelta(hours=2)).strftime('%Y-%m-%d %H:%M')),
+                      ('date_end', now.strftime('%Y-%m-%d %H:%M')), ('location', code),
+                      ('chosenchars[]', '0'), ('chosenchars[]', '8'), ('DMUF', '3000'),
+                      ('query_submit', 'Search')]).encode()
+
+
 class Observations:
     def __init__(self, directory, giro_enabled=False):
         self.directory = Path(directory)
@@ -147,7 +156,7 @@ class Observations:
         self.retry_after = {}
         self.locks = {key: threading.Lock() for key in ['drap', 'nict', *GIRO_STATIONS]}
 
-    def fetch(self, key, url, parser, body=None, force=False):
+    def fetch(self, key, url, parser, force=False):
         with self.locks[key]:
             cached = self.memory.get(key)
             if cached is None:
@@ -166,13 +175,11 @@ class Observations:
                 error = '取得再試行待ち／通信またはデータ形式を確認してください'
                 if now >= self.retry_after.get(key, 0):
                     try:
-                        request = Request(url, data=body, headers={'User-Agent': 'HF-Propagation-JP/0.3'})
-                        with urlopen(request, timeout=10) as response:
-                            raw = response.read(2_000_001)
+                        raw, fetched_at = public_data.download(key, force)
                         if len(raw) > 2_000_000:
                             raise ValueError('response too large')
                         data = parser(raw.decode('utf-8', errors='replace'))
-                        cached = {'data': data, 'fetched_at': time.time()}
+                        cached = {'data': data, 'fetched_at': fetched_at}
                         self.memory[key] = cached
                         fresh = True
                         state='downloaded'
@@ -184,6 +191,9 @@ class Observations:
                             tmp.replace(self.directory / (key + '.json'))
                         except OSError:
                             pass
+                    except public_data.PublicDataError as e:
+                        error = str(e)
+                        self.retry_after[key] = now + 60
                     except Exception:
                         self.retry_after[key] = now + 60
             result = copy.deepcopy(cached or {'data': None, 'fetched_at': None})
@@ -212,11 +222,6 @@ class Observations:
         if not self.giro_enabled:
             return {'enabled': False, 'data': None, 'stale': True, 'data_terms': terms_for('giro'),
                     'error': 'GIRO利用条件に適合する環境でHF_GIRO_ENABLED=1を設定してください。', 'terms_url': GIRO_TERMS}
-        now = datetime.now(UTC)
-        body = urlencode([('date_start', (now-timedelta(hours=2)).strftime('%Y-%m-%d %H:%M')),
-                          ('date_end', now.strftime('%Y-%m-%d %H:%M')), ('location', code),
-                          ('chosenchars[]', '0'), ('chosenchars[]', '8'), ('DMUF', '3000'),
-                          ('query_submit', 'Search')]).encode()
-        result = self.fetch(code, GIRO_URL, lambda text: parse_giro(text, code), body,force=force)
+        result = self.fetch(code, GIRO_URL, lambda text: parse_giro(text, code), force=force)
         result['enabled'] = True
         return result

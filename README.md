@@ -193,7 +193,8 @@ NOAA SWPCの公開JSONをサーバー経由で取得します。APIキーは不�
 - 計算履歴とJSON・CSV出力に実際に使用したSSNの出典、対象月、取得日時、予測／観測の区別を保存します。
 - NOAAの公表SSN（SILSO V2尺度）を0.7倍してエンジンに渡します。VOACAP Online Marineと同じ換算です。結果には公表値・換算後の値・係数を記録します。手動入力のSSNと実効SSNはそのままエンジンに渡します（実効SSNはエンジン自身の尺度で求めた値のため）。Marineとの比較結果は[検証記録](docs/VALIDATION.md)を参照してください。
 - 使い分け：今月の回線を詰めるときは実効SSN（いま観測されている電離層に合わせた値、観測が足りない日は使えません）、来月以降の計画や12か月予測にはNOAA（公表値×0.7）を使います。既定はいつでも計算でき外部と比べやすいNOAAです。
-- コンテナから `services.swpc.noaa.gov:443` へのHTTPS通信が必要です。位置・回線条件は外部へ送信しません。
+- 公開データ（NOAA・NICT・GIRO）は取得用コンテナ（`public-data`）が定期的に取得し、CHUCKはそこから受け取ります。取得用コンテナから `services.swpc.noaa.gov:443` 等へのHTTPS通信が必要です。位置・回線条件は外部へ送信しません。
+- 連携方式は、CHUCKと取得用コンテナを両方公開環境で動かすときはAPI連携（既定）、CHUCKをオンプレミスで動かすときはファイル連携（`.env` に `HF_PUBLIC_DATA_MODE=file`。公開環境の取得用コンテナが書き出す連携ファイルを、管理者が管理画面 `/limits-admin.html` で取り込む）です。手順は[docs/PUBLIC_DATA.md](docs/PUBLIC_DATA.md)を参照してください。
 
 データ仕様、比較候補、制約は [docs/SPACE_WEATHER.md](docs/SPACE_WEATHER.md) を参照してください。
 

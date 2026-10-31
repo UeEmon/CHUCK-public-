@@ -266,6 +266,16 @@ status（pending／same／better／worse／error）、notify（worseで未確認
 source_url, fetched_at=UNIX秒, stale）、current（scales.R/S/G=0〜5またはnull,
 observed_at=UTC ISO時刻, stale, source_url, fetched_at）、sources, note。
 対象月のSSNがなければssn=null。外部取得失敗でも200で欠測・stale・errorを返します。
+`sources` の各系列には `fetch_state`（downloaded/cache/uploaded/failed）、`origin`（api=取得用コンテナのAPI、file=連携ファイル、upload=NOAAファイルの取り込み、download=2026-10-31より前の直接取得、未取得はnull）、月間系列の収録範囲 `months`（first, last）があります。応答直下の `link` は連携方式（`mode`: api/file、API連携のときは `url`）です。
+
+`POST /api/space-weather/upload`（`Content-Type: application/json`、同一オリジン必須、公開版では管理者だけ）
+
+本文は次のどちらかのファイルそのものです。
+- 取得用コンテナの連携ファイル（`"format": "chuck-public-data"`、16 MB以下）：種類ごとにSHA-256と内容を検証し、手元より新しいものだけを保存します。応答 `bundle`（imported, skipped, rejected：種類名の配列）。
+- NOAA SWPCのJSONファイル（2 MB以下）：内容から観測平滑SSN（`smoothed_ssn`）・予測平滑SSN（`predicted_ssn`）・障害レベル（`"0"` を持つオブジェクト）を判別して置き換えます。応答 kind（observed/predicted/scales）、rows、months、fetched_at。
+判別できない・JSONでない・有効なデータがないファイルは400です。
+
+`GET /api/public-data/export`（公開版では管理者だけ）は、API連携中の取得用コンテナから連携ファイルを取り出してダウンロードさせます。取得用コンテナ自体のAPIは[PUBLIC_DATA.md](PUBLIC_DATA.md)を参照してください。
 
 `POST /api/predict` と `/api/coverage` に `ssn_source: "manual" | "noaa"` を追加。
 省略時manual。noaaではクライアントSSNを使わずサーバー取得値を使用します。

@@ -171,7 +171,7 @@ Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
  if(!cfg.public||cfg.admin)return;
  const hide=el=>{if(el){el.hidden=true;el.style.display='none';}};
  hide(document.querySelector('[data-tab="positions"]'));hide(document.getElementById('positions'));
- hide(document.getElementById('ai-settings-panel'));hide(document.getElementById('antenna-import-panel'));
+ hide(document.getElementById('ai-settings-panel'));hide(document.getElementById('space-weather-upload-link'));hide(document.getElementById('antenna-import-panel'));
  const mobile=document.querySelector('#location-editor select[name="kind"] option[value="mobile"]');if(mobile)mobile.remove();
  const ownAntenna='アンテナは自分用を1つだけ登録できます。このブラウザにだけ保存され、他の利用者には表示されません。共通のアンテナは「コピーして編集」で自分用に変えられます。';
  const shared='共通プリセットは閲覧専用です。追加・編集した地点は「自分の」プリセットとしてこのブラウザにだけ保存され、他の利用者には表示されません。';

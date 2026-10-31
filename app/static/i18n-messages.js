@@ -9936,5 +9936,158 @@ const HF_MESSAGES={
     "A previsão de 12 meses agora inclui uma análise do ângulo de saída. Para os 12 meses ou um mês escolhido, mostra o ângulo de saída do modo mais confiável em cada hora como distribuição por 1° e tabela mês × UTC, com a mediana e a faixa 10–90%.",
     "Die 12-Monats-Prognose enthält jetzt eine Abstrahlwinkel-Analyse. Für 12 Monate oder einen gewählten Monat zeigt sie den Abstrahlwinkel des zuverlässigsten Modus je Stunde als Verteilung in 1°-Schritten und als Tabelle Monat × UTC, mit Median und 10–90-%-Bereich.",
     "「12개월 예측」에 발사각 분석을 추가했습니다. 12개월 또는 선택한 월에 대해 각 시각의 가장 신뢰도 높은 전파 모드의 발사각을 1°마다의 분포와 월×UTC 표로 보여 주고, 중앙값과 10~90% 범위를 표시합니다."
+  ],
+  "ファイル取り込み": [
+    "Uploaded file",
+    "Fichier importé",
+    "Archivo importado",
+    "File importato",
+    "Arquivo importado",
+    "Hochgeladene Datei",
+    "파일 가져오기"
+  ],
+  "データの種類が不正です": [
+    "Invalid data type",
+    "Type de données non valide",
+    "Tipo de datos no válido",
+    "Tipo di dati non valido",
+    "Tipo de dados inválido",
+    "Ungültige Datenart",
+    "데이터 종류가 올바르지 않습니다"
+  ],
+  "取得用コンテナのURL設定が不正です": [
+    "The fetcher container URL is invalid",
+    "L’URL du conteneur de récupération n’est pas valide",
+    "La URL del contenedor de obtención no es válida",
+    "L’URL del container di download non è valido",
+    "A URL do contêiner de obtenção é inválida",
+    "Die URL des Abrufcontainers ist ungültig",
+    "가져오기 컨테이너 URL 설정이 올바르지 않습니다"
+  ],
+  "32文字以上のHF_PUBLIC_DATA_TOKENを設定してください": [
+    "Set HF_PUBLIC_DATA_TOKEN to 32 or more characters",
+    "Définissez HF_PUBLIC_DATA_TOKEN avec au moins 32 caractères",
+    "Configure HF_PUBLIC_DATA_TOKEN con 32 caracteres o más",
+    "Imposta HF_PUBLIC_DATA_TOKEN con almeno 32 caratteri",
+    "Defina HF_PUBLIC_DATA_TOKEN com 32 caracteres ou mais",
+    "Setzen Sie HF_PUBLIC_DATA_TOKEN auf mindestens 32 Zeichen",
+    "32자 이상의 HF_PUBLIC_DATA_TOKEN을 설정하세요"
+  ],
+  "取得用コンテナから取得できませんでした（HTTP {code}）": [
+    "Could not get data from the fetcher container (HTTP {code})",
+    "Impossible d’obtenir les données du conteneur de récupération (HTTP {code})",
+    "No se pudieron obtener datos del contenedor de obtención (HTTP {code})",
+    "Impossibile ottenere i dati dal container di download (HTTP {code})",
+    "Não foi possível obter dados do contêiner de obtenção (HTTP {code})",
+    "Daten konnten nicht vom Abrufcontainer geholt werden (HTTP {code})",
+    "가져오기 컨테이너에서 가져오지 못했습니다(HTTP {code})"
+  ],
+  "取得用コンテナに接続できないか、応答が不正です": [
+    "Cannot reach the fetcher container, or its response is invalid",
+    "Impossible de joindre le conteneur de récupération, ou sa réponse n’est pas valide",
+    "No se puede acceder al contenedor de obtención o su respuesta no es válida",
+    "Impossibile raggiungere il container di download, oppure la risposta non è valida",
+    "Não é possível acessar o contêiner de obtenção ou a resposta é inválida",
+    "Der Abrufcontainer ist nicht erreichbar oder seine Antwort ist ungültig",
+    "가져오기 컨테이너에 연결할 수 없거나 응답이 올바르지 않습니다"
+  ],
+  "提供元から取得できませんでした": [
+    "Could not get data from the provider",
+    "Impossible d’obtenir les données auprès du fournisseur",
+    "No se pudieron obtener datos del proveedor",
+    "Impossibile ottenere i dati dal fornitore",
+    "Não foi possível obter dados do provedor",
+    "Daten konnten nicht vom Anbieter abgerufen werden",
+    "제공처에서 가져오지 못했습니다"
+  ],
+  "取得用コンテナへのブラウザ直接アクセスは受け付けません": [
+    "The fetcher container does not accept direct browser access",
+    "Le conteneur de récupération n’accepte pas l’accès direct depuis un navigateur",
+    "El contenedor de obtención no acepta acceso directo desde el navegador",
+    "Il container di download non accetta l’accesso diretto dal browser",
+    "O contêiner de obtenção não aceita acesso direto pelo navegador",
+    "Der Abrufcontainer nimmt keinen direkten Browserzugriff an",
+    "가져오기 컨테이너는 브라우저의 직접 접근을 받지 않습니다"
+  ],
+  "取得対象ではありません": [
+    "Not a source this container fetches",
+    "Source non récupérée par ce conteneur",
+    "No es una fuente que obtenga este contenedor",
+    "Non è una fonte scaricata da questo container",
+    "Não é uma fonte obtida por este contêiner",
+    "Keine Quelle, die dieser Container abruft",
+    "가져오기 대상이 아닙니다"
+  ],
+  "まだ取得できていません": [
+    "Not fetched yet",
+    "Pas encore récupéré",
+    "Aún no obtenido",
+    "Non ancora scaricato",
+    "Ainda não obtido",
+    "Noch nicht abgerufen",
+    "아직 가져오지 못했습니다"
+  ],
+  "読み込みに失敗しました": [
+    "Loading failed",
+    "Échec du chargement",
+    "Error al cargar",
+    "Caricamento non riuscito",
+    "Falha ao carregar",
+    "Laden fehlgeschlagen",
+    "읽기에 실패했습니다"
+  ],
+  "公開データの連携方式の確認と、オンプレミスでの連携ファイルの取り込みは管理画面で行います（管理者のみ）": [
+    "The public-data link and, on premises, uploads of the link file are on the admin page (administrators only)",
+    "La liaison des données publiques et, sur site, l’import du fichier de liaison se trouvent sur la page d’administration (administrateurs uniquement)",
+    "El enlace de datos públicos y, en instalaciones locales, la importación del archivo de enlace están en la página de administración (solo administradores)",
+    "Il collegamento dei dati pubblici e, in sede, l’importazione del file di collegamento sono nella pagina di amministrazione (solo amministratori)",
+    "O vínculo de dados públicos e, no local, a importação do arquivo de vínculo ficam na página de administração (somente administradores)",
+    "Die Anbindung öffentlicher Daten und vor Ort das Hochladen der Verknüpfungsdatei finden Sie auf der Verwaltungsseite (nur Administratoren)",
+    "공개 데이터 연계 방식 확인과 온프레미스의 연계 파일 가져오기는 관리 화면에서 합니다(관리자 전용)"
+  ],
+  "連携ファイルがありません。管理画面で取得用コンテナのファイルを取り込んでください": [
+    "No link file. Upload the fetcher container’s file on the admin page",
+    "Aucun fichier de liaison. Importez le fichier du conteneur de récupération sur la page d’administration",
+    "No hay archivo de enlace. Importe el archivo del contenedor de obtención en la página de administración",
+    "Nessun file di collegamento. Importa il file del container di download nella pagina di amministrazione",
+    "Não há arquivo de vínculo. Importe o arquivo do contêiner de obtenção na página de administração",
+    "Keine Verknüpfungsdatei. Laden Sie die Datei des Abrufcontainers auf der Verwaltungsseite hoch",
+    "연계 파일이 없습니다. 관리 화면에서 가져오기 컨테이너의 파일을 가져오세요"
+  ],
+  "連携ファイルが壊れています。取り込み直してください": [
+    "The link file is damaged. Upload it again",
+    "Le fichier de liaison est endommagé. Importez-le de nouveau",
+    "El archivo de enlace está dañado. Impórtelo de nuevo",
+    "Il file di collegamento è danneggiato. Importalo di nuovo",
+    "O arquivo de vínculo está danificado. Importe-o novamente",
+    "Die Verknüpfungsdatei ist beschädigt. Laden Sie sie erneut hoch",
+    "연계 파일이 손상되었습니다. 다시 가져오세요"
+  ],
+  "取得用コンテナの連携ファイルではありません": [
+    "This is not a link file from the fetcher container",
+    "Ce n’est pas un fichier de liaison du conteneur de récupération",
+    "No es un archivo de enlace del contenedor de obtención",
+    "Non è un file di collegamento del container di download",
+    "Não é um arquivo de vínculo do contêiner de obtenção",
+    "Dies ist keine Verknüpfungsdatei des Abrufcontainers",
+    "가져오기 컨테이너의 연계 파일이 아닙니다"
+  ],
+  "取り込める公開データがありません": [
+    "The file has no public data that can be imported",
+    "Le fichier ne contient aucune donnée publique importable",
+    "El archivo no contiene datos públicos importables",
+    "Il file non contiene dati pubblici importabili",
+    "O arquivo não contém dados públicos importáveis",
+    "Die Datei enthält keine importierbaren öffentlichen Daten",
+    "가져올 수 있는 공개 데이터가 없습니다"
+  ],
+  "ファイルは16 MB以下にしてください": [
+    "Choose a file of 16 MB or less",
+    "Choisissez un fichier de 16 Mo au maximum",
+    "Elija un archivo de 16 MB como máximo",
+    "Scegli un file di massimo 16 MB",
+    "Escolha um arquivo de até 16 MB",
+    "Wählen Sie eine Datei mit höchstens 16 MB",
+    "16MB 이하의 파일을 지정하세요"
   ]
 };

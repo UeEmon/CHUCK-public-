@@ -60,6 +60,23 @@ class PublicModeTests(unittest.TestCase):
             self.assertEqual(self.request(path,{})[0],403,path)
         self.assertNotEqual(self.request('/api/ai-settings',admin=True)[0],403)
 
+    def test_only_admin_uploads_space_weather(self):
+        rows=[{'time-tag':'2026-10','predicted_ssn':87.5,'predicted_f10.7':130}]
+        self.assertEqual(self.request('/api/space-weather/upload',rows)[0],403)
+        self.assertNotIn('origin',self.server.SPACE_WEATHER.memory.get('predicted') or {})
+        status,body=self.request('/api/space-weather/upload',rows,admin=True)
+        self.assertEqual((status,json.loads(body)['kind']),(200,'predicted'))
+        self.assertEqual(self.request('/api/space-weather/upload',{'wrong':1},admin=True)[0],400)
+        self.assertEqual(self.server.SPACE_WEATHER.memory['predicted']['origin'],'upload')
+        # The fetcher's bundle (file link) goes through the same admin-only upload.
+        import base64,hashlib,time
+        raw=json.dumps(rows).encode()
+        bundle={'format':'chuck-public-data','sources':{'predicted':{'url':None,'fetched_at':time.time()+5,'sha256':hashlib.sha256(raw).hexdigest(),'raw':base64.b64encode(raw).decode()}}}
+        self.assertEqual(self.request('/api/space-weather/upload',bundle)[0],403)
+        status,body=self.request('/api/space-weather/upload',bundle,admin=True)
+        self.assertEqual((status,json.loads(body)['bundle']['imported']),(200,['predicted']))
+        self.assertEqual(self.request('/api/public-data/export')[0],403)
+
     def test_shared_history_is_hidden(self):
         self.server.save(dict(parameters={}),'point')
         self.assertEqual(json.loads(self.request('/api/history')[1]),[])
