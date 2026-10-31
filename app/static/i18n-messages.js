@@ -10935,5 +10935,203 @@ const HF_MESSAGES={
     "A configuração do lóbulo principal dos predefinidos de antena oferece agora «Seguir o rumo próprio (estação móvel)». Para uma antena diretiva ou tabela de ganho fixa a um navio, aeronave ou veículo, indique o ângulo no sentido horário a partir da proa ou do nariz, e a orientação segue o rumo (sobre o fundo) recebido pelo gateway de posições. Cada previsão usa o rumo mais recente. A lista de posições recebidas também mostra rumo e velocidade.",
     "Die Hauptstrahlrichtung von Antennenvorlagen bietet jetzt „Eigenem Kurs folgen (mobile Station)“. Für eine Richtantenne oder Gewinntabelle, die an einem Schiff, Luftfahrzeug oder Fahrzeug befestigt ist, geben Sie den Winkel im Uhrzeigersinn ab Bug oder Nase an; die Ausrichtung folgt dem über das Positions-Gateway empfangenen Kurs über Grund. Jede Vorhersage verwendet den neuesten Kurs. Die Liste der empfangenen Positionen zeigt auch Kurs und Fahrt.",
     "안테나 프리셋의 주 방사 방향에 「자국 침로에 맞춤 (이동국)」을 추가했습니다. 선박·항공기·차량에 고정된 지향성 안테나나 이득표의 방향을 선수·기수에서 시계 방향 각도로 지정하면, 위치 게이트웨이로 받은 침로(대지 침로)를 기준으로 계산합니다. 예측할 때마다 최신 침로를 사용합니다. 위치 수신 목록에도 침로와 속력을 표시합니다."
+  ],
+  "今日の状況での確認": [
+    "Today's conditions check",
+    "Vérification des conditions du jour",
+    "Comprobación de las condiciones de hoy",
+    "Verifica delle condizioni di oggi",
+    "Verificação das condições de hoje",
+    "Prüfung der heutigen Bedingungen",
+    "오늘 상황 확인"
+  ],
+  "今日の状況を確認": [
+    "Check today's conditions",
+    "Vérifier les conditions du jour",
+    "Comprobar las condiciones de hoy",
+    "Verifica le condizioni di oggi",
+    "Verificar as condições de hoje",
+    "Heutige Bedingungen prüfen",
+    "오늘 상황 확인하기"
+  ],
+  "月間予測の信頼度は変えずに、今日の宇宙天気（NOAAのR・S・GとD-RAP）で悪くなりそうな時刻と周波数に印を付けます。対象年月が今月の結果だけに使えます。✕は推定の追加吸収で要求SNRを下回る恐れ、⚠は注意（吸収3 dB以上、地磁気嵐によるMUFの低下、オーロラ帯）を示します。": [
+    "Marks the hours and frequencies that today's space weather (NOAA R, S, G and D-RAP) may degrade, without changing the monthly reliability. Available only for results for the current month. ✕ means the estimated extra absorption may push the SNR below the required value; ⚠ means caution (absorption of 3 dB or more, MUF lowered by a geomagnetic storm, or the auroral zone).",
+    "Signale les heures et fréquences que la météo spatiale du jour (R, S, G de la NOAA et D-RAP) risque de dégrader, sans modifier la fiabilité mensuelle. Disponible uniquement pour les résultats du mois en cours. ✕ : l’absorption supplémentaire estimée risque de faire passer le SNR sous la valeur requise ; ⚠ : prudence (absorption de 3 dB ou plus, MUF abaissée par un orage géomagnétique, ou zone aurorale).",
+    "Marca las horas y frecuencias que el clima espacial de hoy (R, S, G de la NOAA y D-RAP) puede degradar, sin cambiar la fiabilidad mensual. Solo para resultados del mes en curso. ✕ indica que la absorción adicional estimada puede dejar la SNR por debajo de la requerida; ⚠ indica precaución (absorción de 3 dB o más, MUF reducida por una tormenta geomagnética o zona auroral).",
+    "Contrassegna le ore e le frequenze che la meteo spaziale di oggi (R, S, G della NOAA e D-RAP) può degradare, senza modificare l’affidabilità mensile. Disponibile solo per i risultati del mese in corso. ✕ indica che l’assorbimento aggiuntivo stimato può portare l’SNR sotto il valore richiesto; ⚠ indica attenzione (assorbimento di 3 dB o più, MUF ridotta da una tempesta geomagnetica o zona aurorale).",
+    "Marca as horas e frequências que o clima espacial de hoje (R, S, G da NOAA e D-RAP) pode degradar, sem alterar a confiabilidade mensal. Disponível apenas para resultados do mês atual. ✕ indica que a absorção adicional estimada pode deixar a SNR abaixo da exigida; ⚠ indica atenção (absorção de 3 dB ou mais, MUF reduzida por tempestade geomagnética ou zona auroral).",
+    "Markiert die Stunden und Frequenzen, die das heutige Weltraumwetter (NOAA R, S, G und D-RAP) verschlechtern kann, ohne die monatliche Zuverlässigkeit zu ändern. Nur für Ergebnisse des laufenden Monats. ✕ bedeutet, dass die geschätzte Zusatzdämpfung das SNR unter den geforderten Wert drücken kann; ⚠ bedeutet Vorsicht (Dämpfung ab 3 dB, durch einen geomagnetischen Sturm gesenkte MUF oder Polarlichtzone).",
+    "월간 예측의 신뢰도는 바꾸지 않고, 오늘의 우주 기상(NOAA R·S·G와 D-RAP)으로 나빠질 수 있는 시각과 주파수에 표시를 합니다. 대상 연월이 이번 달인 결과에만 사용할 수 있습니다. ✕는 추정 추가 흡수로 요구 SNR을 밑돌 우려, ⚠는 주의(흡수 3 dB 이상, 지자기 폭풍에 의한 MUF 저하, 오로라대)를 나타냅니다."
+  ],
+  "計算後に今日の状況での確認を表示します": [
+    "Today's conditions check appears after a calculation",
+    "La vérification des conditions du jour s’affiche après un calcul",
+    "La comprobación de las condiciones de hoy aparece tras un cálculo",
+    "La verifica delle condizioni di oggi compare dopo un calcolo",
+    "A verificação das condições de hoje aparece após um cálculo",
+    "Die Prüfung der heutigen Bedingungen erscheint nach einer Berechnung",
+    "계산 후 오늘 상황 확인을 표시합니다"
+  ],
+  "今日の状況を取得しています…": [
+    "Getting today's conditions…",
+    "Récupération des conditions du jour…",
+    "Obteniendo las condiciones de hoy…",
+    "Recupero delle condizioni di oggi…",
+    "Obtendo as condições de hoje…",
+    "Heutige Bedingungen werden abgerufen…",
+    "오늘 상황을 가져오는 중…"
+  ],
+  "推定の追加吸収": [
+    "Estimated extra absorption",
+    "Absorption supplémentaire estimée",
+    "Absorción adicional estimada",
+    "Assorbimento aggiuntivo stimato",
+    "Absorção adicional estimada",
+    "Geschätzte Zusatzdämpfung",
+    "추정 추가 흡수"
+  ],
+  "推定の追加吸収で要求SNRを下回る恐れ": [
+    "Estimated extra absorption may push the SNR below the required value",
+    "L’absorption supplémentaire estimée risque de faire passer le SNR sous la valeur requise",
+    "La absorción adicional estimada puede dejar la SNR por debajo de la requerida",
+    "L’assorbimento aggiuntivo stimato può portare l’SNR sotto il valore richiesto",
+    "A absorção adicional estimada pode deixar a SNR abaixo da exigida",
+    "Die geschätzte Zusatzdämpfung kann das SNR unter den geforderten Wert drücken",
+    "추정 추가 흡수로 요구 SNR을 밑돌 우려"
+  ],
+  "地磁気嵐でMUFが下がる恐れ": [
+    "MUF may drop in the geomagnetic storm",
+    "La MUF risque de baisser pendant l’orage géomagnétique",
+    "La MUF puede bajar por la tormenta geomagnética",
+    "La MUF può calare per la tempesta geomagnetica",
+    "A MUF pode cair com a tempestade geomagnética",
+    "Die MUF kann im geomagnetischen Sturm sinken",
+    "지자기 폭풍으로 MUF가 낮아질 우려"
+  ],
+  "オーロラ帯の吸収・フェージング": [
+    "Auroral zone absorption and fading",
+    "Absorption et évanouissement en zone aurorale",
+    "Absorción y desvanecimiento en la zona auroral",
+    "Assorbimento e fading nella zona aurorale",
+    "Absorção e desvanecimento na zona auroral",
+    "Dämpfung und Fading in der Polarlichtzone",
+    "오로라대의 흡수·페이딩"
+  ],
+  "NOAAのR・S・Gが古いか取得できないため、今日の状況を判定できません": [
+    "NOAA R, S and G are old or unavailable, so today's conditions cannot be judged",
+    "Les R, S et G de la NOAA sont anciens ou indisponibles : impossible de juger les conditions du jour",
+    "Los R, S y G de la NOAA son antiguos o no están disponibles, por lo que no se pueden valorar las condiciones de hoy",
+    "R, S e G della NOAA sono vecchi o non disponibili, quindi non è possibile valutare le condizioni di oggi",
+    "R, S e G da NOAA estão desatualizados ou indisponíveis, então não é possível avaliar as condições de hoje",
+    "NOAA R, S und G sind veraltet oder nicht verfügbar; die heutigen Bedingungen lassen sich nicht beurteilen",
+    "NOAA R·S·G가 오래되었거나 가져올 수 없어 오늘 상황을 판정할 수 없습니다"
+  ],
+  "現在 R{r} · S{s} · G{g}（過去24時間の最大 G{h}）": [
+    "Now R{r} · S{s} · G{g} (past 24 h maximum G{h})",
+    "Actuellement R{r} · S{s} · G{g} (maximum des 24 dernières heures G{h})",
+    "Ahora R{r} · S{s} · G{g} (máximo de las últimas 24 h G{h})",
+    "Ora R{r} · S{s} · G{g} (massimo delle ultime 24 h G{h})",
+    "Agora R{r} · S{s} · G{g} (máximo das últimas 24 h G{h})",
+    "Aktuell R{r} · S{s} · G{g} (Maximum der letzten 24 h G{h})",
+    "현재 R{r} · S{s} · G{g} (최근 24시간 최대 G{h})"
+  ],
+  "D-RAPの吸収を見積もりに使っています（{time} UTCの値を3時間）": [
+    "D-RAP absorption is used in the estimate (the {time} UTC values, for 3 hours)",
+    "L’absorption D-RAP est utilisée dans l’estimation (valeurs de {time} UTC, pendant 3 heures)",
+    "Se usa la absorción D-RAP en la estimación (valores de las {time} UTC, durante 3 horas)",
+    "L’assorbimento D-RAP è usato nella stima (valori delle {time} UTC, per 3 ore)",
+    "A absorção D-RAP é usada na estimativa (valores das {time} UTC, por 3 horas)",
+    "Die D-RAP-Dämpfung wird für die Schätzung verwendet (Werte von {time} UTC, für 3 Stunden)",
+    "D-RAP 흡수를 추정에 사용합니다({time} UTC 값을 3시간)"
+  ],
+  "D-RAPが古いか取得できないため、吸収は見積もっていません": [
+    "D-RAP is old or unavailable, so absorption is not estimated",
+    "D-RAP est ancien ou indisponible : l’absorption n’est pas estimée",
+    "D-RAP es antiguo o no está disponible, por lo que no se estima la absorción",
+    "D-RAP è vecchio o non disponibile, quindi l’assorbimento non è stimato",
+    "O D-RAP está desatualizado ou indisponível, então a absorção não é estimada",
+    "D-RAP ist veraltet oder nicht verfügbar; die Dämpfung wird nicht geschätzt",
+    "D-RAP이 오래되었거나 가져올 수 없어 흡수를 추정하지 않습니다"
+  ],
+  "R・Sが0のため、D-RAPの吸収は使っていません（通常の昼間の吸収はVOACAPに含まれます）": [
+    "R and S are 0, so D-RAP absorption is not used (ordinary daytime absorption is included in VOACAP)",
+    "R et S valent 0 : l’absorption D-RAP n’est pas utilisée (l’absorption diurne ordinaire est incluse dans VOACAP)",
+    "R y S son 0, por lo que no se usa la absorción D-RAP (la absorción diurna ordinaria está incluida en VOACAP)",
+    "R e S sono 0, quindi l’assorbimento D-RAP non è usato (l’assorbimento diurno ordinario è incluso in VOACAP)",
+    "R e S são 0, então a absorção D-RAP não é usada (a absorção diurna comum está incluída no VOACAP)",
+    "R und S sind 0; die D-RAP-Dämpfung wird nicht verwendet (die gewöhnliche Tagesdämpfung ist in VOACAP enthalten)",
+    "R·S가 0이므로 D-RAP 흡수는 사용하지 않습니다(평상시 낮의 흡수는 VOACAP에 포함됩니다)"
+  ],
+  "経路の最大地磁気緯度": [
+    "Highest geomagnetic latitude on the path",
+    "Latitude géomagnétique maximale du trajet",
+    "Latitud geomagnética máxima del trayecto",
+    "Latitudine geomagnetica massima del percorso",
+    "Latitude geomagnética máxima do percurso",
+    "Höchste geomagnetische Breite des Pfads",
+    "경로의 최대 지자기 위도"
+  ],
+  "今日の状況での推奨（{hour}:00 UTC）: {label}": [
+    "Recommended under today's conditions ({hour}:00 UTC): {label}",
+    "Recommandé selon les conditions du jour ({hour}:00 UTC) : {label}",
+    "Recomendada con las condiciones de hoy ({hour}:00 UTC): {label}",
+    "Consigliata con le condizioni di oggi ({hour}:00 UTC): {label}",
+    "Recomendada nas condições de hoje ({hour}:00 UTC): {label}",
+    "Empfohlen unter heutigen Bedingungen ({hour}:00 UTC): {label}",
+    "오늘 상황에서의 추천({hour}:00 UTC): {label}"
+  ],
+  "G（地磁気嵐）": [
+    "G (geomagnetic storm)",
+    "G (orage géomagnétique)",
+    "G (tormenta geomagnética)",
+    "G (tempesta geomagnetica)",
+    "G (tempestade geomagnética)",
+    "G (geomagnetischer Sturm)",
+    "G(지자기 폭풍)"
+  ],
+  "MUF MHz（嵐の目安）": [
+    "MUF MHz (storm estimate)",
+    "MUF MHz (estimation en orage)",
+    "MUF MHz (estimación con tormenta)",
+    "MUF MHz (stima con tempesta)",
+    "MUF MHz (estimativa com tempestade)",
+    "MUF MHz (Schätzung bei Sturm)",
+    "MUF MHz(폭풍 시 기준)"
+  ],
+  "今日の状況での確認は、単一RXの地点間予測だけに使えます。": [
+    "Today's conditions check is available only for single-RX point-to-point predictions.",
+    "La vérification des conditions du jour n’est disponible que pour les prévisions point à point à un seul RX.",
+    "La comprobación de las condiciones de hoy solo está disponible para predicciones punto a punto con un solo RX.",
+    "La verifica delle condizioni di oggi è disponibile solo per le previsioni punto-punto con un solo RX.",
+    "A verificação das condições de hoje está disponível apenas para previsões ponto a ponto com um único RX.",
+    "Die Prüfung der heutigen Bedingungen gibt es nur für Punkt-zu-Punkt-Vorhersagen mit einem RX.",
+    "오늘 상황 확인은 단일 RX의 지점 간 예측에만 사용할 수 있습니다."
+  ],
+  "今日の状況での確認は、対象年月が今月の結果だけに使えます。": [
+    "Today's conditions check is available only for results for the current month.",
+    "La vérification des conditions du jour n’est disponible que pour les résultats du mois en cours.",
+    "La comprobación de las condiciones de hoy solo está disponible para resultados del mes en curso.",
+    "La verifica delle condizioni di oggi è disponibile solo per i risultati del mese in corso.",
+    "A verificação das condições de hoje está disponível apenas para resultados do mês atual.",
+    "Die Prüfung der heutigen Bedingungen gibt es nur für Ergebnisse des laufenden Monats.",
+    "오늘 상황 확인은 대상 연월이 이번 달인 결과에만 사용할 수 있습니다."
+  ],
+  "月間予測の信頼度・SNRは変えず、今日の宇宙天気で悪くなりそうな時刻と周波数に印を付ける目安です。D-RAPの吸収はR1以上またはS1以上が出ている間だけ、現在の値が3時間続くとして見積もります。地磁気嵐によるMUFの低下とオーロラ帯の判定は経験的な目安です。": [
+    "A guide that marks the hours and frequencies today's space weather may degrade, without changing the monthly reliability or SNR. D-RAP absorption is estimated only while R1 or higher or S1 or higher is in progress, assuming the current values last 3 hours. MUF depression by geomagnetic storms and the auroral zone check are rules of thumb.",
+    "Repère qui signale les heures et fréquences que la météo spatiale du jour risque de dégrader, sans modifier la fiabilité ni le SNR mensuels. L’absorption D-RAP n’est estimée que pendant un épisode R1 ou plus, ou S1 ou plus, en supposant que les valeurs actuelles durent 3 heures. La baisse de MUF due aux orages géomagnétiques et le repérage de la zone aurorale sont des règles empiriques.",
+    "Guía que marca las horas y frecuencias que el clima espacial de hoy puede degradar, sin cambiar la fiabilidad ni la SNR mensuales. La absorción D-RAP solo se estima mientras hay R1 o superior, o S1 o superior, suponiendo que los valores actuales duran 3 horas. La reducción de la MUF por tormentas geomagnéticas y la detección de la zona auroral son reglas empíricas.",
+    "Indicazione che contrassegna le ore e le frequenze che la meteo spaziale di oggi può degradare, senza modificare affidabilità e SNR mensili. L’assorbimento D-RAP è stimato solo durante eventi R1 o superiori, o S1 o superiori, supponendo che i valori attuali durino 3 ore. Il calo della MUF per tempeste geomagnetiche e la verifica della zona aurorale sono regole empiriche.",
+    "Guia que marca as horas e frequências que o clima espacial de hoje pode degradar, sem alterar a confiabilidade nem a SNR mensais. A absorção D-RAP só é estimada enquanto houver R1 ou superior, ou S1 ou superior, supondo que os valores atuais durem 3 horas. A redução da MUF por tempestades geomagnéticas e a verificação da zona auroral são regras empíricas.",
+    "Richtwert, der die Stunden und Frequenzen markiert, die das heutige Weltraumwetter verschlechtern kann, ohne monatliche Zuverlässigkeit oder SNR zu ändern. Die D-RAP-Dämpfung wird nur bei R1 oder höher bzw. S1 oder höher geschätzt, unter der Annahme, dass die aktuellen Werte 3 Stunden anhalten. MUF-Absenkung durch geomagnetische Stürme und die Polarlichtzonen-Prüfung sind Faustregeln.",
+    "월간 예측의 신뢰도·SNR은 바꾸지 않고, 오늘의 우주 기상으로 나빠질 수 있는 시각과 주파수에 표시하는 기준입니다. D-RAP 흡수는 R1 이상 또는 S1 이상이 발생한 동안만, 현재 값이 3시간 계속된다고 보고 추정합니다. 지자기 폭풍에 의한 MUF 저하와 오로라대 판정은 경험적인 기준입니다."
+  ],
+  "地点間予測の結果に、今日の宇宙天気（R・S・G、D-RAP）で悪くなりそうな時刻と周波数の印を付け、今日の状況での推奨周波数を示します。": [
+    "Point-to-point results now mark the hours and frequencies that today's space weather (R, S, G and D-RAP) may degrade, and show the recommended frequency under today's conditions.",
+    "Les résultats point à point signalent désormais les heures et fréquences que la météo spatiale du jour (R, S, G et D-RAP) risque de dégrader, et indiquent la fréquence recommandée selon les conditions du jour.",
+    "Los resultados punto a punto marcan ahora las horas y frecuencias que el clima espacial de hoy (R, S, G y D-RAP) puede degradar, y muestran la frecuencia recomendada con las condiciones de hoy.",
+    "I risultati punto-punto ora contrassegnano le ore e le frequenze che la meteo spaziale di oggi (R, S, G e D-RAP) può degradare, e mostrano la frequenza consigliata con le condizioni di oggi.",
+    "Os resultados ponto a ponto agora marcam as horas e frequências que o clima espacial de hoje (R, S, G e D-RAP) pode degradar, e mostram a frequência recomendada nas condições de hoje.",
+    "Punkt-zu-Punkt-Ergebnisse markieren jetzt die Stunden und Frequenzen, die das heutige Weltraumwetter (R, S, G und D-RAP) verschlechtern kann, und zeigen die empfohlene Frequenz unter heutigen Bedingungen.",
+    "지점 간 예측 결과에 오늘의 우주 기상(R·S·G, D-RAP)으로 나빠질 수 있는 시각과 주파수를 표시하고, 오늘 상황에서의 추천 주파수를 보여 줍니다."
   ]
 };

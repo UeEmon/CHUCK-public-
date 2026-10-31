@@ -17,7 +17,8 @@ from engine import Engine, InputError, EngineError, Cancelled, validate, number,
 import public_data
 import space_weather_view
 from space_weather import ENGINE_SSN_SCALE, MAX_FILE as SPACE_WEATHER_MAX_FILE, SpaceWeather, SpaceWeatherError, engine_ssn
-from observations import Observations, GIRO_STATIONS
+from observations import Observations, GIRO_STATIONS, DRAP_URL, parse_drap
+import today
 from effective_ssn import EffectiveSSN, EffectiveSSNError
 import diversity
 import mesh
@@ -293,6 +294,9 @@ class Handler(BaseHTTPRequestHandler):
                 if len(pieces)==4: return self.json(200,r)
                 if len(pieces)==5:
                     ext=pieces[4]
+                    if ext=='today':
+                        # Today's space weather marks on the monthly result; the result itself is not changed.
+                        return self.json(200,today.assess(r,OBSERVATIONS.fetch('drap',DRAP_URL,parse_drap),SPACE_WEATHER.feed('scales')))
                     if ext=='json': return self.send(200,json.dumps(r,ensure_ascii=False,indent=2),'application/json; charset=utf-8',r['id']+'.json')
                     if ext in ('raw','input') and 'hours' in r:
                         return self.send(200,r['raw_output' if ext=='raw' else 'input_cards'],'text/plain; charset=utf-8',r['id']+'.'+('out' if ext=='raw' else 'dat'))
