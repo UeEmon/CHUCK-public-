@@ -59,6 +59,18 @@ class _NoRedirect(HTTPRedirectHandler):
 ID_CHARS = set('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_.:-')
 
 
+def local_network(host):
+    """Plain HTTP is allowed only where tokens never cross the internet."""
+    if host in ('localhost',) or '.' not in host and ':' not in host: return True  # Loopback or a container service name.
+    try:
+        import ipaddress
+        address = ipaddress.ip_address(host)
+        private = ('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fc00::/7')  # RFC 1918 / ULA only.
+        return address.is_loopback or any(address in ipaddress.ip_network(n) for n in private if ipaddress.ip_network(n).version == address.version)
+    except ValueError:
+        return False
+
+
 def parse_iso(value):
     return datetime.fromisoformat(value.replace('Z', '+00:00')).timestamp()
 
@@ -121,8 +133,8 @@ class Gateway:
         target = urlparse(url)
         if target.scheme not in ('http', 'https') or not target.hostname or target.username or target.password:
             raise JigError('--url はユーザー情報を含まないHTTP(S)のURLで指定してください')
-        if target.scheme == 'http' and target.hostname not in ('127.0.0.1', 'localhost', '::1'):
-            raise JigError('遠隔のゲートウェイにはHTTPSを使ってください（HTTPはループバックだけ）')
+        if target.scheme == 'http' and not local_network(target.hostname):
+            raise JigError('遠隔のゲートウェイにはHTTPSを使ってください（HTTPはループバックとコンテナ間・社内アドレスだけ）')
         self.base = url.rstrip('/')
         self.ingest_token, self.gateway_token = ingest_token, gateway_token
         self.nmea_host, self.nmea_port = nmea_host or target.hostname, nmea_port
@@ -344,7 +356,9 @@ def main(argv=None):
     parser.add_argument('--interval', type=float, default=5, help='runの送信間隔秒（既定5）')
     parser.add_argument('--duration', type=float, default=0, help='runの実行秒数（0は停止するまで）')
     parser.add_argument('--no-setup', action='store_true', help='runで局登録と受信キー発行を省く（--keysで受信キーを渡す）')
-    parser.add_argument('--port', type=int, default=8090, help='serveの管制画面のポート（既定8090、127.0.0.1だけで待ち受け）')
+    parser.add_argument('--port', type=int, default=8090, help='serveの管制画面のポート（既定8090）')
+    parser.add_argument('--bind', default='127.0.0.1', help='serveの待ち受けアドレス（既定127.0.0.1。コンテナで認証付きプロキシの裏に置く場合だけ0.0.0.0）')
+    parser.add_argument('--allow-host', action='append', default=[], help='管制画面を開くときのホスト名（プロキシ越しの公開名。複数指定可）')
     parser.add_argument('--keys', type=lambda p: __import__('pathlib').Path(p), help='setupで受信キーを書き出す/runで読み込むJSONファイル')
     args = parser.parse_args(argv)
     log = lambda text: print(text, flush=True)
@@ -361,7 +375,7 @@ def main(argv=None):
             return 1 if failed else 0
         if args.command == 'serve':
             import simulator_console
-            simulator_console.serve(gateway, stations, args.interval, args.port, log)
+            simulator_console.serve(gateway, stations, args.interval, args.port, log, bind=args.bind, allowed_hosts=args.allow_host)
             return 0
         if args.command == 'setup' or not args.no_setup:
             setup(gateway, stations, log)

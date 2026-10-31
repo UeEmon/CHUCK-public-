@@ -1,6 +1,7 @@
 """Browser control panel for the position gateway test jig.
 
-Started by `gateway_simulator.py serve`. It listens on 127.0.0.1 only, keeps
+Started by `gateway_simulator.py serve`. It listens on 127.0.0.1 unless told
+to listen behind an authenticating reverse proxy (--bind/--allow-host). It keeps
 the tokens and stream keys on the server side, and accepts control requests
 only with the per-run token embedded in the page it serves.
 """
@@ -254,7 +255,7 @@ class Console:
                                     gateway_token=len(self.gateway.gateway_token or '') >= 32))
 
 
-def make_server(console, port=8090):
+def make_server(console, port=8090, bind='127.0.0.1', allowed_hosts=()):
     token = secrets.token_urlsafe(24)
 
     class Handler(BaseHTTPRequestHandler):
@@ -270,12 +271,13 @@ def make_server(console, port=8090):
             self.end_headers(); self.wfile.write(data)
 
         def local_host(self):
-            # Refuse DNS rebinding: only the loopback names this server listens on.
+            # Refuse DNS rebinding: only the loopback names, or the public names given with --allow-host.
             host = self.headers.get('Host', '')
-            return host in (f'127.0.0.1:{self.server.server_port}', f'localhost:{self.server.server_port}')
+            port = self.server.server_port
+            return host in (f'127.0.0.1:{port}', f'localhost:{port}') or host.split(':')[0] in allowed_hosts and host.count(':') <= 1
 
         def do_GET(self):
-            if not self.local_host(): return self.reply(403, dict(error='127.0.0.1から開いてください'))
+            if not self.local_host(): return self.reply(403, dict(error='許可されていないホスト名です'))
             path = urlparse(self.path).path
             files = {'/': ('index.html', 'text/html; charset=utf-8'), '/simulator.js': ('simulator.js', 'text/javascript; charset=utf-8'),
                      '/simulator.css': ('simulator.css', 'text/css; charset=utf-8')}
@@ -304,16 +306,20 @@ def make_server(console, port=8090):
             except (jig.JigError, ValueError) as error:
                 self.reply(400, dict(error=str(error)))
 
-    server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    if bind not in ('127.0.0.1', 'localhost', '::1') and not allowed_hosts:
+        raise jig.JigError('127.0.0.1以外で待ち受けるときは --allow-host で公開名を指定してください')
+    allowed_hosts = tuple(allowed_hosts)
+    server = ThreadingHTTPServer((bind, port), Handler)
     server.daemon_threads = True
     return server, token
 
 
-def serve(gateway, stations, interval, port, log):
+def serve(gateway, stations, interval, port, log, bind='127.0.0.1', allowed_hosts=()):
     console = Console(gateway, stations, interval)
-    server, _ = make_server(console, port)
+    server, _ = make_server(console, port, bind, allowed_hosts)
     console.start_thread()
-    log(f'管制画面: http://127.0.0.1:{server.server_port}/  （停止はCtrl+C）')
+    names = [f'https://{h}/' for h in allowed_hosts] or [f'http://127.0.0.1:{server.server_port}/']
+    log('管制画面: ' + ' '.join(names) + '  （停止はCtrl+C）')
     try: server.serve_forever()
     except KeyboardInterrupt: pass
     finally:

@@ -109,6 +109,25 @@ class SimulatorTests(unittest.TestCase):
         status,data=request('POST','/api/action',{'Content-Type':'application/json','X-Simulator-Token':token},'{"action":"start"}')
         self.assertEqual(status,200);self.assertTrue(json.loads(data)['running'])
 
+    def test_console_behind_a_proxy_accepts_only_its_public_name(self):
+        console=simulator_console.Console(self.gateway(),jig.load_scenario(None))
+        with self.assertRaises(jig.JigError):simulator_console.make_server(console,0,'0.0.0.0')
+        server,token=simulator_console.make_server(console,0,'127.0.0.1',['sim.example.org'])
+        threading.Thread(target=server.serve_forever,daemon=True).start()
+        self.addCleanup(console.close);self.addCleanup(server.server_close);self.addCleanup(server.shutdown)
+        def get(host):
+            c=http.client.HTTPConnection('127.0.0.1',server.server_port,timeout=5);c.request('GET','/',headers={'Host':host})
+            r=c.getresponse();r.read();c.close();return r.status
+        self.assertEqual(get('sim.example.org'),200)
+        self.assertEqual(get('sim.example.org.evil.test'),403)
+        self.assertEqual(get('evil.test'),403)
+
+    def test_plain_http_only_inside_private_networks(self):
+        for url in ('http://position-gateway:8001','http://10.0.0.5:8001','http://localhost:18083'):
+            jig.Gateway(url,'i'*40,'c'*40,None,10110)
+        for url in ('http://gateway.example.org','http://203.0.113.5:8001'):
+            with self.subTest(url=url),self.assertRaises(jig.JigError):jig.Gateway(url,'i'*40,'c'*40,None,10110)
+
     def test_rmc_and_dead_reckoning(self):
         sys.path.insert(0,str(ROOT/'app'))
         from positions import parse_rmc
