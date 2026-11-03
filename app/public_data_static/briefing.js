@@ -14,6 +14,43 @@ function fileUrl(run,name,download=false){return '/ui/api/briefing/file?'+new UR
 function gateText(g){return g.passed===true?'合格':g.passed===false?'不合格':'対象外';}
 function gridTable(headers,rows){const t=document.createElement('table'),head=document.createElement('tr');headers.forEach(v=>head.append(cell('th',v)));t.append(head);for(const values of rows){const tr=document.createElement('tr');for(const v of values){const td=document.createElement('td');if(v instanceof Node)td.append(v);else td.textContent=v??'—';tr.append(td);}t.append(tr);}return t;}
 function datalist(provider){let list=$('models-'+provider);if(!list){list=document.createElement('datalist');list.id='models-'+provider;document.body.append(list);}list.replaceChildren(...(briefModels[provider]||[]).map(m=>{const o=document.createElement('option');o.value=m.id;o.label=m.label;return o;}));return list.id;}
+const PRIORITY_LABELS=[['precision','精度重視'],['balance','バランス重視'],['cost','コスト重視']];
+// Fills providers and models from the generative AIs that have a key. Nothing is saved until 「設定を保存」.
+async function recommendSteps(priority,result){
+ const form=$('briefing-settings'),keys={};
+ for(const p of brief.settings.providers){const v=form.elements['key-'+p.id].value;if(v)keys[p.id]=v;}
+ result.textContent='取得しています。';
+ try{
+  const r=await api('/ui/api/briefing/recommend',{priority,keys});
+  Object.assign(briefModels,r.models);for(const p of Object.keys(r.models))datalist(p);
+  for(const [step,c] of Object.entries(r.steps)){
+   form.elements['step-provider-'+step].value=c.provider;
+   const box=document.querySelector('.model-choice[data-step="'+step+'"]');box.replaceChildren();box.dataset.value=c.model;renderModelChoice(box,c.provider);
+  }
+  refreshModelChoices();
+  const label=s=>STEP_LABELS[s],used=Object.keys(r.models).map(p=>brief.settings.providers.find(x=>x.id===p).label);
+  const parts=[used.length?'次の生成AIから設定しました：'+used.join('、')+'。':'APIキーのある生成AIがありません。'];
+  if(r.unfilled.length)parts.push('合うモデルが見つからない工程：'+r.unfilled.map(label).join('、')+'。');
+  if(Object.keys(r.skipped).length)parts.push('一覧を取得できなかった生成AI：'+Object.entries(r.skipped).map(([p,e])=>brief.settings.providers.find(x=>x.id===p).label+'（'+e+'）').join('、')+'。');
+  if(Object.keys(r.steps).some(st=>brief.settings.step_kinds[st]==='speech'))parts.push('音声合成の「声の名前」は入力してください。');
+  parts.push('内容を確認して「設定を保存」を押してください。');
+  result.textContent=parts.join(' ');
+ }catch(e){result.textContent=e.message;notice(e.message,true);}
+}
+// The model of a step: a list to choose from once the provider's models are fetched, otherwise typed in.
+function renderModelChoice(box,provider){
+ const name='step-model-'+box.dataset.step,current=box.querySelector('[name]')?.value??box.dataset.value;
+ // By default only the current models of the step's kind (text or speech); the checkbox shows the whole list.
+ const all=document.querySelector('[name="models-all"]')?.checked,models=(briefModels[provider]||[]).filter(m=>all||m.current&&m.kind===box.dataset.kind);
+ if(provider==='none'){box.replaceChildren(cell('span','—'),Object.assign(input(name,''),{type:'hidden'}));return;}
+ if(!models.length){const i=input(name,current,'text','「モデル一覧を取得」を押すか入力');i.setAttribute('list',datalist(provider));box.replaceChildren(i);return;}
+ const options=[['','選んでください'],...models.map(m=>[m.id,m.label&&m.label!==m.id?m.id+'（'+m.label+'）':m.id])];
+ if(current&&!models.some(m=>m.id===current))options.push([current,current+'（一覧にありません）']);
+ const s=select(name,options,current||''),manual=cell('button','手入力');manual.type='button';
+ manual.onclick=()=>{const i=input(name,s.value,'text','モデルIDを入力');i.setAttribute('list',datalist(provider));box.replaceChildren(i);i.focus();};
+ box.replaceChildren(s,manual);
+}
+function refreshModelChoices(){for(const box of document.querySelectorAll('.model-choice'))renderModelChoice(box,document.querySelector('[name="step-provider-'+box.dataset.step+'"]').value);}
 function renderBriefingStatus(){
  const b=brief,f=b.flags;
  $('briefing-flags').textContent='定時の自動作成 '+(f.scheduler_enabled?'有効（ローカル保存のみ）':'無効')+' · 自動公開 無効 · 一般配信 無効'+(f.auto_publish_requested||f.public_delivery_requested?'（環境変数で公開が指定されていますが、この版には公開機能がありません）':'');
@@ -45,12 +82,18 @@ function renderBriefingForm(){
   box.append(legend,cell('p',CREDENTIALS[p.credential]),labelled('APIキー',input('key-'+p.id,'','password',p.id==='local'?'必要な場合だけ':'')));
   if(p.credential==='saved')box.append(labelled(' 保存済みのキーを削除する',check('clear-'+p.id,false)));
   if(p.id==='local')box.append(labelled('接続先URL',input('endpoint-local',p.endpoint)),labelled('方式',select('protocol-local',[['ollama','Ollama'],['openai','OpenAI互換']],p.protocol)));
-  fetch.onclick=async()=>{fetch.disabled=true;try{const r=await api('/ui/api/briefing/models',{provider:p.id});briefModels[p.id]=r.models;datalist(p.id);notice(p.label+'：'+r.models.length+'件のモデルを取得しました。');}catch(e){notice(e.message,true);}finally{fetch.disabled=false;}};
-  box.append(fetch);return box;}));
+  const result=cell('span','');result.className='hint';
+  fetch.onclick=async()=>{fetch.disabled=true;result.textContent='取得しています。';try{const typed=form.elements['key-'+p.id].value;const r=await api('/ui/api/briefing/models',{provider:p.id,...(typed?{api_key:typed}:{})});briefModels[p.id]=r.models;datalist(p.id);refreshModelChoices();result.textContent=r.models.length+'件のモデルを取得しました。工程ごとの欄から選べます。';notice(p.label+'：'+r.models.length+'件のモデルを取得しました。');}catch(e){result.textContent=e.message;notice(e.message,true);}finally{fetch.disabled=false;}};
+  box.append(fetch,result);return box;}));
  const providerOptions=kind=>s.providers.filter(p=>kind!=='speech'||p.speech).map(p=>[p.id,p.label]);
- $('briefing-steps').replaceChildren(gridTable(['工程','生成AI','モデル','声の名前'],Object.entries(s.steps).map(([step,c])=>{
-  const kind=s.step_kinds[step],choice=select('step-provider-'+step,[...providerOptions(kind),...(step==='review'?[['none','使わない']]:[])],c.provider),model=input('step-model-'+step,c.model,'text','モデル一覧から選ぶか入力');
-  const sync=()=>model.setAttribute('list',datalist(choice.value));choice.onchange=sync;sync();
+ const priority=select('recommend-priority',PRIORITY_LABELS,'balance'),recommend=cell('button','推奨の組み合わせを設定'),advice=cell('p','');
+ recommend.type='button';advice.className='hint';recommend.onclick=async()=>{recommend.disabled=true;try{await recommendSteps(priority.value,advice);}finally{recommend.disabled=false;}};
+ const all=check('models-all',false);all.onchange=refreshModelChoices;
+ const tools=document.createElement('div');tools.className='recommend';tools.append(labelled('重視する点 ',priority),recommend,labelled(' 現行以外のモデルも表示する',all));
+ $('briefing-steps').replaceChildren(tools,advice,gridTable(['工程','生成AI','モデル','声の名前'],Object.entries(s.steps).map(([step,c])=>{
+  const kind=s.step_kinds[step],choice=select('step-provider-'+step,[...providerOptions(kind),...(step==='review'?[['none','使わない']]:[])],c.provider),model=document.createElement('span');
+  model.className='model-choice';model.dataset.step=step;model.dataset.kind=kind;model.dataset.value=c.model||'';
+  choice.onchange=()=>renderModelChoice(model,choice.value);renderModelChoice(model,choice.value);
   return [STEP_LABELS[step],choice,model,kind==='speech'?input('step-voice-'+step,c.voice,'text','例: 各社の声の名前'):'—'];})));
  const names=[...new Set([...Object.values(s.steps).filter(c=>c.provider!=='none'&&c.model).map(c=>c.provider+'/'+c.model),...Object.keys(s.pricing)])];
  $('briefing-pricing').replaceChildren(names.length?gridTable(['生成AI/モデル',...PRICE_FIELDS.map(f=>f[1]),'料金表のURL','確認日'],names.map(n=>{const row=s.pricing[n]||{};return [n,...PRICE_FIELDS.map(([f])=>input('price-'+f+'-'+n,row[f]??'','text','—')),input('price-source_url-'+n,row.source_url,'url','https://'),input('price-checked_on-'+n,row.checked_on,'date')];})):cell('p','工程にモデルを設定すると、ここに料金の入力欄が出ます。'));

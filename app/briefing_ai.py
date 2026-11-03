@@ -495,6 +495,119 @@ def speak(cfg, text, language):
     return audio, record(cfg, started, body, headers, 'speech', extra | {'audio_seconds': round(wav_seconds(audio), 2)})
 
 
+# ---- which listed models to offer ------------------------------------------------------------------
+# The providers' lists say nothing about which models are current, so these rules (names patterns only,
+# no model names) decide: speech steps get speech-synthesis models, text steps get general text models,
+# and of each family only the newest generation that is not a preview, an alias or a dated snapshot.
+SPEECH_MODEL = re.compile(r'(^|[-_.])tts([-_.]|$)', re.I)
+NOT_TEXT = re.compile(r'(^|[-_.])(tts|image|images|imagen|veo|sora|dall|audio|realtime|transcribe|whisper|embed|embedding|embeddings|'
+                      r'moderation|lyria|robotics|computer|gemma|aqa|banana|deep|research|antigravity|search|live|native)([-_.]|$)', re.I)
+NOT_CURRENT = re.compile(r'(^|[-_.])(preview|exp|experimental|latest|beta|alpha)([-_.]|$)', re.I)
+DATED = re.compile(r'[-_.@](\d{8}|\d{4}-\d{2}-\d{2}|\d{4})$')
+
+
+def model_kind(mid):
+    """'speech' for speech synthesis, 'text' for general text generation, 'other' for everything else."""
+    name = mid.rsplit('/', 1)[-1]
+    if SPEECH_MODEL.search(name):
+        return 'speech'
+    return 'other' if NOT_TEXT.search(name) else 'text'
+
+
+def family(mid):
+    """(family, generation): version numbers are taken out of the name, e.g. claude-opus-5-5 -> ('claude-opus', (5, 5))."""
+    name = DATED.sub('', mid.rsplit('/', 1)[-1].lower())
+    words, version = [], []
+    for part in re.split(r'[-_]', name):
+        # '5', '3.8' and '4o' are generations; 'o3' is the family 'o' in generation 3.
+        number = re.fullmatch(r'(\d+(?:\.\d+)*)[a-z]?', part) or re.fullmatch(r'([a-z])(\d+(?:\.\d+)*)', part)
+        if number and number.re.pattern.startswith('(\\d'):
+            version += [int(x) for x in number.group(1).split('.')]
+        elif number:
+            words.append(number.group(1))
+            version += [int(x) for x in number.group(2).split('.')]
+        else:
+            words.append(part)
+    return '-'.join(words), tuple(version)
+
+
+def mark_current(models):
+    """Tags each model with its kind and whether it is offered by default (the newest current generation of its family)."""
+    best = {}
+    for m in models:
+        m['kind'] = model_kind(m['id'])
+        name = m['id'].rsplit('/', 1)[-1]
+        m['current'] = False
+        if m['kind'] == 'other' or NOT_CURRENT.search(name):
+            continue
+        fam, version = family(m['id'])
+        # Of equal generations, the undated name wins over a dated snapshot.
+        rank = (version, not DATED.search(name))
+        if fam not in best or rank > best[fam][0]:
+            best[fam] = (rank, m)
+    for _, m in best.values():
+        m['current'] = True
+    return models
+
+
+# ---- recommended combinations -----------------------------------------------------------------------
+# Three priorities over the providers that have a key. Tiers come from the size words in the model names
+# only (the lists carry no prices): 3 = largest (pro, opus, ...), 2 = middle (flash, sonnet, mini, ...),
+# 1 = smallest (lite, nano, haiku, ...). A name without a size word is taken as the largest of its family.
+PRIORITIES = ('precision', 'balance', 'cost')
+SMALL = re.compile(r'(^|[-_.])(lite|nano|haiku|small|tiny|micro)([-_.]|$)', re.I)
+MIDDLE = re.compile(r'(^|[-_.])(flash|sonnet|mini|medium|turbo)([-_.]|$)', re.I)
+
+
+def tier(mid):
+    name = mid.rsplit('/', 1)[-1]
+    return 1 if SMALL.search(name) else 2 if MIDDLE.search(name) else 3
+
+
+def pick(models, kind, priority):
+    """The current model of this kind that best fits the priority, or None."""
+    found = [m for m in models if m.get('current') and m.get('kind') == kind]
+    if not found:
+        return None
+    fit = {'precision': lambda t: -t, 'cost': lambda t: t, 'balance': lambda t: (abs(t - 2), -t)}[priority]
+    return min(found, key=lambda m: (fit(tier(m['id'])), tuple(-x for x in family(m['id'])[1]), len(m['id']), m['id']))
+
+
+def recommend(available, priority):
+    """Steps filled from {provider: models marked by mark_current}; providers without a fitting model are left out.
+    The review goes to another provider when one exists, so that it stays independent of the script.
+    Returns {'steps': {step: {'provider', 'model'}}, 'unfilled': [steps no listed model fits]}."""
+    if priority not in PRIORITIES:
+        raise ValueError('重視する点が不正です')
+    order = [p for p in PROVIDERS if p in available]
+    # A local model has no API fee, so cost first tries it.
+    if priority == 'cost' and 'local' in order:
+        order.remove('local'); order.insert(0, 'local')
+    text = [(p, pick(available[p], 'text', priority)) for p in order]
+    text = [(p, m) for p, m in text if m]
+    if text:
+        best = max(t for _, m in text for t in [tier(m['id'])]) if priority == 'precision' else None
+        primary = next((p, m) for p, m in text if best is None or tier(m['id']) == best)
+    speech = [(p, pick(available[p], 'speech', priority)) for p in order if p in SPEECH_PROVIDERS]
+    speech = [(p, m) for p, m in speech if m]
+    if speech:
+        # The script's provider is kept for speech when it can speak, so fewer keys and bills are involved.
+        voice = next(((p, m) for p, m in speech if text and p == primary[0]), speech[0])
+    steps, unfilled = {}, []
+    for step, kind in STEPS.items():
+        if kind == 'speech':
+            chosen = voice if speech else None
+        elif step == 'review' and text:
+            chosen = next(((p, m) for p, m in text if p != primary[0]), primary)
+        else:
+            chosen = primary if text else None
+        if chosen:
+            steps[step] = {'provider': chosen[0], 'model': chosen[1]['id']}
+        else:
+            unfilled.append(step)
+    return {'steps': steps, 'unfilled': unfilled}
+
+
 def list_models(cfg):
     """The provider's own model list: the way to confirm a model ID exists. Also serves as the connection test."""
     p = cfg['provider']

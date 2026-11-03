@@ -1,6 +1,7 @@
 """Admin page of the public-data fetcher: its own password and expiring HttpOnly sessions, like the gateway's."""
 from http.cookies import SimpleCookie
 from pathlib import Path
+import concurrent.futures
 import json
 import os
 import secrets
@@ -139,9 +140,36 @@ class PublicDataUI:
             if path=='/ui/api/briefing/models':
                 if data.get('provider') not in briefing_ai.PROVIDERS:raise ValueError('生成AIの種類が不正です')
                 settings=self.briefing().settings
-                try:models=briefing_ai.list_models(settings.provider(data['provider']))
+                cfg=settings.provider(data['provider'])
+                # A key typed on the page but not saved yet is used for this one listing only, never stored.
+                typed=data.get('api_key')
+                if typed is not None:
+                    if not isinstance(typed,str) or len(typed)>4096 or not typed.isascii() or not typed.isprintable():raise ValueError('APIキーが不正です')
+                    if typed.strip():cfg['api_key']=typed.strip()
+                try:models=briefing_ai.list_models(cfg)
                 except briefing_ai.AIError as error:self.ui_json(502,dict(error=str(error)));return True
-                self.ui_json(200,dict(provider=data['provider'],models=models));return True
+                self.ui_json(200,dict(provider=data['provider'],models=briefing_ai.mark_current(models)));return True
+            if path=='/ui/api/briefing/recommend':
+                # Lists the models of every provider that has a key (saved, or typed on the page for this call only) and
+                # fills the steps from them. Nothing is saved: the administrator checks the form and saves it.
+                priority=data.get('priority');keys=data.get('keys') or {}
+                if priority not in briefing_ai.PRIORITIES:raise ValueError('重視する点が不正です')
+                if not isinstance(keys,dict):raise ValueError('APIキーが不正です')
+                settings=self.briefing().settings;configs={}
+                for p in briefing_ai.PROVIDERS:
+                    cfg=settings.provider(p);typed=keys.get(p)
+                    if typed is not None:
+                        if not isinstance(typed,str) or len(typed)>4096 or not typed.isascii() or not typed.isprintable():raise ValueError('APIキーが不正です')
+                        if typed.strip():cfg['api_key']=typed.strip()
+                    if cfg['api_key'] or p=='local' and cfg['endpoint']:configs[p]=cfg
+                def listing(cfg):
+                    try:return briefing_ai.mark_current(briefing_ai.list_models(cfg)),None
+                    except briefing_ai.AIError as error:return None,str(error)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+                    results=dict(zip(configs,pool.map(listing,configs.values())))
+                models={p:m for p,(m,_) in results.items() if m is not None}
+                skipped={p:e for p,(_,e) in results.items() if e is not None}
+                self.ui_json(200,dict(priority=priority,models=models,skipped=skipped,**briefing_ai.recommend(models,priority)));return True
             if path=='/ui/api/briefing/test':
                 self.ui_json(200,briefing_module.test_connections(self.briefing()));return True
             if path=='/ui/api/briefing/run':

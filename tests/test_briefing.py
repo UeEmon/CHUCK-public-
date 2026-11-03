@@ -434,6 +434,73 @@ class AdminPageTests(unittest.TestCase):
         self.assertEqual(self.request('/ui/api/briefing/run', {'mode': 'publish'}, cookie=cookie)[0], 400)
         self.assertEqual(self.request('/ui/api/briefing/file?date=2026-11-03&run=x&name=../settings.json', cookie=cookie)[0], 404)
         self.assertEqual(self.request('/ui/api/briefing/models', {'provider': 'nope'}, cookie=cookie)[0], 400)
+        # A key typed but not saved lists the models once and is never stored.
+        seen = []
+        def listing(cfg):
+            seen.append(cfg['api_key'])
+            if not cfg['api_key']:
+                raise ai.AIError('APIキーを設定してください')
+            return [{'id': 'model-a', 'label': 'Model A'}]
+        with patch.object(ai, 'list_models', listing):
+            self.assertEqual(self.request('/ui/api/briefing/models', {'provider': 'openai'}, cookie=cookie)[0], 502)
+            status, body = self.request('/ui/api/briefing/models', {'provider': 'openai', 'api_key': ' typed-key-123 '}, cookie=cookie)
+            self.assertEqual((status, body['models'][0]['id']), (200, 'model-a'))
+            self.assertEqual(self.request('/ui/api/briefing/models', {'provider': 'openai', 'api_key': 'bad\nkey'}, cookie=cookie)[0], 400)
+        self.assertEqual(seen, ['', 'typed-key-123'])
+        self.assertNotIn('typed-key-123', json.dumps(self.request('/ui/api/briefing', cookie=cookie)[1]))
+        # The recommendation lists only providers with a key (Claude saved above, Gemini typed) and saves nothing.
+        asked = []
+        def lists(cfg):
+            asked.append(cfg['provider'])
+            if cfg['provider'] == 'local':
+                raise ai.AIError('接続できませんでした')
+            return {'claude': [{'id': 'claude-opus-9-1'}, {'id': 'claude-haiku-9-1'}],
+                    'gemini': [{'id': 'gemini-9-pro'}, {'id': 'gemini-9-flash-lite'}, {'id': 'gemini-9-flash-lite-tts'}]}[cfg['provider']]
+        with patch.object(ai, 'list_models', lists):
+            self.assertEqual(self.request('/ui/api/briefing/recommend', {'priority': 'cheap'}, cookie=cookie)[0], 400)
+            status, body = self.request('/ui/api/briefing/recommend', {'priority': 'cost', 'keys': {'gemini': 'typed-gemini-456'}}, cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertNotIn('openai', asked)
+        self.assertEqual(body['steps']['script'], {'provider': 'gemini', 'model': 'gemini-9-flash-lite'})
+        self.assertEqual(body['steps']['review'], {'provider': 'claude', 'model': 'claude-haiku-9-1'})
+        self.assertEqual(body['steps']['tts_ja'], {'provider': 'gemini', 'model': 'gemini-9-flash-lite-tts'})
+        self.assertNotIn('typed-gemini-456', json.dumps(body))
+        settings = self.request('/ui/api/briefing', cookie=cookie)[1]['settings']
+        self.assertEqual(settings['steps']['tts_ja']['model'], '')
+        self.assertNotIn('typed-gemini-456', json.dumps(settings))
+
+
+class ModelChoiceTests(unittest.TestCase):
+    MODELS = ['gemini-8-pro', 'gemini-9-pro', 'gemini-9-flash', 'gemini-9-flash-lite', 'gemini-10-pro-preview', 'gemini-9-flash-tts',
+              'gemini-9-flash-lite-tts', 'gemini-9-pro-tts', 'imagen-9', 'text-embedding-9', 'claude-opus-9-1', 'claude-opus-9',
+              'claude-opus-8-20250101', 'claude-sonnet-9-1', 'claude-haiku-9-1', 'gpt-9', 'gpt-9-20260101', 'gpt-9-mini', 'gpt-8',
+              'gpt-9-nano', 'gpt-9-mini-tts', 'o9', 'o8-mini', 'gpt-9-latest']
+
+    def marked(self, prefix=''):
+        return ai.mark_current([{'id': m} for m in self.MODELS if m.startswith(prefix)])
+
+    def test_only_the_newest_current_generation_of_each_family(self):
+        current = {m['id'] for m in self.marked() if m['current']}
+        self.assertEqual(current, {'gemini-9-pro', 'gemini-9-flash', 'gemini-9-flash-lite', 'gemini-9-flash-tts', 'gemini-9-flash-lite-tts',
+                                   'gemini-9-pro-tts', 'claude-opus-9-1', 'claude-sonnet-9-1', 'claude-haiku-9-1', 'gpt-9', 'gpt-9-mini',
+                                   'gpt-9-nano', 'gpt-9-mini-tts', 'o9', 'o8-mini'})
+        kinds = {m['id']: m['kind'] for m in self.marked()}
+        self.assertEqual((kinds['gemini-9-flash-tts'], kinds['imagen-9'], kinds['gpt-9']), ('speech', 'other', 'text'))
+
+    def test_priorities_pick_by_size_words(self):
+        models = {'gemini': self.marked('gemini'), 'claude': self.marked('claude')}
+        picks = {p: ai.recommend(models, p)['steps'] for p in ai.PRIORITIES}
+        self.assertEqual([picks[p]['script']['model'] for p in ai.PRIORITIES], ['gemini-9-pro', 'gemini-9-flash', 'gemini-9-flash-lite'])
+        self.assertEqual([picks[p]['review']['model'] for p in ai.PRIORITIES], ['claude-opus-9-1', 'claude-sonnet-9-1', 'claude-haiku-9-1'])
+        self.assertEqual([picks[p]['tts_en']['model'] for p in ai.PRIORITIES], ['gemini-9-pro-tts', 'gemini-9-flash-tts', 'gemini-9-flash-lite-tts'])
+        with self.assertRaises(ValueError):
+            ai.recommend(models, 'cheap')
+
+    def test_claude_never_gets_speech_and_one_provider_reviews_itself(self):
+        result = ai.recommend({'claude': self.marked('claude')}, 'balance')
+        self.assertEqual(result['unfilled'], ['tts_en', 'tts_ja'])
+        self.assertEqual(result['steps']['review'], result['steps']['script'])
+        self.assertEqual(ai.recommend({}, 'cost'), {'steps': {}, 'unfilled': list(ai.STEPS)})
 
 
 if __name__ == '__main__':
