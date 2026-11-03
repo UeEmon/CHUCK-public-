@@ -1,6 +1,24 @@
 'use strict';
 // Locale order: en, fr, es, it, pt, de, ko. Source keys are Japanese.
 const HF_MESSAGES={
+  "操作要領の第5版": [
+    "Manual, 5th edition",
+    "Manuel, 5e édition",
+    "Manual, 5.ª edición",
+    "Manuale, 5ª edizione",
+    "Manual, 5.ª edição",
+    "Handbuch, 5. Ausgabe",
+    "조작 요령 제5판"
+  ],
+  "操作要領（第5版）を最新の画面に合わせて更新しました。カバー範囲の周波数×時刻マトリックス、計算方式と昼夜表示、今日の状況での確認、打上げ角分析、宇宙天気の実況・予報、公開データの取得用コンテナ、船首方位に合わせるアンテナ、NMEAのTCP・UDP受信とシリアル中継を反映し、8言語すべての画面図を撮り直しました。": [
+    "The manual (5th edition) has been updated to the current screens. It covers the frequency × time coverage matrix, the calculation method and day/night display, today's conditions check, takeoff angle analysis, space weather now & forecast, the public-data container, antennas that follow the heading, and NMEA reception over TCP/UDP with the serial bridge; all figures were retaken in all 8 languages.",
+    "Le manuel (5e édition) a été mis à jour selon les écrans actuels. Il couvre la matrice fréquence × heure de la couverture, la méthode de calcul et l’affichage jour/nuit, la vérification des conditions du jour, l’analyse de l’angle de départ, la météo spatiale (situation et prévisions), le conteneur de données publiques, les antennes qui suivent le cap et la réception NMEA en TCP/UDP avec le pont série ; toutes les figures ont été refaites dans les 8 langues.",
+    "El manual (5.ª edición) se ha actualizado con las pantallas actuales. Incluye la matriz frecuencia × hora de la cobertura, el método de cálculo y la vista día/noche, la comprobación de las condiciones de hoy, el análisis del ángulo de salida, el clima espacial (situación y pronóstico), el contenedor de datos públicos, las antenas que siguen el rumbo de proa y la recepción NMEA por TCP/UDP con el puente serie; todas las figuras se han vuelto a tomar en los 8 idiomas.",
+    "Il manuale (5ª edizione) è stato aggiornato alle schermate attuali. Tratta la matrice frequenza × ora della copertura, il metodo di calcolo e la visualizzazione giorno/notte, la verifica delle condizioni di oggi, l’analisi dell’angolo di partenza, la meteo spaziale (situazione e previsioni), il container dei dati pubblici, le antenne che seguono la prua e la ricezione NMEA via TCP/UDP con il ponte seriale; tutte le figure sono state rifatte in tutte le 8 lingue.",
+    "O manual (5.ª edição) foi atualizado para os ecrãs atuais. Abrange a matriz frequência × hora da cobertura, o método de cálculo e a exibição dia/noite, a verificação das condições de hoje, a análise do ângulo de partida, o clima espacial (situação e previsão), o contentor de dados públicos, as antenas que seguem a proa e a receção NMEA por TCP/UDP com a ponte série; todas as figuras foram refeitas nos 8 idiomas.",
+    "Das Handbuch (5. Ausgabe) wurde an die aktuellen Bildschirme angepasst. Es behandelt die Abdeckungsmatrix Frequenz × Zeit, Berechnungsmethode und Tag/Nacht-Anzeige, die Prüfung der heutigen Bedingungen, die Abstrahlwinkel-Analyse, Lage und Vorhersage des Weltraumwetters, den Container für öffentliche Daten, dem Steuerkurs folgende Antennen sowie den NMEA-Empfang über TCP/UDP mit der seriellen Brücke; alle Abbildungen wurden in allen 8 Sprachen neu aufgenommen.",
+    "조작 요령(제5판)을 최신 화면에 맞추어 갱신했습니다. 커버리지의 주파수×시각 매트릭스, 계산 방식과 주야 표시, 오늘 상황 확인, 발사각 분석, 우주 기상 실황·예보, 공개 데이터 수집 컨테이너, 선수 방위에 맞추는 안테나, TCP·UDP를 통한 NMEA 수신과 시리얼 중계를 반영하고, 8개 언어의 그림을 모두 다시 찍었습니다."
+  ],
   "操作要領の第4版": [
     "Manual, 4th edition",
     "Manuel, 4e édition",
