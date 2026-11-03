@@ -46,7 +46,9 @@ def is_old(value, seconds=3600, now=None):
 
 
 def parse_drap(text):
-    match = re.search(r'Product Valid At\s*:\s*(\d{4}-\d\d-\d\d \d\d:\d\d) UTC', text)
+    # NOAA has labelled the time both ways; the valid time wins when both are present.
+    match = (re.search(r'Product Valid At\s*:\s*(\d{4}-\d\d-\d\d \d\d:\d\d) UTC', text)
+             or re.search(r'Product Issued At\s*:\s*(\d{4}-\d\d-\d\d \d\d:\d\d) UTC', text))
     if not match:
         raise ValueError('D-RAP timestamp missing')
     lons = None

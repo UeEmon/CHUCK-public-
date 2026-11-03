@@ -41,6 +41,14 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(d['observed_at'],'2026-10-15T06:00:00+00:00')
         json.dumps(d,allow_nan=False)
 
+    def test_drap_accepts_issued_at_only(self):
+        issued=DRAP.replace('# Product Valid At : 2026-10-15 06:00 UTC','# Product Issued At : 2026-10-15 05:58 UTC')
+        self.assertEqual(parse_drap(issued)['observed_at'],'2026-10-15T05:58:00+00:00')
+
+    def test_drap_prefers_valid_at_over_issued_at(self):
+        both=DRAP.replace('# Product Valid At','# Product Issued At : 2026-10-15 05:58 UTC\n# Product Valid At')
+        self.assertEqual(parse_drap(both)['observed_at'],'2026-10-15T06:00:00+00:00')
+
     def test_drap_rejects_truncated_or_wrong_format(self):
         for text in ['error page',DRAP.replace('10.0 NaN 20.0','10.0 NaN')]:
             with self.assertRaises(ValueError):parse_drap(text)
