@@ -131,6 +131,9 @@ const {chromium}=require('playwright');
   const metrics=await page.evaluate(()=>{const td=()=>document.querySelector('.coverage-matrix td.selected');const s=[td().style.background,coverageColors('signal_dbw')[7]];
    $('cov_metric').value='snr_db_hz';$('cov_metric').onchange();const snr=td().textContent;$('cov_metric').value='reliability';$('cov_metric').onchange();return [...s,snr,td().textContent];});
   assert.equal(metrics[0],metrics[1].replace(/,/g,', '));assert.deepEqual(metrics.slice(2),['50','90']);
+  // The coverage tab draws no TX-RX paths; other tabs still do.
+  const routes=await page.evaluate(()=>{const n=()=>document.querySelectorAll('#map path[stroke-linecap="round"]').length;const coverage=[n(),$('route-info').textContent];tab('prediction');const other=n();tab('coverage');return [...coverage,other];});
+  assert.equal(routes[0],0);assert.match(routes[1],/パスは表示しません/);assert.ok(routes[2]>0);
   // The whole world asks first; declining starts nothing.
   const confirm=await page.evaluate(async()=>{const answer=confirmDialog(),open=$('calc-confirm').open;$('calc-confirm-no').click();const no=await answer;const again=confirmDialog();$('calc-confirm-ok').click();return [open,no,await again,$('calc-confirm').open];});
   assert.deepEqual(confirm,[true,false,true,false]);
