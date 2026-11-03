@@ -9,6 +9,7 @@
 | 表示 | データ | 内容 |
 |---|---|---|
 | R・S・Gのタイル | NOAA `scales` の `"0"`（最新）と `"-1"`（過去24時間の最大） | 0＝障害なし、1〜2＝黄、3＝橙、4〜5＝赤。色だけでなくレベル名も表示 |
+| Kpのタイル | NOAA `kp`・`kp-forecast` | 最新のKp（3時間値、推定値を含む）と相当するGレベル。6時間より古いときは薄く表示 |
 | 最新の黒点数 | NOAA `observed` | 最新の月間SSN・F10.7、最新の平滑SSNと計算に使う値（×0.7） |
 | 距離別参考MUF | NICT 国内4局 | 横軸は伝搬距離（0 kmは垂直MUF＝foF2相当）。古い局は破線で薄く表示 |
 | D-RAP世界図 | NOAA D-RAP | HAFの格子（黄＝低、赤＝高、透明＝0、灰＝欠測）と最大HAFの位置。古いときは薄く表示 |
@@ -17,12 +18,13 @@
 
 | 表示 | データ | 内容 |
 |---|---|---|
+| Kp指数 | NOAA `kp`（過去7日の観測）・`kp-forecast`（3日予報） | 3時間ごとの棒グラフ。Kp 5（G1）以上をGレベルの色で、予報は薄い破線の棒で表示。予報期間の最大値も表示 |
 | 3日予報 | NOAA `scales` の `"1"`〜`"3"` | R1〜R2・R3以上・S1以上の発生確率（%）と地磁気嵐（G）の予報レベル |
 | 太陽活動周期 | NOAA `observed`・`predicted` | 2008年以降の月間値・平滑値（実績）と予測平滑値（帯は予測の上限〜下限）。SSNとF10.7を切り替え。マウスを重ねるとその月の値 |
 | 今後12か月 | NOAA `predicted` | 予測平滑SSN、予測範囲、計算に使う値（×0.7）、予測F10.7 |
 
 ## API
 
-`GET /api/space-weather/overview` — 上の表示に使う系列（`solar_cycle`）とR/S/Gの5日分（`scales.days`、`kind` は `max24h`・`latest`・`forecast`）を返します。CHUCKが保持しているデータを返すだけで、取得用コンテナに再取得を求めません。実況の観測値は従来どおり `GET /api/observations` から読みます。
+`GET /api/space-weather/overview` — 上の表示に使う系列（`solar_cycle`）とR/S/Gの5日分（`scales.days`、`kind` は `max24h`・`latest`・`forecast`）、Kp（`kp.rows`、`kind` は `observed`・`estimated`・`predicted`、`g` は相当するGレベル）を返します。CHUCKが保持しているデータを返すだけで、取得用コンテナに再取得を求めません。実況の観測値は従来どおり `GET /api/observations` から読みます。
 
 タブを開いたときと、開いている間5分ごとに読み直します。欠測（−1・null・非有限値）は0として扱わず、グラフでは線を途切れさせます。

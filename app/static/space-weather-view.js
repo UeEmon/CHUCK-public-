@@ -25,10 +25,33 @@ function renderSwvScales(){
   const past=max?.[key].scale,detail=cell('small',`過去24時間の最大 ${past===null||past===undefined?'—':key+past} · ${SWV_SCALES[key][1]}`);
   tile.append(head,chip,name,detail);box.append(tile);
  }
+ const kp=swv.overview.kp?.latest;
+ if(kp){const tile=document.createElement('div');tile.className='swv-tile'+(swv.overview.kp.stale?' swv-stale':'');tile.append(cell('span','最新のKp指数（3時間値）'),cell('strong',fmt(kp.kp,2)),cell('small',swvTime(kp.time)+(kp.g?' · G'+kp.g+' '+SWV_LEVELS[kp.g]:'')));box.append(tile);}
  for(const [label,value,note] of [['最新の月間黒点数',swv.overview.solar_cycle.latest_monthly,v=>v.month+' · F10.7 '+fmt(v.f10_7,1)+' sfu'],['最新の平滑黒点数',swv.overview.solar_cycle.latest_smoothed,v=>v.month+' · 計算に使う値（×0.7） '+fmt(v.engine_ssn,1)]]){
   const tile=document.createElement('div');tile.className='swv-tile';
   tile.append(cell('span',label),cell('strong',value?fmt(value.ssn,1):'—'),cell('small',value?note(value):'未取得'));box.append(tile);
  }
+}
+
+function renderSwvKp(){
+ const box=$('swv-kp'),k=swv.overview?.kp;box.replaceChildren();
+ if(!k?.rows.length){swvEmpty(box,k?.sources.kp.error||'NOAAのKp指数は未取得です。');return;}
+ const W=720,H=230,L=36,R=12,T=16,B=34,rows=k.rows,plot=svg('svg',{viewBox:`0 0 ${W} ${H}`,role:'img','aria-label':'Kp指数の3時間値。実線の棒は観測、薄い棒はNOAAの予報です。5以上は地磁気嵐（G1以上）です。'},box);
+ const t0=Date.parse(rows[0].time),t1=Date.parse(rows.at(-1).time)+3*3600000,x=t=>L+(t-t0)/(t1-t0)*(W-L-R),y=v=>H-B-v/9*(H-T-B),bw=Math.max(1,(W-L-R)/((t1-t0)/(3*3600000))-2);
+ for(let v=0;v<=9;v+=3){svg('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:SWV_COLORS.grid},plot);swvText(plot,L-6,y(v)+4,String(v),{'text-anchor':'end'});}
+ svg('line',{x1:L,x2:W-R,y1:y(5),y2:y(5),stroke:'#fab219','stroke-dasharray':'4 3',opacity:.8},plot);swvText(plot,W-R,y(5)-4,'G1（Kp 5）',{'text-anchor':'end',fill:'#fab219'});
+ for(const r of rows){
+  const t=Date.parse(r.time),predicted=r.kind==='predicted',color=swvLevelColor(r.g)==='#0ca30c'?'#3987e5':swvLevelColor(r.g);
+  const bar=svg('rect',{x:x(t)+1,y:y(r.kp),width:bw,height:Math.max(1,y(0)-y(r.kp)),rx:2,fill:color,opacity:predicted?.4:1,stroke:predicted?color:'none','stroke-dasharray':predicted?'3 2':'none'},plot);
+  svg('title',{},bar).textContent=`${swvTime(r.time)} · Kp ${fmt(r.kp,2)} · ${predicted?'予報':r.kind==='estimated'?'推定':'観測'}${r.g?' · G'+r.g:''}`;
+ }
+ for(let t=Math.ceil(t0/86400000)*86400000;t<t1;t+=86400000){svg('line',{x1:x(t),x2:x(t),y1:H-B,y2:H-B+4,stroke:SWV_COLORS.axis},plot);swvText(plot,x(t),H-B+16,new Date(t).toISOString().slice(5,10),{'text-anchor':'middle'});}
+ const now=Date.now();if(now>t0&&now<t1){svg('line',{x1:x(now),x2:x(now),y1:T,y2:H-B,stroke:SWV_COLORS.ink,'stroke-dasharray':'2 3',opacity:.6},plot);swvText(plot,x(now)+4,T+10,'現在',{fill:SWV_COLORS.ink});}
+ swvText(plot,L,T-4,'Kp');
+ const legend=document.createElement('ul');legend.className='swv-legend';
+ for(const [color,text,cls] of [['#3987e5','観測（Kp 4以下）'],['#fab219','G1〜G2（Kp 5〜6）'],['#ec835a','G3（Kp 7）'],['#d03b3b','G4以上（Kp 8以上）'],['#3987e5','予報（薄い棒）','dashed-kp']]){const li=document.createElement('li'),key=cell('i','');key.style.background=color;if(cls){key.style.opacity=.4;}li.append(key,text);legend.append(li);}
+ box.append(legend);
+ const summary=cell('p',`最新のKp ${k.latest?fmt(k.latest.kp,2)+'（'+swvTime(k.latest.time)+'）':'—'}${k.stale?' · 古い':''} · 予報期間の最大 ${k.forecast_max?fmt(k.forecast_max.kp,2)+'（'+swvTime(k.forecast_max.time)+'）':'—'}`);summary.className='hint';box.append(summary);
 }
 
 function renderSwvNict(){
@@ -145,7 +168,7 @@ function renderSwvMonths(){
 function renderSwvSources(){
  const box=$('swv-sources'),o=swv.overview,obs=swv.observations;box.replaceChildren();
  const items=[];
- if(o)items.push(['NOAA 障害レベル（R/S/G）',o.scales.source],['NOAA 観測黒点数',o.solar_cycle.sources.observed],['NOAA 予測黒点数',o.solar_cycle.sources.predicted]);
+ if(o)items.push(['NOAA 障害レベル（R/S/G）',o.scales.source],...(o.kp?[['NOAA Kp指数（観測）',o.kp.sources.kp],['NOAA Kp指数（予報）',o.kp.sources['kp-forecast']]]:[]),['NOAA 観測黒点数',o.solar_cycle.sources.observed],['NOAA 予測黒点数',o.solar_cycle.sources.predicted]);
  if(obs)items.push(['NOAA D-RAP',obs.drap],['NICT',obs.nict]);
  for(const [name,s] of items){
   const a=cell('a',name);a.href=s.url||s.source_url||'#';a.target='_blank';a.rel='noopener noreferrer';
@@ -154,7 +177,7 @@ function renderSwvSources(){
  $('swv-note').textContent=o?.note||'';
 }
 
-function renderSpaceWeatherView(){renderSwvScales();renderSwvNict();renderSwvDrap();renderSwvForecast();renderSwvCycle();renderSwvMonths();renderSwvSources();}
+function renderSpaceWeatherView(){renderSwvScales();renderSwvKp();renderSwvNict();renderSwvDrap();renderSwvForecast();renderSwvCycle();renderSwvMonths();renderSwvSources();}
 async function loadSpaceWeatherView(){
  $('swv-status').textContent='読み込み中…';
  const [overview,observations]=await Promise.allSettled([api('/api/space-weather/overview'),api('/api/observations')]);

@@ -15,17 +15,20 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'app'))
 import public_data
 import public_data_server
 from http.server import ThreadingHTTPServer
-from space_weather import ROOT, FEEDS, SpaceWeather
+from space_weather import ROOT, FEEDS, KP_FEEDS, ALL_FEEDS, SpaceWeather
 
 TOKEN='t'*40
 ROWS={'observed':[{'time-tag':'2026-01','smoothed_ssn':100.1,'smoothed_f10.7':140}],
       'predicted':[{'time-tag':'2026-10','predicted_ssn':87.5,'predicted_f10.7':130}],
       'scales':{'0':{'DateStamp':'2026-10-31','TimeStamp':'00:00:00','R':{'Scale':'0'},'S':{'Scale':'0'},'G':{'Scale':'1'}}}}
 
+KP={'kp':[['time_tag','Kp','a_running','station_count'],['2026-01-01 00:00:00.000','2.33','7','8']],
+    'kp-forecast':[['time_tag','kp','observed','noaa_scale'],['2026-01-01 03:00:00','3.00','predicted',None]]}
+
 
 def provider(request,**kwargs):
-    key=next(k for k,(path,_) in FEEDS.items() if request.full_url==ROOT+path)
-    return io.BytesIO(json.dumps(ROWS[key]).encode())
+    key=next(k for k,(path,_) in ALL_FEEDS.items() if request.full_url==ROOT+path)
+    return io.BytesIO(json.dumps(ROWS.get(key) or KP[key]).encode())
 
 
 class FetcherTests(unittest.TestCase):
@@ -34,8 +37,8 @@ class FetcherTests(unittest.TestCase):
         self.fetcher=public_data_server.Fetcher(self.tmp.name,public_data_server.sources(giro_enabled=False))
 
     def test_sources_are_fixed_and_giro_is_opt_in(self):
-        self.assertEqual(set(public_data_server.sources(giro_enabled=False)),{'observed','predicted','scales','drap','nict'})
-        self.assertEqual(set(public_data_server.sources(giro_enabled=True))-{'observed','predicted','scales','drap','nict'},{'GU513','JR055','MHJ45'})
+        self.assertEqual(set(public_data_server.sources(giro_enabled=False)),{'observed','predicted','scales','kp','kp-forecast','drap','nict'})
+        self.assertEqual(set(public_data_server.sources(giro_enabled=True))-{'observed','predicted','scales','kp','kp-forecast','drap','nict'},{'GU513','JR055','MHJ45'})
 
     def test_scheduled_fetch_validates_and_keeps_previous_files(self):
         with patch('public_data_server.urlopen',side_effect=provider) as get:
@@ -57,7 +60,7 @@ class FetcherTests(unittest.TestCase):
             return provider(request)
         with patch('public_data_server.urlopen',side_effect=noaa_only) as get:
             self.fetcher.refresh_due()
-        self.assertEqual(sorted(c.args[0].full_url for c in get.call_args_list),sorted([ROOT+FEEDS['scales'][0],public_data_server.DRAP_URL,public_data_server.NICT_URL]))
+        self.assertEqual(sorted(c.args[0].full_url for c in get.call_args_list),sorted([ROOT+FEEDS['scales'][0],*(ROOT+path for path,_ in KP_FEEDS.values()),public_data_server.DRAP_URL,public_data_server.NICT_URL]))
 
     def test_file_link_reads_fetcher_files_and_rejects_tampering(self):
         with patch('public_data_server.urlopen',side_effect=provider):self.fetcher.fetch('observed')

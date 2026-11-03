@@ -28,7 +28,7 @@ from urllib.request import Request, urlopen
 from observations import DRAP_URL, NICT_URL, GIRO_URL, GIRO_STATIONS, giro_body, parse_drap, parse_nict, parse_giro
 from public_data_ui import PublicDataUI
 from public_data import BUNDLE_FORMAT, KEY, MAX_RAW, PublicDataError, make_bundle, read_file, write_file
-from space_weather import FEEDS, ROOT, check_schema
+from space_weather import ALL_FEEDS, ROOT, check_schema
 
 DATA = Path(os.environ.get('HF_PUBLIC_DATA_DIR', os.environ.get('DATA_DIR', './public-data')))
 # Initial GIRO setting only; the fetcher admin page saves the choice to settings.json.
@@ -47,7 +47,7 @@ def text_check(parser):
 
 def sources(giro_enabled=None):
     """Fixed allowlist: key -> (url, request body or None, refresh seconds, validator)."""
-    table = {key: (ROOT + path, None, ttl, json_check(key)) for key, (path, ttl) in FEEDS.items()}
+    table = {key: (ROOT + path, None, ttl, json_check(key)) for key, (path, ttl) in ALL_FEEDS.items()}
     table['drap'] = (DRAP_URL, None, 300, text_check(parse_drap))
     table['nict'] = (NICT_URL, None, 300, text_check(parse_nict))
     if GIRO_ENABLED if giro_enabled is None else giro_enabled:

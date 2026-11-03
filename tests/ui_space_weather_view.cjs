@@ -12,7 +12,7 @@ const source={url:'https://services.swpc.noaa.gov/',fetched_at:Date.now()/1000,s
 const observed=[],predicted=[];
 for(let i=-200;i<-1;i++){const s=Math.max(0,140*Math.sin((i+200)/132*Math.PI));observed.push({month:month(i),ssn:+(s+10*Math.sin(i)).toFixed(1),smoothed_ssn:i<-7?+s.toFixed(1):null,f10_7:70+s*.8,smoothed_f10_7:i<-7?70+s*.75:null});}
 for(let i=-6;i<30;i++){const s=Math.max(5,120-i*3);predicted.push({month:month(i),ssn:s,engine_ssn:+(s*.7).toFixed(1),high_ssn:s+12,low_ssn:Math.max(0,s-12),f10_7:70+s*.75,high_f10_7:80+s*.75,low_f10_7:60+s*.75});}
-const overview={provider:'NOAA SWPC',note:'R/S/Gの予報はNOAA SWPCの3日予報、平滑SSNの予報はNOAAの太陽活動周期予測です。いずれも参考表示で、VOACAPの計算には平滑SSN（公表値×0.7）だけを使います。',
+const overview={provider:'NOAA SWPC',note:'R/S/GとKpの予報はNOAA SWPCの3日予報、平滑SSNの予報はNOAAの太陽活動周期予測です。いずれも参考表示で、VOACAPの計算には平滑SSN（公表値×0.7）だけを使います。',
  solar_cycle:{observed,predicted,latest_monthly:{month:month(-2),ssn:96,f10_7:140},latest_smoothed:{month:month(-8),ssn:118.2,engine_ssn:82.7},sources:{observed:source,predicted:source}},
  scales:{observed_at:now.toISOString(),stale:false,source,days:[
   {kind:'max24h',date:day(0),R:{scale:1},S:{scale:0},G:{scale:2}},
@@ -20,6 +20,11 @@ const overview={provider:'NOAA SWPC',note:'R/S/Gの予報はNOAA SWPCの3日予�
   {kind:'forecast',date:day(1),R:{scale:null,minor_prob:55,major_prob:15},S:{scale:null,prob:10},G:{scale:1}},
   {kind:'forecast',date:day(2),R:{scale:null,minor_prob:45,major_prob:10},S:{scale:null,prob:5},G:{scale:0}},
   {kind:'forecast',date:day(3),R:{scale:null,minor_prob:40,major_prob:5},S:{scale:null,prob:1},G:{scale:3}}]}};
+const kpRows=[],slot=Math.floor(Date.now()/10800000)*10800000;
+for(let i=-56;i<24;i++){const kp=+(2+3.4*Math.abs(Math.sin(i/9))).toFixed(2);kpRows.push({time:new Date(slot+i*10800000).toISOString().replace('.000Z','+00:00'),kp,kind:i<0?'observed':i===0?'estimated':'predicted',g:Math.max(0,Math.min(5,Math.floor(kp)-4))});}
+const kpPredicted=kpRows.filter(r=>r.kind==='predicted'),kpPeak=kpPredicted.reduce((a,b)=>b.kp>a.kp?b:a);
+overview.kp={rows:kpRows,latest:kpRows.find(r=>r.kind==='estimated'),stale:false,forecast_max:kpPeak,sources:{kp:source,'kp-forecast':source}};
+
 const lons=[],rows=[];for(let lon=-178;lon<=178;lon+=4)lons.push(lon);
 for(let lat=89;lat>=-89;lat-=2)rows.push({lat,values:lons.map(lon=>{const v=18-Math.hypot(lon-140,lat-10)/6;return v>0?+v.toFixed(1):0;})});
 const band=(f,i)=>[0,500,1000,1500,2000,2500,3000,3500,4000].map(km=>({distance_km:km,luf_mhz:2,muf_mhz:+(f*(1+km/1300)+i*.2).toFixed(2)}));
@@ -48,10 +53,12 @@ const observations={note:'',drap:{data:{observed_at:now.toISOString(),longitudes
   await page.goto(url);await page.waitForFunction(()=>catalog.presets.length>=30);
   assert.equal(calls,0); // Nothing is read until the tab is opened.
   await page.locator('[data-tab="space-weather-view"]').click();
-  await page.waitForFunction(()=>document.querySelectorAll('#swv-scales .swv-tile').length===5);
+  await page.waitForFunction(()=>document.querySelectorAll('#swv-scales .swv-tile').length===6);
   assert.equal(calls,1);
   assert.deepEqual(await page.locator('#swv-scales .swv-level').allInnerTexts(),['R0','S0','G1']);
   assert.match(await page.locator('#swv-scales .swv-tile').nth(2).innerText(),/過去24時間の最大 G2/);
+  assert.equal(await page.locator('#swv-kp rect').count(),kpRows.length);
+  assert.match(await page.locator('#swv-kp').innerText(),new RegExp('予報期間の最大 '+kpPeak.kp.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')));
   assert.equal(await page.locator('#swv-nict path').count(),4);
   assert.match(await page.locator('#swv-nict').innerText(),/稚内（古い）/);
   assert.match(await page.locator('#swv-drap').innerText(),/最大HAF 17\.6 MHz/);

@@ -2,7 +2,7 @@
 
 追加日: 2026-10-31
 
-CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・D-RAP、NICTの電離圏観測、任意有効化のGIRO）は、取得用コンテナ（`public-data`、`app/public_data_server.py`）が定期的に提供元から取得します。CHUCK本体は提供元へ直接接続しません。CHUCKと取得用コンテナの連携方式は2つです。
+CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・Kp指数・D-RAP、NICTの電離圏観測、任意有効化のGIRO）は、取得用コンテナ（`public-data`、`app/public_data_server.py`）が定期的に提供元から取得します。CHUCK本体は提供元へ直接接続しません。CHUCKと取得用コンテナの連携方式は2つです。
 
 | 連携方式 | 構成 | CHUCKの設定 |
 |---|---|---|
@@ -13,8 +13,8 @@ CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・D-RAP�
 
 ## 取得用コンテナ
 
-- 取得先は固定の一覧だけです（NOAAの3系列とD-RAP、NICT、管理画面で有効にしたときGIRO 3局）。CHUCKは種類名（`observed`・`predicted`・`scales`・`drap`・`nict`・`GU513` など）だけを指定し、URLは指定できません。
-- 1分ごとに、更新間隔（NOAAの月間系列6時間、ほかは5分）を過ぎたデータを提供元から取得します。CHUCKの画面の利用者が提供元へ取得し直させることはできません（API連携の `GET /api/data/<種類>?refresh=1` は取得用コンテナ側に残していますが、CHUCKは送りません）。
+- 取得先は固定の一覧だけです（NOAAの3系列とKp指数の観測値・予報、D-RAP、NICT、管理画面で有効にしたときGIRO 3局）。CHUCKは種類名（`observed`・`predicted`・`scales`・`kp`・`kp-forecast`・`drap`・`nict`・`GU513` など）だけを指定し、URLは指定できません。
+- 1分ごとに、更新間隔（NOAAの月間系列6時間、Kpの観測値10分、Kpの予報1時間、ほかは5分）を過ぎたデータを提供元から取得します。CHUCKの画面の利用者が提供元へ取得し直させることはできません（API連携の `GET /api/data/<種類>?refresh=1` は取得用コンテナ側に残していますが、CHUCKは送りません）。
 - 取得した内容はCHUCKと同じ解析処理で検証し、通ったものだけを `<種類>.raw`（提供元の応答そのもの）と `<種類>.json`（取得時刻、URL、SHA-256）として `/data` に保存します。失敗しても前回のファイルを残し、60秒は再試行しません。
 - 更新があるたびに、全データをまとめた連携ファイル `/data/export/chuck-public-data.json` を書き出します。
 - API（いずれも `Authorization: Bearer <HF_PUBLIC_DATA_TOKEN>` が必要。ブラウザからの直接アクセスは拒否）

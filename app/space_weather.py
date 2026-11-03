@@ -19,6 +19,12 @@ FEEDS = {
     'predicted': ('json/solar-cycle/predicted-solar-cycle.json', 21600),
     'scales': ('products/noaa-scales.json', 300),
 }
+# Planetary Kp (3-hourly): the past week's observations and NOAA's 3-day forecast. Shown only; never a calculation input.
+KP_FEEDS = {
+    'kp': ('products/noaa-planetary-k-index.json', 600),
+    'kp-forecast': ('products/noaa-planetary-k-index-forecast.json', 3600),
+}
+ALL_FEEDS = {**FEEDS, **KP_FEEDS}
 NOTE = 'SSNのみ計算入力に使用。F10.7・R/S/Gは参考表示です。瞬時の電離圏・磁気嵐による補正は行いません。NOAA公表SSN（SILSO V2尺度）は0.7倍して計算に使います（VOACAP Online Marineと同じ換算）。'
 MAX_FILE = 2_000_000
 # VOACAP's coefficients predate the SILSO V2 sunspot scale; VOACAP Online Marine also multiplies V2 values by 0.7.
@@ -48,8 +54,40 @@ def reject_constant(name):
     raise ValueError(name)  # NaN and Infinity are not JSON.
 
 
+def kp_time(value):
+    try:
+        moment = datetime.fromisoformat(str(value).strip().replace(' ', 'T').removesuffix('Z'))
+    except ValueError:
+        return None
+    return (moment if moment.tzinfo else moment.replace(tzinfo=timezone.utc)).astimezone(timezone.utc).isoformat()
+
+
+def kp_rows(data):
+    """3-hourly Kp rows from either NOAA layout: a header row plus value rows, or a list of objects."""
+    if not isinstance(data, list) or not data:
+        return []
+    if isinstance(data[0], list):
+        header = [str(name).lower() for name in data[0]]
+        if 'time_tag' not in header or 'kp' not in header:
+            return []
+        items = [dict(zip(header, row)) for row in data[1:] if isinstance(row, list)]
+    else:
+        items = [{str(k).lower(): v for k, v in row.items()} for row in data if isinstance(row, dict)]
+    rows = []
+    for item in items:
+        time_tag = kp_time(item.get('time_tag'))
+        kp = numeric(item.get('kp', item.get('kp_index', item.get('estimated_kp'))), 9)
+        if time_tag and kp is not None:
+            kind = item.get('observed') if item.get('observed') in ('observed', 'estimated', 'predicted') else 'observed'
+            rows.append({'time': time_tag, 'kp': round(kp, 2), 'kind': kind})
+    return sorted({r['time']: r for r in rows}.values(), key=lambda r: r['time'])
+
+
 def check_schema(key, data):
-    if key == 'scales':
+    if key in KP_FEEDS:
+        if not kp_rows(data):
+            raise ValueError('invalid Kp schema')
+    elif key == 'scales':
         if not isinstance(data, dict) or not isinstance(data.get('0'), dict):
             raise ValueError('invalid scales schema')
     elif not isinstance(data, list) or not data or not all(isinstance(row, dict) and isinstance(row.get('time-tag'), str) for row in data):
@@ -82,7 +120,7 @@ class SpaceWeather:
         self.retry_after = {}
 
     def feed(self, key, force=False):
-        path, ttl = FEEDS[key]
+        path, ttl = ALL_FEEDS[key]
         url = ROOT + path
         with self.lock:
             cached = self.memory.get(key)

@@ -6,13 +6,13 @@ charts never makes the public-data fetcher download again.
 from datetime import datetime, timezone
 
 from data_terms import terms_for
-from space_weather import FEEDS, engine_ssn, numeric
+from space_weather import FEEDS, KP_FEEDS, engine_ssn, kp_rows, numeric
 
 # The solar cycle chart starts with cycle 24 (minimum December 2008).
 FIRST_MONTH = '2008-01'
 # NOAA scales: "-1" is the past 24 hours' maximum, "0" the latest observation, "1"–"3" the forecast days.
 SCALE_DAYS = (('-1', 'max24h'), ('0', 'latest'), ('1', 'forecast'), ('2', 'forecast'), ('3', 'forecast'))
-NOTE = ('R/S/Gの予報はNOAA SWPCの3日予報、平滑SSNの予報はNOAAの太陽活動周期予測です。'
+NOTE = ('R/S/GとKpの予報はNOAA SWPCの3日予報、平滑SSNの予報はNOAAの太陽活動周期予測です。'
         'いずれも参考表示で、VOACAPの計算には平滑SSN（公表値×0.7）だけを使います。')
 
 
@@ -92,9 +92,31 @@ def scale_days(feed, now):
     return {'days': days, 'observed_at': observed_at, 'stale': stale, 'source': source(feed)}
 
 
+def kp_storm_level(kp):
+    """NOAA G scale from Kp: Kp 5 is G1 up to Kp 9 for G5."""
+    return max(0, min(5, int(kp) - 4)) if kp is not None else None
+
+
+def kp_series(observed, forecast, now):
+    """The past week's 3-hourly Kp and the forecast; forecast rows win for the periods both cover."""
+    rows = {r['time']: dict(r, kind='observed') for r in kp_rows(observed['data'])}
+    for r in kp_rows(forecast['data']):
+        if r['kind'] == 'predicted' or r['time'] not in rows:
+            rows[r['time']] = r
+    rows = [dict(r, g=kp_storm_level(r['kp'])) for r in sorted(rows.values(), key=lambda r: r['time'])]
+    past = [r for r in rows if r['kind'] != 'predicted' and r['time'] <= now.isoformat()]
+    future = [r for r in rows if r['kind'] == 'predicted']
+    latest = past[-1] if past else None
+    stale = observed['stale'] or latest is None or (now - datetime.fromisoformat(latest['time'])).total_seconds() > 6 * 3600
+    peak = max(future, key=lambda r: r['kp']) if future else None
+    return {'rows': rows, 'latest': latest, 'stale': stale, 'forecast_max': peak,
+            'sources': {'kp': source(observed), 'kp-forecast': source(forecast)}}
+
+
 def overview(weather, now=None):
     now = now or datetime.now(timezone.utc)
-    feeds = {key: weather.feed(key) for key in FEEDS}
+    feeds = {key: weather.feed(key) for key in (*FEEDS, *KP_FEEDS)}
     return {'data_terms': terms_for('noaa', 'silso-via-noaa'), 'provider': 'NOAA SWPC', 'generated_at': now.isoformat(),
             'solar_cycle': solar_cycle(feeds['observed'], feeds['predicted']),
-            'scales': scale_days(feeds['scales'], now), 'note': NOTE}
+            'scales': scale_days(feeds['scales'], now),
+            'kp': kp_series(feeds['kp'], feeds['kp-forecast'], now), 'note': NOTE}
