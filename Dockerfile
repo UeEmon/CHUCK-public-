@@ -29,6 +29,20 @@ EXPOSE 8000
 HEALTHCHECK --interval=20s --start-period=10s CMD python -c "import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:8000/api/health'))['ok']"
 CMD ["python", "server.py"]
 
+# The public-data fetcher also makes the space weather daily briefing (verification build), so its
+# image adds ffmpeg (SVG slides through librsvg, H.264/AAC, mov_text subtitles) and DejaVu fonts for the
+# English slides. CHUCK itself (the final stage) stays standard-library only; this stage is built only for
+# the public-data service and is not part of the redistribution bundle.
+FROM runtime AS public-data
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core && rm -rf /var/lib/apt/lists/*
+# fontconfig keeps its cache in /tmp because the container filesystem is read-only.
+ENV XDG_CACHE_HOME=/tmp
+USER 10001:10001
+EXPOSE 8002
+HEALTHCHECK --interval=20s --start-period=10s CMD ["python", "-c", "import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:8002/api/health'))['ok']"]
+CMD ["python", "public_data_server.py"]
+
 # Only the release-bundle builder targets this stage. A missing exact source
 # archive aborts the build; an image-only distribution is not a release.
 FROM runtime AS redistribution-sources

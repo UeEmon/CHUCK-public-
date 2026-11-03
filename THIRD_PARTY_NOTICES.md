@@ -49,6 +49,10 @@ Reference for functional goals only: https://www.voacap.com/marine/
 No source code, graphics, branding, or manuals from that site are included.
 This is an independent application, not an official VOACAP Online service.
 
+## Public-data image (space weather daily briefing)
+
+Only the public-data fetcher image (Dockerfile stage `public-data`, `hf-public-data:local`) adds the Debian bookworm packages `ffmpeg` (with its libraries such as librsvg, x264 and the AAC encoder; Debian builds ffmpeg with GPL-licensed components enabled, so treat it as GPL-2.0-or-later as a whole) and `fonts-dejavu-core` (Bitstream Vera / DejaVu font license). They are installed from Debian at build time, keep their own licenses (see `/usr/share/doc/*/copyright` in that image) and are not part of the CHUCK runtime image or the redistribution bundle. Scripts and voices are produced by the Gemini, OpenAI, Anthropic or local LLM API the administrator selects per step; no SDK is bundled and each service's terms govern charges, data processing and the generated output. Keys stay in the public-data volume (`/data/briefing/settings.json`) and must not be redistributed. The briefing has no publishing function.
+
 ## Runtime and build packages
 
 See SOFTWARE_LICENSES.md, licenses/runtime-license-lock.json, and

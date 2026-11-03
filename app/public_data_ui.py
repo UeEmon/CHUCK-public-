@@ -6,7 +6,10 @@ import os
 import secrets
 import threading
 import time
+from urllib.parse import parse_qs, urlparse
 
+import briefing as briefing_module
+import briefing_ai
 from observations import GIRO_TERMS
 from public_data import BUNDLE_FORMAT
 
@@ -17,7 +20,9 @@ SESSIONS={}
 FAILURES={}
 TTL=3600
 COOKIE='chuck_public_data_session'
-CSP="default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+CSP="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"
+MEDIA={'.json':'application/json; charset=utf-8','.md':'text/markdown; charset=utf-8','.wav':'audio/wav','.mp4':'video/mp4',
+       '.srt':'application/x-subrip; charset=utf-8','.vtt':'text/vtt; charset=utf-8','.jsonl':'application/x-ndjson; charset=utf-8'}
 
 def ui_password():
     value=os.environ.get('HF_PUBLIC_DATA_UI_PASSWORD','')
@@ -61,6 +66,8 @@ class PublicDataUI:
                '/style.css':(BASE/'gateway_static/style.css','text/css; charset=utf-8'),
                '/i18n.js':(BASE/'static/i18n.js','text/javascript; charset=utf-8'),
                '/i18n-messages.js':(BASE/'static/i18n-messages.js','text/javascript; charset=utf-8'),
+               '/briefing.js':(BASE/'public_data_static/briefing.js','text/javascript; charset=utf-8'),
+               '/briefing-messages.js':(BASE/'static/briefing-messages.js','text/javascript; charset=utf-8'),
                '/chuck-icon.png':(BASE/'static/chuck-icon.png','image/png'),
                '/favicon.png':(BASE/'static/favicon.png','image/png')}
         if path in files:
@@ -72,6 +79,15 @@ class PublicDataUI:
             self.ui_json(401,dict(error='管理画面へログインしてください。'));return True
         if path=='/ui/api/status':
             self.ui_json(200,self.ui_status());return True
+        if path=='/ui/api/briefing':
+            self.ui_json(200,self.briefing().status());return True
+        if path=='/ui/api/briefing/file':
+            # One output file of a run, by fixed names only; shown and played on this admin page, never published.
+            query=parse_qs(urlparse(self.path).query)
+            file=self.briefing().file(*(query.get(k,[''])[0] for k in ('date','run','name')))
+            if file is None:self.ui_json(404,dict(error='見つかりません'));return True
+            disposition=[('Content-Disposition',f'attachment; filename="{file.name}"')] if query.get('download')==['1'] else []
+            self.ui_send(200,file.read_bytes(),MEDIA[file.suffix],disposition);return True
         if path=='/ui/api/export':
             self.ui_send(200,self.fetcher().bundle(),'application/json',[('Content-Disposition',f'attachment; filename="{BUNDLE_FORMAT}.json"')]);return True
         self.ui_json(404,dict(error='見つかりません'));return True
@@ -85,7 +101,7 @@ class PublicDataUI:
             self.ui_json(415,dict(error='application/jsonが必要です'));return True
         try:
             size=int(self.headers.get('Content-Length','0'))
-            if not 0<size<=8192:raise ValueError('リクエストサイズが不正です')
+            if not 0<size<=65536:raise ValueError('リクエストサイズが不正です')
             data=json.loads(self.rfile.read(size))
             if not isinstance(data,dict):raise ValueError('JSONオブジェクトが必要です')
             if path=='/ui/api/login':
@@ -116,6 +132,23 @@ class PublicDataUI:
                 if data['giro_enabled'] and data.get('terms_accepted') is not True:raise ValueError('GIROの利用条件への適合を確認してください')
                 self.fetcher().set_giro(data['giro_enabled'])
                 self.ui_json(200,self.ui_status());return True
+            if path=='/ui/api/briefing/settings':
+                if 'rights' in data:data['rights']=briefing_module.check_rights(data['rights'])
+                self.briefing().settings.save(data)
+                self.ui_json(200,self.briefing().status());return True
+            if path=='/ui/api/briefing/models':
+                if data.get('provider') not in briefing_ai.PROVIDERS:raise ValueError('生成AIの種類が不正です')
+                settings=self.briefing().settings
+                try:models=briefing_ai.list_models(settings.provider(data['provider']))
+                except briefing_ai.AIError as error:self.ui_json(502,dict(error=str(error)));return True
+                self.ui_json(200,dict(provider=data['provider'],models=models));return True
+            if path=='/ui/api/briefing/test':
+                self.ui_json(200,briefing_module.test_connections(self.briefing()));return True
+            if path=='/ui/api/briefing/run':
+                # A verification run: files stay in this container. Nothing is published or delivered.
+                if not self.briefing().start(data.get('mode','mock'),data.get('date') or None):
+                    self.ui_json(409,dict(error='ブリーフィングを作成中です。しばらく待ってください。'));return True
+                self.ui_json(202,self.briefing().status());return True
             if path=='/ui/api/fetch':
                 # The administrator's manual download of every source; failed ones still wait out their retry delay.
                 if not FETCH_LOCK.acquire(blocking=False):self.ui_json(409,dict(error='取得中です。しばらく待ってください。'));return True
@@ -123,6 +156,8 @@ class PublicDataUI:
                 finally:FETCH_LOCK.release()
                 self.ui_json(200,self.ui_status());return True
             self.ui_json(404,dict(error='見つかりません'));return True
+        except briefing_ai.SettingsConflict as error:
+            self.ui_json(409,dict(error=str(error)));return True
         except (ValueError,UnicodeError) as error:
             self.ui_json(400,dict(error=str(error)));return True
         except Exception:

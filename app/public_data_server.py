@@ -10,7 +10,8 @@ url, sha256).
   After every cycle the fetcher writes export/chuck-public-data.json, also
   served at GET /api/export; an administrator uploads it on the CHUCK admin page.
 
-The fetcher's own admin page (public_data_ui.py) shows the sources and turns GIRO on or off.
+The fetcher's own admin page (public_data_ui.py) shows the sources and turns GIRO on or off, and
+runs the space weather daily briefing (briefing.py) with the generative AI chosen per step.
 """
 from datetime import datetime, timezone
 import hashlib
@@ -26,6 +27,7 @@ from urllib.parse import urlparse, parse_qs
 from urllib.request import Request, urlopen
 
 from observations import DRAP_URL, NICT_URL, GIRO_URL, GIRO_STATIONS, giro_body, parse_drap, parse_nict, parse_giro
+from briefing import Briefing
 from public_data_ui import PublicDataUI
 from public_data import BUNDLE_FORMAT, KEY, MAX_RAW, PublicDataError, make_bundle, read_file, write_file
 from space_weather import ALL_FEEDS, ROOT, check_schema
@@ -161,12 +163,16 @@ class Fetcher:
 
 
 FETCHER = Fetcher(DATA)
+# Space weather daily briefing (local files only). Its scheduler is off unless HF_BRIEFING_SCHEDULER_ENABLED=1.
+BRIEFING = Briefing(DATA, refresh=lambda: FETCHER.refresh_due(every=True))
 
 
 def loop():
     while True:
         try:
             FETCHER.refresh_due()
+            if BRIEFING.due():
+                BRIEFING.start('live', scheduled=True)
         except Exception:
             __import__('traceback').print_exc()
         time.sleep(60)
@@ -175,6 +181,9 @@ def loop():
 class Handler(PublicDataUI, BaseHTTPRequestHandler):
     def fetcher(self):
         return FETCHER
+
+    def briefing(self):
+        return BRIEFING
 
     def send(self, code, body, kind, headers=()):
         self.send_response(code)

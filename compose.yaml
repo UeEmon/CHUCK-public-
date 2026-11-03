@@ -72,8 +72,10 @@ services:
   # On premises (HF_PUBLIC_DATA_MODE=file) it runs in the public environment instead:
   #   docker compose up -d public-data
   public-data:
-    build: .
-    image: hf-propagation:local
+    build:
+      context: .
+      target: public-data
+    image: hf-public-data:local
     command: ["python", "public_data_server.py"]
     ports:
       - "${HF_PUBLIC_DATA_BIND:-127.0.0.1}:${HF_PUBLIC_DATA_PORT:-18084}:8002"
@@ -84,6 +86,18 @@ services:
       HF_PUBLIC_DATA_UI_PASSWORD: "${HF_PUBLIC_DATA_UI_PASSWORD:-}"
       HF_PUBLIC_DATA_UI_SECURE_COOKIE: "${HF_PUBLIC_DATA_UI_SECURE_COOKIE:-0}"
       HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
+      # Space weather daily briefing (docs/SPACE_WEATHER_BRIEFING.md). Keys can also be saved on the admin page.
+      # The scheduler stays off unless set to 1, and even then it only makes local files; there is no publishing.
+      HF_BRIEFING_SCHEDULER_ENABLED: "${HF_BRIEFING_SCHEDULER_ENABLED:-0}"
+      OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      GEMINI_API_KEY: "${GEMINI_API_KEY:-}"
+      GOOGLE_API_KEY: "${GOOGLE_API_KEY:-}"
+      LOCAL_LLM_BASE_URL: "${LOCAL_LLM_BASE_URL:-http://host.docker.internal:11434}"
+      LOCAL_LLM_PROTOCOL: "${LOCAL_LLM_PROTOCOL:-ollama}"
+      LOCAL_LLM_API_KEY: "${LOCAL_LLM_API_KEY:-}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - public-data:/data
     healthcheck:
@@ -94,7 +108,7 @@ services:
     init: true
     read_only: true
     tmpfs:
-      - /tmp:size=32m,mode=1777
+      - /tmp:size=128m,mode=1777
     security_opt:
       - no-new-privileges:true
   position-migrate:

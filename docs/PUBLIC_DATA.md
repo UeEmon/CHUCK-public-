@@ -34,6 +34,10 @@ CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・Kp指�
 
 ログインセッションは1時間で、HttpOnly・SameSite=Strictのクッキーを使います。8回失敗すると15分ログインできません。
 
+## 宇宙天気デイブリーフィング（検証版）
+
+取得用コンテナは、保存した公開データから宇宙天気のデイリーブリーフィング動画（英語表記、英日の音声、8言語の字幕）を作れます。生成AI（Gemini・OpenAI・Claude・ローカルLLM）は管理画面で工程ごとに選びます。公開・配信の機能はなく、定時の自動作成も既定で無効です。詳しくは[SPACE_WEATHER_BRIEFING.md](SPACE_WEATHER_BRIEFING.md)を参照してください。このため取得用コンテナのイメージは、ffmpegを加えた専用の段（`hf-public-data:local`）になりました。
+
 ## API連携（両方を公開環境で動かす）
 
 `Start.sh`・`Start.ps1` は初回起動時に `.env` へ `HF_PUBLIC_DATA_TOKEN`（48文字のランダム値）を作り、CHUCKと取得用コンテナの両方に渡します。手動で起動する場合は `.env` に32文字以上の値を設定してから `docker compose up -d --build` を実行してください。位置ゲートウェイのトークンとは別の値にします。

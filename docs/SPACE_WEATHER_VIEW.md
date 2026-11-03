@@ -28,3 +28,7 @@
 `GET /api/space-weather/overview` — 上の表示に使う系列（`solar_cycle`）とR/S/Gの5日分（`scales.days`、`kind` は `max24h`・`latest`・`forecast`）、Kp（`kp.rows`、`kind` は `observed`・`estimated`・`predicted`、`g` は相当するGレベル）を返します。CHUCKが保持しているデータを返すだけで、取得用コンテナに再取得を求めません。実況の観測値は従来どおり `GET /api/observations` から読みます。
 
 タブを開いたときと、開いている間5分ごとに読み直します。欠測（−1・null・非有限値）は0として扱わず、グラフでは線を途切れさせます。
+
+## 宇宙天気デイブリーフィングとの関係
+
+公開データ取得用コンテナの宇宙天気デイブリーフィング（[SPACE_WEATHER_BRIEFING.md](SPACE_WEATHER_BRIEFING.md)）は、このタブと同じ関数（`kp_series`・`scale_days`・`kp_storm_level`）で値を読みます。KpとR/S/G、Kp 5＝G1の対応、配色はこのタブと同じです。ブリーフィングはこのタブには表示しません（公開機能は無効）。

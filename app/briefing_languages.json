@@ -1,0 +1,179 @@
+{
+ "_comment": "Language data of the space weather briefing: date formats, the speech style instruction, and the mock narration (what a well-behaved model returns) in all eight languages.",
+ "names": {
+  "ja": "日本語",
+  "en": "English",
+  "fr": "Français",
+  "es": "Español",
+  "it": "Italiano",
+  "pt": "Português",
+  "de": "Deutsch",
+  "ko": "한국어"
+ },
+ "months": {
+  "en": [
+   "January",
+   "February",
+   "March",
+   "April",
+   "May",
+   "June",
+   "July",
+   "August",
+   "September",
+   "October",
+   "November",
+   "December"
+  ],
+  "de": [
+   "Januar",
+   "Februar",
+   "März",
+   "April",
+   "Mai",
+   "Juni",
+   "Juli",
+   "August",
+   "September",
+   "Oktober",
+   "November",
+   "Dezember"
+  ],
+  "fr": [
+   "janvier",
+   "février",
+   "mars",
+   "avril",
+   "mai",
+   "juin",
+   "juillet",
+   "août",
+   "septembre",
+   "octobre",
+   "novembre",
+   "décembre"
+  ],
+  "es": [
+   "enero",
+   "febrero",
+   "marzo",
+   "abril",
+   "mayo",
+   "junio",
+   "julio",
+   "agosto",
+   "septiembre",
+   "octubre",
+   "noviembre",
+   "diciembre"
+  ],
+  "it": [
+   "gennaio",
+   "febbraio",
+   "marzo",
+   "aprile",
+   "maggio",
+   "giugno",
+   "luglio",
+   "agosto",
+   "settembre",
+   "ottobre",
+   "novembre",
+   "dicembre"
+  ],
+  "pt": [
+   "janeiro",
+   "fevereiro",
+   "março",
+   "abril",
+   "maio",
+   "junho",
+   "julho",
+   "agosto",
+   "setembro",
+   "outubro",
+   "novembro",
+   "dezembro"
+  ]
+ },
+ "date_formats": {
+  "en": "{month} {day}, {year}",
+  "ja": "{year}年{m}月{day}日",
+  "ko": "{year}년 {m}월 {day}일",
+  "de": "{day}. {month} {year}",
+  "fr": "{day} {month} {year}",
+  "it": "{day} {month} {year}",
+  "es": "{day} de {month} de {year}",
+  "pt": "{day} de {month} de {year}"
+ },
+ "speech_style": {
+  "en": "Read this in English in a calm, clear news-presenter voice.",
+  "ja": "落ち着いた明瞭なニュース解説の口調で、日本語で読み上げてください。"
+ },
+ "mock": {
+  "en": {
+   "overview": "This is the space weather daily briefing for {{date}}. NOAA currently reports radio blackouts at R{{r_now}}, solar radiation storms at S{{s_now}} and geomagnetic storms at G{{g_now}}.",
+   "solar": "Over the past {{hours_24}} hours the highest radio blackout level was R{{r_max24}} and the highest solar radiation storm level was S{{s_max24}}. The highest absorption frequency on the D-RAP map is {{drap_haf}}.",
+   "geomagnetic": "In the {{hours_24}} hours to {{window_end}}, the highest planetary Kp index was {{kp_max24}}, during {{kp_max24_period}}. The G1 level begins at Kp {{g1_kp}}. The latest Kp is {{kp_latest}}.",
+   "impacts": "Daytime HF signals may be weakened by absorption, and GNSS accuracy and satellite conditions may vary. These are risk indicators, not confirmed outages.",
+   "outlook": "For {{d1_date}}, NOAA forecasts a maximum Kp of {{d1_kp}}, a {{d1_r12}} chance of R1 to R2 radio blackouts and a {{d1_s1}} chance of an S1 or greater storm. The forecast maximum Kp is {{d2_kp}} on {{d2_date}} and {{d3_kp}} on {{d3_date}}.",
+   "summary": "This briefing covers the next {{hours_72}} hours using data from the NOAA Space Weather Prediction Center. It was produced automatically and is not an official forecast."
+  },
+  "ja": {
+   "overview": "{{date}}の宇宙天気デイリーブリーフィングです。NOAAの現在の発表は、電波障害がR{{r_now}}、太陽放射線嵐がS{{s_now}}、地磁気嵐がG{{g_now}}です。",
+   "solar": "過去{{hours_24}}時間の電波障害の最大はR{{r_max24}}、太陽放射線嵐の最大はS{{s_max24}}でした。D-RAPの地図で吸収が最も高い周波数は{{drap_haf}}です。",
+   "geomagnetic": "{{window_end}}までの{{hours_24}}時間で、惑星Kp指数の最大は{{kp_max24_period}}の{{kp_max24}}でした。G1はKp{{g1_kp}}から始まります。最新のKpは{{kp_latest}}です。",
+   "impacts": "昼間のHF通信は吸収で弱まる可能性があり、GNSSの精度や衛星の環境も変動する可能性があります。これはリスクの目安で、障害の発生を確認したものではありません。",
+   "outlook": "{{d1_date}}のNOAAの予報は、Kpの最大が{{d1_kp}}、R1からR2の電波障害の確率が{{d1_r12}}、S1以上の嵐の確率が{{d1_s1}}です。Kpの予報最大は{{d2_date}}が{{d2_kp}}、{{d3_date}}が{{d3_kp}}です。",
+   "summary": "このブリーフィングはNOAA宇宙天気予報センターのデータに基づき、今後{{hours_72}}時間を扱っています。自動で作成したもので、公式の予報ではありません。"
+  },
+  "de": {
+   "overview": "Dies ist das tägliche Weltraumwetter-Briefing für den {{date}}. NOAA meldet derzeit Funkausfälle R{{r_now}}, Strahlungsstürme S{{s_now}} und geomagnetische Stürme G{{g_now}}.",
+   "solar": "In den letzten {{hours_24}} Stunden lag der höchste Funkausfall bei R{{r_max24}} und der höchste Strahlungssturm bei S{{s_max24}}. Die höchste Absorptionsfrequenz der D-RAP-Karte beträgt {{drap_haf}}.",
+   "geomagnetic": "In den {{hours_24}} Stunden bis {{window_end}} betrug der höchste planetare Kp-Index {{kp_max24}}, im Zeitraum {{kp_max24_period}}. Die Stufe G1 beginnt bei Kp {{g1_kp}}. Der aktuelle Kp-Wert ist {{kp_latest}}.",
+   "impacts": "HF-Signale können tagsüber durch Absorption geschwächt werden, und GNSS-Genauigkeit und Satellitenbedingungen können schwanken. Dies sind Risikohinweise, keine bestätigten Ausfälle.",
+   "outlook": "Für den {{d1_date}} erwartet NOAA einen maximalen Kp von {{d1_kp}}, eine Wahrscheinlichkeit von {{d1_r12}} für Funkausfälle R1 bis R2 und von {{d1_s1}} für einen Sturm ab S1. Der vorhergesagte maximale Kp ist {{d2_kp}} am {{d2_date}} und {{d3_kp}} am {{d3_date}}.",
+   "summary": "Dieses Briefing umfasst die nächsten {{hours_72}} Stunden auf Grundlage von Daten des NOAA Space Weather Prediction Center. Es wurde automatisch erstellt und ist keine offizielle Vorhersage."
+  },
+  "fr": {
+   "overview": "Voici le bulletin quotidien de météo spatiale du {{date}}. La NOAA indique actuellement des perturbations radio R{{r_now}}, des tempêtes de radiation S{{s_now}} et des tempêtes géomagnétiques G{{g_now}}.",
+   "solar": "Au cours des {{hours_24}} dernières heures, le niveau maximal de perturbation radio était R{{r_max24}} et celui des tempêtes de radiation S{{s_max24}}. La fréquence d’absorption la plus élevée de la carte D-RAP est de {{drap_haf}}.",
+   "geomagnetic": "Sur les {{hours_24}} heures précédant {{window_end}}, l’indice Kp planétaire maximal était de {{kp_max24}}, pendant {{kp_max24_period}}. Le niveau G1 commence à Kp {{g1_kp}}. Le dernier Kp est de {{kp_latest}}.",
+   "impacts": "Les signaux HF de jour peuvent être affaiblis par l’absorption, et la précision GNSS ainsi que l’environnement des satellites peuvent varier. Ce sont des indicateurs de risque, pas des pannes confirmées.",
+   "outlook": "Pour le {{d1_date}}, la NOAA prévoit un Kp maximal de {{d1_kp}}, une probabilité de {{d1_r12}} de perturbations radio R1 à R2 et de {{d1_s1}} d’une tempête S1 ou plus. Le Kp maximal prévu est de {{d2_kp}} le {{d2_date}} et de {{d3_kp}} le {{d3_date}}.",
+   "summary": "Ce bulletin couvre les {{hours_72}} prochaines heures à partir des données du NOAA Space Weather Prediction Center. Il a été produit automatiquement et n’est pas une prévision officielle."
+  },
+  "es": {
+   "overview": "Este es el informe diario de clima espacial del {{date}}. La NOAA informa actualmente de apagones de radio R{{r_now}}, tormentas de radiación S{{s_now}} y tormentas geomagnéticas G{{g_now}}.",
+   "solar": "En las últimas {{hours_24}} horas, el nivel máximo de apagón de radio fue R{{r_max24}} y el de tormenta de radiación S{{s_max24}}. La frecuencia de absorción más alta del mapa D-RAP es de {{drap_haf}}.",
+   "geomagnetic": "En las {{hours_24}} horas hasta {{window_end}}, el índice Kp planetario máximo fue {{kp_max24}}, durante {{kp_max24_period}}. El nivel G1 comienza en Kp {{g1_kp}}. El último Kp es {{kp_latest}}.",
+   "impacts": "Las señales de HF diurnas pueden debilitarse por absorción, y la precisión GNSS y el entorno de los satélites pueden variar. Son indicadores de riesgo, no fallos confirmados.",
+   "outlook": "Para el {{d1_date}}, la NOAA prevé un Kp máximo de {{d1_kp}}, una probabilidad de {{d1_r12}} de apagones de radio R1 a R2 y de {{d1_s1}} de una tormenta S1 o superior. El Kp máximo previsto es {{d2_kp}} el {{d2_date}} y {{d3_kp}} el {{d3_date}}.",
+   "summary": "Este informe abarca las próximas {{hours_72}} horas con datos del NOAA Space Weather Prediction Center. Se generó automáticamente y no es un pronóstico oficial."
+  },
+  "it": {
+   "overview": "Questo è il bollettino quotidiano di meteorologia spaziale del {{date}}. La NOAA segnala attualmente blackout radio R{{r_now}}, tempeste di radiazione S{{s_now}} e tempeste geomagnetiche G{{g_now}}.",
+   "solar": "Nelle ultime {{hours_24}} ore il livello massimo di blackout radio è stato R{{r_max24}} e quello delle tempeste di radiazione S{{s_max24}}. La frequenza di assorbimento più alta della mappa D-RAP è {{drap_haf}}.",
+   "geomagnetic": "Nelle {{hours_24}} ore fino alle {{window_end}}, l’indice Kp planetario massimo è stato {{kp_max24}}, durante {{kp_max24_period}}. Il livello G1 inizia a Kp {{g1_kp}}. L’ultimo Kp è {{kp_latest}}.",
+   "impacts": "I segnali HF diurni possono essere indeboliti dall’assorbimento, e la precisione GNSS e le condizioni dei satelliti possono variare. Sono indicatori di rischio, non guasti accertati.",
+   "outlook": "Per il {{d1_date}}, la NOAA prevede un Kp massimo di {{d1_kp}}, una probabilità del {{d1_r12}} di blackout radio da R1 a R2 e del {{d1_s1}} di una tempesta S1 o superiore. Il Kp massimo previsto è {{d2_kp}} il {{d2_date}} e {{d3_kp}} il {{d3_date}}.",
+   "summary": "Questo bollettino copre le prossime {{hours_72}} ore con i dati del NOAA Space Weather Prediction Center. È stato prodotto automaticamente e non è una previsione ufficiale."
+  },
+  "pt": {
+   "overview": "Este é o boletim diário de clima espacial de {{date}}. A NOAA informa atualmente interrupções de rádio R{{r_now}}, tempestades de radiação S{{s_now}} e tempestades geomagnéticas G{{g_now}}.",
+   "solar": "Nas últimas {{hours_24}} horas, o nível máximo de interrupção de rádio foi R{{r_max24}} e o de tempestade de radiação S{{s_max24}}. A frequência de absorção mais alta do mapa D-RAP é {{drap_haf}}.",
+   "geomagnetic": "Nas {{hours_24}} horas até {{window_end}}, o índice Kp planetário máximo foi {{kp_max24}}, durante {{kp_max24_period}}. O nível G1 começa em Kp {{g1_kp}}. O Kp mais recente é {{kp_latest}}.",
+   "impacts": "Os sinais de HF durante o dia podem ser enfraquecidos pela absorção, e a precisão do GNSS e as condições dos satélites podem variar. São indicadores de risco, não falhas confirmadas.",
+   "outlook": "Para {{d1_date}}, a NOAA prevê um Kp máximo de {{d1_kp}}, uma probabilidade de {{d1_r12}} de interrupções de rádio R1 a R2 e de {{d1_s1}} de uma tempestade S1 ou maior. O Kp máximo previsto é {{d2_kp}} em {{d2_date}} e {{d3_kp}} em {{d3_date}}.",
+   "summary": "Este boletim abrange as próximas {{hours_72}} horas com dados do NOAA Space Weather Prediction Center. Foi produzido automaticamente e não é uma previsão oficial."
+  },
+  "ko": {
+   "overview": "{{date}} 우주기상 일일 브리핑입니다. NOAA의 현재 발표는 전파 장애 R{{r_now}}, 태양 방사선 폭풍 S{{s_now}}, 지자기 폭풍 G{{g_now}}입니다.",
+   "solar": "지난 {{hours_24}}시간 동안 전파 장애의 최대는 R{{r_max24}}, 태양 방사선 폭풍의 최대는 S{{s_max24}}였습니다. D-RAP 지도에서 흡수가 가장 높은 주파수는 {{drap_haf}}입니다.",
+   "geomagnetic": "{{window_end}}까지 {{hours_24}}시간 동안 행성 Kp 지수의 최대는 {{kp_max24_period}}의 {{kp_max24}}였습니다. G1 등급은 Kp {{g1_kp}}에서 시작합니다. 최신 Kp는 {{kp_latest}}입니다.",
+   "impacts": "낮 시간의 HF 신호는 흡수로 약해질 수 있으며, GNSS 정확도와 위성 환경도 변동할 수 있습니다. 이는 위험 지표이며 장애가 확인된 것은 아닙니다.",
+   "outlook": "{{d1_date}} NOAA 예보는 최대 Kp {{d1_kp}}, R1에서 R2 전파 장애 확률 {{d1_r12}}, S1 이상 폭풍 확률 {{d1_s1}}입니다. 예보 최대 Kp는 {{d2_date}} {{d2_kp}}, {{d3_date}} {{d3_kp}}입니다.",
+   "summary": "이 브리핑은 NOAA 우주기상예측센터의 자료를 바탕으로 앞으로 {{hours_72}}시간을 다룹니다. 자동으로 작성되었으며 공식 예보가 아닙니다."
+  }
+ }
+}
