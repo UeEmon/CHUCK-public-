@@ -39,7 +39,7 @@ class PublicDataUI:
         self.ui_send(status,json.dumps(value,ensure_ascii=False,allow_nan=False).encode(),'application/json; charset=utf-8',[('Set-Cookie',cookie)] if cookie else [])
 
     def ui_cookie(self,value,max_age=TTL):
-        secure='; Secure' if getattr(self,'secure_cookie',False) or os.environ.get('HF_PUBLIC_DATA_UI_SECURE_COOKIE')=='1' else ''
+        secure='; Secure' if os.environ.get('HF_PUBLIC_DATA_UI_SECURE_COOKIE')=='1' else ''
         return f'{COOKIE}={value}; Path=/ui; HttpOnly; SameSite=Strict; Max-Age={max_age}'+secure
 
     def ui_session(self):
