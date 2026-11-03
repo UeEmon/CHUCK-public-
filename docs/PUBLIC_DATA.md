@@ -25,7 +25,18 @@ CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・Kp指�
 
 ## 管理画面
 
-取得用コンテナの管理画面は `http://localhost:18084/` です（公開環境のサーバーでは、SSHのポート転送などでサーバー自身の18084番に接続します）。`.env` に16文字以上の専用パスワード `HF_PUBLIC_DATA_UI_PASSWORD`（`HF_PUBLIC_DATA_TOKEN` とは別の値）を設定し、`docker compose up -d public-data` で反映してからログインします。未設定のときはログインできません。HTTPSの後ろで使う場合は `HF_PUBLIC_DATA_UI_SECURE_COOKIE=1` も設定します。
+取得用コンテナの管理画面は `http://localhost:18084/` です。`.env` に16文字以上の専用パスワード `HF_PUBLIC_DATA_UI_PASSWORD`（`HF_PUBLIC_DATA_TOKEN` とは別の値）を設定し、`docker compose up -d public-data` で反映してからログインします。未設定のときはログインできません。HTTPSの後ろで使う場合は `HF_PUBLIC_DATA_UI_SECURE_COOKIE=1` も設定します。
+
+### 公開環境のサーバーから開く（HTTPS）
+
+公開環境（`compose.public.yaml` を重ねて起動）では、取得用コンテナ自身が管理画面をHTTPSでも提供します。ブラウザで `https://<サーバーのアドレス>:18443/` を開き、`HF_PUBLIC_DATA_UI_PASSWORD` でログインします。CHUCK本体やリバースプロキシは経由しません。
+
+- このポートで提供するのは管理画面とその `/ui/` のAPIだけです。CHUCKが使うBearer API（`/api/...`）は内部ネットワークの8002番のままで、18443番からは届きません。
+- ログインのクッキーには必ずSecureが付きます。8回失敗すると、その接続元は15分ログインできません。
+- 証明書：`HF_PUBLIC_DATA_UI_TLS_CERT`・`HF_PUBLIC_DATA_UI_TLS_KEY`（コンテナ内のパス）を指定しなければ、自己署名の証明書を `/data/tls` に作り、以後も同じものを使います。ブラウザに警告が出るので、起動ログに出るSHA-256の指紋（`docker compose logs public-data`）と、ブラウザで表示される証明書の指紋が一致することを確かめてから進んでください。
+- 接続元を絞るときは `HF_PUBLIC_DATA_UI_ALLOW` にアドレスかCIDRをカンマ区切りで書きます（例：`203.0.113.10,198.51.100.0/24`）。空ならどこからでも開けます（パスワードは必要）。
+- クラウドのファイアウォール（Oracle Cloudならセキュリティ・リストまたはネットワーク・セキュリティ・グループ、およびサーバーのiptables等）で、TCPの18443番への受信を許可します。番号は `HF_PUBLIC_DATA_UI_PORT`、待ち受けアドレスは `HF_PUBLIC_DATA_UI_BIND`（既定 `0.0.0.0`）で変えられます。使わないときは `.env` に `HF_PUBLIC_DATA_UI_HTTPS=0` を書きます。
+- SSHのポート転送でサーバー自身の18084番に接続する方法も、これまでどおり使えます。
 
 - 取得状態：データごとの提供元、更新間隔、最終取得成功時刻、直近の失敗。「今すぐ取得」で更新間隔にかかわらず全データを取得します。
 - 連携ファイルのダウンロード（ファイル連携用）。

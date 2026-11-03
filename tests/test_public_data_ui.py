@@ -139,3 +139,62 @@ class AdminPageTests(unittest.TestCase):
 
 
 if __name__=='__main__':unittest.main()
+
+
+class HttpsAdminTests(unittest.TestCase):
+    """The admin page over HTTPS for a public server: the page only, Secure cookies, an optional address list."""
+    def setUp(self):
+        import ssl
+        self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
+        self.fetcher=public_data_server.Fetcher(self.tmp.name,public_data_server.sources(giro_enabled=False))
+        for p in [patch.object(public_data_server,'FETCHER',self.fetcher),patch('public_data_server.urlopen',side_effect=provider),
+                  patch.dict(os.environ,{'HF_PUBLIC_DATA_UI_PASSWORD':PASSWORD,'HF_PUBLIC_DATA_TOKEN':TOKEN,'HF_PUBLIC_DATA_UI_HTTPS':'1',
+                                         'HF_PUBLIC_DATA_UI_ALLOW':'','HF_PUBLIC_DATA_UI_TLS_CERT':'','HF_PUBLIC_DATA_UI_TLS_KEY':''})]:
+            p.start();self.addCleanup(p.stop)
+        ui.SESSIONS.clear();ui.FAILURES.clear()
+        self.http=public_data_server.admin_server(0,self.tmp.name)
+        self.assertIsNotNone(self.http)
+        threading.Thread(target=self.http.serve_forever,daemon=True).start()
+        self.addCleanup(self.http.server_close);self.addCleanup(self.http.shutdown)
+        self.port=self.http.server_address[1]
+        self.context=ssl.create_default_context(cafile=str(Path(self.tmp.name)/'tls'/'cert.pem'));self.context.check_hostname=False
+        self.origin=f'https://127.0.0.1:{self.port}'
+
+    def request(self,path,data=None,cookie=None,headers=None):
+        h={'Origin':self.origin,'Content-Type':'application/json'}
+        if cookie:h['Cookie']=cookie
+        h.update(headers or {})
+        c=http.client.HTTPSConnection('127.0.0.1',self.port,context=self.context,timeout=30)
+        c.request('GET' if data is None else 'POST',path,None if data is None else json.dumps(data),h)
+        response=c.getresponse();body=response.read();result=dict(response.getheaders());c.close()
+        return response.status,result,body
+
+    def test_admin_page_is_served_over_https_without_the_bearer_api(self):
+        key=Path(self.tmp.name)/'tls'/'key.pem'
+        self.assertEqual(key.stat().st_mode&0o777,0o600)
+        status,headers,body=self.request('/')
+        self.assertEqual(status,200);self.assertIn(b'briefing.js',body);self.assertIn('max-age',headers['Strict-Transport-Security'])
+        # The Bearer API is never reachable on the public port, even with the token.
+        for path in ('/api/status','/api/export','/api/data/observed','/api/health'):
+            self.assertEqual(self.request(path,headers={'Authorization':'Bearer '+TOKEN,'Origin':''})[0],404,path)
+        self.assertEqual(self.request('/ui/api/status')[0],401)
+        self.assertEqual(self.request('/ui/api/login',{'password':PASSWORD},headers={'Origin':'https://evil.example'})[0],403)
+        status,headers,_=self.request('/ui/api/login',{'password':PASSWORD})
+        self.assertEqual(status,200);self.assertTrue(headers['Set-Cookie'].endswith('; Secure'))
+        status,_,body=self.request('/ui/api/status',cookie=headers['Set-Cookie'].split(';')[0])
+        self.assertEqual((status,json.loads(body)['role']),(200,'public-data'))
+        # The certificate stays the same across restarts.
+        self.assertEqual(public_data_server.certificate(self.tmp.name)[0].read_bytes(),(Path(self.tmp.name)/'tls'/'cert.pem').read_bytes())
+
+    def test_address_list_limits_who_can_open_it(self):
+        with patch.dict(os.environ,{'HF_PUBLIC_DATA_UI_ALLOW':'192.0.2.0/24, 2001:db8::/32'}):
+            self.assertEqual(self.request('/')[0],403)
+            self.assertEqual(self.request('/ui/api/login',{'password':PASSWORD})[0],403)
+        with patch.dict(os.environ,{'HF_PUBLIC_DATA_UI_ALLOW':'192.0.2.1,127.0.0.0/8'}):
+            self.assertEqual(self.request('/')[0],200)
+
+    def test_off_without_the_switch_or_a_password(self):
+        with patch.dict(os.environ,{'HF_PUBLIC_DATA_UI_HTTPS':'0'}):
+            self.assertIsNone(public_data_server.admin_server(0,self.tmp.name))
+        with patch.dict(os.environ,{'HF_PUBLIC_DATA_UI_PASSWORD':''}):
+            self.assertIsNone(public_data_server.admin_server(0,self.tmp.name))

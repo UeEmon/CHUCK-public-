@@ -12,14 +12,21 @@ url, sha256).
 
 The fetcher's own admin page (public_data_ui.py) shows the sources and turns GIRO on or off, and
 runs the space weather daily briefing (briefing.py) with the generative AI chosen per step.
+
+On a public server the admin page is also served over HTTPS on its own port (HF_PUBLIC_DATA_UI_HTTPS=1,
+container port 8443): only the page and its /ui/ API, never the Bearer API, optionally only to the
+addresses in HF_PUBLIC_DATA_UI_ALLOW. Without a certificate a self-signed one is made in /data/tls.
 """
 from datetime import datetime, timezone
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import ipaddress
 import json
 import os
 from pathlib import Path
 import secrets
+import ssl
+import subprocess
 import sys
 import threading
 import time
@@ -28,7 +35,7 @@ from urllib.request import Request, urlopen
 
 from observations import DRAP_URL, NICT_URL, GIRO_URL, GIRO_STATIONS, giro_body, parse_drap, parse_nict, parse_giro
 from briefing import Briefing
-from public_data_ui import PublicDataUI
+from public_data_ui import PublicDataUI, ui_password
 from public_data import BUNDLE_FORMAT, KEY, MAX_RAW, PublicDataError, make_bundle, read_file, write_file
 from space_weather import ALL_FEEDS, ROOT, check_schema
 
@@ -247,6 +254,110 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
             self.json(404, {'error': '見つかりません'})
 
 
+# ---- HTTPS admin page for a public server ------------------------------------------------------------
+
+ADMIN_PORT = 8443
+
+
+class AdminHandler(Handler):
+    """The admin page alone, over HTTPS: the Bearer API (/api/...) is not reachable here and cookies are Secure."""
+    secure_cookie = True
+    timeout = 60  # a client that stops mid-request does not hold a thread
+
+    def allowed(self):
+        networks = admin_networks()
+        if networks is None:
+            return True
+        try:
+            address = ipaddress.ip_address(self.client_address[0])
+        except ValueError:
+            return False
+        address = address.ipv4_mapped or address if address.version == 6 else address
+        return any(address in network for network in networks)
+
+    def end_headers(self):
+        self.send_header('Strict-Transport-Security', 'max-age=31536000')
+        super().end_headers()
+
+    def do_GET(self):
+        if not self.allowed():
+            return self.json(403, {'error': 'この接続元からは管理画面を開けません'})
+        if not self.ui_get(urlparse(self.path).path):
+            self.json(404, {'error': '見つかりません'})
+
+    def do_POST(self):
+        if not self.allowed():
+            return self.json(403, {'error': 'この接続元からは管理画面を開けません'})
+        super().do_POST()
+
+
+class AdminServer(ThreadingHTTPServer):
+    def handle_error(self, request, client_address):
+        # Failed TLS handshakes (a browser refusing the self-signed certificate, scanners) are routine here.
+        error = sys.exc_info()[1]
+        if isinstance(error, (ssl.SSLError, ConnectionError, TimeoutError)):
+            print(f'public-data admin: {client_address[0]}: {type(error).__name__}', flush=True)
+        else:
+            super().handle_error(request, client_address)
+
+
+def admin_networks():
+    """HF_PUBLIC_DATA_UI_ALLOW: comma-separated addresses or CIDR ranges; empty means any address (the password still applies)."""
+    value = os.environ.get('HF_PUBLIC_DATA_UI_ALLOW', '').strip()
+    if not value:
+        return None
+    networks = []
+    for item in value.split(','):
+        try:
+            networks.append(ipaddress.ip_network(item.strip(), strict=False))
+        except ValueError:
+            print(f'public-data: ignored HF_PUBLIC_DATA_UI_ALLOW entry {item.strip()!r}', flush=True)
+    return networks
+
+
+def certificate(directory):
+    """The admin page's certificate: HF_PUBLIC_DATA_UI_TLS_CERT/KEY if given, otherwise a self-signed one kept in /data/tls."""
+    cert, key = os.environ.get('HF_PUBLIC_DATA_UI_TLS_CERT', ''), os.environ.get('HF_PUBLIC_DATA_UI_TLS_KEY', '')
+    if cert or key:
+        return Path(cert), Path(key)
+    folder = Path(directory) / 'tls'
+    cert, key = folder / 'cert.pem', folder / 'key.pem'
+    if not (cert.exists() and key.exists()):
+        folder.mkdir(parents=True, exist_ok=True)
+        os.chmod(folder, 0o700)
+        subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:3072', '-sha256', '-nodes', '-days', '825', '-subj', '/CN=CHUCK public-data admin',
+                        '-keyout', str(key), '-out', str(cert)], check=True, capture_output=True, timeout=120)
+        os.chmod(key, 0o600)
+    return cert, key
+
+
+def fingerprint(cert):
+    der = ssl.PEM_cert_to_DER_cert(Path(cert).read_text())
+    return ':'.join(f'{b:02X}' for b in hashlib.sha256(der).digest())
+
+
+def admin_server(port=ADMIN_PORT, directory=None, handler=AdminHandler):
+    """The HTTPS listener, or None (with the reason printed) when it is off or cannot start."""
+    if os.environ.get('HF_PUBLIC_DATA_UI_HTTPS', '0') != '1':
+        return None
+    if not ui_password():
+        print('public-data: HTTPS admin page is off: set HF_PUBLIC_DATA_UI_PASSWORD (16+ characters, not the token)', flush=True)
+        return None
+    try:
+        cert, key = certificate(DATA if directory is None else directory)
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+        context.load_cert_chain(cert, key)
+        httpd = AdminServer(('0.0.0.0', port), handler)
+        # The handshake runs in the request thread, so a silent client cannot stall the listener.
+        httpd.socket = context.wrap_socket(httpd.socket, server_side=True, do_handshake_on_connect=False)
+        print(f'public-data: HTTPS admin page on :{port} (certificate SHA-256 {fingerprint(cert)})', flush=True)
+        return httpd
+    except (OSError, ssl.SSLError, subprocess.SubprocessError, ValueError) as error:
+        print('public-data: HTTPS admin page could not start:', type(error).__name__, error, flush=True)
+        return None
+
+
 if __name__ == '__main__':
     if '--once' in sys.argv[1:]:
         # Download every source once and write the bundle, e.g. from a scheduled job.
@@ -254,5 +365,8 @@ if __name__ == '__main__':
         print(f'public-data: wrote {FETCHER.export()} with {len(FETCHER.table) - len(failed)} sources' + (f'; failed: {", ".join(failed)}' if failed else ''), flush=True)
         sys.exit(1 if failed else 0)
     threading.Thread(target=loop, daemon=True).start()
+    admin = admin_server()
+    if admin:
+        threading.Thread(target=admin.serve_forever, daemon=True).start()
     print('Public-data fetcher: :8002', flush=True)
     ThreadingHTTPServer(('0.0.0.0', 8002), Handler).serve_forever()

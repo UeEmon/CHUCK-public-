@@ -100,6 +100,8 @@ docker compose -f compose.yaml -f compose.public.yaml up -d --build
 
 `.env` に `CHUCK_ADMIN_SECRET` を設定します（例：`openssl rand -hex 32`）。同じ値をリバースプロキシにも渡します。
 
+取得用コンテナの管理画面（取得状態・GIRO・宇宙天気デイブリーフィングとAPI設定）は、取得用コンテナ自身が `https://<サーバーのアドレス>:18443/` で提供します。`.env` に `HF_PUBLIC_DATA_UI_PASSWORD`（16文字以上）を設定し、クラウドのファイアウォールでTCP 18443番を開けてください（[PUBLIC_DATA.md](PUBLIC_DATA.md#公開環境のサーバーから開くhttps)）。
+
 公開データの取得用コンテナとのAPI連携用に、`.env` に `HF_PUBLIC_DATA_TOKEN`（32文字以上、例：`openssl rand -hex 24`）も設定します。未設定のときは起動（自動更新を含む）が止まります。2026-10-31の更新から必要です（[PUBLIC_DATA.md](PUBLIC_DATA.md)）。
 
 ## 本家の変更を取り込む

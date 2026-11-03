@@ -120,6 +120,7 @@
   "使用量":["Usage", "Usage", "Uso", "Uso", "Uso", "Nutzung", "사용량"],
   "秒":["s", "s", "s", "s", "s", "s", "초"],
   "英語の音声":["English voice", "Voix anglaise", "Voz en inglés", "Voce inglese", "Voz em inglês", "Englische Stimme", "영어 음성"],
+  "この接続元からは管理画面を開けません":["The admin page cannot be opened from this address", "La page d’administration ne peut pas être ouverte depuis cette adresse", "No se puede abrir la página de administración desde esta dirección", "La pagina di amministrazione non può essere aperta da questo indirizzo", "A página de administração não pode ser aberta a partir deste endereço", "Die Verwaltungsseite kann von dieser Adresse aus nicht geöffnet werden", "이 접속 위치에서는 관리 화면을 열 수 없습니다"],
   "日本語の音声":["Japanese voice", "Voix japonaise", "Voz en japonés", "Voce giapponese", "Voz em japonês", "Japanische Stimme", "일본어 음성"],
   "対象日":["Date", "Date", "Fecha", "Data", "Data", "Datum", "대상일"],
   "実行":["Run", "Exécution", "Ejecución", "Esecuzione", "Execução", "Lauf", "실행"],

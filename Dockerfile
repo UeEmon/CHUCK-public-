@@ -35,11 +35,11 @@ CMD ["python", "server.py"]
 # the public-data service and is not part of the redistribution bundle.
 FROM runtime AS public-data
 USER root
-RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core openssl && rm -rf /var/lib/apt/lists/*
 # fontconfig keeps its cache in /tmp because the container filesystem is read-only.
 ENV XDG_CACHE_HOME=/tmp
 USER 10001:10001
-EXPOSE 8002
+EXPOSE 8002 8443
 HEALTHCHECK --interval=20s --start-period=10s CMD ["python", "-c", "import json,urllib.request; assert json.load(urllib.request.urlopen('http://127.0.0.1:8002/api/health'))['ok']"]
 CMD ["python", "public_data_server.py"]
 
