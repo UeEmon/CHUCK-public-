@@ -194,6 +194,53 @@ class PublicModeTests(unittest.TestCase):
         with self.server.connection() as c:
             self.assertIsNone(c.execute('SELECT 1 FROM predictions WHERE created<?',('2001',)).fetchone())
 
+    def test_published_mobile_stations_are_shown_and_usable(self):
+        from datetime import datetime,timedelta,timezone
+        from unittest.mock import patch
+        def save(preset):
+            revision=json.loads(self.request('/api/presets',admin=True)[1])['revision']
+            status,body=self.request('/api/presets',dict(revision=revision,action='save',collection='locations',preset=preset),admin=True)
+            self.assertEqual(status,200,body)
+        mobile=lambda key,public:dict(id='mob-'+key,name='移動局'+key,kind='mobile',region='移動局',lat=35,lon=140,position_ref=dict(source='gps',id=key),public=public)
+        save(mobile('pub',True));save(mobile('priv',False))
+        now=datetime.now(timezone.utc)
+        row=lambda key:dict(source='gps',id=key,name=key,kind='vessel',lat=34.5,lon=139.5,course_deg=90.0,speed_knots=10.0,heading_deg=None,altitude_m=None,
+                            observed_at=now.isoformat(),expires_at=(now+timedelta(minutes=10)).isoformat(),stale=False,prediction_compatible=True,protocol='json')
+        snapshot=dict(positions=[row('pub'),row('priv')],stations=[{'secret':'x'}],server_time=now.isoformat(),max_age_seconds=900)
+        previous=self.public.PUBLIC_POSITIONS,self.public.LIMITER
+        self.public.PUBLIC_POSITIONS=self.public.PublicPositions(lambda:self.server.POSITIONS.snapshot())
+        self.public.LIMITER=self.public.RateLimiter(1000,60)
+        try:
+            with patch.object(self.server.POSITIONS,'snapshot',return_value=snapshot):
+                shown=[p for p in json.loads(self.request('/api/presets')[1])['presets'] if p['kind']=='mobile']
+                self.assertEqual([p['id'] for p in shown],['mob-pub'])
+                status,body=self.request('/api/public-positions');data=json.loads(body)
+                self.assertEqual((status,[p['id'] for p in data['positions']],data['stations']),(200,['pub'],[]))
+                self.assertNotIn('protocol',data['positions'][0])
+                p=dict(tx_lat=35.3,tx_lon=139.67,rx_lat=13.45,rx_lon=144.75,year=2026,month=10)
+                status,body=self.request('/api/predict',dict(p,rx_position=dict(source='gps',id='priv')))
+                self.assertEqual(status,400);self.assertIn('管理者が公開した移動局',json.loads(body)['error'])
+                sites=[dict(name='RX',position_ref=dict(source='gps',id='pub')),dict(name='RX2',position_ref=dict(source='gps',id='priv'))]
+                self.assertEqual(self.request('/api/diversity',dict(p,rx_sites=sites))[0],400)
+                status,body=self.request('/api/predict',dict(p,rx_position=dict(source='gps',id='pub')))
+                self.assertNotIn('管理者が公開した移動局',body.decode())  # Past the public gate (the engine may be absent here).
+            # The gateway being down only affects the published positions endpoint.
+            self.public.PUBLIC_POSITIONS=self.public.PublicPositions(lambda:(_ for _ in ()).throw(OSError('down')))
+            self.assertEqual(self.request('/api/public-positions')[0],503)
+        finally:
+            self.public.PUBLIC_POSITIONS,self.public.LIMITER=previous
+            for key in ('pub','priv'):
+                revision=json.loads(self.request('/api/presets',admin=True)[1])['revision']
+                self.request('/api/presets',dict(revision=revision,action='delete',collection='locations',id='mob-'+key),admin=True)
+
+    def test_public_positions_cache(self):
+        calls=[];clock=[0.0]
+        cache=self.public.PublicPositions(lambda:calls.append(1) or dict(positions=[]),ttl=5,clock=lambda:clock[0])
+        cache.snapshot(set());cache.snapshot(set());clock[0]=6;cache.snapshot(set())
+        self.assertEqual(len(calls),2)
+        self.assertTrue(self.public.only_published([dict(source='a',id='b')],{('a','b')}))
+        self.assertFalse(self.public.only_published([None],{('a','b')}))
+
     def test_position_reference_detection(self):
         self.assertTrue(self.public.references_positions({'rx_sites':[{'position_ref':{}}]}))
         self.assertTrue(self.public.references_positions({'tx_position':None}))

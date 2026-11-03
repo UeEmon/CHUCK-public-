@@ -140,10 +140,48 @@ MAX_RESULTS=int_env('CHUCK_MAX_RESULTS',20000)
 
 def references_positions(value):
     """True when a request asks the server to resolve live gateway positions."""
+    return bool(position_refs(value))
+
+
+def position_refs(value):
+    """Every live position reference in a request, as given (not validated)."""
+    found=[]
     if isinstance(value,dict):
-        return any(k in ('position_ref','tx_position','rx_position') or references_positions(v) for k,v in value.items())
-    if isinstance(value,list):return any(references_positions(v) for v in value)
-    return False
+        for k,v in value.items():
+            if k in ('position_ref','tx_position','rx_position'):found.append(v)
+            else:found+=position_refs(v)
+    elif isinstance(value,list):
+        for v in value:found+=position_refs(v)
+    return found
+
+
+def published_refs(snapshot):
+    """Mobile stations the administrator chose to show on the public site."""
+    return {(p['position_ref']['source'],p['position_ref']['id']) for p in snapshot['presets'] if p.get('kind')=='mobile' and p.get('public')}
+
+
+def only_published(refs,published):
+    return all(isinstance(r,dict) and (r.get('source'),r.get('id')) in published for r in refs)
+
+
+PUBLIC_POSITION_FIELDS=('source','id','name','kind','lat','lon','course_deg','speed_knots','heading_deg','observed_at','expires_at','stale','prediction_compatible')
+
+
+class PublicPositions:
+    """Latest positions of published mobile stations, cached briefly so visitors' polling does not reach the gateway each time."""
+
+    def __init__(self,fetch,ttl=5,clock=time.monotonic):
+        self.fetch,self.ttl,self.clock=fetch,ttl,clock
+        self.lock=threading.Lock()
+        self.cached=None;self.at=-1e9
+
+    def snapshot(self,published):
+        with self.lock:
+            if self.cached is None or self.clock()-self.at>=self.ttl:
+                self.cached=self.fetch();self.at=self.clock()
+            data=self.cached
+        rows=[{k:p.get(k) for k in PUBLIC_POSITION_FIELDS} for p in data['positions'] if (p['source'],p['id']) in published]
+        return dict(positions=rows,stations=[],protocols=[],server_time=data.get('server_time'),max_age_seconds=data.get('max_age_seconds'),ingest_enabled=False)
 
 
 _upstream_save=server.save
@@ -160,6 +198,7 @@ def save(result,kind='point'):
 
 server.save=save
 DONATIONS=donations.DonationStore(server.connection)
+PUBLIC_POSITIONS=PublicPositions(lambda:server.POSITIONS.snapshot())
 RATE_SETTINGS=RateSettings(server.connection)
 
 
@@ -191,8 +230,8 @@ def without_defense_wording(antenna):
 
 
 def public_presets(snapshot):
-    # Mobile presets follow live gateway positions, which are admin-only.
-    return dict(snapshot,presets=[p for p in snapshot['presets'] if p.get('kind')!='mobile'],
+    # Mobile presets follow live gateway positions; only those the administrator published are listed.
+    return dict(snapshot,presets=[p for p in snapshot['presets'] if p.get('kind')!='mobile' or p.get('public')],
                 antennas=[without_defense_wording(a) for a in snapshot['antennas'] if not defense_ministry(a)],editable=False)
 
 
@@ -221,6 +260,11 @@ class PublicHandler(server.Handler):
         if admin:return super().do_GET()
         if any(path==p or path.startswith(p+'/') for p in ADMIN_GET):return self.denied()
         if path=='/api/history':return self.json(200,[])
+        if path=='/api/public-positions':
+            try:return self.json(200,PUBLIC_POSITIONS.snapshot(published_refs(server.PRESETS.snapshot())))
+            except Exception as e:
+                print('public positions:',type(e).__name__,e,flush=True)
+                return self.json(503,{'error':'移動局の位置を取得できません'})
         if path=='/api/presets':
             try:return self.json(200,public_presets(server.PRESETS.snapshot()))
             except Exception:
@@ -321,8 +365,9 @@ class PublicHandler(server.Handler):
             body=self.rfile.read(length)
             try:data=json.loads(body)
             except (ValueError,UnicodeError):return self.json(400,{'error':'JSONが不正です'})
-            if references_positions(data):
-                return self.json(400,{'error':'公開版では移動局の位置連動は使用できません'})
+            refs=position_refs(data)
+            if refs and not only_published(refs,published_refs(server.PRESETS.snapshot())):
+                return self.json(400,{'error':'公開版では管理者が公開した移動局だけを使用できます'})
             retry=LIMITER.take(self.client(),COST[path])
             if retry:
                 return self.json(429,{'error':f'計算回数の上限に達しました。約{(retry+59)//60}分後に再実行してください。'})

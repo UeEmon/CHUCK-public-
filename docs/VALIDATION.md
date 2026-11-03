@@ -396,3 +396,10 @@ HF_UI_BROWSER=/path/to/chromium node tests/ui_workbench.cjs
 - `tests/test_positions.py`：HDT・THS（モードA）・HDG（磁針方位＋自差＋偏差）の換算と、偏差なしHDG・THSのE/M/S/V・チェックサム誤り等の拒否。船首方位の付与、TTL超過で対地針路へ戻ること、局の無効化で破棄されること、JSONの `heading_deg`。`tests/test_gateway_contract.py`：船首方位のない旧ゲートウェイの応答を受け付けること。
 - `python3 -m unittest discover -s tests` が成功。ゲートウェイを実起動して `gateway_simulator.py check`（15項目）が全項目合格。管理画面の最新位置一覧に船首方位と来歴（HDT・HDG・json）が出ることをChromium（Playwright）で確認。
 - 実際のジャイロコンパス・GNSSコンパスでの受信、ネイティブエンジンを使うブラウザ結合試験（`tests/ui_workbench.cjs`）は未実行。
+
+## 公開版の移動局・シミュレーターのドラッグ移動（2026-11-03、x86-64 Linux）
+
+- 移動局プリセットに「公開版の利用者にも表示する」（`public`、既定オフ）を追加。公開版は公開した移動局だけを共通プリセットに出し、`/api/public-positions` で公開局の最新位置だけ（5秒キャッシュ）を返し、計算では公開局以外の位置参照を400で拒否することを `tests/test_public.py` で確認。
+- Chromium（Playwright）で公開版を起動し、利用者には公開局だけが送信地点の選択肢と一覧に出て「コピーして編集」「削除」が無効、管理者には全局と公開チェックが出ることを確認。実ゲートウェイの位置での公開版の計算は未確認。
+- シミュレーター管制画面で三角をドラッグし、送信位置が移動先の緯度経度に変わり、表示範囲が保たれることをChromiumで確認。ゲートウェイに接続できないときに管制画面の状態取得が失敗していた問題（モジュールの二重読み込みで例外を捕捉できなかった）を修正。
+

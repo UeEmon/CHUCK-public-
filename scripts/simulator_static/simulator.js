@@ -4,7 +4,7 @@ const TOKEN=document.querySelector('meta[name=simulator-token]').content;
 const KIND={vessel:'船舶',aircraft:'航空機',vehicle:'車両'};
 const COLORS=['#56d9b0','#ffcf70','#ff9dd6','#9fa8ff','#8be06b','#ffa36b','#6be0e0','#d9a6ff'];
 const SVGNS='http://www.w3.org/2000/svg';
-let state=null,land=null,zoom=1,center=null,editing=false;
+let state=null,land=null,zoom=1,center=null,editing=false,view=null,dragging=null;
 
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 async function call(method,path,body){
@@ -71,8 +71,10 @@ function bounds(){
 }
 function renderMap(){
  const map=$('map');map.replaceChildren();
- const b=bounds(),c=center||b,span=b.span/zoom,W=800,H=520,k=H/span,cos=Math.cos(c.lat*Math.PI/180);
+ // After a station is dragged the view stays put, so the map does not jump to re-fit the moved station.
+ const b=bounds(),c=view||{...(center||b),span:b.span/zoom},span=c.span,W=800,H=520,k=H/span,cos=Math.cos(c.lat*Math.PI/180);
  const x=lon=>W/2+(lon-c.lon)*cos*k,y=lat=>H/2-(lat-c.lat)*k;
+ const toLatLon=(X,Y)=>({lat:Math.max(-85,Math.min(85,c.lat-(Y-H/2)/k)),lon:((c.lon+(X-W/2)/(cos*k))+540)%360-180});
  if(land){const g=svg('g',{class:'land'});for(const f of land.features){const polys=f.geometry.type==='Polygon'?[f.geometry.coordinates]:f.geometry.coordinates;
   for(const poly of polys){const d=poly.map(ring=>'M'+ring.map(([lo,la])=>`${x(lo).toFixed(1)},${y(la).toFixed(1)}`).join('L')+'Z').join('');g.append(svg('path',{d}));}}map.append(g);}
  const grid=svg('g',{class:'grid'}),step=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20].find(s=>span/s<=8)||30;
@@ -85,11 +87,28 @@ function renderMap(){
   if(s.received)map.append(svg('circle',{class:'received',cx:x(s.received.lon),cy:y(s.received.lat),r:9}));
   const px=x(s.lon),py=y(s.lat),a=s.course_deg*Math.PI/180;
   const tri=[[0,-9],[6,7],[-6,7]].map(([dx,dy])=>`${(px+dx*Math.cos(a)-dy*Math.sin(a)).toFixed(1)},${(py+dx*Math.sin(a)+dy*Math.cos(a)).toFixed(1)}`).join(' ');
-  map.append(svg('polygon',{class:'sent',fill:color,points:tri,opacity:s.active?1:.4}));
+  const marker=svg('polygon',{class:'sent',fill:color,points:tri,opacity:s.active?1:.4,tabindex:0,role:'button','aria-label':s.id+'をドラッグして送信位置を移動'});
+  const title=svg('title',{});title.textContent=s.id+'：ドラッグで送信位置を移動';marker.append(title);map.append(marker);
   const label=svg('text',{class:'label',x:px+10,y:py-8});label.textContent=s.id;map.append(label);
+  marker.addEventListener('pointerdown',e=>startDrag(e,s,marker,label,px,py,c,toLatLon));
  });
 }
-function render(){if(!state)return;renderConfig();renderStations();renderCheck();renderLog();renderMap();}
+function svgPoint(e){const map=$('map'),m=map.getScreenCTM().inverse(),p=map.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(m);}
+function startDrag(e,s,marker,label,px,py,c,toLatLon){
+ if(e.button!==0)return;e.preventDefault();
+ const map=$('map'),start=svgPoint(e);view={lat:c.lat,lon:c.lon,span:c.span};
+ dragging={id:s.id,dx:0,dy:0};marker.classList.add('dragging');map.setPointerCapture(e.pointerId);
+ const move=ev=>{const p=svgPoint(ev);dragging.dx=p.x-start.x;dragging.dy=p.y-start.y;const t=`translate(${dragging.dx.toFixed(1)},${dragging.dy.toFixed(1)})`;marker.setAttribute('transform',t);label.setAttribute('transform',t);
+  const to=toLatLon(px+dragging.dx,py+dragging.dy);$('drag-status').textContent=`${s.id} → ${to.lat.toFixed(5)}, ${to.lon.toFixed(5)}`;};
+ const end=async ev=>{
+  map.removeEventListener('pointermove',move);map.removeEventListener('pointerup',end);map.removeEventListener('pointercancel',end);
+  const moved=Math.hypot(dragging.dx,dragging.dy)>=3,cancel=ev.type==='pointercancel',to=toLatLon(px+dragging.dx,py+dragging.dy);dragging=null;$('drag-status').textContent='';
+  if(!moved||cancel){renderMap();return;}
+  await act({action:'update',id:s.id,lat:Number(to.lat.toFixed(6)),lon:Number(to.lon.toFixed(6))},`${s.id}の送信位置を ${to.lat.toFixed(5)}, ${to.lon.toFixed(5)} へ移動しました`);
+ };
+ map.addEventListener('pointermove',move);map.addEventListener('pointerup',end);map.addEventListener('pointercancel',end);
+}
+function render(){if(!state)return;renderConfig();renderStations();renderCheck();renderLog();if(!dragging)renderMap();}
 async function refresh(){try{state=await call('GET','/api/state');render();}catch(e){notice(e.message,true);}}
 
 $('start').onclick=()=>act({action:'start'},'送信を開始しました');
@@ -98,7 +117,7 @@ $('step').onclick=()=>act({action:'step'},'1回だけ送信しました');
 $('setup').onclick=()=>act({action:'setup'},'全局を登録し、TCP・UDPの局に受信キーを発行しました');
 $('check').onclick=()=>act({action:'check'},'機能確認を始めました');
 $('interval').onchange=e=>act({action:'interval',interval:Number(e.target.value)});
-$('zoom-in').onclick=()=>{zoom*=2;render();};$('zoom-out').onclick=()=>{zoom/=2;render();};$('zoom-fit').onclick=()=>{zoom=1;center=null;render();};
+$('zoom-in').onclick=()=>{zoom*=2;if(view)view.span/=2;render();};$('zoom-out').onclick=()=>{zoom/=2;if(view)view.span*=2;render();};$('zoom-fit').onclick=()=>{zoom=1;center=null;view=null;render();};
 $('add-form').onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
  for(const k of['lat','lon','speed_knots','course_deg','altitude_m'])d[k]=d[k]===''?null:Number(d[k]);act({action:'add',...d},`${d.id}を追加しました`);};
 fetch('land.geojson').then(r=>r.ok?r.json():null).then(d=>{land=d;render();}).catch(()=>{});

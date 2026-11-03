@@ -84,6 +84,12 @@ api=async function(url,options){
   publicSharedCatalog=await upstreamApi(url,options);const store=publicLoad();
   return {...publicSharedCatalog,presets:[...publicSharedCatalog.presets,...store.locations],antennas:[...publicSharedCatalog.antennas,...store.antennas]};
  }
+ if(path==='/api/positions'&&method==='GET'){
+  // Only mobile stations the administrator published; nothing to fetch when there are none.
+  if(!publicSharedCatalog.presets.some(p=>p.kind==='mobile'))return {positions:[],stations:[],protocols:[],max_age_seconds:0,ingest_enabled:false,server_time:new Date().toISOString()};
+  return upstreamApi('/api/public-positions');
+ }
+ if(path==='/api/presets'&&JSON.parse(options.body||'{}').action==='sync_mobile')return {imported:0};
  if(path==='/api/presets')return editLocalPreset(JSON.parse(options.body),publicSharedCatalog);
  if(['/api/ai-settings','/api/antenna-imports','/api/positions','/api/position-stations'].some(p=>path===p||path.startsWith(p+'/')))
   throw Error('公開版では使用できない機能です');
@@ -175,7 +181,8 @@ Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
  const mobile=document.querySelector('#location-editor select[name="kind"] option[value="mobile"]');if(mobile)mobile.remove();
  const ownAntenna='アンテナは自分用を1つだけ登録できます。このブラウザにだけ保存され、他の利用者には表示されません。共通のアンテナは「コピーして編集」で自分用に変えられます。';
  const shared='共通プリセットは閲覧専用です。追加・編集した地点は「自分の」プリセットとしてこのブラウザにだけ保存され、他の利用者には表示されません。';
- const locationEditor=document.getElementById('location-editor');if(locationEditor)locationEditor.before(publicHint(shared),publicTools());
+ const mobileHint='管理者が公開した移動局（地域「移動局」、[M]印）は、送受信地点で選ぶと計算時点の最新位置で計算します。';
+ const locationEditor=document.getElementById('location-editor');if(locationEditor)locationEditor.before(publicHint(shared),publicHint(mobileHint),publicTools());
  const antennaEditor=document.getElementById('antenna-editor');
  if(antennaEditor){
   antennaEditor.before(antennaRequest(cfg),publicHint(ownAntenna));
@@ -194,6 +201,7 @@ Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
     rows.forEach((p,i)=>{
      const buttons=trs[i+1]?.querySelectorAll('button');if(!buttons||buttons.length<2||isLocalPreset(p))return;
      buttons[0].textContent='コピーして編集';buttons[1].disabled=true;buttons[1].title='共通プリセットは削除できません';
+     if(p.kind==='mobile'){buttons[0].disabled=true;buttons[0].title='移動局は送受信地点の選択欄から選んで使えます';}
     });
    }
   };

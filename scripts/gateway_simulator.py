@@ -478,4 +478,6 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
+    # simulator_console imports this module by name: share one copy so it catches the same JigError.
+    sys.modules.setdefault('gateway_simulator', sys.modules['__main__'])
     sys.exit(main())

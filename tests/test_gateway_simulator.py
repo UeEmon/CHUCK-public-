@@ -91,6 +91,14 @@ class SimulatorTests(unittest.TestCase):
                     dict(action='update',id='bus-1',speed_knots=-1),dict(action='interval',interval=0),dict(action='nope')):
             with self.subTest(bad=bad),self.assertRaises(jig.JigError):console.action(bad)
         console.action(dict(action='remove',id='bus-1'));self.assertNotIn('bus-1',console.stations)
+        # Dragging a station on the map moves its sending position and starts a fresh track.
+        console.action(dict(action='update',id='car-nmea',lat=34.5,lon=135.5))
+        car=console.stations['car-nmea']
+        self.assertEqual((car['lat'],car['lon'],car['track']),(34.5,135.5,[(34.5,135.5)]))
+        self.assertIn('34.50000, 135.50000 へ移動',console.state()['log'][0])
+        console.action(dict(action='step'))
+        self.assertTrue(abs(console.stations['car-nmea']['lat']-34.5)<0.1)
+        with self.assertRaises(jig.JigError):console.action(dict(action='update',id='car-nmea',lat=95))
 
     def test_console_server_requires_its_token_and_loopback_host(self):
         console=simulator_console.Console(self.gateway(),jig.load_scenario(None))

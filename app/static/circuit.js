@@ -137,7 +137,7 @@ function renderCatalog(){
  for(const [collection,rows,target]of [['locations',catalog.presets,'locations-list'],['antennas',catalog.antennas,'antennas-list']]){
   const table=document.createElement('table'),head=document.createElement('tr');['名称',collection==='locations'?'地域 / 地点':'モデル / 利得','編集','削除',...(collection==='antennas'?['出典・モデル注記']:[])].forEach(t=>head.append(cell('th',t)));table.append(head);
   for(const p of collection==='antennas'?[...rows].sort((a,b)=>isDirectional(a)-isDirectional(b)):rows){
-   const tr=document.createElement('tr');const nameCell=cell('td',p.name);if(!isOriginalPreset(p))nameCell.dataset.userContent='true';tr.append(nameCell,cell('td',collection==='locations'?p.region+' / '+(p.kind==='mobile'?p.position_ref.source+'/'+p.position_ref.id:fmt(p.lat,4)+', '+fmt(p.lon,4)):(isDirectional(p)?'指向性':'全方向')+' / '+antennaSummary(p)));
+   const tr=document.createElement('tr');const nameCell=cell('td',p.name);if(!isOriginalPreset(p))nameCell.dataset.userContent='true';tr.append(nameCell,cell('td',collection==='locations'?p.region+' / '+(p.kind==='mobile'?p.position_ref.source+'/'+p.position_ref.id+(p.public?' · '+(window.HF_I18N?HF_I18N.translate('公開'):'公開'):''):fmt(p.lat,4)+', '+fmt(p.lon,4)):(isDirectional(p)?'指向性':'全方向')+' / '+antennaSummary(p)));
    for(const [title,action]of [['編集',()=>editCatalog(collection,p)],['削除',()=>mutateCatalog({collection,action:'delete',id:p.id})]]){const td=document.createElement('td'),b=cell('button',title);b.type='button';b.onclick=action;td.append(b);tr.append(td);}if(collection==='antennas'){const td=document.createElement('td');if(p.reference){for(const [i,url]of p.reference.sources.entries()){const link=cell('a','Source '+(i+1));link.href=url;link.target='_blank';link.rel='noopener noreferrer';td.append(link,document.createTextNode(' '));}const note=cell('small',p.reference.notes);note.className='hint';td.append(note);if(p.reference_only)td.append(cell('strong','参考資料のみ（計算不可）'));}if(p.document_ref){const link=cell('a','原本をダウンロード');link.href='/api/antenna-imports/'+p.document_ref.id+'/source';link.download='';td.append(link);}tr.append(td);}table.append(tr);
   }$(target).replaceChildren(table);
  }
@@ -150,7 +150,7 @@ function editCatalog(collection,p){
  const f=$(collection==='locations'?'location-editor':'antenna-editor');f.reset();f.elements.id.value='';for(const [key,value]of Object.entries(p))if(f.elements[key])f.elements[key].value=value;
  f.dataset.revision=String(catalog.revision);delete f.dataset.reference;delete f.dataset.referenceOnly;delete f.dataset.referenceLength;if(collection==='antennas'){if(p.reference){f.dataset.reference=JSON.stringify(p.reference);if(p.length_m!==null)f.dataset.referenceLength=p.length_m;}if(p.reference_only)f.dataset.referenceOnly='true';}
  if(collection==='antennas'){f.elements.reference_only.checked=!!p.reference_only;if(p.length_m!=null)f.dataset.referenceLength=p.length_m;if(typeof editOCRReference==='function')editOCRReference(p);}
- if(collection==='locations'){updateMobileOptions(p.position_ref);updateLocationKind(false);}else updateAntennaEditor();
+ if(collection==='locations'){f.elements.public.checked=!!p.public;updateMobileOptions(p.position_ref);updateLocationKind(false);}else updateAntennaEditor();
  tab(collection==='locations'?'location-presets':'antenna-presets');f.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 function updateMobileOptions(ref){
@@ -162,7 +162,7 @@ function updateMobileOptions(ref){
  if(current)select.value=current;
 }
 function updateLocationKind(copy=true){
- const f=$('location-editor'),mobile=f.elements.kind.value==='mobile';$('mobile-preset-row').hidden=!mobile;
+ const f=$('location-editor'),mobile=f.elements.kind.value==='mobile';$('mobile-preset-row').hidden=$('mobile-public-row').hidden=!mobile;
  f.elements.lat.readOnly=f.elements.lon.readOnly=mobile;f.elements.mobile_ref.required=mobile;
  if(mobile&&copy)copyMobileCoordinates();
 }
@@ -183,7 +183,7 @@ for(const [collection,id]of [['locations','location-editor'],['antennas','antenn
  const editor=$(id);editor.addEventListener('focusin',()=>{if(!editor.dataset.revision)editor.dataset.revision=String(catalog.revision);});
  editor.onsubmit=async e=>{
   e.preventDefault();const preset=Object.fromEntries(new FormData(editor));if(!preset.id)delete preset.id;
-  if(collection==='locations'){preset.lat=Number(preset.lat);preset.lon=Number(preset.lon);if(preset.kind==='mobile'){if(!preset.mobile_ref){notice('受信局を選択してください。',true);return;}preset.position_ref=JSON.parse(preset.mobile_ref);}delete preset.mobile_ref;}
+  if(collection==='locations'){preset.lat=Number(preset.lat);preset.lon=Number(preset.lon);if(preset.kind==='mobile'){if(!preset.mobile_ref){notice('受信局を選択してください。',true);return;}preset.position_ref=JSON.parse(preset.mobile_ref);preset.public=editor.elements.public.checked;}else delete preset.public;delete preset.mobile_ref;}
   else {if(editor.dataset.reference)preset.reference=JSON.parse(editor.dataset.reference);if(!('length_m' in preset)&&editor.dataset.referenceLength)preset.length_m=editor.dataset.referenceLength;preset.reference_only=editor.elements.reference_only.checked;if(editor.dataset.documentRef)preset.document_ref={...JSON.parse(editor.dataset.documentRef),reviewed:$('ocr-reviewed').checked,approximation_ack:$('ocr-approximation').checked};preset.gain=Number(preset.gain);for(const key of antennaFields)if(key in preset)preset[key]=Number(preset[key]);}
   const ok=await mutateCatalog({collection,action:'save',preset,revision:Number(editor.dataset.revision??catalog.revision)});if(ok){editor.reset();editor.elements.id.value='';delete editor.dataset.revision;delete editor.dataset.reference;delete editor.dataset.referenceOnly;delete editor.dataset.referenceLength;if(collection==='locations')updateLocationKind();else {updateAntennaEditor();if(typeof editOCRReference==='function')editOCRReference({});}}
  };

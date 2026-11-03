@@ -159,8 +159,11 @@ class Console:
                     if isinstance(value, bool) or not isinstance(value, (int, float)) or not low <= value <= high:
                         raise jig.JigError(f'{field}は{low}〜{high}で指定してください')
                     station[field] = float(value)
-            if 'lat' in data or 'lon' in data: station['track'].append((station['lat'], station['lon']))
-        self.note(f"{station['id']} を変更しました")
+            moved = data.get('lat') is not None or data.get('lon') is not None
+            # A moved station starts a new track instead of drawing a jump across the map.
+            if moved: station['track'] = [(station['lat'], station['lon'])]
+            where = f"{station['lat']:.5f}, {station['lon']:.5f} へ移動" if moved else '変更'
+        self.note(f"{station['id']} を{where}しました")
 
     def do_add(self, data):
         station = dict(id=data.get('id'), name=data.get('name') or data.get('id'), kind=data.get('kind'), transport=data.get('transport'),

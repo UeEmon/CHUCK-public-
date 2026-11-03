@@ -69,6 +69,9 @@ def validate_preset(data, collection='locations'):
         ref=data.get('position_ref')
         if not isinstance(ref,dict): raise InputError('移動局には受信局のposition_refが必要です')
         p['position_ref']=dict(source=identifier(ref.get('source'),'source'),id=identifier(ref.get('id'),'id'))
+        # Shown to visitors of the public site, who may then use its live position (public_server.py).
+        if type(data.get('public',False)) is not bool: raise InputError('publicはtrue/falseです')
+        if data.get('public'): p['public']=True
     return p
 
 

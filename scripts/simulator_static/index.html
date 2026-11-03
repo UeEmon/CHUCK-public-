@@ -14,6 +14,7 @@
 <div class="layout">
  <section class="panel map-panel"><div class="title"><h2>位置</h2><span><button id="zoom-in" aria-label="拡大">＋</button><button id="zoom-out" aria-label="縮小">－</button><button id="zoom-fit">全局を表示</button></span></div>
   <svg id="map" viewBox="0 0 800 520" role="img" aria-label="模擬局とゲートウェイ受信位置の地図"></svg>
+  <p class="hint">三角（送信位置）をドラッグすると、その局の送信位置を移動できます。「全局を表示」で表示範囲を合わせ直します。<span id="drag-status" class="ok"></span></p>
   <p class="hint"><span class="dot sent"></span>送信した位置と航跡　<span class="dot received"></span>ゲートウェイが受信した位置（本体連携APIで読み戻し）。海岸線は概略です。</p></section>
  <section class="panel"><h2>機能確認の結果</h2><div id="check-results"><p class="hint">「機能確認を実行」で、全方式の送信・読み戻しと異常入力の拒否を確かめます。</p></div>
   <h2>ログ</h2><ol id="log"></ol></section>
