@@ -101,6 +101,8 @@ class PublicModeTests(unittest.TestCase):
         status,body=self.request('/')
         self.assertEqual(status,200);self.assertIn(b'<script src="app.js"></script><script src="public.js"></script>',body)
         self.assertEqual(self.request('/public.js')[0],200)
+        # The admin site loads it too, for the links to the admin pages.
+        self.assertIn(b'<script src="public.js"></script>',self.request('/',admin=True)[1])
 
     def test_live_positions_are_rejected(self):
         p=dict(tx_lat=35.3,tx_lon=139.67,rx_lat=13.45,rx_lon=144.75,year=2026,month=10)

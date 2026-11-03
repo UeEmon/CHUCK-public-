@@ -257,6 +257,8 @@ class PublicHandler(server.Handler):
                                       donation_url=link_env('CHUCK_DONATION_URL'),contact_url=catalog_url(),donations=bool(webhook_secret())))
         if path.startswith('/api/support/'):return self.support_get(path)
         if path.startswith('/api/admin/'):return self.admin_get(path) if admin else self.denied()
+        # Admins get public.js too: it adds the links to the admin pages and otherwise leaves them alone.
+        if path in ('/','/index.html'):return self.index()
         if admin:return super().do_GET()
         if any(path==p or path.startswith(p+'/') for p in ADMIN_GET):return self.denied()
         if path=='/api/history':return self.json(200,[])
@@ -270,7 +272,6 @@ class PublicHandler(server.Handler):
             except Exception:
                 __import__('traceback').print_exc()
                 return self.json(500,{'error':'読み込みに失敗しました。サーバーログを確認してください。'})
-        if path in ('/','/index.html'):return self.index()
         return super().do_GET()
 
     def index(self):

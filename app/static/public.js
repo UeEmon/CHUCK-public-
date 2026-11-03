@@ -168,11 +168,12 @@ function antennaRequest(cfg){
 const domReady=new Promise(resolve=>document.readyState==='loading'?document.addEventListener('DOMContentLoaded',resolve,{once:true}):resolve());
 Promise.all([PUBLIC_CONFIG,domReady]).then(([cfg])=>{
  if(cfg.public&&cfg.admin){
-  // Admins reach the calculation limits and the donation ledger from the antenna screen.
-  const p=document.createElement('p');p.className='exports';
-  p.append(Object.assign(document.createElement('a'),{href:'/limits-admin.html',textContent:'計算回数の上限'}));
-  if(cfg.donations)p.append(Object.assign(document.createElement('a'),{href:'/support-admin.html',textContent:'寄付と資料の管理'}));
-  document.getElementById('antenna-editor')?.before(p);
+  // Admins reach the calculation limits and the donation ledger from the header on every tab.
+  const nav=document.createElement('nav');nav.className='admin-links';nav.style.cssText='margin-left:auto;display:flex;gap:12px;font-size:12px';
+  const link=(href,text)=>nav.append(Object.assign(document.createElement('a'),{href,textContent:text,style:'color:var(--accent)'}));
+  link('/limits-admin.html','計算回数の上限');
+  if(cfg.donations)link('/support-admin.html','寄付と資料の管理');
+  const language=document.querySelector('header .language-control');if(language){language.before(nav);language.style.marginLeft='16px';}
  }
  if(!cfg.public||cfg.admin)return;
  const hide=el=>{if(el){el.hidden=true;el.style.display='none';}};
