@@ -3,7 +3,7 @@
 let brief=null,briefModels={},briefVoices={},briefModelLoads={},briefVoiceFilters={};
 const LANG_NAMES={en:'英語',ja:'日本語',fr:'フランス語',es:'スペイン語',it:'イタリア語',pt:'ポルトガル語',de:'ドイツ語',ko:'韓国語'},AUDIO_ORDER=Object.keys(LANG_NAMES);
 const STEP_LABELS={script:'英語の原稿',translate:'翻訳（英語以外の言語）',translate_ja:'日本語への翻訳（音声・字幕）',translate_subtitles:'字幕の翻訳（仏・西・伊・葡・独・韓）',review:'独立レビュー',...Object.fromEntries(AUDIO_ORDER.map(l=>['tts_'+l,LANG_NAMES[l]+'の音声合成']))};
-const GATE_LABELS={DATA_COMPLETE:'必須データがそろっている',DATA_FRESH:'必須データが新しい',FACTS_VALID:'数値・時刻・単位の整合',LICENSE_CLEARED:'権利の確認',LANGUAGES_COMPLETE:'選んだ言語の音声と字幕',MEDIA_VALID:'動画のトラックと再生',BUDGET_OK:'予算',REVIEW_OK:'生成AIによるレビュー',SCHEDULE_OK:'時刻規則（02:30凍結・03:00締切）',PRODUCTION_INPUT:'実データ（Mockでない）',RELEASE_POLICY:'公開（この版では無効）'};
+const GATE_LABELS={DATA_COMPLETE:'必須データがそろっている',DATA_FRESH:'必須データが新しい',FACTS_VALID:'数値・時刻・単位の整合',LICENSE_CLEARED:'権利の確認',LANGUAGES_COMPLETE:'選んだ言語の音声と字幕',MEDIA_VALID:'動画のトラックと再生',BUDGET_OK:'予算',REVIEW_OK:'生成AIによるレビュー',SCHEDULE_OK:'時刻規則（00:00以降に開始・03:00締切）',PRODUCTION_INPUT:'実データ（Mockでない）',RELEASE_POLICY:'公開（この版では無効）'};
 const CREDENTIALS={saved:'保存済みのキーを使用',environment:'環境変数のキーを使用',none:'未設定'};
 const PRICE_FIELDS=[['input','入力'],['output','出力'],['cached_input','キャッシュ入力'],['audio_output','音声出力']];
 function utcText(v){return v?String(v).replace('T',' ').replace(/(\.\d+)?(Z|\+00:00)$/,' UTC'):'—';}

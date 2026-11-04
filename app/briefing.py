@@ -7,8 +7,9 @@ SRT/WebVTT files, source and rights manifests, a quality report and a token/cost
 Rules this module keeps (see docs/SPACE_WEATHER_BRIEFING.md):
 
 * Times are UTC. The observation window is the previous day 00:00 to the run day 00:00 UTC
-  (end excluded). Data is collected and retried until 02:30 UTC, frozen then, and production must
-  finish by 03:00 UTC. A run outside these times is a test run and ends in HOLD.
+  (end excluded). From 00:00 UTC the scheduler starts as soon as every required product is complete,
+  fresh and cleared (the data is frozen then); at 02:30 UTC it starts whatever it has. Production must
+  finish by 03:00 UTC. A run outside 00:00-03:00 UTC on its day is a test run and ends in HOLD.
 * Numbers are never written by an AI. Each value is a {{token}} the AI may only place; this code
   fills every language from the same structured value, then checks that every language holds the
   same tokens and no other digits.
@@ -43,7 +44,7 @@ from xml.sax.saxutils import escape
 import briefing_ai as ai
 from observations import DRAP_URL, NICT_URL, parse_drap, parse_nict
 from public_data import PublicDataError, read_file
-from space_weather import ALL_FEEDS, ROOT, check_schema
+from space_weather import ALL_FEEDS, ROOT, check_schema, kp_rows
 from space_weather_view import kp_series, kp_storm_level, scale_days
 
 # The subtitle languages follow CHUCK's interface: same set, same order (app/static/i18n.js) and the same
@@ -303,13 +304,15 @@ def collect(files, run_date, frozen_at, rights_table):
         feeds[key] = load(raw, key, fetched_at, url, 'file' if key in files else 'missing')
     products = {}
 
-    def product(key, complete, fresh, detail, used=True, times=None):
+    def product(key, complete, fresh, detail, used=True, times=None, updated=None):
         item, r = CATALOG[key], rights_table[key]
         rights_state = 'CLEARED' if r['public'] else 'PENDING_RIGHTS'
         products[key] = {'label': item['label'], 'required': item['required'], 'complete': bool(complete), 'fresh': bool(fresh),
                          'invalid': feeds[key]['invalid'], 'detail': detail, 'rights': rights_state, 'used': bool(used and complete and fresh and r['public']),
                          'url': item['url'], 'license_id': item['license_id'], 'fetched_at': utc(datetime.fromtimestamp(feeds[key]['fetched_at'], timezone.utc)) if feeds[key]['fetched_at'] else None,
-                         'sha256': feeds[key]['sha256'], 'times': times or {}}
+                         'sha256': feeds[key]['sha256'], 'times': times or {},
+                         # Whether the product's own content shows an update since the run day's 00:00 UTC (None: not checked).
+                         'updated_since_0000': updated}
 
     # R/S/G: the same reading as the space weather tab.
     scales = scale_days(feeds['scales'], frozen_at)
@@ -317,8 +320,10 @@ def collect(files, run_date, frozen_at, rights_table):
     forecast_days = [d for d in scales['days'] if d['kind'] == 'forecast' and d['date']]
     first = forecast_days[0]['date'] if forecast_days else None
     complete = 'latest' in days and 'max24h' in days and len(forecast_days) >= 3 and first in (run_date.isoformat(), (run_date + timedelta(days=1)).isoformat())
+    midnight = s['window_end']
     product('scales', complete, complete and not scales['stale'], None if complete else 'missing current, 24 h or 3-day forecast entries',
-            times={'observed_at': scales['observed_at'], 'forecast_first_day': first})
+            times={'observed_at': scales['observed_at'], 'forecast_first_day': first},
+            updated=bool(scales['observed_at']) and datetime.fromisoformat(scales['observed_at']) >= midnight)
     # Kp: the same merged series as the space weather tab, cut to the observation window.
     kp = kp_series(feeds['kp'], feeds['kp-forecast'], frozen_at)
     start, end = s['window_start'].isoformat(), s['window_end'].isoformat()
@@ -326,8 +331,9 @@ def collect(files, run_date, frozen_at, rights_table):
     complete = len(window) == 8
     latest = kp['latest']
     fresh = complete and latest is not None and (frozen_at - datetime.fromisoformat(latest['time'])).total_seconds() <= CATALOG['kp']['max_age_seconds']
+    # The window's last interval (21:00-24:00) is only observed after 00:00, so a complete window is an update since then.
     product('kp', complete, fresh, None if complete else f'{len(window)} of 8 intervals in the window',
-            times={'window_start': utc(s['window_start']), 'window_end': utc(s['window_end']), 'latest': latest and latest['time']})
+            times={'window_start': utc(s['window_start']), 'window_end': utc(s['window_end']), 'latest': latest and latest['time']}, updated=complete)
     # The outlook: the forecast product's rows still ahead of the freeze. NOAA marks the rest of the current
     # day 'estimated' and only later days 'predicted', so both count once they lie in the future.
     predicted, frozen_text = {}, frozen_at.isoformat()
@@ -338,8 +344,12 @@ def collect(files, run_date, frozen_at, rights_table):
     complete = all(predicted.get(d) for d in outlook_dates)
     fetched = feeds['kp-forecast']['fetched_at']
     fresh = complete and fetched is not None and 0 <= frozen_at.timestamp() - fetched <= CATALOG['kp-forecast']['max_age_seconds'] + 300
+    # The product gives no issue time. NOAA marks the current day's rows 'estimated' (or 'observed') and later days
+    # 'predicted', so a run-day row that is no longer 'predicted' shows the product was made on the run day.
+    today = run_date.isoformat()
+    updated = any(r['time'][:10] == today and r['kind'] != 'predicted' for r in kp_rows(feeds['kp-forecast']['data']))
     product('kp-forecast', complete, fresh, None if complete else 'predicted rows missing for a day of the outlook',
-            times={'issue_time': None, 'issue_time_note': 'not given in the product; fetched_at is the retrieval time'})
+            times={'issue_time': None, 'issue_time_note': 'not given in the product; fetched_at is the retrieval time'}, updated=updated)
     # D-RAP (optional).
     drap = feeds['drap']['data']
     peak = None
@@ -723,10 +733,10 @@ def wrap(value, size, width, weight='400'):
 
 class Slide:
     """An SVG slide that also keeps every text it draws, so the English-only and layout rules can be checked."""
-    def __init__(self, seg, run_date, footer):
+    def __init__(self, seg, run_date, footer, frozen='02:30'):
         self.seg, self.parts, self.texts, self.overflow = seg, [], [], []
         self.text(48, 38, 'CHUCK SPACE WEATHER BRIEF', 26, '#56d9b0', weight='700', middle=True)
-        self.text(W - 48, 38, run_date + '  |  data frozen 02:30 UTC', 20, MUTED, 'end', middle=True)
+        self.text(W - 48, 38, run_date + '  |  data frozen ' + frozen + ' UTC', 20, MUTED, 'end', middle=True)
         self.text(48, 128, SEGMENT_TITLES[seg], 34, weight='700', width=W - 96)
         self.text(W - 48, H - 18, footer, 15, MUTED, 'end')
 
@@ -828,13 +838,14 @@ def drap_map(slide, grid, x0, y0, w, h):
             slide.raw(f'<rect x="{px:.1f}" y="{py:.1f}" width="{qx - px + .3:.1f}" height="{qy - py + .3:.1f}" fill="{fill}" opacity=".75"/>')
 
 
-def slides(facts, run_date, mock):
-    """One English slide per segment, drawn from the structured values only."""
+def slides(facts, run_date, mock, frozen_at=None):
+    """One English slide per segment, drawn from the structured values only. frozen_at is when the data was frozen."""
     values, chart, products = facts['values'], facts['chart'], facts['products']
+    frozen = frozen_at.astimezone(timezone.utc).strftime('%H:%M') if frozen_at else '02:30'
     v = lambda name: values[name]['value'] if name in values else None
     footer = ('MOCK DATA - NOT FOR RELEASE  |  ' if mock else '') + 'Automated briefing  |  Data: NOAA SWPC  |  Not an official forecast'
     result = {}
-    s = Slide('overview', run_date, footer)
+    s = Slide('overview', run_date, footer, frozen)
     for i, (key, label) in enumerate((('r', 'Radio blackouts'), ('s', 'Radiation storms'), ('g', 'Geomagnetic storms'))):
         tile(s, 64 + i * 290, 170, 270, label, v(key + '_now'), key.upper())
     s.raw(f'<rect x="934" y="170" width="282" height="190" rx="12" fill="{PANEL}" stroke="{GRID}"/>')
@@ -845,7 +856,7 @@ def slides(facts, run_date, mock):
     s.text(64, 420, 'Observation window: ' + utc(timing['window_start']) + ' to ' + utc(timing['window_end']) + ' (end excluded)', 20, MUTED)
     s.text(64, 452, 'Levels: NOAA SWPC scales. Values are observations unless marked as forecast.', 20, MUTED)
     result['overview'] = s
-    s = Slide('solar', run_date, footer)
+    s = Slide('solar', run_date, footer, frozen)
     tile(s, 64, 170, 270, 'Max R, past 24 h', v('r_max24'), 'R')
     tile(s, 64, 390, 270, 'Max S, past 24 h', v('s_max24'), 'S')
     if chart['drap']:
@@ -855,13 +866,13 @@ def slides(facts, run_date, mock):
     else:
         s.text(380, 300, 'D-RAP absorption: not available', 26, MUTED)
     result['solar'] = s
-    s = Slide('geomagnetic', run_date, footer)
+    s = Slide('geomagnetic', run_date, footer, frozen)
     kp_chart(s, chart['kp_rows'], schedule(Date.fromisoformat(run_date))['window_end'], 110, 200, 1080, 300)
     s.text(110, 590, 'Max Kp in window ' + fmt(v('kp_max24')) + '  (G' + fmt(v('g_kp_max24')) + ')   Latest Kp ' + fmt(v('kp_latest')), 24)
     s.text(110, 624, 'Ionosphere (NICT): ' + ('foF2 ' + fmt(v('nict_fof2')) + ' MHz at ' + v('nict_station') if 'nict_fof2' in values
                                              else 'not included (rights pending or data missing)'), 18, MUTED)
     result['geomagnetic'] = s
-    s = Slide('impacts', run_date, footer)
+    s = Slide('impacts', run_date, footer, frozen)
     cards = (('HF radio', 'Basis: R level R' + fmt(v('r_now')) + (', D-RAP ' + fmt(v('drap_haf')) + ' MHz' if 'drap_haf' in values else ''),
               'Daytime absorption may weaken low HF bands.'),
              ('GNSS', 'Basis: Kp ' + fmt(v('kp_max24')) + ', G' + fmt(v('g_now')), 'Accuracy may vary during disturbed periods.'),
@@ -874,7 +885,7 @@ def slides(facts, run_date, mock):
         s.text(x + 20, 258 + lines * 23 + 26, note, 20, width=330)
     s.text(64, 520, 'These are possible effects with their basis, not confirmed outages or failures.', 22, '#fab219')
     result['impacts'] = s
-    s = Slide('outlook', run_date, footer)
+    s = Slide('outlook', run_date, footer, frozen)
     for x, head in ((0, 'Day (UTC)'), (300, 'Max Kp'), (600, 'R1-R2'), (780, 'R3+'), (960, 'S1+')):
         s.text(64 + x, 200, head, 22, MUTED)
     s.text(570, 200, 'G', 22, MUTED, 'middle')  # centred over the G badges
@@ -888,9 +899,9 @@ def slides(facts, run_date, mock):
         s.text(570, y - 8, 'G' + fmt(g), 24, '#0b0b0b' if g in (1, 2) else '#fff', 'middle', '700', middle=True)
         for x, name in ((664, f'd{n}_r12'), (844, f'd{n}_r3'), (1024, f'd{n}_s1')):
             s.text(x, y, '-' if v(name) is None else fmt(v(name)) + '%', 26)
-    s.text(64, 560, 'Forecasts: NOAA SWPC 3-day scales probabilities and Kp forecast, latest issued before 02:30 UTC.', 18, MUTED)
+    s.text(64, 560, 'Forecasts: NOAA SWPC 3-day scales probabilities and Kp forecast, latest issued before ' + frozen + ' UTC.', 18, MUTED)
     result['outlook'] = s
-    s = Slide('summary', run_date, footer)
+    s = Slide('summary', run_date, footer, frozen)
     y = 190
     for key, p in products.items():
         if p['used']:
@@ -1204,11 +1215,27 @@ class Briefing:
 
     # scheduling: off unless HF_BRIEFING_SCHEDULER_ENABLED=1, and then only local files
     def due(self, now=None):
+        """Whether the scheduler starts the day's run now: from 00:00 UTC as soon as the required data is ready,
+        and at 02:30 UTC in any case (a run without its data then ends in HOLD and says why)."""
         now = now or self.clock()
-        if not release_flags()['scheduler_enabled'] or self.running or phase(now, now.date()) != 'FREEZE_WINDOW':
+        when = phase(now, now.date())
+        if not release_flags()['scheduler_enabled'] or self.running or when not in ('RETRYING_UNTIL_0230', 'FREEZE_WINDOW'):
             return False
-        # A day already published is not made again (the second try is for a day that held or failed).
-        return self.scheduled.get(now.date().isoformat(), 0) < 2 and not (self.root / 'published' / now.date().isoformat()).is_dir()
+        # A day already published is not made again (the second try is for a day that held or failed). Checking
+        # whether the data is ready starts nothing, so it never uses up a try.
+        if self.scheduled.get(now.date().isoformat(), 0) >= 2 or (self.root / 'published' / now.date().isoformat()).is_dir():
+            return False
+        return when == 'FREEZE_WINDOW' or self.ready(now)
+
+    def ready(self, now):
+        """Every required product is complete, fresh, cleared and updated since the run day's 00:00 UTC (by its own
+        content, not by the download time) in the fetcher's files as of now."""
+        try:
+            facts = collect(fetcher_files(self.data), now.date(), now, rights(self.settings.read()['rights']))
+        except Exception:
+            return False
+        required = [p for p in facts['products'].values() if p['required']]
+        return bool(required) and all(p['complete'] and p['fresh'] and p['rights'] == 'CLEARED' and p['updated_since_0000'] for p in required)
 
     def start(self, mode='live', run_date=None, scheduled=False):
         """Start one run in the background; False when a run is already going."""
@@ -1286,7 +1313,7 @@ class Briefing:
         gate('DATA_FRESH', all(p['fresh'] for p in required.values()), [k for k, p in required.items() if p['complete'] and not p['fresh']] or None)
         gate('LICENSE_CLEARED', all(p['rights'] == 'CLEARED' for p in required.values()),
              [k + ': PENDING_RIGHTS' for k, p in required.items() if p['rights'] != 'CLEARED'] or None)
-        on_time = timing['freeze'] <= frozen_at < timing['deadline']
+        on_time = timing['window_end'] <= frozen_at < timing['deadline']
         calls, texts, review = [], None, None
         manifest = {'run_date_utc': run_date, 'run_id': run_id, 'mode': mode, 'frozen_at': utc(frozen_at),
                     'observation_window': {'start': utc(timing['window_start']), 'end': utc(timing['window_end']), 'end_excluded': True},
@@ -1307,7 +1334,7 @@ class Briefing:
         audio, subtitles, written = ai.chosen_languages(state)
         if gates['DATA_COMPLETE']['passed'] and gates['LICENSE_CLEARED']['passed']:
             texts, review, problems = self.write(values, state, mock, calls, note, problems, written, audio)
-            all_slides = slides(facts, run_date, mock)
+            all_slides = slides(facts, run_date, mock, frozen_at)
             problems += check_slides(all_slides)
             gate('LANGUAGES_COMPLETE', texts is not None and all(isinstance(texts.get(l), dict) and all(texts[l].get(s) for s in SEGMENTS) for l in written),
                  'audio ' + ', '.join(audio) + '; subtitles ' + (', '.join(subtitles) or 'none'))
@@ -1355,7 +1382,7 @@ class Briefing:
         gate('BUDGET_OK', True if budget is None or mock or not report['api_calls'] else spent is not None and spent <= budget,
              'no budget set' if budget is None else None if spent is not None else 'cost could not be calculated (price missing)')
         gate('REVIEW_OK', None if review is None else review.get('verdict') == 'pass', review and (review.get('issues') or None))
-        gate('SCHEDULE_OK', on_time, None if on_time else 'test run outside 02:30-03:00 UTC on the run date')
+        gate('SCHEDULE_OK', on_time, None if on_time else 'test run outside 00:00-03:00 UTC on the run date')
         gate('PRODUCTION_INPUT', not mock, 'mock data' if mock else None)
         finished = self.clock()
         if not mock and finished >= timing['deadline'] and on_time:

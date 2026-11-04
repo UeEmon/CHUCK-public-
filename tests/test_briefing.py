@@ -336,6 +336,34 @@ class RunTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
 
+    def test_the_scheduler_starts_once_every_required_product_is_updated_after_0000(self):
+        at = lambda *a: datetime(*a, tzinfo=timezone.utc)
+        early = at(2026, 11, 3, 0, 40)
+        with patch.dict(os.environ, {'HF_BRIEFING_SCHEDULER_ENABLED': '1'}):
+            # The Kp forecast still marks the run day 'predicted': it was made before 00:00, so the run waits.
+            fetched_files(self.tmp.name, frozen_at=early, edit={'kp-forecast': lambda raw: raw.replace(b'estimated', b'predicted')})
+            maker = b.Briefing(self.tmp.name, clock=lambda: early)
+            self.assertFalse(maker.due())
+            self.assertTrue(maker.due(at(2026, 11, 3, 2, 30)))  # at 02:30 it starts with what it has (and holds if data is missing)
+            # Once every required product shows an update since 00:00, it starts at once.
+            fetched_files(self.tmp.name, frozen_at=early)
+            self.assertTrue(maker.due())
+            facts = b.collect(b.fetcher_files(Path(self.tmp.name)), RUN, early, b.rights({}))
+            self.assertEqual({k: p['updated_since_0000'] for k, p in facts['products'].items() if p['required']},
+                             {'scales': True, 'kp': True, 'kp-forecast': True})
+            # Nothing before 00:00 or after 03:00; checking starts nothing, so only real starts use up the two tries.
+            self.assertFalse(maker.due(at(2026, 11, 2, 23, 50)))
+            self.assertFalse(maker.due(at(2026, 11, 3, 3, 0)))
+            maker.scheduled['2026-11-03'] = 2
+            self.assertFalse(maker.due())
+        if FFMPEG:
+            configure(maker, 'gemini')
+            fake = FakeAI()
+            with patch.object(ai, 'generate_json', fake.generate_json), patch.object(ai, 'speak', fake.speak):
+                qa = maker.run('live', '2026-11-03')
+            self.assertTrue(qa['quality_gates']['SCHEDULE_OK']['passed'])
+            self.assertEqual(qa['frozen_at'], '2026-11-03T00:40:00Z')
+
     def test_mock_run_makes_one_mp4_with_eleven_streams_and_holds(self):
         maker = b.Briefing(self.tmp.name, clock=lambda: datetime(2026, 11, 3, 9, 0, tzinfo=timezone.utc))
         qa = maker.run('mock', '2026-11-03')
