@@ -27,19 +27,47 @@ PROVIDERS = ('gemini', 'openai', 'claude', 'local')
 LABELS = {'gemini': 'Gemini (Google)', 'openai': 'OpenAI', 'claude': 'Claude (Anthropic)', 'local': 'Local LLM'}
 ENV_KEYS = {'openai': ('OPENAI_API_KEY',), 'claude': ('ANTHROPIC_API_KEY',), 'gemini': ('GEMINI_API_KEY', 'GOOGLE_API_KEY'),
             'local': ('LOCAL_LLM_API_KEY',)}
-# Production steps and the kind of API each needs. "review" may be switched off ("none").
+# The languages a briefing can carry: CHUCK's interface languages, in its order (app/static/i18n.js).
+LANGUAGES = ('ja', 'en', 'fr', 'es', 'it', 'pt', 'de', 'ko')
+# Voices are numbered in this order in the video; English leads (and is the default track) when it is chosen.
+AUDIO_ORDER = ('en',) + tuple(x for x in LANGUAGES if x != 'en')
+DEFAULT_LANGUAGES = {'audio': ['en', 'ja'], 'subtitles': list(LANGUAGES)}
+# Production steps and the kind of API each needs. "review" may be switched off ("none"). The English script is
+# always written (every language is translated from it); a speech step runs only for a chosen voice language.
 STEPS = {
-    'script': 'text',               # English structured script
-    'translate_ja': 'text',         # Japanese narration (also the Japanese subtitles)
-    'translate_subtitles': 'text',  # fr, es, it, pt, de, ko subtitles
-    'review': 'text',               # independent AI review; the deciding checks are deterministic code
-    'tts_en': 'speech',
-    'tts_ja': 'speech',
+    'script': 'text',     # English structured script
+    'translate': 'text',  # every other chosen language, for voices and subtitles
+    'review': 'text',     # independent AI review; the deciding checks are deterministic code
+    **{'tts_' + lang: 'speech' for lang in AUDIO_ORDER},
 }
 # Claude has no speech API, and Ollama none either: those choices are refused, not silently replaced.
 SPEECH_PROVIDERS = ('gemini', 'openai', 'local')
-DEFAULT_STEPS = {'script': 'gemini', 'translate_ja': 'gemini', 'translate_subtitles': 'gemini', 'review': 'openai',
-                 'tts_en': 'gemini', 'tts_ja': 'gemini'}
+DEFAULT_STEPS = {step: 'openai' if step == 'review' else 'gemini' for step in STEPS}
+
+
+def chosen_languages(state):
+    """(voice languages in track order, subtitle languages in CHUCK's order, every language to write including English)."""
+    picked = state.get('languages') or DEFAULT_LANGUAGES
+    audio = tuple(x for x in AUDIO_ORDER if x in picked['audio'])
+    subtitles = tuple(x for x in LANGUAGES if x in picked['subtitles'])
+    return audio, subtitles, tuple(x for x in AUDIO_ORDER if x == 'en' or x in audio or x in subtitles)
+
+
+def languages_value(value):
+    """A saved or submitted language choice: known languages only, at least one voice."""
+    if not isinstance(value, dict):
+        raise ValueError('言語の指定が不正です')
+    result = {}
+    for kind in ('audio', 'subtitles'):
+        items = value.get(kind)
+        if not isinstance(items, list) or any(x not in LANGUAGES for x in items):
+            raise ValueError('言語の指定が不正です')
+        result[kind] = [x for x in (AUDIO_ORDER if kind == 'audio' else LANGUAGES) if x in items]
+    if not result['audio']:
+        raise ValueError('音声の言語を1つ以上選んでください')
+    return result
+
+
 MODEL = re.compile(r'[A-Za-z0-9_.:/@+\-]{1,200}')
 VOICE = re.compile(r'[A-Za-z0-9_.\-]{1,64}')
 # How each voice is asked to read (briefing_languages.json keeps the language texts).
@@ -128,7 +156,7 @@ class BriefingSettings:
                                         'protocol': os.environ.get('LOCAL_LLM_PROTOCOL', 'ollama')}},
                 'steps': {step: {'provider': provider, 'model': '', 'voice': ''} for step, provider in DEFAULT_STEPS.items()},
                 'pricing': {}, 'budget_usd_per_run': None, 'length': 'short', 'resolution': '1280x720',
-                'rights': {}}
+                'languages': copy.deepcopy(DEFAULT_LANGUAGES), 'rights': {}}
 
     def read(self):
         state = self.defaults()
@@ -143,7 +171,10 @@ class BriefingSettings:
         for p, profile in (saved.get('providers') or {}).items():
             if p in PROVIDERS and isinstance(profile, dict):
                 state['providers'][p].update({k: v for k, v in profile.items() if k in ('api_key', 'endpoint', 'protocol') and isinstance(v, str)})
-        for step, choice in (saved.get('steps') or {}).items():
+        steps = dict(saved.get('steps') or {})
+        if 'translate' not in steps and isinstance(steps.get('translate_ja'), dict):
+            steps['translate'] = steps['translate_ja']  # one translation step replaced translate_ja and translate_subtitles
+        for step, choice in steps.items():
             if step in STEPS and isinstance(choice, dict):
                 state['steps'][step].update({k: v for k, v in choice.items() if k in ('provider', 'model', 'voice') and isinstance(v, str)})
         for field in ('pricing', 'rights'):
@@ -155,6 +186,10 @@ class BriefingSettings:
             state['length'] = saved['length']
         if saved.get('resolution') in ('1280x720', '1920x1080'):
             state['resolution'] = saved['resolution']
+        try:
+            state['languages'] = languages_value(saved['languages'])
+        except (KeyError, ValueError):
+            pass
         return state
 
     def credential(self, provider, state=None):
@@ -187,7 +222,10 @@ class BriefingSettings:
         """Why each step cannot run yet (missing key, model or voice); an empty dict when all are ready."""
         state = state or self.read()
         result = {}
+        audio, _, written = chosen_languages(state)
         for step in STEPS:
+            if STEPS[step] == 'speech' and step[4:] not in audio or step == 'translate' and written == ('en',):
+                continue
             cfg = self.step(step, state)
             if cfg is None:
                 continue
@@ -211,6 +249,7 @@ class BriefingSettings:
                 item.update(endpoint=profile.get('endpoint', ''), protocol=profile.get('protocol', 'ollama'))
             view['providers'].append(item)
         view['step_kinds'] = STEPS
+        view['language_choices'] = list(LANGUAGES)
         view['problems'] = self.problems(state)
         return view
 
@@ -287,6 +326,8 @@ class BriefingSettings:
                 if data['resolution'] not in ('1280x720', '1920x1080'):
                     raise ValueError('解像度が不正です')
                 state['resolution'] = data['resolution']
+            if 'languages' in data:
+                state['languages'] = languages_value(data['languages'])
             if 'rights' in data:
                 state['rights'] = data['rights']  # checked by the caller against the data catalog
             state['revision'] += 1

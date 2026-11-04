@@ -39,7 +39,7 @@ DATA.mkdir(parents=True,exist_ok=True)
 DB=DATA/'predictions.sqlite3'
 ENGINE=Engine()
 SPACE_WEATHER=SpaceWeather(DATA/'space-weather')
-BRIEFING_FILE=re.compile(r'\d{4}-\d{2}-\d{2}/(meta\.json|video_(en|ja)\.mp4|subtitles/(ja|en|fr|es|it|pt|de|ko)\.vtt)')
+BRIEFING_FILE=re.compile(r'\d{4}-\d{2}-\d{2}/(meta\.json|video_(ja|en|fr|es|it|pt|de|ko)\.mp4|subtitles/(ja|en|fr|es|it|pt|de|ko)\.vtt)')
 OBSERVATIONS=Observations(DATA/'observations',public_data.giro_enabled)
 EFFECTIVE_SSN=EffectiveSSN(ENGINE,OBSERVATIONS)
 RUN_LOCK=threading.Lock()

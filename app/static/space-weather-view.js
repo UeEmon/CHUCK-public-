@@ -190,7 +190,10 @@ function renderSwvBrief(){
 function playSwvBrief(keepTime=true){
  const item=(swv.brief?.items||[]).find(i=>i.run_date_utc===$('swv-brief-date').value);if(!item)return;
  const video=$('swv-brief-video'),at=keepTime?video.currentTime:0,playing=keepTime&&!video.paused,ui=document.documentElement.lang||'ja';
- const audio=$('swv-brief-audio');if(!swv.briefAudioChosen)audio.value=ui==='ja'?'ja':'en';
+ // The voices of this day's video; the viewer's choice is kept while it exists, otherwise the UI language, otherwise the first.
+ const audio=$('swv-brief-audio'),voices=item.audio?.length?item.audio:['en'],kept=audio.value;
+ audio.replaceChildren(...voices.map(l=>{const o=cell('option',SWV_BRIEF_NAMES[l]||l);o.value=l;return o;}));
+ audio.value=swv.briefAudioChosen&&voices.includes(kept)?kept:voices.includes(ui)?ui:voices[0];audio.closest('label').hidden=voices.length<2;
  const subtitle=[...video.textTracks].find(t=>t.mode==='showing')?.language||(SWV_BRIEF_LANGS.includes(ui)?ui:'en');
  video.replaceChildren();video.src=swvBriefUrl(item,'video_'+audio.value+'.mp4');
  for(const lang of item.subtitles||[]){const t=document.createElement('track');t.kind='subtitles';t.srclang=lang;t.label=SWV_BRIEF_NAMES[lang]||lang;t.src=swvBriefUrl(item,'subtitles/'+lang+'.vtt');if(lang===subtitle)t.default=true;video.append(t);}

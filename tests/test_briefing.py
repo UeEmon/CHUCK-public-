@@ -40,8 +40,9 @@ def fetched_files(directory, run_date=RUN, frozen_at=FREEZE, drop=(), edit=None)
 def configure(maker, provider='gemini', review='openai'):
     steps = {step: {'provider': provider, 'model': 'model-for-' + step} for step in ai.STEPS}
     steps['review'] = {'provider': review, 'model': 'review-model'}
-    for step in ('tts_en', 'tts_ja'):
-        steps[step]['voice'] = 'voice1'
+    for step, kind in ai.STEPS.items():
+        if kind == 'speech':
+            steps[step]['voice'] = 'voice1'
     maker.settings.save({'revision': maker.settings.read()['revision'], 'steps': steps,
                          'providers': {'gemini': {'api_key': SECRET}, 'openai': {'api_key': SECRET}, 'claude': {'api_key': SECRET}},
                          'pricing': {provider + '/model-for-script': {'input': 0.1, 'output': 0.4, 'source_url': 'https://example.com/prices', 'checked_on': '2026-11-03'}}})
@@ -216,7 +217,8 @@ class TemplateTests(unittest.TestCase):
         menu = re.search(r'<select id="language"[^>]*>(.*?)</select>', (static / 'index.html').read_text())[1]
         self.assertEqual(b.NATIVE_NAMES, dict(re.findall(r'<option value="([a-z]+)">([^<]+)</option>', menu)))
         self.assertEqual(set(b.ISO639_2), set(b.LANGUAGES))
-        self.assertEqual(b.SUBTITLE_ONLY, tuple(x for x in b.LANGUAGES if x not in ('ja', 'en')))
+        self.assertEqual(ai.AUDIO_ORDER, ('en',) + tuple(x for x in b.LANGUAGES if x != 'en'))
+        self.assertEqual(set(ai.SPEECH_STYLE), set(b.LANGUAGES))  # every language can be a voice
 
     def test_slides_are_english_and_subtitles_are_ordered(self):
         slide = b.Slide('overview', '2026-11-03', 'footer')
@@ -255,6 +257,27 @@ class SettingsTests(unittest.TestCase):
             snap = s.save({'revision': snap['revision'], 'providers': {'openai': {'clear_api_key': True}}})
             self.assertEqual(snap['providers'][1]['credential'], 'none')
             self.assertIn('script', snap['problems'])
+
+    def test_languages_are_chosen_and_only_their_steps_are_required(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'settings.json'
+            # Settings saved before the choice existed: the Japanese translation step becomes the translation step.
+            path.write_text(json.dumps({'revision': 3, 'steps': {'translate_ja': {'provider': 'openai', 'model': 'old-model'}}}))
+            s = ai.BriefingSettings(path)
+            state = s.read()
+            self.assertEqual(state['steps']['translate'], {'provider': 'openai', 'model': 'old-model', 'voice': ''})
+            self.assertEqual(ai.chosen_languages(state), (('en', 'ja'), b.LANGUAGES, ('en',) + tuple(x for x in b.LANGUAGES if x != 'en')))
+            self.assertTrue({'tts_en', 'tts_ja'} <= set(s.problems(state)) and 'tts_fr' not in s.problems(state))
+            for bad in ({'audio': [], 'subtitles': ['en']}, {'audio': ['xx'], 'subtitles': []}, {'audio': 'en', 'subtitles': []}, ['en']):
+                with self.assertRaises(ValueError):
+                    s.save({'revision': 3, 'languages': bad})
+            snap = s.save({'revision': 3, 'languages': {'audio': ['ko', 'fr', 'en'], 'subtitles': ['ko', 'ja']}})
+            self.assertEqual(snap['languages'], {'audio': ['en', 'fr', 'ko'], 'subtitles': ['ja', 'ko']})  # English leads, then CHUCK's order
+            self.assertEqual(ai.chosen_languages(s.read()), (('en', 'fr', 'ko'), ('ja', 'ko'), ('en', 'ja', 'fr', 'ko')))
+            problems = s.problems()
+            self.assertTrue({'tts_en', 'tts_fr', 'tts_ko'} <= set(problems) and not {'tts_ja', 'tts_de'} & set(problems))
+            snap = s.save({'revision': snap['revision'], 'languages': {'audio': ['en'], 'subtitles': ['en']}})
+            self.assertNotIn('translate', snap['problems'])  # English only: nothing to translate
 
     def test_claude_and_ollama_have_no_speech(self):
         for cfg in ({'provider': 'claude', 'model': 'm', 'voice': 'v', 'api_key': 'k'}, {'provider': 'local', 'protocol': 'ollama', 'model': 'm', 'voice': 'v', 'api_key': ''}):
@@ -318,6 +341,23 @@ class RunTests(unittest.TestCase):
         self.assertEqual(maker.file('2026-11-03', qa['run_id'], 'raw/kp.raw'), None)
         self.assertIsNotNone(maker.file('2026-11-03', qa['run_id'], 'subtitles/ko.vtt'))
 
+    @unittest.skipUnless(FFMPEG, 'ffmpeg is needed')
+    def test_mock_run_carries_only_the_chosen_languages(self):
+        maker = b.Briefing(self.tmp.name, clock=lambda: datetime(2026, 11, 3, 9, 0, tzinfo=timezone.utc))
+        maker.settings.save({'revision': 0, 'languages': {'audio': ['fr', 'ja'], 'subtitles': ['ko']}})
+        qa = maker.run('mock', '2026-11-03')
+        self.assertEqual(qa['hold_reasons'], ['PRODUCTION_INPUT'])
+        self.assertTrue(qa['media']['ok'], qa['media'])
+        self.assertEqual(qa['quality_gates']['LANGUAGES_COMPLETE'], {'passed': True, 'detail': 'audio ja, fr; subtitles ko'})
+        self.assertEqual([a['language'] for a in qa['media']['audio']], ['jpn', 'fra'])
+        self.assertEqual([x['language'] for x in qa['media']['subtitles']], ['kor'])
+        out = maker.run_dir('2026-11-03', qa['run_id'])
+        self.assertEqual(sorted(p.name for p in out.glob('audio_*.wav')), ['audio_fr.wav', 'audio_ja.wav'])
+        self.assertEqual(sorted(p.name for p in (out / 'subtitles').iterdir()), ['ko.srt', 'ko.vtt'])
+        self.assertIsNotNone(maker.file('2026-11-03', qa['run_id'], 'audio_fr.wav'))
+        briefing = json.loads((out / 'briefing.json').read_text())
+        self.assertEqual((set(briefing['segments'][0]['narration']), set(briefing['segments'][0]['subtitles'])), ({'ja', 'fr'}, {'ko'}))
+
     def test_live_run_with_metered_calls_is_ready_locally_and_never_published(self):
         fetched_files(self.tmp.name)
         maker = b.Briefing(self.tmp.name, clock=lambda: FREEZE)
@@ -328,7 +368,7 @@ class RunTests(unittest.TestCase):
         self.assertEqual(qa['release_state'], 'READY_LOCAL', qa['quality_gates'])
         self.assertFalse(qa['published'])
         self.assertFalse(qa['quality_gates']['RELEASE_POLICY']['passed'])
-        self.assertEqual([c['step'] for c in qa['calls'][:4]], ['script', 'translate_ja', 'translate_subtitles', 'review'])
+        self.assertEqual([c['step'] for c in qa['calls'][:4]], ['script', 'translate', 'translate', 'review'])  # seven languages, four per call
         out = maker.run_dir('2026-11-03', qa['run_id'])
         cost = json.loads((out / 'cost_report.json').read_text())
         self.assertEqual(cost['api_calls'], 4 + 12)
@@ -545,7 +585,7 @@ class ModelChoiceTests(unittest.TestCase):
 
     def test_claude_never_gets_speech_and_one_provider_reviews_itself(self):
         result = ai.recommend({'claude': self.marked('claude')}, 'balance')
-        self.assertEqual(result['unfilled'], ['tts_en', 'tts_ja'])
+        self.assertEqual(result['unfilled'], ['tts_' + x for x in ai.AUDIO_ORDER])
         self.assertEqual(result['steps']['review'], result['steps']['script'])
         self.assertEqual(ai.recommend({}, 'cost'), {'steps': {}, 'unfilled': list(ai.STEPS)})
 

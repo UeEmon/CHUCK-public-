@@ -1,8 +1,9 @@
 'use strict';
 // Space weather daily briefing: generative AI per step, a verification run, and its files. Nothing here publishes.
 let brief=null,briefModels={},briefVoices={},briefModelLoads={},briefVoiceFilters={};
-const STEP_LABELS={script:'英語の原稿',translate_ja:'日本語への翻訳（音声・字幕）',translate_subtitles:'字幕の翻訳（仏・西・伊・葡・独・韓）',review:'独立レビュー',tts_en:'英語の音声合成',tts_ja:'日本語の音声合成'};
-const GATE_LABELS={DATA_COMPLETE:'必須データがそろっている',DATA_FRESH:'必須データが新しい',FACTS_VALID:'数値・時刻・単位の整合',LICENSE_CLEARED:'権利の確認',LANGUAGES_COMPLETE:'8言語の字幕と英日音声',MEDIA_VALID:'動画のトラックと再生',BUDGET_OK:'予算',REVIEW_OK:'生成AIによるレビュー',SCHEDULE_OK:'時刻規則（02:30凍結・03:00締切）',PRODUCTION_INPUT:'実データ（Mockでない）',RELEASE_POLICY:'公開（この版では無効）'};
+const LANG_NAMES={en:'英語',ja:'日本語',fr:'フランス語',es:'スペイン語',it:'イタリア語',pt:'ポルトガル語',de:'ドイツ語',ko:'韓国語'},AUDIO_ORDER=Object.keys(LANG_NAMES);
+const STEP_LABELS={script:'英語の原稿',translate:'翻訳（英語以外の言語）',translate_ja:'日本語への翻訳（音声・字幕）',translate_subtitles:'字幕の翻訳（仏・西・伊・葡・独・韓）',review:'独立レビュー',...Object.fromEntries(AUDIO_ORDER.map(l=>['tts_'+l,LANG_NAMES[l]+'の音声合成']))};
+const GATE_LABELS={DATA_COMPLETE:'必須データがそろっている',DATA_FRESH:'必須データが新しい',FACTS_VALID:'数値・時刻・単位の整合',LICENSE_CLEARED:'権利の確認',LANGUAGES_COMPLETE:'選んだ言語の音声と字幕',MEDIA_VALID:'動画のトラックと再生',BUDGET_OK:'予算',REVIEW_OK:'生成AIによるレビュー',SCHEDULE_OK:'時刻規則（02:30凍結・03:00締切）',PRODUCTION_INPUT:'実データ（Mockでない）',RELEASE_POLICY:'公開（この版では無効）'};
 const CREDENTIALS={saved:'保存済みのキーを使用',environment:'環境変数のキーを使用',none:'未設定'};
 const PRICE_FIELDS=[['input','入力'],['output','出力'],['cached_input','キャッシュ入力'],['audio_output','音声出力']];
 function utcText(v){return v?String(v).replace('T',' ').replace(/(\.\d+)?(Z|\+00:00)$/,' UTC'):'—';}
@@ -69,9 +70,9 @@ function renderVoiceChoice(box){
  },e=>{if(box.isConnected)hint.textContent=e.message;});
 }
 // Voice IDs such as ja-jp-advisor-1 name their language and region; short names (charon, kore …) have none and read any language.
-const STEP_LANGS={tts_en:'en',tts_ja:'ja'};
+const STEP_LANGS=Object.fromEntries(AUDIO_ORDER.map(l=>['tts_'+l,l]));
 function voiceFilters(voices,lang){
- const tag=v=>/^([a-z]{2,3})-([a-z]{2,4})-/i.exec(v.id),common=v=>!tag(v),code=v=>tag(v)?.[1].toLowerCase(),region=v=>tag(v)?.[2].toLowerCase();
+ const tag=v=>/^([a-z]{2,3})-([a-z0-9]{2,4})-/i.exec(v.id),common=v=>!tag(v),code=v=>tag(v)?.[1].toLowerCase(),region=v=>tag(v)?.[2].toLowerCase();
  if(!voices.some(tag))return [];
  const out=[],add=(key,label,test)=>{const n=voices.filter(test).length;if(n)out.push({key,label:label.replace('{n}',n),test});};
  const langs=[...new Set(voices.filter(tag).map(code))].sort(),mine=langs.includes(lang)?lang:null;
@@ -138,7 +139,7 @@ function renderBriefingStatus(){
   const video=run.files.find(n=>n.endsWith('.mp4')),player=$('briefing-video');player.hidden=!video;
   if(video&&player.dataset.run!==run.run_id){player.dataset.run=run.run_id;player.src=fileUrl(run,video);}
   const links=run.files.filter(n=>!n.endsWith('.wav')).map(n=>{const a=cell('a',n);a.href=fileUrl(run,n,true);a.download=n.split('/').pop();return a;});
-  const audio=run.files.filter(n=>n.endsWith('.wav')).map(n=>{const box=cell('label',n==='audio_en.wav'?'英語の音声':'日本語の音声'),a=document.createElement('audio');a.controls=true;a.preload='none';a.src=fileUrl(run,n);box.append(a);return box;});
+  const audio=run.files.filter(n=>n.endsWith('.wav')).map(n=>{const box=cell('label',(LANG_NAMES[n.slice(6,-4)]||n)+'の音声'),a=document.createElement('audio');a.controls=true;a.preload='none';a.src=fileUrl(run,n);box.append(a);return box;});
   $('briefing-files').replaceChildren(...audio,...links);
  }
  $('briefing-history').replaceChildren(gridTable(['対象日','実行','方式','結果','保留の理由','完了'],b.history.map(h=>[h.run_date_utc,h.run_id,h.mode,h.release_state,(h.hold_reasons||[]).join(', '),utcText(h.finished_at)])));
@@ -166,15 +167,29 @@ function renderBriefingForm(){
   choice.onchange=()=>{renderModelChoice(model,choice.value);if(kind==='speech')renderVoiceChoice(voice);};renderModelChoice(model,choice.value);
   if(kind==='speech')model.onchange=()=>renderVoiceChoice(voice);
   return [STEP_LABELS[step],choice,model,kind==='speech'?voice:'—'];})));
- refreshVoiceChoices();autoLoadModels();
+ renderLanguageChoice(s);refreshVoiceChoices();autoLoadModels();
  const names=[...new Set([...Object.values(s.steps).filter(c=>c.provider!=='none'&&c.model).map(c=>c.provider+'/'+c.model),...Object.keys(s.pricing)])];
  $('briefing-pricing').replaceChildren(names.length?gridTable(['生成AI/モデル',...PRICE_FIELDS.map(f=>f[1]),'料金表のURL','確認日'],names.map(n=>{const row=s.pricing[n]||{};return [n,...PRICE_FIELDS.map(([f])=>input('price-'+f+'-'+n,row[f]??'','text','—')),input('price-source_url-'+n,row.source_url,'url','https://'),input('price-checked_on-'+n,row.checked_on,'date')];})):cell('p','工程にモデルを設定すると、ここに料金の入力欄が出ます。'));
  form.elements.budget.value=s.budget_usd_per_run??'';form.elements.video_length.value=s.length;form.elements.resolution.value=s.resolution;
  $('briefing-rights').replaceChildren(gridTable(['データ','必須','公開に使える','外部AIへ送れる','根拠のURL','決定'],Object.entries(brief.catalog).map(([k,c])=>{const r=brief.rights[k];return [c.label,c.required?'必須':'任意',check('right-public-'+k,r.public),check('right-ai-'+k,r.external_ai),input('right-url-'+k,r.source==='administrator'?r.evidence_url:'','url',c.rights_evidence_url),r.source==='administrator'?'管理者':'既定'];})));
 }
+// Which voices and subtitles the video carries. The English script is always written; a speech step shows only for a chosen voice.
+function renderLanguageChoice(s){
+ const chosen=s.languages||{audio:['en','ja'],subtitles:[...s.language_choices]},row=(kind,order,label)=>{const box=document.createElement('div');box.className='language-choice';box.append(cell('span',label));
+  for(const l of order){const item=document.createElement('label');item.append(check('lang-'+kind+'-'+l,chosen[kind].includes(l)),cell('span',LANG_NAMES[l]));box.append(item);}return box;};
+ $('briefing-languages').replaceChildren(row('audio',AUDIO_ORDER,'音声'),row('subtitles',s.language_choices,'字幕'));
+ for(const el of $('briefing-languages').querySelectorAll('input'))el.onchange=showLanguageSteps;
+ showLanguageSteps();
+}
+function pickedLanguages(){const f=$('briefing-settings').elements,pick=(kind,order)=>order.filter(l=>f['lang-'+kind+'-'+l]?.checked);return {audio:pick('audio',AUDIO_ORDER),subtitles:pick('subtitles',brief.settings.language_choices)};}
+function showLanguageSteps(){
+ const {audio,subtitles}=pickedLanguages(),others=[...audio,...subtitles].some(l=>l!=='en');
+ for(const box of document.querySelectorAll('#briefing-steps .model-choice')){const step=box.dataset.step,row=box.closest('tr');if(!row)continue;
+  row.hidden=step==='translate'?!others:step.startsWith('tts_')?!audio.includes(step.slice(4)):false;}
+}
 async function refreshBriefing(form=true){try{brief=await api('/ui/api/briefing');renderBriefingStatus();if(form)renderBriefingForm();}catch(e){notice(e.message,true);}}
 $('briefing-settings').onsubmit=async e=>{
- e.preventDefault();const f=e.currentTarget.elements,s=brief.settings,data={revision:s.revision,providers:{},steps:{},pricing:{},rights:{},length:f.video_length.value,resolution:f.resolution.value,budget_usd_per_run:f.budget.value.trim()||null};
+ e.preventDefault();const f=e.currentTarget.elements,s=brief.settings,data={revision:s.revision,providers:{},steps:{},pricing:{},rights:{},length:f.video_length.value,resolution:f.resolution.value,budget_usd_per_run:f.budget.value.trim()||null,languages:pickedLanguages()};
  for(const p of s.providers){const change={};if(f['key-'+p.id].value)change.api_key=f['key-'+p.id].value;if(f['clear-'+p.id]?.checked)change.clear_api_key=true;if(p.id==='local'){change.endpoint=f['endpoint-local'].value;change.protocol=f['protocol-local'].value;}data.providers[p.id]=change;}
  for(const step of Object.keys(s.steps)){data.steps[step]={provider:f['step-provider-'+step].value,model:f['step-model-'+step].value};if(f['step-voice-'+step])data.steps[step].voice=f['step-voice-'+step].value;}
  for(const el of e.currentTarget.querySelectorAll('[name^="price-input-"]')){const n=el.name.slice('price-input-'.length),row={};for(const [k] of PRICE_FIELDS)row[k]=f['price-'+k+'-'+n].value.trim()||null;row.source_url=f['price-source_url-'+n].value.trim();row.checked_on=f['price-checked_on-'+n].value;if(Object.values(row).some(v=>v))data.pricing[n]=row;}

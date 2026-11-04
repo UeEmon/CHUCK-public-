@@ -108,7 +108,13 @@
  },
  "speech_style": {
   "en": "Read this in English in a calm, clear news-presenter voice.",
-  "ja": "落ち着いた明瞭なニュース解説の口調で、日本語で読み上げてください。"
+  "ja": "落ち着いた明瞭なニュース解説の口調で、日本語で読み上げてください。",
+  "fr": "Lisez ce texte en français, d’une voix calme et claire de présentateur de journal.",
+  "es": "Lee este texto en español con una voz tranquila y clara de presentador de noticias.",
+  "it": "Leggi questo testo in italiano con la voce calma e chiara di un conduttore di notiziario.",
+  "pt": "Leia este texto em português com a voz calma e clara de um apresentador de telejornal.",
+  "de": "Lies diesen Text auf Deutsch mit der ruhigen, klaren Stimme eines Nachrichtensprechers.",
+  "ko": "차분하고 또렷한 뉴스 진행자의 목소리로 한국어로 읽어 주세요."
  },
  "mock": {
   "en": {
