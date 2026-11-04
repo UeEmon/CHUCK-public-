@@ -502,6 +502,19 @@ class ModelChoiceTests(unittest.TestCase):
         self.assertEqual(result['steps']['review'], result['steps']['script'])
         self.assertEqual(ai.recommend({}, 'cost'), {'steps': {}, 'unfilled': list(ai.STEPS)})
 
+    def test_a_family_two_generations_behind_its_line_is_not_current(self):
+        models = ai.mark_current([{'id': m} for m in ['gemini-7.5-pro', 'gemini-8.8-flash', 'gemini-9-argon', 'gemini-omni-1.1-flash']])
+        self.assertEqual({m['id'] for m in models if m['current']}, {'gemini-8.8-flash', 'gemini-9-argon', 'gemini-omni-1.1-flash'})
+
+    def test_the_script_provider_chosen_by_the_administrator_leads(self):
+        models = {'gemini': self.marked('gemini'), 'claude': self.marked('claude')}
+        for priority in ai.PRIORITIES:
+            steps = ai.recommend(models, priority, 'claude')['steps']
+            self.assertEqual((steps['script']['provider'], steps['review']['provider'], steps['tts_en']['provider']), ('claude', 'gemini', 'gemini'))
+        self.assertEqual(ai.recommend(models, 'cost', 'claude')['steps']['script']['model'], 'claude-haiku-9-1')
+        # A choice without a fitting model (or none at all) falls back to the usual order.
+        self.assertEqual(ai.recommend(models, 'balance', 'openai')['steps']['script']['provider'], 'gemini')
+
 
 if __name__ == '__main__':
     unittest.main()

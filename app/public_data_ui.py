@@ -169,7 +169,7 @@ class PublicDataUI:
                     results=dict(zip(configs,pool.map(listing,configs.values())))
                 models={p:m for p,(m,_) in results.items() if m is not None}
                 skipped={p:e for p,(_,e) in results.items() if e is not None}
-                self.ui_json(200,dict(priority=priority,models=models,skipped=skipped,**briefing_ai.recommend(models,priority)));return True
+                self.ui_json(200,dict(priority=priority,models=models,skipped=skipped,**briefing_ai.recommend(models,priority,data.get('prefer') if data.get('prefer') in briefing_ai.PROVIDERS else None)));return True
             if path=='/ui/api/briefing/test':
                 self.ui_json(200,briefing_module.test_connections(self.briefing()));return True
             if path=='/ui/api/briefing/run':

@@ -21,7 +21,7 @@ async function recommendSteps(priority,result){
  for(const p of brief.settings.providers){const v=form.elements['key-'+p.id].value;if(v)keys[p.id]=v;}
  result.textContent='取得しています。';
  try{
-  const r=await api('/ui/api/briefing/recommend',{priority,keys});
+  const r=await api('/ui/api/briefing/recommend',{priority,keys,prefer:form.elements['step-provider-script'].value});
   Object.assign(briefModels,r.models);for(const p of Object.keys(r.models))datalist(p);
   for(const [step,c] of Object.entries(r.steps)){
    form.elements['step-provider-'+step].value=c.provider;
@@ -89,7 +89,8 @@ function renderBriefingForm(){
  const priority=select('recommend-priority',PRIORITY_LABELS,'balance'),recommend=cell('button','推奨の組み合わせを設定'),advice=cell('p','');
  recommend.type='button';advice.className='hint';recommend.onclick=async()=>{recommend.disabled=true;try{await recommendSteps(priority.value,advice);}finally{recommend.disabled=false;}};
  const all=check('models-all',false);all.onchange=refreshModelChoices;
- const tools=document.createElement('div');tools.className='recommend';tools.append(labelled('重視する点 ',priority),recommend,labelled(' 現行以外のモデルも表示する',all));
+ const tools=document.createElement('div');tools.className='recommend';const lead=cell('span','原稿と翻訳には、原稿の欄で選んでいる生成AIを使います。');lead.className='hint';
+ tools.append(labelled('重視する点 ',priority),recommend,lead,labelled(' 現行以外のモデルも表示する',all));
  $('briefing-steps').replaceChildren(tools,advice,gridTable(['工程','生成AI','モデル','声の名前'],Object.entries(s.steps).map(([step,c])=>{
   const kind=s.step_kinds[step],choice=select('step-provider-'+step,[...providerOptions(kind),...(step==='review'?[['none','使わない']]:[])],c.provider),model=document.createElement('span');
   model.className='model-choice';model.dataset.step=step;model.dataset.kind=kind;model.dataset.value=c.model||'';

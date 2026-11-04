@@ -545,8 +545,16 @@ def mark_current(models):
         rank = (version, not DATED.search(name))
         if fam not in best or rank > best[fam][0]:
             best[fam] = (rank, m)
-    for _, m in best.values():
-        m['current'] = True
+    # A family far behind its line is no longer current either: e.g. a 2.x pro when the same line is at 4.
+    # The line is the name before its first version number; one major generation behind is still offered.
+    newest = {}
+    for fam, (rank, m) in best.items():
+        line = re.split(r'[-_]\d', DATED.sub('', m['id'].rsplit('/', 1)[-1].lower()), maxsplit=1)[0]
+        if rank[0]:
+            newest[line] = max(newest.get(line, 0), rank[0][0])
+    for fam, (rank, m) in best.items():
+        line = re.split(r'[-_]\d', DATED.sub('', m['id'].rsplit('/', 1)[-1].lower()), maxsplit=1)[0]
+        m['current'] = not rank[0] or rank[0][0] >= newest.get(line, 0) - 1
     return models
 
 
@@ -573,9 +581,10 @@ def pick(models, kind, priority):
     return min(found, key=lambda m: (fit(tier(m['id'])), tuple(-x for x in family(m['id'])[1]), len(m['id']), m['id']))
 
 
-def recommend(available, priority):
+def recommend(available, priority, prefer=None):
     """Steps filled from {provider: models marked by mark_current}; providers without a fitting model are left out.
     The review goes to another provider when one exists, so that it stays independent of the script.
+    prefer is the provider the administrator chose for the script; it leads when it has a fitting model.
     Returns {'steps': {step: {'provider', 'model'}}, 'unfilled': [steps no listed model fits]}."""
     if priority not in PRIORITIES:
         raise ValueError('重視する点が不正です')
@@ -583,10 +592,12 @@ def recommend(available, priority):
     # A local model has no API fee, so cost first tries it.
     if priority == 'cost' and 'local' in order:
         order.remove('local'); order.insert(0, 'local')
+    if prefer in order:
+        order.remove(prefer); order.insert(0, prefer)
     text = [(p, pick(available[p], 'text', priority)) for p in order]
     text = [(p, m) for p, m in text if m]
     if text:
-        best = max(t for _, m in text for t in [tier(m['id'])]) if priority == 'precision' else None
+        best = max(tier(m['id']) for _, m in text) if priority == 'precision' and prefer not in dict(text) else None
         primary = next((p, m) for p, m in text if best is None or tier(m['id']) == best)
     speech = [(p, pick(available[p], 'speech', priority)) for p in order if p in SPEECH_PROVIDERS]
     speech = [(p, m) for p, m in speech if m]
