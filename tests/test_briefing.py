@@ -194,6 +194,7 @@ class TemplateTests(unittest.TestCase):
         item = {'value': 4.33, 'unit': 'kp'}
         self.assertEqual([b.render_value(item, lang) for lang in ('en', 'de', 'ja')], ['4.33', '4,33', '4.33'])
         self.assertEqual(b.render_value({'value': 35, 'unit': 'percent'}, 'fr'), '35 %')
+        self.assertEqual(b.render_value({'value': '2026-11-03T00:00:00+00:00', 'unit': 'datetime'}, 'en'), b.day_text('2026-11-03', 'en') + ' 00:00 UTC')
         self.assertEqual(b.render_value({'value': '2026-11-02T18:00:00+00:00', 'unit': 'period'}, 'en'), b.day_text('2026-11-02', 'en') + ' 18:00–21:00 UTC')
         self.assertEqual(b.day_text('2026-11-03', 'ja'), '2026年11月3日')
         self.assertEqual(b.day_text('2026-11-03', 'de'), '3. November 2026')
@@ -231,6 +232,11 @@ class TemplateTests(unittest.TestCase):
         self.assertAlmostEqual(len(out) / 2 / rate, len(speech) / 2 / rate + .15, delta=.03)
         self.assertLess(max(abs(int.from_bytes(out[i:i + 2], 'little', signed=True)) for i in range(0, len(out), 2)), 8001)
         self.assertEqual(b.trimmed(quiet(.5)), quiet(.5))
+
+    def test_noaa_is_read_as_a_word_but_written_as_noaa(self):
+        self.assertEqual(b.as_spoken('NOAAの現在の発表は、NOAA-SWPC', 'ja'), 'ノアの現在の発表は、ノア-SWPC')
+        self.assertEqual(b.as_spoken('NOAA reports; NOAAX stays', 'en'), 'Noah reports; NOAAX stays')
+        self.assertEqual(set(b.SPOKEN_AS), set(b.LANGUAGES))
 
     def test_noaa_g_forecast_leads_over_the_kp_implied_level(self):
         kp = {'value': 4.67, 'unit': 'kp', 'source': 'kp-forecast'}

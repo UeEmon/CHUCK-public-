@@ -1,5 +1,5 @@
 {
- "_comment": "Language data of the space weather briefing: date formats, the speech style instruction, and the mock narration (what a well-behaved model returns) in all eight languages.",
+ "_comment": "Language data of the space weather briefing: date formats, the speech style instruction, how abbreviations are read aloud (spoken_as: speech only; subtitles keep the written form), and the mock narration (what a well-behaved model returns) in all eight languages.",
  "names": {
   "ja": "日本語",
   "en": "English",
@@ -115,6 +115,32 @@
   "pt": "Leia este texto em português com a voz calma e clara de um apresentador de telejornal.",
   "de": "Lies diesen Text auf Deutsch mit der ruhigen, klaren Stimme eines Nachrichtensprechers.",
   "ko": "차분하고 또렷한 뉴스 진행자의 목소리로 한국어로 읽어 주세요."
+ },
+ "spoken_as": {
+  "ja": {
+   "NOAA": "ノア"
+  },
+  "en": {
+   "NOAA": "Noah"
+  },
+  "ko": {
+   "NOAA": "노아"
+  },
+  "fr": {
+   "NOAA": "Noa"
+  },
+  "es": {
+   "NOAA": "Noa"
+  },
+  "it": {
+   "NOAA": "Noa"
+  },
+  "pt": {
+   "NOAA": "Noa"
+  },
+  "de": {
+   "NOAA": "Noa"
+  }
  },
  "mock": {
   "en": {
