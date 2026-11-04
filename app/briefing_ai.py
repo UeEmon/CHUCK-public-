@@ -1,7 +1,7 @@
 """Generative AI for the space weather daily briefing: API settings, per-step choice and metered calls.
 
-The administrator sets up to four APIs on the public-data admin page (Gemini, OpenAI, Claude and a
-local LLM) and picks one API and model for each production step. Model IDs, voices and prices are
+The administrator sets up to five APIs on the public-data admin page (Gemini, a Gemini free-tier key,
+OpenAI, Claude and a local LLM) and picks one API and model for each production step. Model IDs, voices and prices are
 never built in: they are entered or chosen from the provider's own model list, so a retired or
 made-up model is never assumed. Keys are kept in the public-data volume (mode 0600) and never shown.
 
@@ -23,10 +23,19 @@ from urllib.parse import quote, urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 import wave
 
-PROVIDERS = ('gemini', 'openai', 'claude', 'local')
-LABELS = {'gemini': 'Gemini (Google)', 'openai': 'OpenAI', 'claude': 'Claude (Anthropic)', 'local': 'Local LLM'}
+# gemini_free is the Gemini API called with a key of a Google project without billing (the free tier): the same API,
+# its own key, no fee. Google's pricing page says free-tier content is used to improve its products.
+PROVIDERS = ('gemini', 'openai', 'claude', 'local', 'gemini_free')
+LABELS = {'gemini': 'Gemini (Google)', 'openai': 'OpenAI', 'claude': 'Claude (Anthropic)', 'local': 'Local LLM',
+          'gemini_free': 'Gemini 無料枠 (Google)'}
 ENV_KEYS = {'openai': ('OPENAI_API_KEY',), 'claude': ('ANTHROPIC_API_KEY',), 'gemini': ('GEMINI_API_KEY', 'GOOGLE_API_KEY'),
-            'local': ('LOCAL_LLM_API_KEY',)}
+            'local': ('LOCAL_LLM_API_KEY',), 'gemini_free': ('GEMINI_FREE_API_KEY',)}
+FREE_TIER = {'gemini_free': 'https://ai.google.dev/gemini-api/docs/pricing'}
+
+
+def api_of(provider):
+    """The API a provider calls: the free tier is the Gemini API."""
+    return 'gemini' if provider == 'gemini_free' else provider
 # The languages a briefing can carry: CHUCK's interface languages, in its order (app/static/i18n.js).
 LANGUAGES = ('ja', 'en', 'fr', 'es', 'it', 'pt', 'de', 'ko')
 # Voices are numbered in this order in the video; English leads (and is the default track) when it is chosen.
@@ -41,7 +50,7 @@ STEPS = {
     **{'tts_' + lang: 'speech' for lang in AUDIO_ORDER},
 }
 # Claude has no speech API, and Ollama none either: those choices are refused, not silently replaced.
-SPEECH_PROVIDERS = ('gemini', 'openai', 'local')
+SPEECH_PROVIDERS = ('gemini', 'openai', 'local', 'gemini_free')
 DEFAULT_STEPS = {step: 'openai' if step == 'review' else 'gemini' for step in STEPS}
 
 
@@ -151,7 +160,7 @@ class BriefingSettings:
 
     def defaults(self):
         return {'revision': 0,
-                'providers': {'gemini': {}, 'openai': {}, 'claude': {},
+                'providers': {'gemini': {}, 'gemini_free': {}, 'openai': {}, 'claude': {},
                               'local': {'endpoint': os.environ.get('LOCAL_LLM_BASE_URL', 'http://host.docker.internal:11434'),
                                         'protocol': os.environ.get('LOCAL_LLM_PROTOCOL', 'ollama')}},
                 'steps': {step: {'provider': provider, 'model': '', 'voice': ''} for step, provider in DEFAULT_STEPS.items()},
@@ -244,7 +253,8 @@ class BriefingSettings:
         view['providers'] = []
         for p in PROVIDERS:
             profile = state['providers'][p]
-            item = {'id': p, 'label': LABELS[p], 'credential': self.credential(p, state)[1], 'speech': p in SPEECH_PROVIDERS}
+            item = {'id': p, 'label': LABELS[p], 'credential': self.credential(p, state)[1], 'speech': p in SPEECH_PROVIDERS,
+                    'free_tier': p in FREE_TIER}
             if p == 'local':
                 item.update(endpoint=profile.get('endpoint', ''), protocol=profile.get('protocol', 'ollama'))
             view['providers'].append(item)
@@ -341,21 +351,40 @@ def now_iso():
     return time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
 
 
+# Waits after HTTP 429 (rate limit) before the same request is sent again. A 429 is not billed; the free tier
+# limits requests per minute and per day. After the last wait the call fails: it never moves to another key.
+RATE_LIMIT_WAITS = (20, 40, 60)
+SLEEP = time.sleep
+
+
+def retry_after(headers):
+    try:
+        return min(max(int(headers.get('Retry-After', '')), 1), 60)
+    except (TypeError, ValueError, AttributeError):
+        return None
+
+
 def post(cfg, url, headers, payload, limit=MAX_TEXT, timeout=180, method='POST'):
     """One HTTPS (or local HTTP) request; returns the body and the response headers. Keys never appear in errors."""
-    request = Request(url, data=None if payload is None else json.dumps(payload).encode(),
-                      headers={'Content-Type': 'application/json', **headers}, method=method)
     handlers = [NoRedirect()]
     if cfg['provider'] == 'local':
         handlers.append(ProxyHandler({}))  # a local server is reached directly, never through a proxy
-    try:
-        with build_opener(*handlers).open(request, timeout=timeout) as response:
-            body = response.read(limit + 1)
-            reply_headers = dict(response.headers.items())
-    except HTTPError as error:
-        raise AIError('生成AIのAPIがエラーを返しました（HTTP ' + str(error.code) + '）') from None
-    except (URLError, TimeoutError, OSError):
-        raise AIError('生成AIのAPIに接続できないか、時間内に応答がありませんでした') from None
+    for attempt in range(len(RATE_LIMIT_WAITS) + 1):
+        request = Request(url, data=None if payload is None else json.dumps(payload).encode(),
+                          headers={'Content-Type': 'application/json', **headers}, method=method)
+        try:
+            with build_opener(*handlers).open(request, timeout=timeout) as response:
+                body = response.read(limit + 1)
+                reply_headers = dict(response.headers.items())
+            break
+        except HTTPError as error:
+            if error.code != 429:
+                raise AIError('生成AIのAPIがエラーを返しました（HTTP ' + str(error.code) + '）') from None
+            if attempt == len(RATE_LIMIT_WAITS):
+                raise AIError('生成AIのAPIの回数の上限に達しました（HTTP 429）。無料枠には1分あたり・1日あたりの上限があります') from None
+            SLEEP(retry_after(error.headers) or RATE_LIMIT_WAITS[attempt])
+        except (URLError, TimeoutError, OSError):
+            raise AIError('生成AIのAPIに接続できないか、時間内に応答がありませんでした') from None
     if len(body) > limit:
         raise AIError('生成AIの応答が大きすぎます')
     return body, reply_headers
@@ -364,7 +393,7 @@ def post(cfg, url, headers, payload, limit=MAX_TEXT, timeout=180, method='POST')
 def auth(cfg):
     if cfg['provider'] == 'claude':
         return {'x-api-key': cfg['api_key'], 'anthropic-version': '2023-06-01'}
-    if cfg['provider'] == 'gemini':
+    if api_of(cfg['provider']) == 'gemini':
         return {'x-goog-api-key': cfg['api_key']}
     return {'Authorization': 'Bearer ' + cfg['api_key']} if cfg['api_key'] else {}
 
@@ -407,7 +436,7 @@ def usage(provider, protocol, body):
 
 
 def record(cfg, started, body, headers, kind, extra=None):
-    measured = usage(cfg['provider'], cfg.get('protocol'), body)
+    measured = usage(api_of(cfg['provider']), cfg.get('protocol'), body)
     request_id = None
     if isinstance(body, dict):
         request_id = body.get('id') or body.get('responseId')
@@ -421,7 +450,7 @@ def record(cfg, started, body, headers, kind, extra=None):
 
 def generate_json(cfg, system, user, schema, max_tokens=8000):
     """A JSON object from one text API call that follows the schema; returns (object, call record)."""
-    p, model = cfg['provider'], cfg['model']
+    p, model = api_of(cfg['provider']), cfg['model']
     if not model:
         raise AIError('モデルを指定してください')
     if p != 'local' and not cfg['api_key']:
@@ -501,7 +530,7 @@ def wav_seconds(raw):
 
 def speak(cfg, text, language):
     """WAV audio of one narration segment; returns (bytes, call record). Claude and Ollama are refused."""
-    p, model, voice = cfg['provider'], cfg['model'], cfg.get('voice', '')
+    p, model, voice = api_of(cfg['provider']), cfg['model'], cfg.get('voice', '')
     if p not in SPEECH_PROVIDERS or p == 'local' and cfg['protocol'] != 'openai':
         raise AIError('選んだ生成AIには音声合成がありません')
     if not model or not voice:
@@ -601,10 +630,13 @@ def mark_current(models):
 
 
 # ---- recommended combinations -----------------------------------------------------------------------
-# Three priorities over the providers that have a key. Tiers come from the size words in the model names
+# Four priorities over the providers that have a key. Tiers come from the size words in the model names
 # only (the lists carry no prices): 3 = largest (pro, opus, ...), 2 = middle (flash, sonnet, mini, ...),
 # 1 = smallest (lite, nano, haiku, ...). A name without a size word is taken as the largest of its family.
-PRIORITIES = ('precision', 'balance', 'cost')
+# 'free' (cost first, free tier) puts the script, translation and voices on the Gemini free-tier key with the
+# balance-sized models (the tier has no fee, so a smaller model saves nothing) and the review on the cheapest
+# model of another company, so that it stays independent. The other priorities never use the free-tier key.
+PRIORITIES = ('precision', 'balance', 'cost', 'free')
 SMALL = re.compile(r'(^|[-_.])(lite|nano|haiku|small|tiny|micro)([-_.]|$)', re.I)
 MIDDLE = re.compile(r'(^|[-_.])(flash|sonnet|mini|medium|turbo)([-_.]|$)', re.I)
 
@@ -619,7 +651,8 @@ def pick(models, kind, priority):
     found = [m for m in models if m.get('current') and m.get('kind') == kind]
     if not found:
         return None
-    fit = {'precision': lambda t: -t, 'cost': lambda t: t, 'balance': lambda t: (abs(t - 2), -t)}[priority]
+    balance = lambda t: (abs(t - 2), -t)
+    fit = {'precision': lambda t: -t, 'cost': lambda t: t, 'balance': balance, 'free': balance}[priority]
     return min(found, key=lambda m: (fit(tier(m['id'])), tuple(-x for x in family(m['id'])[1]), len(m['id']), m['id']))
 
 
@@ -630,10 +663,16 @@ def recommend(available, priority, prefer=None):
     Returns {'steps': {step: {'provider', 'model'}}, 'unfilled': [steps no listed model fits]}."""
     if priority not in PRIORITIES:
         raise ValueError('重視する点が不正です')
-    order = [p for p in PROVIDERS if p in available]
-    # A local model has no API fee, so cost first tries it.
-    if priority == 'cost' and 'local' in order:
+    order = [p for p in PROVIDERS if p in available and p not in FREE_TIER]
+    # A local model has no API fee, so cost first tries it (and the review under 'free').
+    if priority in ('cost', 'free') and 'local' in order:
         order.remove('local'); order.insert(0, 'local')
+    if priority == 'free':
+        if 'gemini_free' not in available:
+            raise ValueError('コスト最重視（無料枠利用）には、Gemini 無料枠のAPIキーを設定してください')
+        # The review goes to another company than Google (the script's), and to its smallest model.
+        others = [(p, pick(available[p], 'text', 'cost')) for p in order if api_of(p) != 'gemini']
+        order, prefer = ['gemini_free'], None
     if prefer in order:
         order.remove(prefer); order.insert(0, prefer)
     text = [(p, pick(available[p], 'text', priority)) for p in order]
@@ -650,6 +689,8 @@ def recommend(available, priority, prefer=None):
     for step, kind in STEPS.items():
         if kind == 'speech':
             chosen = voice if speech else None
+        elif step == 'review' and priority == 'free':
+            chosen = next(((p, m) for p, m in others if m), primary if text else None)
         elif step == 'review' and text:
             chosen = next(((p, m) for p, m in text if p != primary[0]), primary)
         else:
@@ -669,7 +710,7 @@ GEMINI_VOICES = 'https://ai.google.dev/api/voices'
 def list_voices(cfg, model=''):
     """Voices a speech step can name: Gemini's own voice list (prebuilt voices, the kind speak() uses), or for
     OpenAI the documented list (its API has none). Returns {'voices': [{'id', 'label'}], 'source', 'source_url', 'checked_on'}."""
-    p = cfg['provider']
+    p = api_of(cfg['provider'])
     if p not in SPEECH_PROVIDERS:
         raise AIError('この生成AIには音声合成がありません')
     if p == 'openai':
@@ -706,7 +747,7 @@ def list_voices(cfg, model=''):
 
 def list_models(cfg):
     """The provider's own model list: the way to confirm a model ID exists. Also serves as the connection test."""
-    p = cfg['provider']
+    p = api_of(cfg['provider'])
     if p != 'local' and not cfg['api_key']:
         raise AIError('APIキーを設定してください')
     models, cursor = [], None

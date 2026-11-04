@@ -1082,14 +1082,20 @@ def estimate(chars):
 def cost(call, pricing):
     """Calculated cost from the provider's measured usage, and the estimate, each kept in its own field."""
     name = call.get('priced_as') or (call['provider'] + '/' + call['model_id'] if call.get('model_id') else None)
+    free = name and name.split('/', 1)[0] in ai.FREE_TIER
+    if free:
+        # A free-tier key has no fee: the cost is 0 by the provider's pricing page, not by a price typed in.
+        return {'calculated_usd_from_measured_usage': 0.0 if call.get('usage_kind') == 'measured' or call.get('status') == 'failed' else None,
+                'estimated_usd': 0.0 if call['kind'] == 'text' else None, 'price_source_url': ai.FREE_TIER[name.split('/', 1)[0]],
+                'price_checked_on': None, 'price_basis': 'free_tier', 'invoice_reconciled_usd': None}
     row = pricing.get(name) if name else None
     per = lambda k: row.get(k) if row else None
     m = call.get('measured') or {}
     calculated = None
     if call.get('usage_kind') == 'measured' and row:
         cached = m.get('cached_input_tokens') or 0
-        uncached = (m.get('input_tokens') or 0) - (cached if call['provider'] in ('openai', 'gemini') else 0)
-        output = (m.get('output_tokens') or 0) + ((m.get('reasoning_tokens') or 0) if call['provider'] == 'gemini' else 0)
+        uncached = (m.get('input_tokens') or 0) - (cached if ai.api_of(call['provider']) in ('openai', 'gemini') else 0)
+        output = (m.get('output_tokens') or 0) + ((m.get('reasoning_tokens') or 0) if ai.api_of(call['provider']) == 'gemini' else 0)
         parts = [(uncached, per('input')), (output, per('output')), (cached, per('cached_input') if per('cached_input') is not None else per('input')),
                  (m.get('audio_output_tokens') or 0, per('audio_output'))]
         if all(price_ is not None for tokens, price_ in parts if tokens):

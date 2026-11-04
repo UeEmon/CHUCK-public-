@@ -601,10 +601,11 @@ class ModelChoiceTests(unittest.TestCase):
 
     def test_priorities_pick_by_size_words(self):
         models = {'gemini': self.marked('gemini'), 'claude': self.marked('claude')}
-        picks = {p: ai.recommend(models, p)['steps'] for p in ai.PRIORITIES}
-        self.assertEqual([picks[p]['script']['model'] for p in ai.PRIORITIES], ['gemini-9-pro', 'gemini-9-flash', 'gemini-9-flash-lite'])
-        self.assertEqual([picks[p]['review']['model'] for p in ai.PRIORITIES], ['claude-opus-9-1', 'claude-sonnet-9-1', 'claude-haiku-9-1'])
-        self.assertEqual([picks[p]['tts_en']['model'] for p in ai.PRIORITIES], ['gemini-9-pro-tts', 'gemini-9-flash-tts', 'gemini-9-flash-lite-tts'])
+        paid = ('precision', 'balance', 'cost')
+        picks = {p: ai.recommend(models, p)['steps'] for p in paid}
+        self.assertEqual([picks[p]['script']['model'] for p in paid], ['gemini-9-pro', 'gemini-9-flash', 'gemini-9-flash-lite'])
+        self.assertEqual([picks[p]['review']['model'] for p in paid], ['claude-opus-9-1', 'claude-sonnet-9-1', 'claude-haiku-9-1'])
+        self.assertEqual([picks[p]['tts_en']['model'] for p in paid], ['gemini-9-pro-tts', 'gemini-9-flash-tts', 'gemini-9-flash-lite-tts'])
         with self.assertRaises(ValueError):
             ai.recommend(models, 'cheap')
 
@@ -641,12 +642,60 @@ class ModelChoiceTests(unittest.TestCase):
 
     def test_the_script_provider_chosen_by_the_administrator_leads(self):
         models = {'gemini': self.marked('gemini'), 'claude': self.marked('claude')}
-        for priority in ai.PRIORITIES:
+        for priority in ('precision', 'balance', 'cost'):
             steps = ai.recommend(models, priority, 'claude')['steps']
             self.assertEqual((steps['script']['provider'], steps['review']['provider'], steps['tts_en']['provider']), ('claude', 'gemini', 'gemini'))
         self.assertEqual(ai.recommend(models, 'cost', 'claude')['steps']['script']['model'], 'claude-haiku-9-1')
         # A choice without a fitting model (or none at all) falls back to the usual order.
         self.assertEqual(ai.recommend(models, 'balance', 'openai')['steps']['script']['provider'], 'gemini')
+
+
+    def test_free_priority_puts_everything_but_the_review_on_the_free_tier(self):
+        models = {'gemini': self.marked('gemini'), 'gemini_free': self.marked('gemini'), 'claude': self.marked('claude'),
+                  'openai': self.marked('gpt')}
+        steps = ai.recommend(models, 'free', 'claude')['steps']
+        self.assertEqual((steps['script'], steps['translate'], steps['tts_fr']),
+                         ({'provider': 'gemini_free', 'model': 'gemini-9-flash'}, {'provider': 'gemini_free', 'model': 'gemini-9-flash'},
+                          {'provider': 'gemini_free', 'model': 'gemini-9-flash-tts'}))
+        # The review stays with another company than Google, on its smallest model.
+        self.assertEqual(steps['review'], {'provider': 'openai', 'model': 'gpt-9-nano'})
+        # Without another company the free tier reviews itself; without a free key the choice is refused.
+        self.assertEqual(ai.recommend({'gemini_free': self.marked('gemini')}, 'free')['steps']['review']['provider'], 'gemini_free')
+        with self.assertRaises(ValueError):
+            ai.recommend({'gemini': self.marked('gemini')}, 'free')
+        # The other priorities never use the free-tier key.
+        for priority in ('precision', 'balance', 'cost'):
+            self.assertNotIn('gemini_free', {c['provider'] for c in ai.recommend(models, priority)['steps'].values()})
+
+    def test_free_tier_calls_cost_nothing_and_use_the_gemini_api(self):
+        call = {'provider': 'gemini_free', 'model_id': 'gemini-9-flash', 'kind': 'text', 'status': 'completed', 'usage_kind': 'measured',
+                'measured': {'input_tokens': 1000, 'output_tokens': 500, 'reasoning_tokens': 800}, 'estimated_input_tokens': 900}
+        result = b.cost(call, {})
+        self.assertEqual((result['calculated_usd_from_measured_usage'], result['estimated_usd'], result['price_basis']), (0.0, 0.0, 'free_tier'))
+        report = b.cost_report({'run_date': '2026-11-05', 'run_id': 'r', 'mode': 'live'}, [call], {}, False, 0.16, 1.0)
+        self.assertEqual(report['calculated_usd_from_measured_usage'], 0.0)
+        self.assertEqual(ai.auth({'provider': 'gemini_free', 'api_key': 'k'}), {'x-goog-api-key': 'k'})
+        urls = []
+        def post(cfg, url, headers, payload, **kw):
+            urls.append(url)
+            return json.dumps({'models': [{'name': 'models/gemini-9-flash', 'supportedGenerationMethods': ['generateContent']}]}).encode(), {}
+        with patch.object(ai, 'post', post):
+            self.assertEqual([m['id'] for m in ai.list_models({'provider': 'gemini_free', 'api_key': 'k'})], ['gemini-9-flash'])
+        self.assertTrue(urls[0].startswith('https://generativelanguage.googleapis.com/'))
+
+    def test_a_rate_limited_request_is_sent_again_and_then_fails_without_another_key(self):
+        from urllib.error import HTTPError
+        attempts, waits = [], []
+        class Opener:
+            def open(self, request, timeout):
+                attempts.append(request.full_url)
+                raise HTTPError(request.full_url, 429, 'Too Many Requests', {'Retry-After': '5'} if len(attempts) == 1 else {}, None)
+        with patch.object(ai, 'build_opener', lambda *h: Opener()), patch.object(ai, 'SLEEP', waits.append):
+            with self.assertRaises(ai.AIError) as caught:
+                ai.post({'provider': 'gemini_free'}, 'https://generativelanguage.googleapis.com/x', {}, {})
+        self.assertEqual(len(attempts), len(ai.RATE_LIMIT_WAITS) + 1)
+        self.assertEqual(waits, [5, *ai.RATE_LIMIT_WAITS[1:]])
+        self.assertIn('HTTP 429', str(caught.exception))
 
 
 if __name__ == '__main__':

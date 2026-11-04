@@ -19,6 +19,6 @@
 <div class="grid"><label>1回あたりの予算（米ドル、空欄で上限なし）<input name="budget" inputmode="decimal" autocomplete="off"></label><label>動画の長さ<select name="video_length"><option value="short">短縮版（約90秒）</option><option value="standard">標準版（約5分）</option></select></label><label>解像度<select name="resolution"><option value="1280x720">1280×720</option><option value="1920x1080">1920×1080</option></select></label></div>
 <h3>データの権利</h3><div id="briefing-rights" class="table-wrap"></div>
 <button type="submit">設定を保存</button></form>
-<p class="hint">00:00 UTCまでの24時間を観測期間とし、02:30 UTCまで取得・再試行したデータで原稿を作り、03:00 UTCまでに英語表記の動画1本（英語・日本語の音声と8言語の字幕）を作ります。数値は生成AIに書かせず、確認済みの値をこのコンテナが各言語へ埋め込みます。公開先はCHUCKの宇宙天気タブだけで、他のサービスへは配信しません。定時の自動作成（HF_BRIEFING_SCHEDULER_ENABLED）と自動公開（AUTO_PUBLISH_ENABLED）は、どちらも既定で無効です。</p>
+<p class="hint">00:00 UTCまでの24時間を観測期間とし、02:30 UTCまで取得・再試行したデータで原稿を作り、03:00 UTCまでに英語表記の動画1本（選んだ言語の音声と字幕）を作ります。数値は生成AIに書かせず、確認済みの値をこのコンテナが各言語へ埋め込みます。公開先はCHUCKの宇宙天気タブだけで、他のサービスへは配信しません。定時の自動作成（HF_BRIEFING_SCHEDULER_ENABLED）と自動公開（AUTO_PUBLISH_ENABLED）は、どちらも既定で無効です。</p>
 <p class="hint">APIキーはこのコンテナのデータ領域（パーミッション0600）に保存し、画面にもログにも表示しません。空欄のまま保存すると、保存済みのキー（なければ環境変数のキー）を使い続けます。モデル名・声・料金は固定せず、各社の一覧と料金表で確認して入力してください。Claudeには音声合成がないため、音声の工程ではGemini・OpenAI・ローカルLLM（OpenAI互換）から選びます。外部の生成AIへは「外部AI可」のデータだけを送り、それ以外はローカルLLMの工程にだけ渡します。</p></section></div>
 </main><script src="public-data.js"></script><script src="briefing.js"></script><script src="i18n-messages.js"></script><script src="briefing-messages.js"></script><script src="i18n.js"></script></body></html>
