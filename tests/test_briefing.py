@@ -194,7 +194,7 @@ class TemplateTests(unittest.TestCase):
         item = {'value': 4.33, 'unit': 'kp'}
         self.assertEqual([b.render_value(item, lang) for lang in ('en', 'de', 'ja')], ['4.33', '4,33', '4.33'])
         self.assertEqual(b.render_value({'value': 35, 'unit': 'percent'}, 'fr'), '35 %')
-        self.assertEqual(b.render_value({'value': '2026-11-02T18:00:00+00:00', 'unit': 'period'}, 'en'), '18:00–21:00 UTC')
+        self.assertEqual(b.render_value({'value': '2026-11-02T18:00:00+00:00', 'unit': 'period'}, 'en'), b.day_text('2026-11-02', 'en') + ' 18:00–21:00 UTC')
         self.assertEqual(b.day_text('2026-11-03', 'ja'), '2026年11月3日')
         self.assertEqual(b.day_text('2026-11-03', 'de'), '3. November 2026')
 
@@ -219,6 +219,25 @@ class TemplateTests(unittest.TestCase):
         self.assertEqual(set(b.ISO639_2), set(b.LANGUAGES))
         self.assertEqual(ai.AUDIO_ORDER, ('en',) + tuple(x for x in b.LANGUAGES if x != 'en'))
         self.assertEqual(set(ai.SPEECH_STYLE), set(b.LANGUAGES))  # every language can be a voice
+
+    def test_speech_loses_the_bursts_around_it_but_no_speech(self):
+        import math as m
+        rate = b.RATE
+        tone = lambda seconds, amp: b''.join(int(amp * m.sin(2 * m.pi * 440 * i / rate)).to_bytes(2, 'little', signed=True) for i in range(int(seconds * rate)))
+        quiet = lambda seconds: b'\x00\x00' * int(seconds * rate)
+        speech = tone(.6, 8000) + quiet(.1) + tone(.5, 8000)  # a short pause inside speech stays
+        raw = tone(.05, 3000) + quiet(.3) + speech + quiet(.4) + tone(.15, 30000) + quiet(.05)
+        out = b.trimmed(raw)
+        self.assertAlmostEqual(len(out) / 2 / rate, len(speech) / 2 / rate + .15, delta=.03)
+        self.assertLess(max(abs(int.from_bytes(out[i:i + 2], 'little', signed=True)) for i in range(0, len(out), 2)), 8001)
+        self.assertEqual(b.trimmed(quiet(.5)), quiet(.5))
+
+    def test_noaa_g_forecast_leads_over_the_kp_implied_level(self):
+        kp = {'value': 4.67, 'unit': 'kp', 'source': 'kp-forecast'}
+        official = {'d1_kp': kp, 'd1_g': {'value': 1, 'unit': 'scale', 'source': 'scales'}}
+        self.assertEqual(b.check_values(official), [])  # NOAA may forecast G1 with a maximum Kp of 4.67
+        implied = {'d1_kp': kp, 'd1_g': {'value': 1, 'unit': 'scale', 'source': 'kp-forecast'}}
+        self.assertEqual(b.check_values(implied), ['d1_g: does not follow from Kp'])
 
     def test_slides_are_english_and_subtitles_are_ordered(self):
         slide = b.Slide('overview', '2026-11-03', 'footer')

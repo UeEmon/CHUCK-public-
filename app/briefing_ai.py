@@ -521,7 +521,8 @@ def speak(cfg, text, language):
             raise AIError('音声合成の応答を読み取れませんでした') from None
         # The speech endpoint returns audio only; its usage is not reported in the response.
         return raw, record(cfg, started, None, headers, 'speech', extra | {'audio_seconds': round(seconds, 2)})
-    payload = {'contents': [{'parts': [{'text': style + '\n' + text}]}],
+    # Gemini reads every text part aloud, so only the narration is sent; the language follows from the text.
+    payload = {'contents': [{'parts': [{'text': text}]}],
                'generationConfig': {'responseModalities': ['AUDIO'],
                                     'speechConfig': {'voiceConfig': {'prebuiltVoiceConfig': {'voiceName': voice}}}}}
     raw, headers = post(cfg, 'https://generativelanguage.googleapis.com/v1beta/models/' + quote(model, safe='') + ':generateContent',
