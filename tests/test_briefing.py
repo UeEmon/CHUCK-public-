@@ -696,6 +696,17 @@ class ModelChoiceTests(unittest.TestCase):
         self.assertEqual(len(attempts), len(ai.RATE_LIMIT_WAITS) + 1)
         self.assertEqual(waits, [5, *ai.RATE_LIMIT_WAITS[1:]])
         self.assertIn('HTTP 429', str(caught.exception))
+        # A busy model (503) is sent again the same way; other errors are not.
+        for code, tries in ((503, len(ai.RATE_LIMIT_WAITS) + 1), (500, 1)):
+            attempts.clear()
+            class Busy:
+                def open(self, request, timeout):
+                    attempts.append(1)
+                    raise HTTPError(request.full_url, code, 'error', {}, None)
+            with patch.object(ai, 'build_opener', lambda *h: Busy()), patch.object(ai, 'SLEEP', lambda s: None):
+                with self.assertRaises(ai.AIError) as caught:
+                    ai.post({'provider': 'gemini'}, 'https://generativelanguage.googleapis.com/x', {}, {})
+            self.assertEqual((len(attempts), 'HTTP %d' % code in str(caught.exception)), (tries, True))
 
 
 if __name__ == '__main__':

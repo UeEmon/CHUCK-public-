@@ -351,8 +351,9 @@ def now_iso():
     return time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())
 
 
-# Waits after HTTP 429 (rate limit) before the same request is sent again. A 429 is not billed; the free tier
-# limits requests per minute and per day. After the last wait the call fails: it never moves to another key.
+# Waits after HTTP 429 (rate limit) or 503 (the model is overloaded) before the same request is sent again.
+# Neither is billed; the free tier limits requests per minute and per day, and a busy model sheds requests
+# (free-tier ones first). After the last wait the call fails: it never moves to another key or model.
 RATE_LIMIT_WAITS = (20, 40, 60)
 SLEEP = time.sleep
 
@@ -378,9 +379,11 @@ def post(cfg, url, headers, payload, limit=MAX_TEXT, timeout=180, method='POST')
                 reply_headers = dict(response.headers.items())
             break
         except HTTPError as error:
-            if error.code != 429:
+            if error.code not in (429, 503):
                 raise AIError('生成AIのAPIがエラーを返しました（HTTP ' + str(error.code) + '）') from None
             if attempt == len(RATE_LIMIT_WAITS):
+                if error.code == 503:
+                    raise AIError('生成AIのモデルが混雑していて、送り直しても応答がありませんでした（HTTP 503）') from None
                 raise AIError('生成AIのAPIの回数の上限に達しました（HTTP 429）。無料枠には1分あたり・1日あたりの上限があります') from None
             SLEEP(retry_after(error.headers) or RATE_LIMIT_WAITS[attempt])
         except (URLError, TimeoutError, OSError):
