@@ -112,28 +112,26 @@ const {chromium}=require('playwright');
   assert.match(out.text,/回線マップ/);assert.doesNotMatch(out.text,/計算には時間がかかります/);
   assert.equal(out.svgs,1);assert.match(out.html,/<image class="coverage-area"[^>]*href="data:image\/png;base64,/);
 
-  // A frequency x time matrix: a cell picks the map, and the UTC bar steps its hours.
+  // All frequencies x 24 hours: the frequency select and the UTC bar pick the map; there is no summary table.
   const matrix=await page.evaluate(()=>{
    const cell=v=>({signal_dbw:btoa(String.fromCharCode(v,v,v,255)),snr_db_hz:btoa(String.fromCharCode(150,150,150,255)),reliability:btoa(String.fromCharCode(90,90,90,255))});
    coverageResult={id:'c2',kind:'coverage',created:'2026-10-23T04:00:00+00:00',parameters:{...base,reliability:90},span:360,center_lat:20,center_lon:140,
     matrix:{size:2,lon_min:-180,lon_max:180,lat_min:-90,lat_max:90,frequencies:[7,10],hours:[...Array(24).keys()],
      covered_percent:[Array(24).fill(5),Array.from({length:24},(_,h)=>h)],cells:[Array.from({length:24},()=>cell(150)),Array.from({length:24},(_,h)=>cell(100+h))]}};
-   openCoverageMatrix(coverageResult);tab('coverage');showCoverage();
-   const opened=[matrixFrequency,$('cov_hour').value,$('cov_span').value];
-   document.querySelectorAll('.coverage-matrix tr')[2].querySelectorAll('td button')[5].click();
-   const first=[...opened,matrixFrequency,$('cov_hour').value,coverageArea().signal_dbw[0][0],$('map-time').hidden];
-   setMapHour('coverage',6);
-   return [...first,$('cov_hour').value,coverageArea().signal_dbw[0][0],document.querySelector('.coverage-matrix td.selected button').textContent];
+   $('cov_hour').value=5;openCoverageMatrix(coverageResult);tab('coverage');showCoverage();
+   const opened=[$('coverage-view').hidden,$('cov_freq_field').hidden,matrixFrequency,[...$('cov_freq').options].map(o=>o.value).join(),$('cov_span').value,coverageArea().signal_dbw[0][0],$('map-time').hidden,!!document.querySelector('.coverage-matrix')];
+   $('cov_freq').value='7';$('cov_freq').onchange();const picked=[matrixFrequency,coverageArea().signal_dbw[0][0]];
+   $('cov_freq').value='10';$('cov_freq').onchange();setMapHour('coverage',6);
+   return [...opened,...picked,$('cov_hour').value,coverageArea().signal_dbw[0][0],$('coverage-info').textContent.slice(0,23)];
   });
-  // A new matrix opens on its best cell; the default range is 120 degrees.
-  assert.deepEqual(matrix,[1,'23','120',1,'5',-105,false,'6',-106,'-106']);
-  // Cells follow the selected display: medians in the map legend's colours.
-  const metrics=await page.evaluate(()=>{const td=()=>document.querySelector('.coverage-matrix td.selected');const s=[td().style.background,coverageColors('signal_dbw')[7]];
-   $('cov_metric').value='snr_db_hz';$('cov_metric').onchange();const snr=td().textContent;$('cov_metric').value='reliability';$('cov_metric').onchange();return [...s,snr,td().textContent];});
-  assert.equal(metrics[0],metrics[1].replace(/,/g,', '));assert.deepEqual(metrics.slice(2),['50','90']);
+  // Display and frequency are switched after the calculation; the default range is 120 degrees.
+  assert.deepEqual(matrix,[false,false,0,'7,10','120',-150,false,false,0,-150,'6',-106,'10 MHz / 6:00 UTC / 全世界']);
   // The coverage tab draws no TX-RX paths; other tabs still do.
   const routes=await page.evaluate(()=>{const n=()=>document.querySelectorAll('#map path[stroke-linecap="round"]').length;const coverage=[n(),$('route-info').textContent];tab('prediction');const other=n();tab('coverage');return [...coverage,other];});
   assert.equal(routes[0],0);assert.match(routes[1],/パスは表示しません/);assert.ok(routes[2]>0);
+  // The chosen frequency and hour show on the map and under it.
+  const label=await page.evaluate(()=>[document.querySelector('#map text.coverage-label')?.textContent,$('route-info').textContent]);
+  assert.deepEqual(label,['10 MHz · 06:00 UTC','カバー範囲 10 MHz / 6:00 UTC · TX・RX間のパスは表示しません']);
   // The whole world asks first; declining starts nothing.
   const confirm=await page.evaluate(async()=>{const answer=confirmDialog(),open=$('calc-confirm').open;$('calc-confirm-no').click();const no=await answer;const again=confirmDialog();$('calc-confirm-ok').click();return [open,no,await again,$('calc-confirm').open];});
   assert.deepEqual(confirm,[true,false,true,false]);
@@ -141,7 +139,7 @@ const {chromium}=require('playwright');
   const locked=await page.evaluate(()=>{const all=()=>[...document.querySelectorAll('#coverage input,#coverage select,#coverage button')];setBusy(true);const on=all().every(e=>e.disabled);setBusy(false);return [on,all().some(e=>e.disabled)];});
   assert.deepEqual(locked,[true,false]);
   out=await print('#coverage-exports .report-tab-print','coverage-matrix');
-  assert.match(out.text,/周波数\t10 MHz \/ 6:00 UTC/);assert.match(out.html,/coverage-matrix/);
+  assert.match(out.text,/周波数\t10 MHz \/ 6:00 UTC/);assert.doesNotMatch(out.html,/heat coverage-matrix/);
 
   // Text follows the UI language.
   await page.selectOption('#language','en');
