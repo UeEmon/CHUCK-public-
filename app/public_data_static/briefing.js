@@ -1,6 +1,6 @@
 'use strict';
 // Space weather daily briefing: generative AI per step, a verification run, and its files. Nothing here publishes.
-let brief=null,briefModels={},briefVoices={},briefModelLoads={};
+let brief=null,briefModels={},briefVoices={},briefModelLoads={},briefVoiceFilters={};
 const STEP_LABELS={script:'英語の原稿',translate_ja:'日本語への翻訳（音声・字幕）',translate_subtitles:'字幕の翻訳（仏・西・伊・葡・独・韓）',review:'独立レビュー',tts_en:'英語の音声合成',tts_ja:'日本語の音声合成'};
 const GATE_LABELS={DATA_COMPLETE:'必須データがそろっている',DATA_FRESH:'必須データが新しい',FACTS_VALID:'数値・時刻・単位の整合',LICENSE_CLEARED:'権利の確認',LANGUAGES_COMPLETE:'8言語の字幕と英日音声',MEDIA_VALID:'動画のトラックと再生',BUDGET_OK:'予算',REVIEW_OK:'生成AIによるレビュー',SCHEDULE_OK:'時刻規則（02:30凍結・03:00締切）',PRODUCTION_INPUT:'実データ（Mockでない）',RELEASE_POLICY:'公開（この版では無効）'};
 const CREDENTIALS={saved:'保存済みのキーを使用',environment:'環境変数のキーを使用',none:'未設定'};
@@ -54,13 +54,35 @@ function renderVoiceChoice(box){
   if(!box.isConnected||form.elements['step-provider-'+step].value!==provider)return;
   const now=box.querySelector('[name]').value;
   if(!r.voices.length){hint.textContent='声の一覧がありません。名前を入力してください。';return;}
-  const options=[['','選んでください'],...r.voices.map(v=>[v.id,v.label&&v.label!==v.id?v.id+'（'+v.label+'）':v.id])];
-  if(now&&!r.voices.some(v=>v.id===now))options.push([now,now+'（一覧にありません）']);
-  const sel=select(name,options,now||''),manual=cell('button','手入力');manual.type='button';
+  const filters=voiceFilters(r.voices,STEP_LANGS[step]),fsel=filters.length>1?select('',filters.map(f=>[f.key,f.label]),''):null;
+  if(fsel){fsel.removeAttribute('name');fsel.title='声の言語で絞り込む';fsel.value=filters.some(f=>f.key===briefVoiceFilters[step])?briefVoiceFilters[step]:filters[0].key;}
+  const sel=select(name,[],''),manual=cell('button','手入力');manual.type='button';
+  const fill=()=>{const keep=sel.value||now,f=fsel?filters.find(f=>f.key===fsel.value):null,shown=f?r.voices.filter(f.test):r.voices;
+   const options=[['','選んでください'],...shown.map(v=>[v.id,v.label&&v.label!==v.id?v.id+'（'+v.label+'）':v.id])];
+   if(keep&&!shown.some(v=>v.id===keep))options.push([keep,keep+(r.voices.some(v=>v.id===keep)?'（絞り込みの外）':'（一覧にありません）')]);
+   sel.replaceChildren(...options.map(([v,t])=>{const o=cell('option',t);o.value=v;return o;}));sel.value=keep||'';};
+  if(fsel)fsel.onchange=()=>{briefVoiceFilters[step]=fsel.value;fill();};
+  fill();
   manual.onclick=()=>{const t=typedIn(sel.value);t.focus();};
   const note=cell('span',r.source==='document'?'公式資料の一覧（'+r.checked_on+'確認）':'');note.className='hint';
-  box.replaceChildren(sel,manual,note);
+  box.replaceChildren(...(fsel?[fsel]:[]),sel,manual,note);
  },e=>{if(box.isConnected)hint.textContent=e.message;});
+}
+// Voice IDs such as ja-jp-advisor-1 name their language and region; short names (charon, kore …) have none and read any language.
+const STEP_LANGS={tts_en:'en',tts_ja:'ja'};
+function voiceFilters(voices,lang){
+ const tag=v=>/^([a-z]{2,3})-([a-z]{2,4})-/i.exec(v.id),common=v=>!tag(v),code=v=>tag(v)?.[1].toLowerCase(),region=v=>tag(v)?.[2].toLowerCase();
+ if(!voices.some(tag))return [];
+ const out=[],add=(key,label,test)=>{const n=voices.filter(test).length;if(n)out.push({key,label:label.replace('{n}',n),test});};
+ const langs=[...new Set(voices.filter(tag).map(code))].sort(),mine=langs.includes(lang)?lang:null;
+ if(mine){
+  add(mine,mine+'（全地域）と共通の声：{n}件',v=>common(v)||code(v)===mine);
+  for(const reg of [...new Set(voices.filter(v=>code(v)===mine).map(region))].sort())add(mine+'-'+reg,'地域 '+mine+'-'+reg+'：{n}件',v=>code(v)===mine&&region(v)===reg);
+ }
+ add('common','共通の声（言語の指定なし）：{n}件',common);
+ for(const l of langs)if(l!==mine)add(l,l+'（全地域）と共通の声：{n}件',v=>common(v)||code(v)===l);
+ add('all','すべての言語：{n}件',()=>true);
+ return out;
 }
 function refreshVoiceChoices(){for(const box of document.querySelectorAll('.voice-choice'))renderVoiceChoice(box);}
 // The model of a step: a list to choose from once the provider's models are fetched, otherwise typed in.
