@@ -30,7 +30,7 @@ function liveLocation(p){
  if(!p)return null;
  if(p.kind!=='mobile')return p;
  const row=typeof positionData!=='undefined'&&positionData?.positions.find(r=>r.source===p.position_ref.source&&r.id===p.position_ref.id);
- return {...p,lat:row?.lat??p.lat,lon:row?.lon??p.lon,unavailable:!row||row.stale||!row.prediction_compatible||Date.parse(row.expires_at)<=Date.now(),position_ref:{...p.position_ref}};
+ return {...p,lat:row?.lat??p.lat,lon:row?.lon??p.lon,course_deg:row?.course_deg??null,unavailable:!row||row.stale||!row.prediction_compatible||Date.parse(row.expires_at)<=Date.now(),position_ref:{...p.position_ref}};
 }
 const meshMode=()=>$('mesh-mode').checked;
 const MESH_MAX=8;

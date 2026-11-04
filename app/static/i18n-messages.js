@@ -11224,17 +11224,157 @@ const HF_MESSAGES={
     "Das Positions-Gateway empfängt jetzt NMEA 0183 HDT, HDG und THS (Steuerkurs) je Station; JSON und GeoJSON können heading_deg senden. Antennen mit „Eigenem Steuerkurs folgen (mobile Station)“ werden nach dem empfangenen rechtweisenden Steuerkurs ausgerichtet; Stationen ohne oder mit veraltetem Steuerkurs verwenden wie bisher den Kurs über Grund. HDG wird mit Missweisung in einen rechtweisenden Steuerkurs umgerechnet. Die Liste empfangener Positionen und die Gateway-Verwaltung zeigen den Steuerkurs.",
     "위치 게이트웨이가 NMEA 0183 HDT·HDG·THS(선수 방위)를 국별로 수신합니다. JSON·GeoJSON에서도 heading_deg로 보낼 수 있습니다. 「자국 선수 방위에 맞춤 (이동국)」 안테나는 수신한 진방위 선수 방위를 기준으로 방향을 계산하고, 선수 방위가 없거나 오래된 국은 종전처럼 대지 침로를 사용합니다. HDG는 편차(자기 편각)가 포함된 경우 진방위로 환산합니다. 위치 수신 목록과 게이트웨이 관리 화면에 선수 방위를 표시합니다."
   ],
-  "公開版の利用者にも表示する": ["Also show to public site visitors", "Afficher aussi aux visiteurs du site public", "Mostrar también a los visitantes del sitio público", "Mostra anche ai visitatori del sito pubblico", "Mostrar também aos visitantes do site público", "Auch Besuchern der öffentlichen Seite anzeigen", "공개 사이트 이용자에게도 표시"],
-  "公開": ["Public", "Public", "Público", "Pubblico", "Público", "Öffentlich", "공개"],
-  "publicはtrue/falseです": ["public must be true or false", "public doit être true ou false", "public debe ser true o false", "public deve essere true o false", "public deve ser true ou false", "public muss true oder false sein", "public는 true/false입니다"],
-  "公開版では管理者が公開した移動局だけを使用できます": ["The public site can only use mobile stations published by the administrator", "Le site public ne peut utiliser que les stations mobiles publiées par l'administrateur", "El sitio público solo puede usar las estaciones móviles publicadas por el administrador", "Il sito pubblico può usare solo le stazioni mobili pubblicate dall'amministratore", "O site público só pode usar as estações móveis publicadas pelo administrador", "Die öffentliche Seite kann nur vom Administrator veröffentlichte mobile Stationen verwenden", "공개 사이트에서는 관리자가 공개한 이동국만 사용할 수 있습니다"],
-  "移動局の位置を取得できません": ["Cannot get mobile station positions", "Impossible d'obtenir les positions des stations mobiles", "No se pueden obtener las posiciones de las estaciones móviles", "Impossibile ottenere le posizioni delle stazioni mobili", "Não é possível obter as posições das estações móveis", "Positionen der mobilen Stationen können nicht abgerufen werden", "이동국 위치를 가져올 수 없습니다"],
-  "カバー範囲 · TXから範囲内の各格子点（TX・RX間のパスは表示しません）": ["Coverage · from the TX to each grid point in the range (TX–RX paths are not shown)", "Couverture · du TX vers chaque point de grille de la zone (trajets TX–RX non affichés)", "Cobertura · del TX a cada punto de la cuadrícula del rango (no se muestran trayectos TX–RX)", "Copertura · dal TX a ogni punto della griglia nell’intervallo (percorsi TX–RX non mostrati)", "Cobertura · do TX a cada ponto da grade no intervalo (percursos TX–RX não exibidos)", "Abdeckung · vom TX zu jedem Gitterpunkt im Bereich (TX–RX-Pfade werden nicht angezeigt)", "커버리지 · TX에서 범위 내 각 격자점까지(TX·RX 간 경로는 표시하지 않음)"],
-  "カバー範囲を計算しました。周波数を選ぶとその地図を表示し、UTCのスライダーや「▶ 再生」で24時間を順に表示します。": ["Coverage calculated. Choose a frequency to show its map; the UTC slider or “▶ Play” steps through the 24 hours.", "Couverture calculée. Choisissez une fréquence pour afficher sa carte ; le curseur UTC ou « ▶ Lire » parcourt les 24 heures.", "Cobertura calculada. Elija una frecuencia para ver su mapa; el control UTC o «▶ Reproducir» recorre las 24 horas.", "Copertura calcolata. Scegliere una frequenza per vederne la mappa; il cursore UTC o «▶ Riproduci» scorre le 24 ore.", "Cobertura calculada. Escolha uma frequência para ver o mapa; o controle UTC ou “▶ Reproduzir” percorre as 24 horas.", "Abdeckung berechnet. Eine Frequenz wählen, um ihre Karte anzuzeigen; der UTC-Regler oder „▶ Abspielen“ durchläuft die 24 Stunden.", "커버리지를 계산했습니다. 주파수를 선택하면 그 지도를 표시하고, UTC 슬라이더나 '▶ 재생'으로 24시간을 차례로 표시합니다."],
-  "カバー範囲 {freq} MHz / {hour}:00 UTC · TX・RX間のパスは表示しません": ["Coverage {freq} MHz / {hour}:00 UTC · TX–RX paths are not shown", "Couverture {freq} MHz / {hour}:00 UTC · trajets TX–RX non affichés", "Cobertura {freq} MHz / {hour}:00 UTC · no se muestran trayectos TX–RX", "Copertura {freq} MHz / {hour}:00 UTC · percorsi TX–RX non mostrati", "Cobertura {freq} MHz / {hour}:00 UTC · percursos TX–RX não exibidos", "Abdeckung {freq} MHz / {hour}:00 UTC · TX–RX-Pfade werden nicht angezeigt", "커버리지 {freq} MHz / {hour}:00 UTC · TX·RX 간 경로는 표시하지 않음"],
-  "カバー範囲のマトリックス表を廃止し、周波数を選ぶ形に": ["Coverage matrix table replaced by a frequency choice", "Tableau matriciel de couverture remplacé par un choix de fréquence", "Tabla matriz de cobertura sustituida por la elección de frecuencia", "Tabella a matrice della copertura sostituita dalla scelta della frequenza", "Tabela matriz de cobertura substituída pela escolha de frequência", "Abdeckungs-Matrixtabelle durch Frequenzauswahl ersetzt", "커버리지 매트릭스 표를 폐지하고 주파수 선택 방식으로"],
-  "「カバー範囲」の周波数×時刻のマトリックス表をなくしました。表のセルは範囲全体の中央値で、24時間予測のRX地点の値と取り違えるおそれがあるためです。範囲だけを選んで計算し、計算後の「表示の切り替え」で表示・周波数を選ぶと、その地図を回線マップに表示します。UTCのスライダーや「▶ 再生」で時刻を進めます。回線マップには選んでいる周波数と時刻を表示します。": ["The frequency × time matrix table in “Coverage” has been removed. Its cells were medians over the whole range and could be mistaken for the RX value of the 24-hour prediction. Choose only the range and calculate; then pick the display and frequency under “Switch the view” to show that map on the circuit map, and step the hours with the UTC slider or “▶ Play”. The circuit map shows the chosen frequency and hour.", "Le tableau matriciel fréquence × heure de « Couverture » a été supprimé. Ses cases étaient des médianes sur toute la zone et pouvaient être confondues avec la valeur au RX de la prévision sur 24 heures. Choisissez seulement la zone et calculez ; choisissez ensuite l’affichage et la fréquence sous « Changer l’affichage » pour voir cette carte sur la carte des liaisons, et faites défiler les heures avec le curseur UTC ou « ▶ Lire ». La carte des liaisons indique la fréquence et l’heure choisies.", "Se eliminó la tabla matriz frecuencia × hora de «Cobertura». Sus celdas eran medianas de todo el rango y podían confundirse con el valor en el RX de la predicción de 24 horas. Elija solo el rango y calcule; luego elija la visualización y la frecuencia en «Cambiar la vista» para ver ese mapa en el mapa de enlaces, y avance las horas con el control UTC o «▶ Reproducir». El mapa de enlaces muestra la frecuencia y la hora elegidas.", "La tabella a matrice frequenza × ora di «Copertura» è stata rimossa. Le sue celle erano mediane sull’intero intervallo e potevano essere confuse con il valore al RX della previsione su 24 ore. Scegliere solo l’intervallo e calcolare; poi scegliere visualizzazione e frequenza in «Cambia la vista» per vedere quella mappa sulla mappa dei collegamenti e scorrere le ore con il cursore UTC o «▶ Riproduci». La mappa dei collegamenti indica la frequenza e l’ora scelte.", "A tabela matriz frequência × hora de “Cobertura” foi removida. As células eram medianas de todo o intervalo e podiam ser confundidas com o valor no RX da previsão de 24 horas. Escolha apenas o intervalo e calcule; depois escolha a exibição e a frequência em “Alterar a exibição” para ver esse mapa no mapa de ligações e avance as horas com o controle UTC ou “▶ Reproduzir”. O mapa de ligações mostra a frequência e a hora escolhidas.", "Die Matrixtabelle Frequenz × Zeit unter „Abdeckung“ wurde entfernt. Ihre Zellen waren Mediane über den ganzen Bereich und konnten mit dem RX-Wert der 24-Stunden-Prognose verwechselt werden. Nur den Bereich wählen und berechnen; danach unter „Anzeige umschalten“ Anzeige und Frequenz wählen, um diese Karte auf der Verbindungskarte zu sehen, und die Stunden mit dem UTC-Regler oder „▶ Abspielen“ durchgehen. Die Verbindungskarte zeigt die gewählte Frequenz und Stunde.", "'커버리지'의 주파수×시각 매트릭스 표를 없앴습니다. 표의 셀은 범위 전체의 중앙값이라 24시간 예측의 RX 지점 값과 혼동할 우려가 있기 때문입니다. 범위만 선택해 계산하고, 계산 후 '표시 전환'에서 표시·주파수를 선택하면 그 지도를 회선 지도에 표시합니다. UTC 슬라이더나 '▶ 재생'으로 시각을 진행합니다. 회선 지도에는 선택한 주파수와 시각을 표시합니다."],
-  "選ぶのは範囲だけです。予測条件の全周波数について24時間分をまとめて計算します。範囲が狭いほど格子が細かくなります。全世界は1〜2分以上かかります。計算中は進み具合を表示し、中止できます。": ["Only the range is chosen here. Every frequency in the prediction conditions is calculated for 24 hours at once. Smaller ranges use a finer grid. The whole world takes one to two minutes or more. Progress is shown during the calculation, and it can be cancelled.", "Seule la zone est à choisir ici. Toutes les fréquences des conditions de prévision sont calculées en une fois sur 24 heures. Plus la zone est petite, plus la grille est fine. Le monde entier prend une à deux minutes ou plus. La progression s’affiche pendant le calcul, qui peut être annulé.", "Aquí solo se elige el rango. Todas las frecuencias de las condiciones de predicción se calculan de una vez para 24 horas. Cuanto menor es el rango, más fina es la cuadrícula. El mundo entero tarda uno o dos minutos o más. Durante el cálculo se muestra el progreso y se puede cancelar.", "Qui si sceglie solo l’intervallo. Tutte le frequenze delle condizioni di previsione vengono calcolate insieme per 24 ore. Più piccolo è l’intervallo, più fine è la griglia. Il mondo intero richiede uno o due minuti o più. Durante il calcolo viene mostrato l’avanzamento ed è possibile annullarlo.", "Aqui escolhe-se apenas o intervalo. Todas as frequências das condições de previsão são calculadas de uma vez para 24 horas. Quanto menor o intervalo, mais fina a grade. O mundo inteiro leva um a dois minutos ou mais. Durante o cálculo o progresso é exibido e é possível cancelar.", "Hier wird nur der Bereich gewählt. Alle Frequenzen der Prognosebedingungen werden auf einmal für 24 Stunden berechnet. Je kleiner der Bereich, desto feiner das Gitter. Die ganze Welt dauert ein bis zwei Minuten oder länger. Während der Berechnung wird der Fortschritt angezeigt, und sie kann abgebrochen werden.", "여기서는 범위만 선택합니다. 예측 조건의 모든 주파수를 24시간분 한꺼번에 계산합니다. 범위가 좁을수록 격자가 촘촘해집니다. 전 세계는 1~2분 이상 걸립니다. 계산 중에는 진행 상황을 표시하며 중지할 수 있습니다."],
-  "表示の切り替え": ["Switch the view", "Changer l’affichage", "Cambiar la vista", "Cambia la vista", "Alterar a exibição", "Anzeige umschalten", "표시 전환"],
-  "計算後はいつでも、再計算なしで表示・周波数・UTC時刻を切り替えられます。": ["After the calculation, the display, frequency and UTC hour can be switched at any time without recalculating.", "Après le calcul, l’affichage, la fréquence et l’heure UTC peuvent être changés à tout moment sans recalcul.", "Tras el cálculo, la visualización, la frecuencia y la hora UTC se pueden cambiar en cualquier momento sin recalcular.", "Dopo il calcolo, visualizzazione, frequenza e ora UTC si possono cambiare in qualsiasi momento senza ricalcolare.", "Após o cálculo, a exibição, a frequência e a hora UTC podem ser alteradas a qualquer momento sem recalcular.", "Nach der Berechnung lassen sich Anzeige, Frequenz und UTC-Stunde jederzeit ohne Neuberechnung umschalten.", "계산 후에는 언제든지 재계산 없이 표시·주파수·UTC 시각을 전환할 수 있습니다."]
+  "公開版の利用者にも表示する": [
+    "Also show to public site visitors",
+    "Afficher aussi aux visiteurs du site public",
+    "Mostrar también a los visitantes del sitio público",
+    "Mostra anche ai visitatori del sito pubblico",
+    "Mostrar também aos visitantes do site público",
+    "Auch Besuchern der öffentlichen Seite anzeigen",
+    "공개 사이트 이용자에게도 표시"
+  ],
+  "公開": [
+    "Public",
+    "Public",
+    "Público",
+    "Pubblico",
+    "Público",
+    "Öffentlich",
+    "공개"
+  ],
+  "publicはtrue/falseです": [
+    "public must be true or false",
+    "public doit être true ou false",
+    "public debe ser true o false",
+    "public deve essere true o false",
+    "public deve ser true ou false",
+    "public muss true oder false sein",
+    "public는 true/false입니다"
+  ],
+  "公開版では管理者が公開した移動局だけを使用できます": [
+    "The public site can only use mobile stations published by the administrator",
+    "Le site public ne peut utiliser que les stations mobiles publiées par l'administrateur",
+    "El sitio público solo puede usar las estaciones móviles publicadas por el administrador",
+    "Il sito pubblico può usare solo le stazioni mobili pubblicate dall'amministratore",
+    "O site público só pode usar as estações móveis publicadas pelo administrador",
+    "Die öffentliche Seite kann nur vom Administrator veröffentlichte mobile Stationen verwenden",
+    "공개 사이트에서는 관리자가 공개한 이동국만 사용할 수 있습니다"
+  ],
+  "移動局の位置を取得できません": [
+    "Cannot get mobile station positions",
+    "Impossible d'obtenir les positions des stations mobiles",
+    "No se pueden obtener las posiciones de las estaciones móviles",
+    "Impossibile ottenere le posizioni delle stazioni mobili",
+    "Não é possível obter as posições das estações móveis",
+    "Positionen der mobilen Stationen können nicht abgerufen werden",
+    "이동국 위치를 가져올 수 없습니다"
+  ],
+  "カバー範囲 · TXから範囲内の各格子点（TX・RX間のパスは表示しません）": [
+    "Coverage · from the TX to each grid point in the range (TX–RX paths are not shown)",
+    "Couverture · du TX vers chaque point de grille de la zone (trajets TX–RX non affichés)",
+    "Cobertura · del TX a cada punto de la cuadrícula del rango (no se muestran trayectos TX–RX)",
+    "Copertura · dal TX a ogni punto della griglia nell’intervallo (percorsi TX–RX non mostrati)",
+    "Cobertura · do TX a cada ponto da grade no intervalo (percursos TX–RX não exibidos)",
+    "Abdeckung · vom TX zu jedem Gitterpunkt im Bereich (TX–RX-Pfade werden nicht angezeigt)",
+    "커버리지 · TX에서 범위 내 각 격자점까지(TX·RX 간 경로는 표시하지 않음)"
+  ],
+  "カバー範囲を計算しました。周波数を選ぶとその地図を表示し、UTCのスライダーや「▶ 再生」で24時間を順に表示します。": [
+    "Coverage calculated. Choose a frequency to show its map; the UTC slider or “▶ Play” steps through the 24 hours.",
+    "Couverture calculée. Choisissez une fréquence pour afficher sa carte ; le curseur UTC ou « ▶ Lire » parcourt les 24 heures.",
+    "Cobertura calculada. Elija una frecuencia para ver su mapa; el control UTC o «▶ Reproducir» recorre las 24 horas.",
+    "Copertura calcolata. Scegliere una frequenza per vederne la mappa; il cursore UTC o «▶ Riproduci» scorre le 24 ore.",
+    "Cobertura calculada. Escolha uma frequência para ver o mapa; o controle UTC ou “▶ Reproduzir” percorre as 24 horas.",
+    "Abdeckung berechnet. Eine Frequenz wählen, um ihre Karte anzuzeigen; der UTC-Regler oder „▶ Abspielen“ durchläuft die 24 Stunden.",
+    "커버리지를 계산했습니다. 주파수를 선택하면 그 지도를 표시하고, UTC 슬라이더나 '▶ 재생'으로 24시간을 차례로 표시합니다."
+  ],
+  "カバー範囲 {freq} MHz / {hour}:00 UTC · TX・RX間のパスは表示しません": [
+    "Coverage {freq} MHz / {hour}:00 UTC · TX–RX paths are not shown",
+    "Couverture {freq} MHz / {hour}:00 UTC · trajets TX–RX non affichés",
+    "Cobertura {freq} MHz / {hour}:00 UTC · no se muestran trayectos TX–RX",
+    "Copertura {freq} MHz / {hour}:00 UTC · percorsi TX–RX non mostrati",
+    "Cobertura {freq} MHz / {hour}:00 UTC · percursos TX–RX não exibidos",
+    "Abdeckung {freq} MHz / {hour}:00 UTC · TX–RX-Pfade werden nicht angezeigt",
+    "커버리지 {freq} MHz / {hour}:00 UTC · TX·RX 간 경로는 표시하지 않음"
+  ],
+  "カバー範囲のマトリックス表を廃止し、周波数を選ぶ形に": [
+    "Coverage matrix table replaced by a frequency choice",
+    "Tableau matriciel de couverture remplacé par un choix de fréquence",
+    "Tabla matriz de cobertura sustituida por la elección de frecuencia",
+    "Tabella a matrice della copertura sostituita dalla scelta della frequenza",
+    "Tabela matriz de cobertura substituída pela escolha de frequência",
+    "Abdeckungs-Matrixtabelle durch Frequenzauswahl ersetzt",
+    "커버리지 매트릭스 표를 폐지하고 주파수 선택 방식으로"
+  ],
+  "「カバー範囲」の周波数×時刻のマトリックス表をなくしました。表のセルは範囲全体の中央値で、24時間予測のRX地点の値と取り違えるおそれがあるためです。範囲だけを選んで計算し、計算後の「表示の切り替え」で表示・周波数を選ぶと、その地図を回線マップに表示します。UTCのスライダーや「▶ 再生」で時刻を進めます。回線マップには選んでいる周波数と時刻を表示します。": [
+    "The frequency × time matrix table in “Coverage” has been removed. Its cells were medians over the whole range and could be mistaken for the RX value of the 24-hour prediction. Choose only the range and calculate; then pick the display and frequency under “Switch the view” to show that map on the circuit map, and step the hours with the UTC slider or “▶ Play”. The circuit map shows the chosen frequency and hour.",
+    "Le tableau matriciel fréquence × heure de « Couverture » a été supprimé. Ses cases étaient des médianes sur toute la zone et pouvaient être confondues avec la valeur au RX de la prévision sur 24 heures. Choisissez seulement la zone et calculez ; choisissez ensuite l’affichage et la fréquence sous « Changer l’affichage » pour voir cette carte sur la carte des liaisons, et faites défiler les heures avec le curseur UTC ou « ▶ Lire ». La carte des liaisons indique la fréquence et l’heure choisies.",
+    "Se eliminó la tabla matriz frecuencia × hora de «Cobertura». Sus celdas eran medianas de todo el rango y podían confundirse con el valor en el RX de la predicción de 24 horas. Elija solo el rango y calcule; luego elija la visualización y la frecuencia en «Cambiar la vista» para ver ese mapa en el mapa de enlaces, y avance las horas con el control UTC o «▶ Reproducir». El mapa de enlaces muestra la frecuencia y la hora elegidas.",
+    "La tabella a matrice frequenza × ora di «Copertura» è stata rimossa. Le sue celle erano mediane sull’intero intervallo e potevano essere confuse con il valore al RX della previsione su 24 ore. Scegliere solo l’intervallo e calcolare; poi scegliere visualizzazione e frequenza in «Cambia la vista» per vedere quella mappa sulla mappa dei collegamenti e scorrere le ore con il cursore UTC o «▶ Riproduci». La mappa dei collegamenti indica la frequenza e l’ora scelte.",
+    "A tabela matriz frequência × hora de “Cobertura” foi removida. As células eram medianas de todo o intervalo e podiam ser confundidas com o valor no RX da previsão de 24 horas. Escolha apenas o intervalo e calcule; depois escolha a exibição e a frequência em “Alterar a exibição” para ver esse mapa no mapa de ligações e avance as horas com o controle UTC ou “▶ Reproduzir”. O mapa de ligações mostra a frequência e a hora escolhidas.",
+    "Die Matrixtabelle Frequenz × Zeit unter „Abdeckung“ wurde entfernt. Ihre Zellen waren Mediane über den ganzen Bereich und konnten mit dem RX-Wert der 24-Stunden-Prognose verwechselt werden. Nur den Bereich wählen und berechnen; danach unter „Anzeige umschalten“ Anzeige und Frequenz wählen, um diese Karte auf der Verbindungskarte zu sehen, und die Stunden mit dem UTC-Regler oder „▶ Abspielen“ durchgehen. Die Verbindungskarte zeigt die gewählte Frequenz und Stunde.",
+    "'커버리지'의 주파수×시각 매트릭스 표를 없앴습니다. 표의 셀은 범위 전체의 중앙값이라 24시간 예측의 RX 지점 값과 혼동할 우려가 있기 때문입니다. 범위만 선택해 계산하고, 계산 후 '표시 전환'에서 표시·주파수를 선택하면 그 지도를 회선 지도에 표시합니다. UTC 슬라이더나 '▶ 재생'으로 시각을 진행합니다. 회선 지도에는 선택한 주파수와 시각을 표시합니다."
+  ],
+  "選ぶのは範囲だけです。予測条件の全周波数について24時間分をまとめて計算します。範囲が狭いほど格子が細かくなります。全世界は1〜2分以上かかります。計算中は進み具合を表示し、中止できます。": [
+    "Only the range is chosen here. Every frequency in the prediction conditions is calculated for 24 hours at once. Smaller ranges use a finer grid. The whole world takes one to two minutes or more. Progress is shown during the calculation, and it can be cancelled.",
+    "Seule la zone est à choisir ici. Toutes les fréquences des conditions de prévision sont calculées en une fois sur 24 heures. Plus la zone est petite, plus la grille est fine. Le monde entier prend une à deux minutes ou plus. La progression s’affiche pendant le calcul, qui peut être annulé.",
+    "Aquí solo se elige el rango. Todas las frecuencias de las condiciones de predicción se calculan de una vez para 24 horas. Cuanto menor es el rango, más fina es la cuadrícula. El mundo entero tarda uno o dos minutos o más. Durante el cálculo se muestra el progreso y se puede cancelar.",
+    "Qui si sceglie solo l’intervallo. Tutte le frequenze delle condizioni di previsione vengono calcolate insieme per 24 ore. Più piccolo è l’intervallo, più fine è la griglia. Il mondo intero richiede uno o due minuti o più. Durante il calcolo viene mostrato l’avanzamento ed è possibile annullarlo.",
+    "Aqui escolhe-se apenas o intervalo. Todas as frequências das condições de previsão são calculadas de uma vez para 24 horas. Quanto menor o intervalo, mais fina a grade. O mundo inteiro leva um a dois minutos ou mais. Durante o cálculo o progresso é exibido e é possível cancelar.",
+    "Hier wird nur der Bereich gewählt. Alle Frequenzen der Prognosebedingungen werden auf einmal für 24 Stunden berechnet. Je kleiner der Bereich, desto feiner das Gitter. Die ganze Welt dauert ein bis zwei Minuten oder länger. Während der Berechnung wird der Fortschritt angezeigt, und sie kann abgebrochen werden.",
+    "여기서는 범위만 선택합니다. 예측 조건의 모든 주파수를 24시간분 한꺼번에 계산합니다. 범위가 좁을수록 격자가 촘촘해집니다. 전 세계는 1~2분 이상 걸립니다. 계산 중에는 진행 상황을 표시하며 중지할 수 있습니다."
+  ],
+  "表示の切り替え": [
+    "Switch the view",
+    "Changer l’affichage",
+    "Cambiar la vista",
+    "Cambia la vista",
+    "Alterar a exibição",
+    "Anzeige umschalten",
+    "표시 전환"
+  ],
+  "計算後はいつでも、再計算なしで表示・周波数・UTC時刻を切り替えられます。": [
+    "After the calculation, the display, frequency and UTC hour can be switched at any time without recalculating.",
+    "Après le calcul, l’affichage, la fréquence et l’heure UTC peuvent être changés à tout moment sans recalcul.",
+    "Tras el cálculo, la visualización, la frecuencia y la hora UTC se pueden cambiar en cualquier momento sin recalcular.",
+    "Dopo il calcolo, visualizzazione, frequenza e ora UTC si possono cambiare in qualsiasi momento senza ricalcolare.",
+    "Após o cálculo, a exibição, a frequência e a hora UTC podem ser alteradas a qualquer momento sem recalcular.",
+    "Nach der Berechnung lassen sich Anzeige, Frequenz und UTC-Stunde jederzeit ohne Neuberechnung umschalten.",
+    "계산 후에는 언제든지 재계산 없이 표시·주파수·UTC 시각을 전환할 수 있습니다."
+  ],
+  "針路": [
+    "Course",
+    "Cap",
+    "Rumbo",
+    "Rotta",
+    "Rumo",
+    "Kurs",
+    "침로"
+  ],
+  "針路不明": [
+    "Course unknown",
+    "Cap inconnu",
+    "Rumbo desconocido",
+    "Rotta sconosciuta",
+    "Rumo desconhecido",
+    "Kurs unbekannt",
+    "침로 불명"
+  ],
+  "回線マップの移動局を針路の向きの△で表示": [
+    "Mobile stations on the circuit map shown as △ pointing along their course",
+    "Stations mobiles affichées sur la carte des liaisons par un △ orienté selon leur cap",
+    "Estaciones móviles en el mapa de enlaces como △ orientado según su rumbo",
+    "Stazioni mobili sulla mappa dei collegamenti come △ orientato secondo la rotta",
+    "Estações móveis no mapa de ligações como △ orientado pelo rumo",
+    "Mobile Stationen auf der Verbindungskarte als △ in Kursrichtung",
+    "회선 지도의 이동국을 침로 방향 △로 표시"
+  ],
+  "回線マップで、位置ゲートウェイから受信した移動局を△で表示し、先端を針路（対地針路）の向きに回すようにしました。送受信地点に選んだ移動局も同じ△で表示します。針路が届いていない局は北向きの点線の△です。マップ上の△にポインターを合わせると針路の値を表示します。": [
+    "On the circuit map, mobile stations received through the position gateway are now drawn as △ with the tip turned to their course (over ground). Mobile stations chosen as transmit or receive sites use the same △. A station without a course is a dashed △ pointing north. Hover over a △ on the map to see its course.",
+    "Sur la carte des liaisons, les stations mobiles reçues par la passerelle de positions sont désormais dessinées par un △ dont la pointe suit leur cap (fond). Les stations mobiles choisies comme sites d’émission ou de réception utilisent le même △. Une station sans cap est un △ en pointillés orienté au nord. Survolez un △ pour voir son cap.",
+    "En el mapa de enlaces, las estaciones móviles recibidas por la pasarela de posiciones se dibujan ahora como △ con la punta girada hacia su rumbo (sobre el fondo). Las estaciones móviles elegidas como sitios de transmisión o recepción usan el mismo △. Una estación sin rumbo es un △ discontinuo apuntando al norte. Pase el puntero sobre un △ para ver su rumbo.",
+    "Sulla mappa dei collegamenti, le stazioni mobili ricevute dal gateway delle posizioni sono ora disegnate come △ con la punta rivolta alla rotta (sul fondo). Le stazioni mobili scelte come siti di trasmissione o ricezione usano lo stesso △. Una stazione senza rotta è un △ tratteggiato rivolto a nord. Passa il puntatore su un △ per vederne la rotta.",
+    "No mapa de ligações, as estações móveis recebidas pelo gateway de posições são agora desenhadas como △ com a ponta virada para o rumo (sobre o fundo). As estações móveis escolhidas como locais de emissão ou receção usam o mesmo △. Uma estação sem rumo é um △ tracejado apontado para norte. Passe o ponteiro sobre um △ para ver o rumo.",
+    "Auf der Verbindungskarte werden über das Positions-Gateway empfangene mobile Stationen jetzt als △ gezeichnet, dessen Spitze in den Kurs über Grund zeigt. Als Sende- oder Empfangsstandort gewählte mobile Stationen verwenden dasselbe △. Eine Station ohne Kurs ist ein gestricheltes △ nach Norden. Mit dem Mauszeiger über einem △ wird der Kurs angezeigt.",
+    "회선 지도에서 위치 게이트웨이로 받은 이동국을 △로 표시하고 꼭짓점을 침로(대지 침로) 방향으로 돌리도록 했습니다. 송수신 지점으로 선택한 이동국도 같은 △로 표시합니다. 침로가 없는 국은 북쪽을 향한 점선 △입니다. 지도의 △에 포인터를 올리면 침로 값을 표시합니다."
+  ]
 };
