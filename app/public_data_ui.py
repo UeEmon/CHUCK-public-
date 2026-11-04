@@ -149,6 +149,23 @@ class PublicDataUI:
                 try:models=briefing_ai.list_models(cfg)
                 except briefing_ai.AIError as error:self.ui_json(502,dict(error=str(error)));return True
                 self.ui_json(200,dict(provider=data['provider'],models=briefing_ai.mark_current(models)));return True
+            if path=='/ui/api/briefing/voices':
+                if data.get('provider') not in briefing_ai.PROVIDERS:raise ValueError('生成AIの種類が不正です')
+                model=data.get('model') or ''
+                if not isinstance(model,str) or len(model)>200:raise ValueError('モデルが不正です')
+                cfg=self.briefing().settings.provider(data['provider'])
+                # As for models: a key typed on the page is used for this one listing only, never stored.
+                typed=data.get('api_key')
+                if typed is not None:
+                    if not isinstance(typed,str) or len(typed)>4096 or not typed.isascii() or not typed.isprintable():raise ValueError('APIキーが不正です')
+                    if typed.strip():cfg['api_key']=typed.strip()
+                try:voices=briefing_ai.list_voices(cfg,model)
+                except briefing_ai.AIError as error:self.ui_json(502,dict(error=str(error)));return True
+                self.ui_json(200,dict(provider=data['provider'],**voices));return True
+            if path=='/ui/api/briefing/unpublish':
+                # Takes a day off CHUCK's space weather tab at once; the run's files stay here.
+                if not self.briefing().unpublish(data.get('date')):self.ui_json(404,dict(error='公開されていません'));return True
+                self.ui_json(200,self.briefing().status());return True
             if path=='/ui/api/briefing/recommend':
                 # Lists the models of every provider that has a key (saved, or typed on the page for this call only) and
                 # fills the steps from them. Nothing is saved: the administrator checks the form and saves it.

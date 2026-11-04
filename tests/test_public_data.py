@@ -156,4 +156,41 @@ class ApiTests(unittest.TestCase):
             with self.assertRaises(public_data.PublicDataError):public_data.download('observed')
 
 
+    def test_published_briefing_reaches_chuck_with_byte_ranges(self):
+        import briefing,server
+        with tempfile.TemporaryDirectory() as root:
+            maker=briefing.Briefing(root)
+            day=maker.root/'published'/'2026-11-03';(day/'subtitles').mkdir(parents=True)
+            (day/'meta.json').write_text(json.dumps({'run_date_utc':'2026-11-03','run_id':'r','subtitles':['ja']}))
+            video=bytes(range(256))*40;(day/'video_en.mp4').write_bytes(video);(day/'subtitles'/'ja.vtt').write_text('WEBVTT\n')
+            chuck=ThreadingHTTPServer(('127.0.0.1',0),server.Handler);threading.Thread(target=chuck.serve_forever,daemon=True).start()
+            self.addCleanup(lambda:(chuck.shutdown(),chuck.server_close()))
+            base=f'http://127.0.0.1:{chuck.server_port}'
+            with patch.object(public_data_server,'BRIEFING',maker),patch.dict(os.environ,{'HF_PUBLIC_DATA_MODE':'api','HF_PUBLIC_DATA_URL':self.url,'HF_PUBLIC_DATA_TOKEN':TOKEN}):
+                auth={'Authorization':'Bearer '+TOKEN}
+                self.assertEqual(self.get('/api/briefing/published')[0],401)
+                status,body,_=self.get('/api/briefing/published',auth)
+                self.assertEqual((status,[i['run_date_utc'] for i in json.loads(body)['items']]),(200,['2026-11-03']))
+                self.assertEqual(self.get('/api/briefing/published/2026-11-03/audio_en.wav',auth)[0],404)
+                status,body,headers=self.get('/api/briefing/published/2026-11-03/video_en.mp4',{**auth,'Range':'bytes=100-199'})
+                self.assertEqual((status,body,headers['Content-Range']),(206,video[100:200],f'bytes 100-199/{len(video)}'))
+                # CHUCK passes the list and the files on, without a token, to any visitor.
+                def visit(path,headers=None):
+                    try:
+                        with urllib.request.urlopen(urllib.request.Request(base+path,headers=headers or {})) as r:return r.status,r.read(),r.headers
+                    except urllib.error.HTTPError as e:return e.code,e.read(),e.headers
+                status,body,_=visit('/api/space-weather/briefing')
+                self.assertEqual((status,json.loads(body)['items'][0]['run_id'],json.loads(body)['available']),(200,'r',True))
+                self.assertNotIn(TOKEN,body.decode())
+                status,body,headers=visit('/api/space-weather/briefing/2026-11-03/video_en.mp4',{'Range':'bytes=-10'})
+                self.assertEqual((status,body,headers['Content-Type']),(206,video[-10:],'video/mp4'))
+                status,body,_=visit('/api/space-weather/briefing/2026-11-03/video_en.mp4')
+                self.assertEqual((status,body),(200,video))
+                self.assertEqual(visit('/api/space-weather/briefing/2026-11-03/subtitles/ja.vtt')[1],b'WEBVTT\n')
+                self.assertEqual(visit('/api/space-weather/briefing/2026-11-03/../settings.json')[0],404)
+                self.assertEqual(visit('/api/space-weather/briefing/2026-11-04/video_ja.mp4')[0],404)
+                os.environ['HF_PUBLIC_DATA_MODE']='file'
+                self.assertEqual(json.loads(visit('/api/space-weather/briefing')[1]),{'items':[],'available':False})
+
+
 if __name__=='__main__':unittest.main()

@@ -14,8 +14,10 @@ Rules this module keeps (see docs/SPACE_WEATHER_BRIEFING.md):
   same tokens and no other digits.
 * Only products whose rights allow it reach a public script, and only products whose rights allow
   external AI are sent to Gemini, OpenAI or Claude. Restricted data never falls back to an external API.
-* Publishing does not exist here. The best result is READY_LOCAL (files kept in the volume).
-  The scheduler is off unless HF_BRIEFING_SCHEDULER_ENABLED=1 and even then only makes local files.
+* Publishing is off unless AUTO_PUBLISH_ENABLED=1. Then a live run that passes every other gate
+  (on time, real data, rights cleared, media valid, budget, review) and was started by the scheduler is copied to published/, which the
+  fetcher's Bearer API serves to CHUCK for its space weather tab. Nothing is sent to any other service
+  (PUBLIC_DELIVERY stays off). The scheduler is off unless HF_BRIEFING_SCHEDULER_ENABLED=1.
 * Token counts and costs the provider reported are kept apart from estimates; a mock run reports
   api_calls=0 and null metered values.
 """
@@ -72,6 +74,7 @@ WORDS_PER_SECOND = 2.5
 CORE_TOKENS = ('date', 'r_now', 's_now', 'g_now', 'kp_max24', 'd1_kp', 'd1_r12', 'd1_s1')
 PROMPT_VERSION = 'briefing-2026-11-03.1'
 KEEP_DAYS = 14
+PUBLISHED_KEEP_DAYS = 30
 OBSERVATION_HOURS = 24
 FREEZE = timedelta(hours=2, minutes=30)
 DEADLINE = timedelta(hours=3)
@@ -98,9 +101,9 @@ def flag(name):
 
 
 def release_flags():
-    """Publishing switches. Publishing is not implemented, so they are reported but can never publish."""
+    """Publishing switches. Auto publishing means CHUCK's own page only; delivery to other services does not exist."""
     return {'scheduler_enabled': flag('HF_BRIEFING_SCHEDULER_ENABLED'),
-            'auto_publish_enabled': False, 'public_delivery_enabled': False,
+            'auto_publish_enabled': flag('AUTO_PUBLISH_ENABLED'), 'public_delivery_enabled': False,
             'auto_publish_requested': flag('AUTO_PUBLISH_ENABLED'), 'public_delivery_requested': flag('PUBLIC_DELIVERY_ENABLED')}
 
 
@@ -125,7 +128,7 @@ CATALOG = {
                     'required': True, 'expected_frequency': 'PT1H', 'max_age_seconds': 3 * 3600, 'license_id': 'noaa-nws-public',
                     'rights_evidence_url': NOAA_TERMS, 'public': True, 'external_ai': True,
                     'attribution': 'Source: NOAA / NWS Space Weather Prediction Center (SWPC).',
-                    'cutoff_rule': 'latest forecast fetched by the freeze, predicted rows on each of the run day and the next two days',
+                    'cutoff_rule': 'latest forecast fetched by the freeze, forecast rows after the freeze on each of the run day and the next two days',
                     'fallback_policy': 'HOLD'},
     'drap': {'label': 'NOAA SWPC D-RAP global absorption', 'source': 'NOAA SWPC', 'url': DRAP_URL, 'required': False,
              'expected_frequency': 'PT5M', 'max_age_seconds': 3600, 'license_id': 'noaa-nws-public', 'rights_evidence_url': NOAA_TERMS,
@@ -255,7 +258,9 @@ def mock_files(run_date, frozen_at):
     forecast = [['time_tag', 'kp', 'observed', 'noaa_scale']]
     for i in range(1, 25):
         moment = start + timedelta(hours=3 * i)
-        forecast.append([moment.strftime('%Y-%m-%d %H:%M:%S'), '%.2f' % [2.67, 3.33, 4.0, 5.33, 4.67, 3.0, 2.33, 3.67][i % 8], 'predicted', None])
+        # As NOAA does, the rest of the current day is 'estimated' and only later days 'predicted'.
+        kind = 'estimated' if moment.date() == start.date() else 'predicted'
+        forecast.append([moment.strftime('%Y-%m-%d %H:%M:%S'), '%.2f' % [2.67, 3.33, 4.0, 5.33, 4.67, 3.0, 2.33, 3.67][i % 8], kind, None])
     lons = list(range(-180, 181, 30))
     drap = ['# Product Valid At : ' + (frozen_at - timedelta(minutes=5)).strftime('%Y-%m-%d %H:%M') + ' UTC', '  ' + ' '.join(str(x) for x in lons)]
     for lat in range(90, -91, -30):
@@ -323,9 +328,11 @@ def collect(files, run_date, frozen_at, rights_table):
     fresh = complete and latest is not None and (frozen_at - datetime.fromisoformat(latest['time'])).total_seconds() <= CATALOG['kp']['max_age_seconds']
     product('kp', complete, fresh, None if complete else f'{len(window)} of 8 intervals in the window',
             times={'window_start': utc(s['window_start']), 'window_end': utc(s['window_end']), 'latest': latest and latest['time']})
-    predicted = {}
+    # The outlook: the forecast product's rows still ahead of the freeze. NOAA marks the rest of the current
+    # day 'estimated' and only later days 'predicted', so both count once they lie in the future.
+    predicted, frozen_text = {}, frozen_at.isoformat()
     for r in kp['rows']:
-        if r['kind'] == 'predicted':
+        if r['kind'] in ('predicted', 'estimated') and r['time'] >= frozen_text:
             predicted.setdefault(r['time'][:10], []).append(r)
     outlook_dates = [(run_date + timedelta(days=n)).isoformat() for n in range(3)]
     complete = all(predicted.get(d) for d in outlook_dates)
@@ -385,7 +392,7 @@ def collect(files, run_date, frozen_at, rights_table):
     if products['kp-forecast']['used']:
         for n, d in enumerate(outlook_dates, 1):
             top = max(predicted[d], key=lambda r: r['kp'])
-            put(f'd{n}_kp', top['kp'], 'forecast', 'kp-forecast', f'forecast maximum Kp on {d}', 'kp')
+            put(f'd{n}_kp', top['kp'], 'forecast', 'kp-forecast', f'forecast maximum Kp on {d}' + (' (rest of the day after the freeze)' if n == 1 else ''), 'kp')
             put(f'd{n}_g', kp_storm_level(top['kp']), 'forecast', 'kp-forecast', f'G level implied by the forecast maximum Kp on {d}', 'scale')
             values.setdefault(f'd{n}_date', {'value': d, 'kind': 'date', 'source': 'kp-forecast', 'meaning': f'date of outlook day {n}',
                                              'unit': 'date', 'time': None})
@@ -1123,14 +1130,15 @@ class Briefing:
                 'catalog': {k: {f: v[f] for f in ('label', 'required', 'url', 'license_id', 'rights_evidence_url', 'public', 'external_ai', 'cutoff_rule')}
                             for k, v in CATALOG.items()},
                 'rights': rights(self.settings.read()['rights']), 'not_connected': NOT_CONNECTED,
-                'latest': latest, 'history': self.history()}
+                'latest': latest, 'history': self.history(), 'published': self.published()}
 
     # scheduling: off unless HF_BRIEFING_SCHEDULER_ENABLED=1, and then only local files
     def due(self, now=None):
         now = now or self.clock()
         if not release_flags()['scheduler_enabled'] or self.running or phase(now, now.date()) != 'FREEZE_WINDOW':
             return False
-        return self.scheduled.get(now.date().isoformat(), 0) < 2
+        # A day already published is not made again (the second try is for a day that held or failed).
+        return self.scheduled.get(now.date().isoformat(), 0) < 2 and not (self.root / 'published' / now.date().isoformat()).is_dir()
 
     def start(self, mode='live', run_date=None, scheduled=False):
         """Start one run in the background; False when a run is already going."""
@@ -1153,7 +1161,7 @@ class Briefing:
         try:
             if scheduled and self.refresh:
                 self.refresh()
-            self.run(mode, run_date)
+            self.run(mode, run_date, scheduled=scheduled)
             self.last_error = None
         except BriefingError as error:
             self.last_error = {'at': utc(self.clock()), 'error': str(error)}
@@ -1163,8 +1171,8 @@ class Briefing:
         finally:
             self.running = None
 
-    def run(self, mode, run_date, now=None, replay_of=None):
-        """One complete run. Returns the quality report; never publishes anything."""
+    def run(self, mode, run_date, now=None, replay_of=None, scheduled=False):
+        """One complete run. Returns the quality report; publishes only as release_flags() and the gates allow."""
         started = time.monotonic()
         day = Date.fromisoformat(run_date)
         timing = schedule(day)
@@ -1275,15 +1283,25 @@ class Briefing:
         gate('REVIEW_OK', None if review is None else review.get('verdict') == 'pass', review and (review.get('issues') or None))
         gate('SCHEDULE_OK', on_time, None if on_time else 'test run outside 02:30-03:00 UTC on the run date')
         gate('PRODUCTION_INPUT', not mock, 'mock data' if mock else None)
-        gate('RELEASE_POLICY', False, 'publishing is disabled in this build; the result stays local')
         finished = self.clock()
         if not mock and finished >= timing['deadline'] and on_time:
             gates['SCHEDULE_OK'] = {'passed': False, 'detail': 'production did not finish by 03:00 UTC'}
-        holds = [name for name in GATE_ORDER if name != 'RELEASE_POLICY' and gates[name]['passed'] is False]
+        holds = [name for name in GATE_ORDER[:-1] if gates[name]['passed'] is False]
+        # Only the scheduler's own live run publishes; a run started on the admin page stays local.
+        publish = release_flags()['auto_publish_enabled'] and mode == 'live' and scheduled and not holds
+        gate('RELEASE_POLICY', publish, None if publish else 'AUTO_PUBLISH_ENABLED is off; the result stays local'
+             if not release_flags()['auto_publish_enabled'] else 'only the scheduled live run that passes every gate is published')
         release = 'HOLD' if holds else 'READY_LOCAL'
+        published = None
+        if publish:
+            try:
+                published = self.publish(run_date, run_id, out, products, media.get('duration_seconds'))
+                release = 'PUBLISHED'
+            except (BriefingError, OSError) as error:
+                gates['RELEASE_POLICY'] = {'passed': False, 'detail': 'publishing failed: ' + str(error)[:300]}
         note(release)
         qa = {'run_date_utc': run_date, 'run_id': run_id, 'mode': mode, 'mock': mock, 'idempotency_key': 'space-weather-briefing/' + run_date,
-              'release_state': release, 'hold_reasons': holds, 'published': False, 'flags': release_flags(),
+              'release_state': release, 'hold_reasons': holds, 'published': published is not None, 'published_at': published, 'flags': release_flags(),
               'quality_gates': {name: gates[name] for name in GATE_ORDER}, 'frozen_at': utc(frozen_at), 'finished_at': utc(finished),
               'elapsed_seconds': round(time.monotonic() - started, 2), 'media': media,
               'files': sorted(str(p.relative_to(out)) for p in out.rglob('*') if p.is_file() and 'raw' not in p.parts),
@@ -1300,6 +1318,62 @@ class Briefing:
         self.prune()
         return qa
 
+    # publishing: CHUCK's space weather tab only, through the fetcher's Bearer API
+    def publish(self, run_date, run_id, out, products, total):
+        """Copies a passed run to published/<date>: one web MP4 per voice (video and audio copied, not re-encoded),
+        the WebVTT subtitles and a description. Replaces the day's earlier release. Returns the time published."""
+        base = self.root / 'published'
+        tmp, target, old = base / (run_date + '.new'), base / run_date, base / (run_date + '.old')
+        for path in (tmp, old):
+            shutil.rmtree(path, ignore_errors=True)
+        (tmp / 'subtitles').mkdir(parents=True)
+        video = out / f'space_weather_{run_date}.mp4'
+        for i, lang in enumerate(('en', 'ja')):
+            ffmpeg('-i', str(video), '-map', '0:v:0', '-map', f'0:a:{i}', '-c', 'copy', '-movflags', '+faststart', str(tmp / f'video_{lang}.mp4'))
+        for lang in LANGUAGES:
+            shutil.copyfile(out / 'subtitles' / (lang + '.vtt'), tmp / 'subtitles' / (lang + '.vtt'))
+        now = utc(self.clock())
+        meta = {'title': 'CHUCK SPACE WEATHER BRIEF', 'run_date_utc': run_date, 'run_id': run_id, 'published_at': now,
+                'duration_seconds': total, 'audio': ['en', 'ja'], 'subtitles': list(LANGUAGES),
+                'observation_window': {'start': utc(schedule(Date.fromisoformat(run_date))['window_start']),
+                                       'end': utc(schedule(Date.fromisoformat(run_date))['window_end'])},
+                'sources': [{'label': p['label'], 'url': p['url'], 'attribution': CATALOG[k]['attribution'], 'license_id': p['license_id']}
+                            for k, p in products.items() if p['used']],
+                'generated': 'Narration and translations are written by generative AI; every number is placed by code from the listed sources.'}
+        (tmp / 'meta.json').write_text(json.dumps(meta, ensure_ascii=False, indent=1))
+        if target.exists():
+            target.rename(old)
+        tmp.rename(target)
+        shutil.rmtree(old, ignore_errors=True)
+        return now
+
+    def published(self):
+        """Releases, newest first."""
+        base, items = self.root / 'published', []
+        for day in sorted(base.glob('????-??-??'), reverse=True) if base.exists() else []:
+            try:
+                items.append(json.loads((day / 'meta.json').read_text()))
+            except (OSError, ValueError):
+                continue
+        return items
+
+    def published_file(self, run_date, name):
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', run_date or '') or not re.fullmatch(
+                r'meta\.json|video_(en|ja)\.mp4|subtitles/(' + '|'.join(LANGUAGES) + r')\.vtt', name or ''):
+            return None
+        path = self.root / 'published' / run_date / name
+        return path if path.is_file() else None
+
+    def unpublish(self, run_date):
+        """Takes a day's release off CHUCK's page; the run itself stays in runs/."""
+        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', run_date or ''):
+            raise ValueError('日付が不正です')
+        target = self.root / 'published' / run_date
+        if not target.is_dir():
+            return False
+        shutil.rmtree(target)
+        return True
+
     def latest_run_dir(self, run_date, live_only=False):
         day = self.root / 'runs' / run_date
         for run in sorted(day.glob('*'), reverse=True) if day.exists() else []:
@@ -1310,6 +1384,9 @@ class Briefing:
     def prune(self):
         days = sorted((self.root / 'runs').glob('*')) if (self.root / 'runs').exists() else []
         for old in days[:-KEEP_DAYS]:
+            shutil.rmtree(old, ignore_errors=True)
+        released = sorted((self.root / 'published').glob('????-??-??')) if (self.root / 'published').exists() else []
+        for old in released[:-PUBLISHED_KEEP_DAYS]:
             shutil.rmtree(old, ignore_errors=True)
         cache = self.root / 'cache'
         if cache.exists():

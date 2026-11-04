@@ -619,6 +619,49 @@ def recommend(available, priority, prefer=None):
     return {'steps': steps, 'unfilled': unfilled}
 
 
+# ---- voices -----------------------------------------------------------------------------------------
+DOCUMENTED_VOICES = json.loads((Path(__file__).parent / 'briefing_voices.json').read_text(encoding='utf-8'))
+GEMINI_VOICES = 'https://ai.google.dev/api/voices'
+
+
+def list_voices(cfg, model=''):
+    """Voices a speech step can name: Gemini's own voice list (prebuilt voices, the kind speak() uses), or for
+    OpenAI the documented list (its API has none). Returns {'voices': [{'id', 'label'}], 'source', 'source_url', 'checked_on'}."""
+    p = cfg['provider']
+    if p not in SPEECH_PROVIDERS:
+        raise AIError('この生成AIには音声合成がありません')
+    if p == 'openai':
+        doc = DOCUMENTED_VOICES['openai']
+        names = doc['models'].get(model.rsplit('/', 1)[-1], doc['voices'])
+        return {'voices': [{'id': v, 'label': v} for v in names], 'source': 'document', 'source_url': doc['source_url'], 'checked_on': doc['checked_on']}
+    if p == 'local':
+        return {'voices': [], 'source': 'none', 'source_url': None, 'checked_on': None}
+    if not cfg['api_key']:
+        raise AIError('APIキーを設定してください')
+    voices, token = [], None
+    for _ in range(20):
+        url = 'https://generativelanguage.googleapis.com/v1beta/voices?' + urlencode(dict(page_size=1000, **({'page_token': token} if token else {})))
+        raw, _ = post(cfg, url, auth(cfg), None, timeout=30, method='GET')
+        try:
+            body = json.loads(raw)
+            rows = body.get('voices', [])
+            if not isinstance(rows, list):
+                raise ValueError
+        except (ValueError, AttributeError):
+            raise AIError('生成AIの応答を読み取れませんでした') from None
+        for row in rows:
+            if not isinstance(row, dict) or row.get('type', 'prebuilt') != 'prebuilt':
+                continue
+            vid = row.get('id')
+            if isinstance(vid, str) and VOICE.fullmatch(vid):
+                label = row.get('display_name', vid)
+                voices.append({'id': vid, 'label': label if isinstance(label, str) and len(label) <= 300 else vid})
+        token = body.get('next_page_token') or None
+        if not token:
+            break
+    return {'voices': sorted({v['id']: v for v in voices}.values(), key=lambda v: v['id']), 'source': 'api', 'source_url': GEMINI_VOICES, 'checked_on': None}
+
+
 def list_models(cfg):
     """The provider's own model list: the way to confirm a model ID exists. Also serves as the connection test."""
     p = cfg['provider']

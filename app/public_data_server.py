@@ -18,6 +18,7 @@ import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import os
+import re
 from pathlib import Path
 import secrets
 import sys
@@ -196,6 +197,43 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def send_file(self, path):
+        """A published file, with byte ranges so that a browser can seek in the video."""
+        size = path.stat().st_size
+        kind = {'.mp4': 'video/mp4', '.vtt': 'text/vtt; charset=utf-8', '.json': 'application/json; charset=utf-8'}[path.suffix]
+        start, end, code = 0, size - 1, 200
+        match = re.fullmatch(r'bytes=(\d*)-(\d*)', self.headers.get('Range', '').strip())
+        if match and size and (match.group(1) or match.group(2)):
+            if match.group(1):
+                start, end = int(match.group(1)), min(int(match.group(2) or size - 1), size - 1)
+            else:
+                start = max(0, size - int(match.group(2)))
+            if start > end:
+                self.send_response(416)
+                self.send_header('Content-Range', f'bytes */{size}')
+                self.send_header('Content-Length', '0')
+                self.end_headers()
+                return
+            code = 206
+        self.send_response(code)
+        self.send_header('Content-Type', kind)
+        self.send_header('Content-Length', str(end - start + 1))
+        self.send_header('Accept-Ranges', 'bytes')
+        self.send_header('Cache-Control', 'no-cache')
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        if code == 206:
+            self.send_header('Content-Range', f'bytes {start}-{end}/{size}')
+        self.end_headers()
+        with path.open('rb') as f:
+            f.seek(start)
+            left = end - start + 1
+            while left > 0:
+                chunk = f.read(min(1 << 16, left))
+                if not chunk:
+                    break
+                self.wfile.write(chunk)
+                left -= len(chunk)
+
     def json(self, code, obj):
         self.send(code, json.dumps(obj, ensure_ascii=False, allow_nan=False).encode(), 'application/json; charset=utf-8',
                   [('WWW-Authenticate', 'Bearer')] if code == 401 else [])
@@ -224,6 +262,19 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
                 if self.authorize():
                     self.send(200, FETCHER.bundle(), 'application/json', [('Content-Disposition', f'attachment; filename="{BUNDLE_FORMAT}.json"')])
                 return
+            if url.path == '/api/briefing/published':
+                # Released briefings for CHUCK's space weather tab (the only place they are published).
+                if self.authorize():
+                    self.json(200, {'items': BRIEFING.published()})
+                return
+            if url.path.startswith('/api/briefing/published/'):
+                if not self.authorize():
+                    return
+                run_date, _, name = url.path[len('/api/briefing/published/'):].partition('/')
+                path = BRIEFING.published_file(run_date, name)
+                if path is None:
+                    return self.json(404, {'error': '見つかりません'})
+                return self.send_file(path)
             if self.ui_get(url.path):
                 return
             if not url.path.startswith('/api/data/'):

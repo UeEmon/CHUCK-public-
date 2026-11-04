@@ -177,10 +177,37 @@ function renderSwvSources(){
  $('swv-note').textContent=o?.note||'';
 }
 
-function renderSpaceWeatherView(){renderSwvScales();renderSwvKp();renderSwvNict();renderSwvDrap();renderSwvForecast();renderSwvCycle();renderSwvMonths();renderSwvSources();}
+// CHUCK SPACE WEATHER BRIEF: the daily video the fetcher published, with its two voices and eight subtitle languages.
+const SWV_BRIEF_LANGS=['ja','en','fr','es','it','pt','de','ko'],SWV_BRIEF_NAMES={ja:'日本語',en:'English',fr:'Français',es:'Español',it:'Italiano',pt:'Português',de:'Deutsch',ko:'한국어'};
+function swvBriefUrl(item,name){return '/api/space-weather/briefing/'+item.run_date_utc+'/'+name;}
+function renderSwvBrief(){
+ const items=swv.brief?.items||[],panel=$('swv-brief-panel');panel.hidden=!items.length;if(!items.length)return;
+ const dates=$('swv-brief-date'),chosen=dates.value;
+ dates.replaceChildren(...items.map(i=>{const o=cell('option',i.run_date_utc);o.value=i.run_date_utc;return o;}));
+ dates.value=items.some(i=>i.run_date_utc===chosen)?chosen:items[0].run_date_utc;
+ if(dates.value!==swv.briefShown)playSwvBrief(false);
+}
+function playSwvBrief(keepTime=true){
+ const item=(swv.brief?.items||[]).find(i=>i.run_date_utc===$('swv-brief-date').value);if(!item)return;
+ const video=$('swv-brief-video'),at=keepTime?video.currentTime:0,playing=keepTime&&!video.paused,ui=document.documentElement.lang||'ja';
+ const audio=$('swv-brief-audio');if(!swv.briefAudioChosen)audio.value=ui==='ja'?'ja':'en';
+ const subtitle=[...video.textTracks].find(t=>t.mode==='showing')?.language||(SWV_BRIEF_LANGS.includes(ui)?ui:'en');
+ video.replaceChildren();video.src=swvBriefUrl(item,'video_'+audio.value+'.mp4');
+ for(const lang of item.subtitles||[]){const t=document.createElement('track');t.kind='subtitles';t.srclang=lang;t.label=SWV_BRIEF_NAMES[lang]||lang;t.src=swvBriefUrl(item,'subtitles/'+lang+'.vtt');if(lang===subtitle)t.default=true;video.append(t);}
+ video.addEventListener('loadedmetadata',()=>{if(at)video.currentTime=at;if(playing)video.play().catch(()=>{});},{once:true});
+ swv.briefShown=item.run_date_utc;
+ const box=$('swv-brief-sources');box.replaceChildren(document.createTextNode('出典: '));
+ (item.sources||[]).forEach((src,n)=>{const a=cell('a',src.label);a.href=src.url;a.target='_blank';a.rel='noopener noreferrer';box.append(...(n?[document.createTextNode(' · ')]:[]),a);});
+ box.append(document.createTextNode(' · 公開 '+observedTime(item.published_at)));
+}
+$('swv-brief-date').onchange=()=>playSwvBrief(false);
+$('swv-brief-audio').onchange=()=>{swv.briefAudioChosen=true;playSwvBrief(true);};
+
+function renderSpaceWeatherView(){renderSwvBrief();renderSwvScales();renderSwvKp();renderSwvNict();renderSwvDrap();renderSwvForecast();renderSwvCycle();renderSwvMonths();renderSwvSources();}
 async function loadSpaceWeatherView(){
  $('swv-status').textContent='読み込み中…';
- const [overview,observations]=await Promise.allSettled([api('/api/space-weather/overview'),api('/api/observations')]);
+ const [overview,observations,brief]=await Promise.allSettled([api('/api/space-weather/overview'),api('/api/observations'),api('/api/space-weather/briefing')]);
+ if(brief.status==='fulfilled')swv.brief=brief.value;
  if(overview.status==='fulfilled')swv.overview=overview.value;
  if(observations.status==='fulfilled')swv.observations=observations.value;
  const errors=[overview,observations].filter(r=>r.status==='rejected').map(r=>r.reason.message);

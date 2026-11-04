@@ -87,8 +87,10 @@ services:
       HF_PUBLIC_DATA_UI_SECURE_COOKIE: "${HF_PUBLIC_DATA_UI_SECURE_COOKIE:-0}"
       HF_GIRO_ENABLED: "${HF_GIRO_ENABLED:-0}"
       # Space weather daily briefing (docs/SPACE_WEATHER_BRIEFING.md). Keys can also be saved on the admin page.
-      # The scheduler stays off unless set to 1, and even then it only makes local files; there is no publishing.
+      # The scheduler stays off unless set to 1. With AUTO_PUBLISH_ENABLED=1 a scheduled run that passes every
+      # check is shown on CHUCK's space weather tab; nothing is sent to any other service.
       HF_BRIEFING_SCHEDULER_ENABLED: "${HF_BRIEFING_SCHEDULER_ENABLED:-0}"
+      AUTO_PUBLISH_ENABLED: "${AUTO_PUBLISH_ENABLED:-0}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
       ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
       GEMINI_API_KEY: "${GEMINI_API_KEY:-}"

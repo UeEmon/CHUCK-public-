@@ -9,6 +9,7 @@
 <p id="briefing-flags" class="briefing-flags"></p><p id="briefing-state" role="status"></p>
 <form id="briefing-run" class="grid"><label>対象日（UTC）<input name="date" type="date" required></label><label>実行方式<select name="mode"><option value="mock">Mock（API・ネット不要）</option><option value="live">実データと生成AI</option><option value="replay">前回の実データで再現</option></select></label><button type="submit">作成する（公開しない）</button></form>
 <div id="briefing-result" hidden><h3>最新の結果</h3><p id="briefing-summary"></p><div id="briefing-gates" class="table-wrap"></div><div id="briefing-cost" class="table-wrap"></div><video id="briefing-video" controls preload="none" hidden></video><div id="briefing-files" class="briefing-files"></div></div>
+<h3>CHUCKに公開中</h3><div id="briefing-published" class="table-wrap"></div><p class="hint">公開されるのは、自動公開（AUTO_PUBLISH_ENABLED=1）が有効なときに、定時の実データの実行が全検査に合格した動画だけです。この画面から作成した動画は公開しません。取り下げるとCHUCKの画面からすぐ消え、実行のファイルはここに残ります。</p>
 <div id="briefing-history" class="table-wrap"></div>
 <form id="briefing-settings">
 <h3>生成AIのAPI</h3><div id="briefing-providers" class="briefing-providers"></div>
@@ -17,6 +18,6 @@
 <div class="grid"><label>1回あたりの予算（米ドル、空欄で上限なし）<input name="budget" inputmode="decimal" autocomplete="off"></label><label>動画の長さ<select name="video_length"><option value="short">短縮版（約90秒）</option><option value="standard">標準版（約5分）</option></select></label><label>解像度<select name="resolution"><option value="1280x720">1280×720</option><option value="1920x1080">1920×1080</option></select></label></div>
 <h3>データの権利</h3><div id="briefing-rights" class="table-wrap"></div>
 <button type="submit">設定を保存</button></form>
-<p class="hint">00:00 UTCまでの24時間を観測期間とし、02:30 UTCまで取得・再試行したデータで原稿を作り、03:00 UTCまでに英語表記の動画1本（英語・日本語の音声と8言語の字幕）を作ります。数値は生成AIに書かせず、確認済みの値をこのコンテナが各言語へ埋め込みます。公開・配信の機能はなく、作ったファイルはこのコンテナのデータ領域にだけ保存します。定時の自動作成は既定で無効です（HF_BRIEFING_SCHEDULER_ENABLED）。</p>
+<p class="hint">00:00 UTCまでの24時間を観測期間とし、02:30 UTCまで取得・再試行したデータで原稿を作り、03:00 UTCまでに英語表記の動画1本（英語・日本語の音声と8言語の字幕）を作ります。数値は生成AIに書かせず、確認済みの値をこのコンテナが各言語へ埋め込みます。公開先はCHUCKの宇宙天気タブだけで、他のサービスへは配信しません。定時の自動作成（HF_BRIEFING_SCHEDULER_ENABLED）と自動公開（AUTO_PUBLISH_ENABLED）は、どちらも既定で無効です。</p>
 <p class="hint">APIキーはこのコンテナのデータ領域（パーミッション0600）に保存し、画面にもログにも表示しません。空欄のまま保存すると、保存済みのキー（なければ環境変数のキー）を使い続けます。モデル名・声・料金は固定せず、各社の一覧と料金表で確認して入力してください。Claudeには音声合成がないため、音声の工程ではGemini・OpenAI・ローカルLLM（OpenAI互換）から選びます。外部の生成AIへは「外部AI可」のデータだけを送り、それ以外はローカルLLMの工程にだけ渡します。</p></section></div>
 </main><script src="public-data.js"></script><script src="briefing.js"></script><script src="i18n-messages.js"></script><script src="briefing-messages.js"></script><script src="i18n.js"></script></body></html>

@@ -6,6 +6,7 @@ import io
 import json
 import mimetypes
 import os
+import re
 import secrets
 from pathlib import Path
 import sqlite3
@@ -38,6 +39,7 @@ DATA.mkdir(parents=True,exist_ok=True)
 DB=DATA/'predictions.sqlite3'
 ENGINE=Engine()
 SPACE_WEATHER=SpaceWeather(DATA/'space-weather')
+BRIEFING_FILE=re.compile(r'\d{4}-\d{2}-\d{2}/(meta\.json|video_(en|ja)\.mp4|subtitles/(ja|en|fr|es|it|pt|de|ko)\.vtt)')
 OBSERVATIONS=Observations(DATA/'observations',public_data.giro_enabled)
 EFFECTIVE_SSN=EffectiveSSN(ENGINE,OBSERVATIONS)
 RUN_LOCK=threading.Lock()
@@ -231,6 +233,21 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
     def json(self,code,obj): self.send(code,json.dumps(obj,ensure_ascii=False,allow_nan=False))
+    def briefing_file(self,rest):
+        # Passed on from the fetcher piece by piece, with byte ranges so that the video can be sought.
+        if public_data.mode()!='api' or not BRIEFING_FILE.fullmatch(rest):return self.json(404,{'error':'見つかりません'})
+        wanted=self.headers.get('Range','')
+        response=public_data.open_stream('/api/briefing/published/'+rest,{'Range':wanted} if re.fullmatch(r'bytes=\d*-\d*',wanted) else {})
+        if isinstance(response,int):return self.json(404 if response==404 else 416 if response==416 else 502,{'error':'見つかりません' if response==404 else '取得用コンテナから取得できませんでした'})
+        with response:
+            self.send_response(response.status)
+            self.send_header('Content-Type',{'.mp4':'video/mp4','.vtt':'text/vtt; charset=utf-8','.json':'application/json; charset=utf-8'}[rest[rest.rindex('.'):]])
+            for name in ('Content-Length','Content-Range','Accept-Ranges'):
+                if response.headers.get(name):self.send_header(name,response.headers[name])
+            self.send_header('X-Content-Type-Options','nosniff')
+            self.send_header('Cache-Control','public, max-age=300')
+            self.end_headers()
+            while chunk:=response.read(1<<16):self.wfile.write(chunk)
     def do_GET(self):
         path=urlparse(self.path).path
         try:
@@ -272,6 +289,14 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json(200,public_data.link_status())
             if path=='/api/space-weather/overview':
                 return self.json(200,space_weather_view.overview(SPACE_WEATHER))
+            if path=='/api/space-weather/briefing':
+                # CHUCK SPACE WEATHER BRIEF: the daily videos the fetcher released (it is the only place they are published).
+                if public_data.mode()!='api':return self.json(200,dict(items=[],available=False))
+                try:raw,_=public_data.request('/api/briefing/published')
+                except public_data.PublicDataError as e:return self.json(200,dict(items=[],available=False,error=str(e)))
+                return self.json(200,dict(items=json.loads(raw).get('items',[])[:14],available=True))
+            if path.startswith('/api/space-weather/briefing/'):
+                return self.briefing_file(path[len('/api/space-weather/briefing/'):])
             if path=='/api/public-data/export':
                 # The bundle an administrator carries from the public site to an on-premises CHUCK.
                 raw,_=public_data.request('/api/export')

@@ -100,9 +100,10 @@ class TimetableTests(unittest.TestCase):
         self.assertEqual((flags['scheduler_enabled'], flags['auto_publish_enabled'], flags['public_delivery_enabled']), (False, False, False))
         with patch.dict(os.environ, {'AUTO_PUBLISH_ENABLED': 'true', 'PUBLIC_DELIVERY_ENABLED': '1'}):
             flags = b.release_flags()
-            # A request in the environment is reported, but there is nothing that could publish.
-            self.assertFalse(flags['auto_publish_enabled'] or flags['public_delivery_enabled'])
-            self.assertTrue(flags['auto_publish_requested'])
+            # Auto publishing means CHUCK's own page; delivery to other services does not exist.
+            self.assertTrue(flags['auto_publish_enabled'])
+            self.assertFalse(flags['public_delivery_enabled'])
+            self.assertTrue(flags['public_delivery_requested'])
         with tempfile.TemporaryDirectory() as d:
             maker = b.Briefing(d, clock=lambda: datetime(2026, 11, 3, 2, 35, tzinfo=timezone.utc))
             self.assertFalse(maker.due())
@@ -355,6 +356,45 @@ class RunTests(unittest.TestCase):
             replay = b.Briefing(self.tmp.name, clock=lambda: FREEZE + timedelta(seconds=10)).run('replay', '2026-11-03')
         self.assertEqual(replay['quality_gates']['DATA_COMPLETE']['passed'], True)
 
+    @unittest.skipUnless(FFMPEG, 'ffmpeg is needed')
+    def test_auto_publish_copies_a_passed_live_run_for_chuck(self):
+        fetched_files(self.tmp.name)
+        maker = b.Briefing(self.tmp.name, clock=lambda: FREEZE)
+        configure(maker, 'gemini')
+        fake = FakeAI()
+        with patch.object(ai, 'generate_json', fake.generate_json), patch.object(ai, 'speak', fake.speak), \
+                patch.dict(os.environ, {'AUTO_PUBLISH_ENABLED': '1', 'HF_BRIEFING_SCHEDULER_ENABLED': '1'}):
+            manual = maker.run('live', '2026-11-03')
+            self.assertEqual((manual['release_state'], manual['published']), ('READY_LOCAL', False))  # a run started by hand stays local
+            self.assertEqual(maker.published(), [])
+            qa = b.Briefing(self.tmp.name, clock=lambda: FREEZE + timedelta(seconds=2)).run('live', '2026-11-03', scheduled=True)
+            self.assertEqual(qa['release_state'], 'PUBLISHED', qa['quality_gates'])
+            self.assertTrue(qa['published'] and qa['quality_gates']['RELEASE_POLICY']['passed'])
+            # A published day is not made again by the scheduler.
+            self.assertFalse(b.Briefing(self.tmp.name, clock=lambda: datetime(2026, 11, 3, 2, 45, tzinfo=timezone.utc)).due())
+            # Mock and replay runs are never published, even with publishing on.
+            mock = b.Briefing(self.tmp.name, clock=lambda: FREEZE + timedelta(seconds=20)).run('mock', '2026-11-04')
+            self.assertEqual(mock['release_state'], 'HOLD')
+        [meta] = maker.published()
+        self.assertEqual((meta['run_date_utc'], meta['run_id'], meta['audio'], meta['subtitles']), ('2026-11-03', qa['run_id'], ['en', 'ja'], list(b.LANGUAGES)))
+        self.assertTrue(meta['sources'] and all(src['url'].startswith('https://') for src in meta['sources']))
+        self.assertNotIn('nict', json.dumps(meta).lower())
+        for lang, code in (('en', 'eng'), ('ja', 'jpn')):
+            mp4 = maker.published_file('2026-11-03', f'video_{lang}.mp4')
+            streams = json.loads(subprocess.run(['ffprobe', '-v', 'error', '-show_streams', '-of', 'json', str(mp4)], check=True, capture_output=True).stdout)['streams']
+            self.assertEqual([(st['codec_type'], (st.get('tags') or {}).get('language')) for st in streams if st['codec_type'] != 'video'], [('audio', code)])
+        self.assertIsNotNone(maker.published_file('2026-11-03', 'subtitles/ko.vtt'))
+        self.assertIsNone(maker.published_file('2026-11-03', 'subtitles/../meta.json'))
+        self.assertIsNone(maker.published_file('2026-11-03', 'audio_en.wav'))
+        for path in (maker.root / 'published').rglob('*'):
+            if path.is_file():
+                self.assertNotIn(SECRET.encode(), path.read_bytes(), path)
+        self.assertTrue(maker.unpublish('2026-11-03'))
+        self.assertEqual(maker.published(), [])
+        self.assertFalse(maker.unpublish('2026-11-03'))
+        with self.assertRaises(ValueError):
+            maker.unpublish('../x')
+
     def test_hold_without_required_data_calls_no_ai(self):
         fetched_files(self.tmp.name, drop=('kp-forecast',))
         maker = b.Briefing(self.tmp.name, clock=lambda: FREEZE)
@@ -467,6 +507,13 @@ class AdminPageTests(unittest.TestCase):
         self.assertNotIn('typed-gemini-456', json.dumps(body))
         settings = self.request('/ui/api/briefing', cookie=cookie)[1]['settings']
         self.assertEqual(settings['steps']['tts_ja']['model'], '')
+        # Voices: listed with the saved or typed key; the key never comes back.
+        with patch.object(ai, 'list_voices', lambda cfg, model='': {'voices': [{'id': 'v-' + cfg['api_key'][:3], 'label': model}], 'source': 'api',
+                                                                    'source_url': None, 'checked_on': None}):
+            status, body = self.request('/ui/api/briefing/voices', {'provider': 'gemini', 'model': 'm', 'api_key': 'typed-voice-789'}, cookie=cookie)
+            self.assertEqual((status, body['voices']), (200, [{'id': 'v-typ', 'label': 'm'}]))
+            self.assertNotIn('typed-voice-789', json.dumps(body))
+            self.assertEqual(self.request('/ui/api/briefing/voices', {'provider': 'gemini', 'model': 5}, cookie=cookie)[0], 400)
         self.assertNotIn('typed-gemini-456', json.dumps(settings))
 
 
@@ -501,6 +548,27 @@ class ModelChoiceTests(unittest.TestCase):
         self.assertEqual(result['unfilled'], ['tts_en', 'tts_ja'])
         self.assertEqual(result['steps']['review'], result['steps']['script'])
         self.assertEqual(ai.recommend({}, 'cost'), {'steps': {}, 'unfilled': list(ai.STEPS)})
+
+    def test_voices_come_from_gemini_api_or_openai_documentation(self):
+        pages = [{'voices': [{'id': 'Voice-b', 'display_name': 'B', 'type': 'prebuilt'}, {'id': 'mine', 'type': 'prompted'}], 'next_page_token': 't'},
+                 {'voices': [{'id': 'Voice-a', 'display_name': 'A'}, {'id': 'bad name!'}]}]
+        urls = []
+        def post(cfg, url, headers, payload, **kw):
+            urls.append((url, headers))
+            return json.dumps(pages[len(urls) - 1]).encode(), {}
+        with patch.object(ai, 'post', post):
+            result = ai.list_voices({'provider': 'gemini', 'api_key': 'k'})
+        self.assertEqual([v['id'] for v in result['voices']], ['Voice-a', 'Voice-b'])
+        self.assertEqual(result['source'], 'api')
+        self.assertIn('page_token=t', urls[1][0])
+        self.assertEqual(urls[0][1], {'x-goog-api-key': 'k'})
+        doc = ai.list_voices({'provider': 'openai', 'api_key': ''}, 'tts-1')
+        self.assertEqual((doc['source'], len(doc['voices'])), ('document', len(ai.DOCUMENTED_VOICES['openai']['models']['tts-1'])))
+        self.assertGreater(len(ai.list_voices({'provider': 'openai', 'api_key': ''}, 'another-tts')['voices']), len(doc['voices']))
+        with self.assertRaises(ai.AIError):
+            ai.list_voices({'provider': 'claude', 'api_key': 'k'})
+        with self.assertRaises(ai.AIError):
+            ai.list_voices({'provider': 'gemini', 'api_key': ''})
 
     def test_a_family_two_generations_behind_its_line_is_not_current(self):
         models = ai.mark_current([{'id': m} for m in ['gemini-7.5-pro', 'gemini-8.8-flash', 'gemini-9-argon', 'gemini-omni-1.1-flash']])

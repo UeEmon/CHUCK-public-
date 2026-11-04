@@ -191,8 +191,7 @@ def import_bundle(content, folder, validators):
     return result
 
 
-def request(path):
-    """GET one path of the fetcher API; returns the body and headers."""
+def fetcher_request(path, headers=None):
     base = os.environ.get('HF_PUBLIC_DATA_URL', 'http://public-data:8002').rstrip('/')
     token = os.environ.get('HF_PUBLIC_DATA_TOKEN', '')
     url = urlparse(base)
@@ -200,7 +199,25 @@ def request(path):
         raise PublicDataError('取得用コンテナのURL設定が不正です')
     if len(token) < 32:
         raise PublicDataError('32文字以上のHF_PUBLIC_DATA_TOKENを設定してください')
-    req = Request(base + path, headers={'Authorization': 'Bearer ' + token})
+    return Request(base + path, headers={**(headers or {}), 'Authorization': 'Bearer ' + token})
+
+
+def open_stream(path, headers=None):
+    """GET one path of the fetcher API without reading it (a published video, passed on in pieces).
+    Returns the open response; HTTP errors come back as (code, None)."""
+    req = fetcher_request(path, headers)
+    try:
+        return build_opener(ProxyHandler({}), NoRedirect).open(req, timeout=15)
+    except HTTPError as e:
+        e.close()
+        return e.code
+    except (URLError, OSError, ValueError):
+        raise PublicDataError('取得用コンテナに接続できないか、応答が不正です') from None
+
+
+def request(path):
+    """GET one path of the fetcher API; returns the body and headers."""
+    req = fetcher_request(path)
     try:
         # Keep the internal token off proxies and redirect destinations.
         with build_opener(ProxyHandler({}), NoRedirect).open(req, timeout=15) as response:

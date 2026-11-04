@@ -1,0 +1,10 @@
+{
+  "_comment": "Voices of providers whose API has no voice list, copied from the provider's own documentation. Check the source and update the date when it changes; a voice not listed can still be typed in.",
+  "openai": {
+    "source_url": "https://developers.openai.com/api/docs/guides/text-to-speech",
+    "checked_on": "2026-11-04",
+    "voices": ["alloy", "ash", "ballad", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer", "verse", "marin", "cedar"],
+    "models": {"tts-1": ["alloy", "ash", "coral", "echo", "fable", "onyx", "nova", "sage", "shimmer"],
+               "tts-1-hd": ["alloy", "ash", "coral", "echo", "fable", "onyx", "nova", "sage", "shimmer"]}
+  }
+}
