@@ -411,6 +411,33 @@ class RunTests(unittest.TestCase):
         briefing = json.loads((out / 'briefing.json').read_text())
         self.assertEqual((set(briefing['segments'][0]['narration']), set(briefing['segments'][0]['subtitles'])), ({'ja', 'fr'}, {'ko'}))
 
+    def test_failing_review_is_asked_again_and_never_cached(self):
+        fetched_files(self.tmp.name)
+        maker = b.Briefing(self.tmp.name, clock=lambda: FREEZE)
+        configure(maker, 'gemini')
+        answers = [{'verdict': 'fail', 'issues': ['Kp 3.33 matches the value. No issue there.']}, {'verdict': 'pass', 'issues': []}]
+        fake = FakeAI()
+        plain = fake.generate_json
+        def generate(cfg, *args, **kwargs):
+            value, call = plain(cfg, *args, **kwargs)
+            return (answers.pop(0) if cfg['step'] == 'review' else value), call
+        with patch.object(ai, 'generate_json', generate), patch.object(ai, 'speak', fake.speak):
+            qa = maker.run('live', '2026-11-03')
+        self.assertEqual([c['step'] for c in qa['calls'][:5]], ['script', 'translate', 'translate', 'review', 'review'])
+        self.assertTrue(qa['quality_gates']['REVIEW_OK']['passed'])
+        # Two failing answers hold the run, and the next run asks again instead of reusing a cached fail.
+        answers[:] = [{'verdict': 'fail', 'issues': ['x']}] * 2
+        maker2 = b.Briefing(self.tmp.name + '/again', clock=lambda: FREEZE)
+        fetched_files(self.tmp.name + '/again')
+        configure(maker2, 'gemini')
+        with patch.object(ai, 'generate_json', generate), patch.object(ai, 'speak', fake.speak):
+            qa = maker2.run('live', '2026-11-03')
+            self.assertFalse(qa['quality_gates']['REVIEW_OK']['passed'])
+            answers[:] = [{'verdict': 'pass', 'issues': []}]
+            qa = maker2.run('live', '2026-11-03', now=FREEZE + timedelta(minutes=1))
+        self.assertTrue(qa['quality_gates']['REVIEW_OK']['passed'])
+        self.assertEqual([c['status'] for c in qa['calls'] if c['step'] == 'review'], ['completed'])
+
     def test_live_run_with_metered_calls_is_ready_locally_and_never_published(self):
         fetched_files(self.tmp.name)
         maker = b.Briefing(self.tmp.name, clock=lambda: FREEZE)
