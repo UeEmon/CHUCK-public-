@@ -6,6 +6,7 @@ import sys
 import tempfile
 import threading
 import unittest
+import unittest.mock
 import urllib.error
 import urllib.request
 
@@ -24,6 +25,17 @@ class PublicModeTests(unittest.TestCase):
         import server, public_server
         server.DB=Path(cls.tmp.name)/'public.sqlite3'
         cls.server,cls.public=server,public_server
+        # Uploads are passed to a public-data container, which checks and saves them (on premises: no downloads).
+        import public_data,public_data_server
+        cls.store=tempfile.TemporaryDirectory()
+        cls.fetcher=public_data_server.Fetcher(cls.store.name,public_data_server.sources(giro_enabled=False))
+        cls.patches=[unittest.mock.patch.object(public_data_server,'FETCHER',cls.fetcher),
+                     unittest.mock.patch.dict(os.environ,{'HF_PUBLIC_DATA_SOURCE':'file','HF_PUBLIC_DATA_TOKEN':'t'*40})]
+        for patch in cls.patches:patch.start()
+        cls.container=server.ThreadingHTTPServer(('127.0.0.1',0),public_data_server.Handler)
+        threading.Thread(target=cls.container.serve_forever,daemon=True).start()
+        os.environ['HF_PUBLIC_DATA_URL']=f'http://127.0.0.1:{cls.container.server_port}'
+        public_data.LINK.clear()
         cls.http=server.ThreadingHTTPServer(('127.0.0.1',0),public_server.PublicHandler)
         threading.Thread(target=cls.http.serve_forever,daemon=True).start()
         cls.url=f'http://127.0.0.1:{cls.http.server_port}'
@@ -31,6 +43,9 @@ class PublicModeTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.http.shutdown();cls.http.server_close();cls.tmp.cleanup()
+        cls.container.shutdown();cls.container.server_close();cls.store.cleanup()
+        for patch in cls.patches:patch.stop()
+        os.environ.pop('HF_PUBLIC_DATA_URL',None)
 
     def request(self,path,data=None,admin=False):
         headers={'Content-Type':'application/json','Origin':self.url}
@@ -67,8 +82,11 @@ class PublicModeTests(unittest.TestCase):
         status,body=self.request('/api/space-weather/upload',rows,admin=True)
         self.assertEqual((status,json.loads(body)['kind']),(200,'predicted'))
         self.assertEqual(self.request('/api/space-weather/upload',{'wrong':1},admin=True)[0],400)
-        self.assertEqual(self.server.SPACE_WEATHER.memory['predicted']['origin'],'upload')
-        # The fetcher's bundle (file link) goes through the same admin-only upload.
+        # The container saved the file; CHUCK saved nothing and reads it back over the API.
+        self.assertEqual(self.fetcher.meta('predicted')['origin'],'upload')
+        self.assertFalse((Path(self.tmp.name)/'space-weather').exists())
+        self.assertEqual(self.server.SPACE_WEATHER.feed('predicted')['origin'],'upload')
+        # The container's link file goes through the same admin-only upload.
         import base64,hashlib,time
         raw=json.dumps(rows).encode()
         bundle={'format':'chuck-public-data','sources':{'predicted':{'url':None,'fetched_at':time.time()+5,'sha256':hashlib.sha256(raw).hexdigest(),'raw':base64.b64encode(raw).decode()}}}

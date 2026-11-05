@@ -43,7 +43,7 @@ from xml.sax.saxutils import escape
 
 import briefing_ai as ai
 from observations import DRAP_URL, NICT_URL, parse_drap, parse_nict
-from public_data import PublicDataError, read_file
+from public_data_store import StoreError, read_file
 from space_weather import ALL_FEEDS, ROOT, check_schema, kp_rows
 from space_weather_view import kp_series, kp_storm_level, scale_days
 
@@ -235,8 +235,8 @@ def fetcher_files(directory):
     result = {}
     for key, item in CATALOG.items():
         try:
-            raw, fetched_at = read_file(Path(directory), key)
-        except PublicDataError:
+            raw, fetched_at, _ = read_file(Path(directory), key)
+        except StoreError:
             continue
         result[key] = (raw, fetched_at, item['url'])
     return result
@@ -286,9 +286,9 @@ def snapshot_files(folder):
     result = {}
     for key in CATALOG:
         try:
-            raw, fetched_at = read_file(folder, key)
+            raw, fetched_at, _ = read_file(folder, key)
             meta = json.loads((folder / (key + '.json')).read_text())
-        except (PublicDataError, OSError, ValueError):
+        except (StoreError, OSError, ValueError):
             continue
         result[key] = (raw, fetched_at, meta.get('url'))
     return result

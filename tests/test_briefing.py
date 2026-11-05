@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'app'))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import briefing as b
 import briefing_ai as ai
-from public_data import write_file
+from public_data_store import write_file
 from space_weather_view import kp_series
 
 RUN = date(2026, 11, 3)

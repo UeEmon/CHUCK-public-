@@ -1,6 +1,7 @@
 """NOAA SWPC public JSON adapter; no daily-index substitution or storm correction.
 
-The feeds come from the public-data fetcher container (public_data.py), never from NOAA directly.
+The feeds come from the public-data container's API (public_data.py), never from NOAA directly. CHUCK keeps
+them in memory only: the container saves every file, including NOAA files uploaded on the admin page.
 """
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -9,7 +10,6 @@ from data_terms import terms_for
 import public_data
 import json
 import math
-from pathlib import Path
 import threading
 import time
 
@@ -113,8 +113,7 @@ def months(key, data):
 
 
 class SpaceWeather:
-    def __init__(self, directory):
-        self.directory = Path(directory)
+    def __init__(self):
         self.lock = threading.Lock()
         self.memory = {}
         self.retry_after = {}
@@ -124,13 +123,6 @@ class SpaceWeather:
         url = ROOT + path
         with self.lock:
             cached = self.memory.get(key)
-            if cached is None:
-                try:
-                    cached = json.loads((self.directory / (key + '.json')).read_text())
-                    if not isinstance(cached, dict) or not isinstance(cached.get('fetched_at'), (int, float)):
-                        cached = None
-                except (OSError, ValueError):
-                    cached = None
             now = time.time()
             uploaded = bool(cached) and cached.get('origin') == 'upload'
             state = 'uploaded' if uploaded else 'cache'
@@ -139,18 +131,14 @@ class SpaceWeather:
             error = '取得を再試行待ちです'
             if now >= self.retry_after.get(key, 0):
                 try:
-                    raw, fetched_at = public_data.download(key, force)
-                    origin = public_data.mode()
+                    raw, fetched_at, origin = public_data.download(key, force)
                     if len(raw) > MAX_FILE:
                         raise ValueError('response too large')
                     data = json.loads(raw)
                     check_schema(key, data)
-                    if cached and cached['fetched_at'] >= fetched_at:
-                        # The fetcher has nothing newer than an uploaded or earlier copy.
-                        return dict(cached, url=url, stale=False, error=None, fetch_state=state)
                     cached = {'data': data, 'fetched_at': fetched_at, 'origin': origin}
-                    self.store(key, cached)
-                    return dict(cached, url=url, stale=False, error=None,fetch_state='downloaded')
+                    self.memory[key] = cached
+                    return dict(cached, url=url, stale=False, error=None, fetch_state='uploaded' if origin == 'upload' else 'downloaded')
                 except public_data.PublicDataError as e:
                     error = str(e)
                     self.retry_after[key] = now + 60
@@ -158,41 +146,15 @@ class SpaceWeather:
                     error = 'NOAAデータを取得できませんでした'  # The fetcher answered with something that is not the feed.
                     self.retry_after[key] = now + 60
             if uploaded:
-                # The administrator's file is kept in use when NOAA cannot be reached.
+                # The administrator's file is kept in use while the container cannot be reached.
                 return dict(cached, url=url, stale=False, error=error, fetch_state=state)
             return dict(cached or {'data': None, 'fetched_at': None}, url=url, stale=True, error=error,fetch_state='failed')
 
-    def store(self, key, record):
-        self.memory[key] = record
-        try:
-            self.directory.mkdir(parents=True, exist_ok=True)
-            temporary = self.directory / (key + '.tmp')
-            temporary.write_text(json.dumps(record, allow_nan=False))
-            temporary.replace(self.directory / (key + '.json'))
-        except OSError:
-            pass  # Read-only storage must not prevent a live response.
-
-    def upload(self, raw):
-        """Replace one feed with a NOAA JSON file uploaded by the administrator."""
-        if not raw or len(raw) > MAX_FILE:
-            raise ValueError('ファイルは2 MB以下のNOAA JSONを指定してください')
-        try:
-            data = json.loads(raw, parse_constant=reject_constant)
-        except (ValueError, UnicodeError):
-            raise ValueError('JSONとして読み取れません') from None
-        key = file_kind(data)
-        try:
-            check_schema(key, data)
-        except ValueError:
-            raise ValueError('NOAAの観測平滑SSN・予測平滑SSN・障害レベル（R/S/G）のJSONファイルではありません') from None
-        if key != 'scales' and not any(numeric(row.get('smoothed_ssn' if key == 'observed' else 'predicted_ssn'), 250) is not None for row in data):
-            raise ValueError('有効な平滑SSNが1件もありません')
-        record = {'data': data, 'fetched_at': time.time(), 'origin': 'upload'}
+    def forget(self):
+        """Read every feed from the container again, e.g. after an administrator imported a file there."""
         with self.lock:
-            self.store(key, record)
-            self.retry_after.pop(key, None)
-        return {'kind': key, 'rows': len(data) if isinstance(data, list) else None, 'months': months(key, data),
-                'fetched_at': record['fetched_at']}
+            self.memory.clear()
+            self.retry_after.clear()
 
     def snapshot(self, year, month, force=False):
         target = f'{year:04d}-{month:02d}'

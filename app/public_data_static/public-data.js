@@ -12,7 +12,8 @@ function table(headers,rows){const t=document.createElement('table'),head=docume
 function interval(seconds){return seconds>=3600?seconds/3600+' 時間':seconds/60+' 分';}
 function render(){
  const sources=Object.entries(status.sources),fetched=sources.filter(([,s])=>s.fetched_at).length;
- $('fetcher-status').textContent='取得済み '+fetched+' / '+sources.length+' · CHUCK連携 '+(status.client_enabled?'有効':'無効（HF_PUBLIC_DATA_TOKEN未設定）')+' · GIRO '+(status.giro_enabled?'有効':'無効');
+ $('fetch-now').hidden=status.source==='file';
+ $('fetcher-status').textContent=(status.source==='file'?'オンプレミス（連携ファイルから読み込み） · ':'')+'取得済み '+fetched+' / '+sources.length+' · CHUCK連携 '+(status.client_enabled?'有効':'無効（HF_PUBLIC_DATA_TOKEN未設定）')+' · GIRO '+(status.giro_enabled?'有効':'無効');
  $('source-list').replaceChildren(table(['データ','提供元','更新間隔','最終取得成功 UTC','状態'],sources.map(([key,s])=>[key,s.url,interval(s.refresh_seconds),s.fetched_at?s.fetched_at.replace('T',' ').replace(/\.\d+/,'').replace('+00:00',' UTC'):'未取得',s.error||(s.fetched_at?(s.age_seconds>s.refresh_seconds*2?'古いデータ':'取得済み'):'未取得')])));
  $('giro-state').textContent=status.giro_enabled?'GIROの取得は有効です。':'GIROの取得は無効です。';
  $('giro-terms').href=status.giro_terms_url;$('giro-enable').hidden=status.giro_enabled;$('giro-disable').hidden=!status.giro_enabled;

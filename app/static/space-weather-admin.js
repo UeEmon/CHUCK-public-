@@ -1,5 +1,5 @@
 'use strict';
-// Admin page: how public data reaches CHUCK, and file uploads for on-premises servers (file link).
+// Admin page: how public data reaches CHUCK, and file uploads that are passed to the public-data container.
 (function(){
  const status=document.getElementById('status'),form=document.getElementById('space-weather-form');
  const say=(text,error)=>{status.textContent=text;status.style.color=error?'#f18c8c':'';};
@@ -13,9 +13,11 @@
  async function show(){
   const r=await fetch('/api/space-weather'),v=await r.json().catch(()=>({}));
   if(!r.ok)throw Error(v.error||'失敗しました');
-  const api=v.link?.mode!=='file';
-  document.getElementById('space-weather-mode').textContent=api?`現在の連携方式：API連携（${v.link?.url}）`:'現在の連携方式：ファイル連携（オンプレミス）';
-  document.getElementById('public-data-export').hidden=!api;
+  // CHUCK always receives public data over the API; on premises the container reads the imported link files.
+  const file=v.link?.source==='file',mode=document.getElementById('space-weather-mode');
+  mode.replaceChildren(document.createTextNode(`現在の連携方式：API連携（${v.link?.url}）`));
+  if(file)mode.append(' / ',document.createTextNode('ファイル連携：管理者が取り込んだ連携ファイルを使用しています。'));
+  document.getElementById('public-data-export').hidden=file;
   const t=document.createElement('table'),head=t.insertRow();
   for(const h of ['データ','取得元','取得・取り込み時刻','収録期間','状態']){const th=document.createElement('th');th.textContent=h;th.style.textAlign='left';head.append(th);}
   for(const [key,label]of Object.entries(LABELS)){

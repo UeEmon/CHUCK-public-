@@ -29,10 +29,10 @@ ROWS={
 class OverviewTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
-        self.weather=SpaceWeather(self.tmp.name)
+        self.weather=SpaceWeather()
 
     def overview(self,rows=ROWS):
-        download=lambda key,force=False:(json.dumps(rows[key]).encode(),NOW.timestamp())
+        download=lambda key,force=False:(json.dumps(rows[key]).encode(),NOW.timestamp(),'api')
         with patch('public_data.download',side_effect=download) as get:
             result=space_weather_view.overview(self.weather,NOW)
         # Viewing the charts never forces a new download.

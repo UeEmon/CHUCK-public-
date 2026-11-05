@@ -1,22 +1,23 @@
-"""How CHUCK obtains public data (NOAA, NICT, GIRO), chosen with HF_PUBLIC_DATA_MODE.
+"""CHUCK's client of the public-data container (public_data_server.py); the only way CHUCK gets public data.
 
-CHUCK never contacts the providers itself; the public-data fetcher container
-(public_data_server.py) downloads them on a schedule.
+CHUCK never contacts the providers (NOAA, NICT, GIRO) and never saves or reads
+public data files itself. The public-data container downloads the data, keeps
+every file (downloads, imported link files, uploaded NOAA files) and hands it
+to CHUCK over its Bearer API.
 
-* api  (default) CHUCK asks the fetcher over HTTP; both run where the internet is reachable.
-* file CHUCK runs on premises without internet. The fetcher runs in the public
-       environment and writes a bundle file; an administrator uploads it on the
-       CHUCK admin page, which unpacks it into HF_PUBLIC_DATA_DIR for CHUCK to read.
+Where the container's data comes from is the container's setting
+(HF_PUBLIC_DATA_SOURCE, see public_data_server.py):
 
-Callers name a fixed source key only; the fetcher owns the provider URLs.
+* internet (default) it downloads from the providers; CHUCK and the container run where the internet is reachable.
+* file     CHUCK and the container run on premises without internet. The container reads a link file written
+           by a container in the public environment; an administrator uploads it on the CHUCK admin page,
+           which passes it to the container (POST /api/import).
+
+Callers name a fixed source key only; the container owns the provider URLs.
 """
-import base64
-from datetime import datetime, timezone
-import hashlib
 import json
 import math
 import os
-from pathlib import Path
 import re
 import threading
 import time
@@ -24,15 +25,16 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, HTTPRedirectHandler, ProxyHandler, build_opener
 
-MODES = ('api', 'file')
 STATUS_SECONDS = 30
-SETTINGS = 'settings.json'
 LINK_LOCK = threading.Lock()
 LINK = {}
 MAX_RAW = 2_000_000
 MAX_BUNDLE = 16_000_000
 BUNDLE_FORMAT = 'chuck-public-data'
 KEY = re.compile(r'[A-Za-z0-9-]{1,32}')
+SOURCES = ('internet', 'file')
+# How the container obtained a source -> how CHUCK's pages name it.
+ORIGINS = {'download': 'api', 'bundle': 'file', 'upload': 'upload'}
 
 
 class PublicDataError(RuntimeError):
@@ -43,31 +45,18 @@ class NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs): return None
 
 
-def mode():
-    value = os.environ.get('HF_PUBLIC_DATA_MODE', 'api').strip().lower()
-    return value if value in MODES else 'api'
-
-
-def directory():
-    return Path(os.environ.get('HF_PUBLIC_DATA_DIR') or Path(os.environ.get('DATA_DIR', './data')) / 'public-data')
+def base_url():
+    return os.environ.get('HF_PUBLIC_DATA_URL', 'http://public-data:8002')
 
 
 def describe():
-    m = mode()
-    return {'mode': m, 'url': os.environ.get('HF_PUBLIC_DATA_URL', 'http://public-data:8002') if m == 'api' else None}
+    """The link shown with the space weather data: always the container's API, and where its data comes from."""
+    link = link_status()
+    return {'mode': 'api', 'url': base_url(), 'source': link.get('source')}
 
 
 def link_status(refresh=False):
-    """Whether CHUCK reaches the fetcher, and the fetcher's settings; checked at most every 30 seconds.
-
-    In the file link the settings come from the last imported bundle."""
-    if mode() == 'file':
-        try:
-            settings = json.loads((directory() / SETTINGS).read_text())
-        except (OSError, ValueError):
-            settings = {}
-        return {'mode': 'file', 'connected': None, 'checked_at': timestamp(settings.get('imported_at')), 'error': None,
-                'giro_enabled': settings.get('giro_enabled') is True}
+    """Whether CHUCK reaches the container, and the container's settings; checked at most every 30 seconds."""
     with LINK_LOCK:
         now = time.time()
         if refresh or not LINK or not 0 <= now - LINK['checked_at'] < STATUS_SECONDS:
@@ -75,14 +64,17 @@ def link_status(refresh=False):
                 status = json.loads(request('/api/status')[0])
                 if not isinstance(status, dict):
                     raise PublicDataError('取得用コンテナの応答が不正です')
-                LINK.update(connected=True, error=None, giro_enabled=status.get('giro_enabled') is True, connected_at=now)
+                LINK.update(connected=True, error=None, giro_enabled=status.get('giro_enabled') is True, connected_at=now,
+                            source=status.get('source') if status.get('source') in SOURCES else 'internet',
+                            imported_at=timestamp(status.get('imported_at')))
             except (PublicDataError, ValueError) as e:
-                # Keep the last known GIRO setting while the fetcher cannot be reached.
+                # Keep the last known settings while the container cannot be reached.
                 LINK.update(connected=False, error=str(e) if isinstance(e, PublicDataError) else '取得用コンテナの応答が不正です')
                 LINK.setdefault('giro_enabled', False)
             LINK['checked_at'] = now
         return {'mode': 'api', 'connected': LINK['connected'], 'checked_at': LINK['checked_at'], 'connected_at': LINK.get('connected_at'),
-                'error': LINK['error'], 'giro_enabled': LINK['giro_enabled']}
+                'error': LINK['error'], 'giro_enabled': LINK['giro_enabled'], 'source': LINK.get('source'),
+                'imported_at': LINK.get('imported_at')}
 
 
 def giro_enabled():
@@ -98,101 +90,48 @@ def timestamp(value):
 
 
 def download(key, force=False):
-    """The latest raw bytes of one source and when the fetcher downloaded them (UNIX seconds)."""
+    """The latest raw bytes of one source, when the container obtained them (UNIX seconds) and how
+    ('api' downloaded by the container, 'file' from an imported link file, 'upload' from an uploaded NOAA file)."""
     if not KEY.fullmatch(key):
         raise PublicDataError('データの種類が不正です')
-    if mode() == 'file':
-        return read_file(directory(), key)
     raw, headers = request('/api/data/' + key + ('?refresh=1' if force else ''))
     fetched_at = timestamp(headers.get('X-Fetched-At'))
     if len(raw) > MAX_RAW or fetched_at is None:
         raise PublicDataError('取得用コンテナに接続できないか、応答が不正です')
-    return raw, fetched_at
+    return raw, fetched_at, ORIGINS.get(headers.get('X-Origin'), 'api')
 
 
-def read_file(folder, key):
-    """One source from a folder of <key>.raw and <key>.json files; None when it is missing."""
+def upload(raw):
+    """Pass a link file or a NOAA JSON file to the container, which checks and saves it.
+    Bad files raise ValueError with the container's reason."""
+    req = fetcher_request('/api/import', {'Content-Type': 'application/json'})
+    req.data = raw
+    req.method = 'POST'
     try:
-        meta = json.loads((folder / (key + '.json')).read_text())
-        raw = (folder / (key + '.raw')).read_bytes()
-    except OSError:
-        raise PublicDataError('連携ファイルがありません。管理画面で取得用コンテナのファイルを取り込んでください') from None
-    except ValueError:
-        meta = None
-    fetched_at = timestamp(meta.get('fetched_at')) if isinstance(meta, dict) else None
-    if len(raw) > MAX_RAW or fetched_at is None or hashlib.sha256(raw).hexdigest() != meta.get('sha256'):
-        raise PublicDataError('連携ファイルが壊れています。取り込み直してください')
-    return raw, fetched_at
-
-
-def write_file(folder, key, raw, meta):
-    folder.mkdir(parents=True, exist_ok=True)
-    # The raw file is replaced before its description, so a reader never pairs new metadata with old bytes.
-    for name, content in ((key + '.raw', raw), (key + '.json', json.dumps(meta).encode())):
-        temporary = folder / (name + '.tmp')
-        temporary.write_bytes(content)
-        temporary.replace(folder / name)
-
-
-def make_bundle(folder, keys):
-    """Every source the fetcher holds, as one JSON file to carry to an on-premises CHUCK."""
-    sources = {}
-    for key in keys:
-        try:
-            raw, fetched_at = read_file(folder, key)
-            meta = json.loads((folder / (key + '.json')).read_text())
-        except (PublicDataError, OSError, ValueError):
-            continue
-        sources[key] = {'url': meta.get('url'), 'fetched_at': fetched_at, 'sha256': meta['sha256'],
-                        'raw': base64.b64encode(raw).decode()}
-    return {'format': BUNDLE_FORMAT, 'version': 1, 'created_at': datetime.now(timezone.utc).isoformat(), 'sources': sources}
-
-
-def import_bundle(content, folder, validators):
-    """Unpack a fetcher bundle; each source is checked like a download and replaces only older data."""
-    try:
-        bundle = json.loads(content)
-        if not isinstance(bundle, dict) or bundle.get('format') != BUNDLE_FORMAT or not isinstance(bundle.get('sources'), dict):
+        with build_opener(ProxyHandler({}), NoRedirect).open(req, timeout=60) as response:
+            body = response.read(MAX_RAW + 1)
+        result = json.loads(body)
+        if not isinstance(result, dict):
             raise ValueError
-    except (ValueError, UnicodeError):
-        raise ValueError('取得用コンテナの連携ファイルではありません') from None
-    result = {'imported': [], 'skipped': [], 'rejected': []}
-    for key, item in bundle['sources'].items():
+    except HTTPError as e:
         try:
-            if not KEY.fullmatch(key) or key not in validators or not isinstance(item, dict):
-                raise ValueError(key)
-            raw = base64.b64decode(item.get('raw') or '', validate=True)
-            fetched_at = timestamp(item.get('fetched_at'))
-            if len(raw) > MAX_RAW or fetched_at is None or hashlib.sha256(raw).hexdigest() != item.get('sha256'):
-                raise ValueError(key)
-            validators[key](raw)
-        except Exception:
-            result['rejected'].append(key)
-            continue
-        try:
-            current = read_file(folder, key)[1]
-        except PublicDataError:
-            current = None
-        if current is not None and current >= fetched_at:
-            result['skipped'].append(key)
-            continue
-        url = item.get('url') if isinstance(item.get('url'), str) else None
-        write_file(folder, key, raw, {'key': key, 'url': url, 'fetched_at': fetched_at, 'sha256': item['sha256']})
-        result['imported'].append(key)
-    if not result['imported'] and not result['skipped']:
-        raise ValueError('取り込める公開データがありません')
-    settings = bundle.get('settings')
-    if isinstance(settings, dict) and isinstance(settings.get('giro_enabled'), bool):
-        # The fetcher's GIRO choice travels with the file link.
-        folder.mkdir(parents=True, exist_ok=True)
-        temporary = folder / (SETTINGS + '.tmp')
-        temporary.write_text(json.dumps({'giro_enabled': settings['giro_enabled'], 'imported_at': time.time()}))
-        temporary.replace(folder / SETTINGS)
+            message = json.loads(e.read(65536)).get('error')
+        except (ValueError, AttributeError, OSError):
+            message = None
+        finally:
+            e.close()
+        if e.code == 400 and isinstance(message, str):
+            raise ValueError(message) from None
+        raise PublicDataError('取得用コンテナから取得できませんでした（HTTP ' + str(e.code) + '）') from None
+    except (URLError, OSError, ValueError):
+        raise PublicDataError('取得用コンテナに接続できないか、応答が不正です') from None
+    with LINK_LOCK:
+        LINK.clear()  # The import can change the container's GIRO setting.
     return result
 
 
 def fetcher_request(path, headers=None):
-    base = os.environ.get('HF_PUBLIC_DATA_URL', 'http://public-data:8002').rstrip('/')
+    base = base_url().rstrip('/')
     token = os.environ.get('HF_PUBLIC_DATA_TOKEN', '')
     url = urlparse(base)
     if url.scheme not in ('http', 'https') or not url.hostname or url.username or url.password or url.query or url.fragment:
@@ -203,7 +142,7 @@ def fetcher_request(path, headers=None):
 
 
 def open_stream(path, headers=None):
-    """GET one path of the fetcher API without reading it (a published video, passed on in pieces).
+    """GET one path of the container API without reading it (a published video, passed on in pieces).
     Returns the open response; HTTP errors come back as (code, None)."""
     req = fetcher_request(path, headers)
     try:
@@ -216,7 +155,7 @@ def open_stream(path, headers=None):
 
 
 def request(path):
-    """GET one path of the fetcher API; returns the body and headers."""
+    """GET one path of the container API; returns the body and headers."""
     req = fetcher_request(path)
     try:
         # Keep the internal token off proxies and redirect destinations.

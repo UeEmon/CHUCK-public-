@@ -105,9 +105,9 @@ class AdminPageTests(unittest.TestCase):
         self.assertEqual(self.request('/ui/api/settings',{'giro_enabled':'yes'},cookie=cookie)[0],400)
         code,_,body=self.request('/ui/api/settings',{'giro_enabled':True,'terms_accepted':True},cookie=cookie)
         self.assertEqual(code,200);self.assertTrue(body['giro_enabled']);self.assertIn('GU513',body['sources'])
-        with patch.dict(os.environ,{'HF_PUBLIC_DATA_MODE':'api','HF_PUBLIC_DATA_URL':self.origin}):
+        with patch.dict(os.environ,{'HF_PUBLIC_DATA_URL':self.origin}):
             public_data.LINK.clear()
-            observations=Observations(self.tmp.name,public_data.giro_enabled)
+            observations=Observations(public_data.giro_enabled)
             self.assertTrue(observations.giro_enabled)
             link=public_data.link_status()
             self.assertTrue(link['connected']);self.assertIsNone(link['error'])
@@ -129,13 +129,15 @@ class AdminPageTests(unittest.TestCase):
         code,headers,raw=self.request('/ui/api/export',cookie=cookie)
         self.assertEqual(code,200);self.assertIn('attachment',headers['Content-Disposition'])
         bundle=json.loads(raw);self.assertEqual(bundle['settings'],{'giro_enabled':False});self.assertIn('observed',bundle['sources'])
-        # The file link carries the setting to an on-premises CHUCK.
-        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ,{'HF_PUBLIC_DATA_MODE':'file','HF_PUBLIC_DATA_DIR':directory}):
+        # The link file carries the setting to the on-premises container, which CHUCK follows over the API.
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ,{'HF_PUBLIC_DATA_SOURCE':'file'}):
+            onprem=public_data_server.Fetcher(directory)
+            self.assertFalse(onprem.giro_enabled())
             bundle['settings']['giro_enabled']=True
-            validators={key:check for key,(_,_,_,check) in public_data_server.sources(giro_enabled=True).items()}
-            public_data.import_bundle(json.dumps(bundle).encode(),Path(directory),validators)
-            link=public_data.link_status()
-            self.assertEqual((link['mode'],link['connected'],link['giro_enabled']),('file',None,True));self.assertTrue(link['checked_at'])
-
+            result=onprem.import_file(json.dumps(bundle).encode())
+            self.assertIn('observed',result['bundle']['imported'])
+            self.assertTrue(onprem.giro_enabled());self.assertTrue(public_data_server.Fetcher(directory).giro_enabled())
+            self.assertIsNotNone(onprem.settings()['imported_at'])
+            self.assertEqual(onprem.latest('observed')[2],'bundle')
 
 if __name__=='__main__':unittest.main()

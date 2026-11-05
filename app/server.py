@@ -17,7 +17,7 @@ from engine import Engine, InputError, EngineError, Cancelled, validate, number,
 
 import public_data
 import space_weather_view
-from space_weather import ENGINE_SSN_SCALE, MAX_FILE as SPACE_WEATHER_MAX_FILE, SpaceWeather, SpaceWeatherError, engine_ssn
+from space_weather import ENGINE_SSN_SCALE, SpaceWeather, SpaceWeatherError, engine_ssn
 from observations import Observations, GIRO_STATIONS, DRAP_URL, parse_drap
 import today
 from effective_ssn import EffectiveSSN, EffectiveSSNError
@@ -38,9 +38,10 @@ DATA=Path(os.environ.get('DATA_DIR','./data'))
 DATA.mkdir(parents=True,exist_ok=True)
 DB=DATA/'predictions.sqlite3'
 ENGINE=Engine()
-SPACE_WEATHER=SpaceWeather(DATA/'space-weather')
+# Public data lives in the public-data container; CHUCK only holds what its API returned, in memory.
+SPACE_WEATHER=SpaceWeather()
 BRIEFING_FILE=re.compile(r'\d{4}-\d{2}-\d{2}/(meta\.json|video_(ja|en|fr|es|it|pt|de|ko)\.mp4|subtitles/(ja|en|fr|es|it|pt|de|ko)\.vtt)')
-OBSERVATIONS=Observations(DATA/'observations',public_data.giro_enabled)
+OBSERVATIONS=Observations(public_data.giro_enabled)
 EFFECTIVE_SSN=EffectiveSSN(ENGINE,OBSERVATIONS)
 RUN_LOCK=threading.Lock()
 
@@ -84,14 +85,10 @@ def noaa_ssn(year, month):
     return engine_ssn(ssn['value']),dict(kind=ssn['kind'],month=ssn['month'],published=ssn['value'],scale=ENGINE_SSN_SCALE)
 
 def import_public_data(raw):
-    """Unpack the fetcher's bundle (file link) and let the next reads use it at once."""
-    import public_data_server
-    validators={key:check for key,(_,_,_,check) in public_data_server.sources(giro_enabled=True).items()}
-    result=public_data.import_bundle(raw,public_data.directory(),validators)
-    SPACE_WEATHER.retry_after.clear();OBSERVATIONS.retry_after.clear()
-    if public_data.mode()=='file':
-        now=datetime.now(timezone.utc)
-        SPACE_WEATHER.snapshot(now.year,now.month,force=True);OBSERVATIONS.snapshot(force=True)
+    """Pass an uploaded link file or NOAA JSON file to the public-data container, which checks and saves it,
+    and read the data from the container again."""
+    result=public_data.upload(raw)
+    SPACE_WEATHER.forget();OBSERVATIONS.forget()
     return result
 
 def run_watch(identifier, blocking=False):
@@ -235,7 +232,7 @@ class Handler(BaseHTTPRequestHandler):
     def json(self,code,obj): self.send(code,json.dumps(obj,ensure_ascii=False,allow_nan=False))
     def briefing_file(self,rest):
         # Passed on from the fetcher piece by piece, with byte ranges so that the video can be sought.
-        if public_data.mode()!='api' or not BRIEFING_FILE.fullmatch(rest):return self.json(404,{'error':'見つかりません'})
+        if not BRIEFING_FILE.fullmatch(rest):return self.json(404,{'error':'見つかりません'})
         wanted=self.headers.get('Range','')
         response=public_data.open_stream('/api/briefing/published/'+rest,{'Range':wanted} if re.fullmatch(r'bytes=\d*-\d*',wanted) else {})
         if isinstance(response,int):return self.json(404 if response==404 else 416 if response==416 else 502,{'error':'見つかりません' if response==404 else '取得用コンテナから取得できませんでした'})
@@ -291,7 +288,6 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json(200,space_weather_view.overview(SPACE_WEATHER))
             if path=='/api/space-weather/briefing':
                 # CHUCK SPACE WEATHER BRIEF: the daily videos the fetcher released (it is the only place they are published).
-                if public_data.mode()!='api':return self.json(200,dict(items=[],available=False))
                 try:raw,_=public_data.request('/api/briefing/published')
                 except public_data.PublicDataError as e:return self.json(200,dict(items=[],available=False,error=str(e)))
                 return self.json(200,dict(items=json.loads(raw).get('items',[])[:14],available=True))
@@ -561,7 +557,8 @@ class Handler(BaseHTTPRequestHandler):
             __import__('traceback').print_exc();self.json(500,{'error':'定時の再計算を更新できません'})
 
     def upload_space_weather(self):
-        # On-premises sites bring public data as files: the fetcher's bundle (file link) or a NOAA JSON file itself.
+        # On-premises sites bring public data as files: the container's link file or a NOAA JSON file itself.
+        # CHUCK only passes the file on; the public-data container checks and saves it.
         if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
             return self.json(403,{'error':'同一オリジンの画面から操作してください'})
         if self.headers.get('Content-Type','').split(';')[0].strip()!='application/json':return self.json(415,{'error':'application/jsonが必要です'})
@@ -569,10 +566,9 @@ class Handler(BaseHTTPRequestHandler):
             length=int(self.headers.get('Content-Length','0'))
             if not 0<length<=public_data.MAX_BUNDLE: raise InputError('ファイルは16 MB以下にしてください')
             raw=self.rfile.read(length)
-            if b'"'+public_data.BUNDLE_FORMAT.encode()+b'"' in raw[:4096] or len(raw)>SPACE_WEATHER_MAX_FILE:
-                return self.json(200,dict(bundle=import_public_data(raw)))
-            self.json(200,SPACE_WEATHER.upload(raw))
+            self.json(200,import_public_data(raw))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
+        except public_data.PublicDataError as e: self.json(503,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc();self.json(500,{'error':'宇宙天気データを取り込めませんでした'})
 

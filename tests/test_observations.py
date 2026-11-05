@@ -81,9 +81,9 @@ class ParserTests(unittest.TestCase):
 class CacheTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
-        self.o=Observations(self.tmp.name)
+        self.o=Observations()
     def download(self,key,force=False):
-        return (DRAP if key=='drap' else NICT).encode(),time.time()
+        return (DRAP if key=='drap' else NICT).encode(),time.time(),'api'
     def test_partial_failure_returns_domestic_data(self):
         def get(key,force=False):
             if key=='drap':raise OSError('offline')
@@ -103,12 +103,14 @@ class CacheTests(unittest.TestCase):
             failed=self.o.fetch('drap',DRAP_URL,parse_drap,force=True)
             self.assertEqual(failed['fetched_at'],c['fetched_at']);self.assertEqual(failed['fetch_state'],'failed')
             self.o.fetch('drap',DRAP_URL,parse_drap,force=True);self.assertEqual(get.call_count,1)
-    def test_disk_cache_and_failure_retry(self):
+    def test_memory_only_cache_and_failure_retry(self):
+        # CHUCK saves no observation files: the public-data container keeps them and a restart asks it again.
         with patch('public_data.download',side_effect=self.download) as get:
             self.o.fetch('drap',DRAP_URL,parse_drap)
-            fresh=Observations(self.tmp.name).fetch('drap',DRAP_URL,parse_drap)
-            self.assertEqual(get.call_count,1)
+            fresh=Observations().fetch('drap',DRAP_URL,parse_drap)
+            self.assertEqual(get.call_count,2)
             self.assertIsNotNone(fresh['data'])
+        self.assertEqual(list(Path(self.tmp.name).iterdir()),[])
         self.o.memory['drap']['fetched_at']=time.time()-400
         with patch('public_data.download',side_effect=OSError('offline')) as get:
             a=self.o.fetch('drap',DRAP_URL,parse_drap)
@@ -119,8 +121,8 @@ class CacheTests(unittest.TestCase):
             self.assertFalse(self.o.giro('GU513')['enabled'])
         with self.assertRaises(ValueError):self.o.giro('../../test')
     def test_giro_enabled_posts_fixed_query(self):
-        o=Observations(self.tmp.name,giro_enabled=True)
-        with patch('public_data.download',return_value=(GIRO.encode(),time.time())) as get:
+        o=Observations(giro_enabled=True)
+        with patch('public_data.download',return_value=(GIRO.encode(),time.time(),'api')) as get:
             data=o.giro('JR055')
         self.assertTrue(data['enabled']);self.assertEqual(data['data']['code'],'JR055')
         self.assertEqual(get.call_args.args[0],'JR055')

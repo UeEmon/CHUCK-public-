@@ -5,10 +5,18 @@ itself never contacts the providers. Each source is validated with CHUCK's own
 parser and kept as <key>.raw (the provider's bytes) and <key>.json (fetched_at,
 url, sha256).
 
-* API link: CHUCK (HF_PUBLIC_DATA_MODE=api) reads GET /api/data/<key>.
-* File link: CHUCK runs on premises without internet (HF_PUBLIC_DATA_MODE=file).
-  After every cycle the fetcher writes export/chuck-public-data.json, also
-  served at GET /api/export; an administrator uploads it on the CHUCK admin page.
+CHUCK never saves or reads public data files: it receives every source from
+this container's Bearer API (GET /api/data/<key>), and files that an
+administrator uploads on the CHUCK admin page are passed here (POST /api/import).
+
+Where the data comes from is HF_PUBLIC_DATA_SOURCE:
+
+* internet (default): downloaded from the providers on a schedule. After every
+  cycle the container writes export/chuck-public-data.json (the link file),
+  also served at GET /api/export.
+* file: on premises without internet. Nothing is downloaded; the data comes from
+  a link file written by a container in the public environment, or from NOAA
+  JSON files, imported through POST /api/import.
 
 The fetcher's own admin page (public_data_ui.py) shows the sources and turns GIRO on or off, and
 runs the space weather daily briefing (briefing.py) with the generative AI chosen per step.
@@ -30,7 +38,8 @@ from urllib.request import Request, urlopen
 from observations import DRAP_URL, NICT_URL, GIRO_URL, GIRO_STATIONS, giro_body, parse_drap, parse_nict, parse_giro
 from briefing import Briefing
 from public_data_ui import PublicDataUI
-from public_data import BUNDLE_FORMAT, KEY, MAX_RAW, PublicDataError, make_bundle, read_file, write_file
+from public_data import BUNDLE_FORMAT, KEY, MAX_BUNDLE, MAX_RAW
+from public_data_store import StoreError, import_bundle, import_noaa, is_bundle, make_bundle, read_file, write_file
 from space_weather import ALL_FEEDS, ROOT, check_schema
 
 DATA = Path(os.environ.get('HF_PUBLIC_DATA_DIR', os.environ.get('DATA_DIR', './public-data')))
@@ -38,6 +47,15 @@ DATA = Path(os.environ.get('HF_PUBLIC_DATA_DIR', os.environ.get('DATA_DIR', './p
 GIRO_ENABLED = os.environ.get('HF_GIRO_ENABLED', '0') == '1'
 RETRY_SECONDS = 60
 SETTINGS = 'settings.json'
+
+
+def source():
+    """'file' on premises (data only from imported files), otherwise 'internet'.
+    HF_PUBLIC_DATA_MODE=file, CHUCK's former setting for the file link, still selects file."""
+    value = os.environ.get('HF_PUBLIC_DATA_SOURCE', '').strip().lower()
+    if not value:
+        value = os.environ.get('HF_PUBLIC_DATA_MODE', '').strip().lower()
+    return 'file' if value in ('file', 'offline') else 'internet'
 
 
 def json_check(key):
@@ -66,25 +84,57 @@ class Fetcher:
         self.locks = {key: threading.Lock() for key in sources(True)} | {key: threading.Lock() for key in self.table}
         self.retry_after = {}
         self.errors = {}
+        self.import_lock = threading.Lock()
 
     def settings(self):
         try:
             value = json.loads((self.directory / SETTINGS).read_text())
-            return {'giro_enabled': value['giro_enabled'] is True}
-        except (OSError, ValueError, KeyError, TypeError):
-            return {'giro_enabled': GIRO_ENABLED}
+            value = value if isinstance(value, dict) else {}
+        except (OSError, ValueError):
+            value = {}
+        imported = value.get('imported_at')
+        return {'giro_enabled': value['giro_enabled'] is True if 'giro_enabled' in value else GIRO_ENABLED,
+                'imported_at': imported if isinstance(imported, (int, float)) and not isinstance(imported, bool) else None}
+
+    def save_settings(self, **changes):
+        self.directory.mkdir(parents=True, exist_ok=True)
+        temporary = self.directory / (SETTINGS + '.tmp')
+        try:
+            current = json.loads((self.directory / SETTINGS).read_text())
+            current = current if isinstance(current, dict) else {}
+        except (OSError, ValueError):
+            current = {}
+        temporary.write_text(json.dumps({**current, **changes, 'updated_at': time.time()}))
+        temporary.replace(self.directory / SETTINGS)
 
     def giro_enabled(self):
         return any(code in self.table for code in GIRO_STATIONS)
 
     def set_giro(self, enabled):
         """Save the GIRO choice and start or stop downloading the GIRO stations."""
-        self.directory.mkdir(parents=True, exist_ok=True)
-        temporary = self.directory / (SETTINGS + '.tmp')
-        temporary.write_text(json.dumps({'giro_enabled': bool(enabled), 'updated_at': time.time()}))
-        temporary.replace(self.directory / SETTINGS)
+        self.save_settings(giro_enabled=bool(enabled))
         self.table = sources(bool(enabled))
         self.export()
+
+    def import_file(self, raw):
+        """Check and save a link file or a NOAA JSON file uploaded by an administrator (through CHUCK).
+        A link file replaces only older data; on premises its GIRO setting is taken over too."""
+        if is_bundle(raw) or len(raw) > MAX_RAW:
+            validators = {key: check for key, (_, _, _, check) in sources(giro_enabled=True).items()}
+            with self.import_lock:
+                result, giro = import_bundle(raw, self.directory, validators)
+                if source() == 'file' and giro is not None and giro != self.giro_enabled():
+                    self.save_settings(giro_enabled=giro)
+                    self.table = sources(giro)
+                self.save_settings(imported_at=time.time())
+                self.export()
+            return {'bundle': result}
+        with self.import_lock:
+            result = import_noaa(raw, self.directory)
+            self.retry_after.pop(result['kind'], None)
+            self.save_settings(imported_at=time.time())
+            self.export()
+        return result
 
     def meta(self, key):
         try:
@@ -102,6 +152,8 @@ class Fetcher:
         if entry is None:
             return '取得対象ではありません'
         url, body, _, check = entry
+        if source() == 'file':
+            return 'オンプレミス（ファイル連携）のため提供元から取得しません'
         with self.locks[key]:
             now = time.time()
             if now < self.retry_after.get(key, 0):
@@ -118,16 +170,17 @@ class Fetcher:
                 print(f'public-data: {key} failed: {type(e).__name__}', flush=True)
                 self.errors[key] = '提供元から取得できませんでした'
                 return self.errors[key]
-            write_file(self.directory, key, raw, {'key': key, 'url': url, 'fetched_at': time.time(), 'sha256': hashlib.sha256(raw).hexdigest()})
+            write_file(self.directory, key, raw, {'key': key, 'url': url, 'fetched_at': time.time(),
+                                                  'sha256': hashlib.sha256(raw).hexdigest(), 'origin': 'download'})
             self.errors.pop(key, None)
             return None
 
     def latest(self, key):
+        """The saved bytes of one source, when they were obtained and how ('download', 'bundle' or 'upload')."""
         try:
-            raw, fetched_at = read_file(self.directory, key)
-        except PublicDataError:
-            return None, None
-        return raw, fetched_at
+            return read_file(self.directory, key)
+        except StoreError:
+            return None, None, None
 
     def bundle(self):
         bundle = make_bundle(self.directory, list(self.table))
@@ -145,7 +198,7 @@ class Fetcher:
 
     def refresh_due(self, every=False):
         changed = False
-        for key in list(self.table):
+        for key in list(self.table) if source() == 'internet' else []:
             if every or self.due(key):
                 changed = self.fetch(key) is None or changed
         if changed or not (self.directory / 'export' / (BUNDLE_FORMAT + '.json')).exists():
@@ -159,7 +212,8 @@ class Fetcher:
             fetched = meta.get('fetched_at')
             result[key] = {'url': url, 'refresh_seconds': ttl,
                            'fetched_at': datetime.fromtimestamp(fetched, timezone.utc).isoformat() if fetched else None,
-                           'age_seconds': round(now - fetched) if fetched else None, 'error': self.errors.get(key)}
+                           'age_seconds': round(now - fetched) if fetched else None, 'error': self.errors.get(key),
+                           'origin': meta.get('origin', 'download') if fetched else None}
         return result
 
 
@@ -185,6 +239,9 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
 
     def briefing(self):
         return BRIEFING
+
+    def data_source(self):
+        return source()
 
     def send(self, code, body, kind, headers=()):
         self.send_response(code)
@@ -256,6 +313,7 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
             if url.path == '/api/status':
                 if self.authorize():
                     self.json(200, {'sources': FETCHER.status(), 'giro_enabled': FETCHER.giro_enabled(),
+                                    'source': source(), 'imported_at': FETCHER.settings()['imported_at'],
                                     'server_time': datetime.now(timezone.utc).isoformat()})
                 return
             if url.path == '/api/export':
@@ -284,26 +342,49 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
             key = url.path[len('/api/data/'):]
             if not KEY.fullmatch(key) or key not in FETCHER.table:
                 return self.json(404, {'error': '取得対象ではありません'})
-            if parse_qs(url.query).get('refresh') == ['1'] or FETCHER.due(key):
+            if source() == 'internet' and (parse_qs(url.query).get('refresh') == ['1'] or FETCHER.due(key)):
                 FETCHER.fetch(key)
-            raw, fetched_at = FETCHER.latest(key)
+            raw, fetched_at, origin = FETCHER.latest(key)
             if raw is None:
-                return self.json(503, {'error': 'まだ取得できていません'})
-            self.send(200, raw, 'application/octet-stream', [('X-Fetched-At', repr(fetched_at))])
+                return self.json(503, {'error': 'まだ取得できていません' if source() == 'internet' else
+                                       '連携ファイルがありません。管理画面で取得用コンテナのファイルを取り込んでください'})
+            self.send(200, raw, 'application/octet-stream', [('X-Fetched-At', repr(fetched_at)), ('X-Origin', origin)])
         except Exception:
             __import__('traceback').print_exc();self.json(500, {'error': '読み込みに失敗しました'})
 
     def do_POST(self):
-        if not self.ui_post(urlparse(self.path).path):
+        path = urlparse(self.path).path
+        if path == '/api/import':
+            return self.import_file()
+        if not self.ui_post(path):
             self.json(404, {'error': '見つかりません'})
+
+    def import_file(self):
+        """POST /api/import: a link file or a NOAA JSON file that CHUCK received from its administrator."""
+        if not self.authorize():
+            return
+        if self.headers.get('Content-Type', '').split(';')[0].strip() != 'application/json':
+            return self.json(415, {'error': 'application/jsonが必要です'})
+        try:
+            length = int(self.headers.get('Content-Length', '0'))
+            if not 0 < length <= MAX_BUNDLE:
+                raise ValueError('ファイルは16 MB以下にしてください')
+            self.json(200, FETCHER.import_file(self.rfile.read(length)))
+        except (ValueError, UnicodeError) as e:
+            self.json(400, {'error': str(e)})
+        except Exception:
+            __import__('traceback').print_exc();self.json(500, {'error': '公開データを取り込めませんでした'})
 
 
 if __name__ == '__main__':
     if '--once' in sys.argv[1:]:
+        if source() == 'file':
+            print('public-data: HF_PUBLIC_DATA_SOURCE=file never downloads; import a link file instead', flush=True)
+            sys.exit(1)
         # Download every source once and write the bundle, e.g. from a scheduled job.
         failed = [key for key in FETCHER.table if FETCHER.fetch(key)]
         print(f'public-data: wrote {FETCHER.export()} with {len(FETCHER.table) - len(failed)} sources' + (f'; failed: {", ".join(failed)}' if failed else ''), flush=True)
         sys.exit(1 if failed else 0)
     threading.Thread(target=loop, daemon=True).start()
-    print('Public-data fetcher: :8002', flush=True)
+    print(f'Public-data fetcher ({source()}): :8002', flush=True)
     ThreadingHTTPServer(('0.0.0.0', 8002), Handler).serve_forever()

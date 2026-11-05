@@ -4,9 +4,7 @@ from datetime import datetime, timedelta, timezone
 import copy
 from data_terms import terms_for
 import public_data
-import json
 import math
-from pathlib import Path
 import re
 import threading
 import time
@@ -151,13 +149,18 @@ def giro_body(code, now=None):
 
 
 class Observations:
-    def __init__(self, directory, giro_enabled=False):
-        """giro_enabled is a bool or a function asked on every use (the fetcher's setting)."""
-        self.directory = Path(directory)
+    def __init__(self, giro_enabled=False):
+        """giro_enabled is a bool or a function asked on every use (the container's setting).
+        Observations are kept in memory only; the public-data container saves the files."""
         self.giro_setting = giro_enabled
         self.memory = {}
         self.retry_after = {}
         self.locks = {key: threading.Lock() for key in ['drap', 'nict', *GIRO_STATIONS]}
+
+    def forget(self):
+        """Read every source from the container again, e.g. after an administrator imported a file there."""
+        self.memory.clear()
+        self.retry_after.clear()
 
     @property
     def giro_enabled(self):
@@ -166,13 +169,6 @@ class Observations:
     def fetch(self, key, url, parser, force=False):
         with self.locks[key]:
             cached = self.memory.get(key)
-            if cached is None:
-                try:
-                    cached = json.loads((self.directory / (key + '.json')).read_text())
-                    if not isinstance(cached.get('data'), dict) or finite(cached.get('fetched_at'), 0, 1e12) is None:
-                        cached = None
-                except (OSError, ValueError, AttributeError):
-                    cached = None
             now = time.time()
             error = None
             fresh = cached is not None and 0 <= now - cached['fetched_at'] < 300
@@ -182,7 +178,7 @@ class Observations:
                 error = '取得再試行待ち／通信またはデータ形式を確認してください'
                 if now >= self.retry_after.get(key, 0):
                     try:
-                        raw, fetched_at = public_data.download(key, force)
+                        raw, fetched_at, _ = public_data.download(key, force)
                         if len(raw) > 2_000_000:
                             raise ValueError('response too large')
                         data = parser(raw.decode('utf-8', errors='replace'))
@@ -191,13 +187,6 @@ class Observations:
                         fresh = True
                         state='downloaded'
                         error = None
-                        try:
-                            self.directory.mkdir(parents=True, exist_ok=True)
-                            tmp = self.directory / (key + '.tmp')
-                            tmp.write_text(json.dumps(cached, allow_nan=False))
-                            tmp.replace(self.directory / (key + '.json'))
-                        except OSError:
-                            pass
                     except public_data.PublicDataError as e:
                         error = str(e)
                         self.retry_after[key] = now + 60

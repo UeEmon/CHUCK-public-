@@ -59,7 +59,11 @@ class PublicDataUI:
     def ui_status(self):
         fetcher=self.fetcher()
         return dict(sources=fetcher.status(),giro_enabled=fetcher.giro_enabled(),giro_terms_url=GIRO_TERMS,
-                    client_enabled=len(os.environ.get('HF_PUBLIC_DATA_TOKEN',''))>=32,role='public-data')
+                    client_enabled=len(os.environ.get('HF_PUBLIC_DATA_TOKEN',''))>=32,role='public-data',
+                    source=self.data_source(),imported_at=fetcher.settings()['imported_at'])
+
+    def data_source(self):
+        return 'internet'
 
     def ui_get(self,path):
         files={'/':(BASE/'public_data_static/index.html','text/html; charset=utf-8'),

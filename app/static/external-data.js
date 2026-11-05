@@ -20,9 +20,10 @@ let publicDataLink=null;
 function renderPublicDataLink(){
  const l=publicDataLink,box=$('public-data-link');
  if(!l){box.textContent='取得用コンテナとの連携状況を確認できません。';return;}
- if(l.mode==='file'){box.replaceChildren(document.createTextNode('ファイル連携：管理者が取り込んだ連携ファイルを使用しています。'),' ',document.createTextNode(l.checked_at?'最終取り込み':'連携ファイルは未取り込みです。'),l.checked_at?' '+fetchedTime(l.checked_at):'');return;}
  box.replaceChildren(document.createTextNode(l.connected?'取得用コンテナとのAPI連携：接続中':'取得用コンテナとのAPI連携：接続できません'),' ',document.createTextNode('確認'),' '+fetchedTime(l.checked_at));
  if(!l.connected){box.append(' / ',document.createTextNode(l.error||'取得用コンテナに接続できないか、応答が不正です'));if(l.connected_at)box.append(' / ',document.createTextNode('最後に接続できた時刻'),' '+fetchedTime(l.connected_at));}
+ // On premises the container reads the link files an administrator imported; CHUCK still receives them over the API.
+ if(l.source==='file')box.append(' / ',document.createTextNode('ファイル連携：管理者が取り込んだ連携ファイルを使用しています。'),' ',document.createTextNode(l.imported_at?'最終取り込み':'連携ファイルは未取り込みです。'),l.imported_at?' '+fetchedTime(l.imported_at):'');
 }
 async function refreshPublicDataLink(){try{publicDataLink=await api('/api/public-data/status');}catch{publicDataLink=null;}renderPublicDataLink();}
 let externalLoading=false,externalLoadedAt=0;

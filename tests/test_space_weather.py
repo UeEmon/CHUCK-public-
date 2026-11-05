@@ -10,13 +10,15 @@ from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'app'))
 from space_weather import SpaceWeather, SpaceWeatherError, FEEDS
+import public_data_store
 
 
 class WeatherTests(unittest.TestCase):
     def setUp(self):
         self.tmp=tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.weather=SpaceWeather(self.tmp.name)
+        self.weather=SpaceWeather()
+        self.origin='api'
         self.rows={
             'observed':[{'time-tag':'2026-10','ssn':200,'smoothed_ssn':-1,'smoothed_f10.7':-1},
                         {'time-tag':'2026-01','smoothed_ssn':100.1,'smoothed_f10.7':140}],
@@ -25,7 +27,7 @@ class WeatherTests(unittest.TestCase):
                            'R':{'Scale':'0'},'S':{'Scale':None},'G':{'Scale':'3'}}}}
 
     def download(self, key, force=False):
-        return json.dumps(self.rows[key]).encode(),time.time()
+        return json.dumps(self.rows[key]).encode(),time.time(),self.origin
 
     def test_prediction_not_daily_ssn_and_metadata(self):
         with patch('public_data.download',side_effect=self.download):
@@ -54,18 +56,20 @@ class WeatherTests(unittest.TestCase):
             self.assertEqual(self.weather.snapshot(2026,1)['ssn']['kind'],'observed')
             self.assertIsNone(self.weather.snapshot(2035,1)['ssn'])
 
-    def test_disk_cache_survives_restart_and_failure(self):
+    def test_memory_only_cache_and_failure(self):
+        # CHUCK keeps no space weather files; after a restart it asks the public-data container again.
         with patch('public_data.download',side_effect=self.download) as get:
             self.weather.snapshot(2026,10)
-            SpaceWeather(self.tmp.name).snapshot(2026,10)
-            self.assertEqual(get.call_count,3)
-        for file in Path(self.tmp.name).glob('*.json'):
-            data=json.loads(file.read_text());data['fetched_at']=time.time()-90000;file.write_text(json.dumps(data))
+            SpaceWeather().snapshot(2026,10)
+            self.assertEqual(get.call_count,6)
+        self.assertEqual(list(Path(self.tmp.name).iterdir()),[])
+        for record in self.weather.memory.values():record['fetched_at']=time.time()-90000
         with patch('public_data.download',side_effect=OSError('offline')) as get:
-            weather=SpaceWeather(self.tmp.name)
-            self.assertTrue(weather.snapshot(2026,10)['ssn']['stale'])
-            with self.assertRaises(SpaceWeatherError):weather.calculation_input({'year':2026,'month':10,'ssn_source':'noaa'})
+            self.assertTrue(self.weather.snapshot(2026,10)['ssn']['stale'])
+            with self.assertRaises(SpaceWeatherError):self.weather.calculation_input({'year':2026,'month':10,'ssn_source':'noaa'})
             self.assertEqual(get.call_count,3)  # retry backoff
+        with patch('public_data.download',side_effect=OSError('offline')):
+            self.assertIsNone(SpaceWeather().snapshot(2026,10)['ssn'])
 
     def test_missing_data_not_zero_and_schema_failure(self):
         self.rows['predicted']=[{'time-tag':'2026-10','predicted_ssn':float('nan')}]
@@ -92,43 +96,38 @@ class WeatherTests(unittest.TestCase):
         with patch('public_data.download',side_effect=self.download):
             self.assertTrue(self.weather.snapshot(2026,10)['current']['stale'])
 
-    def test_uploaded_files_replace_feeds_and_stay_usable_offline(self):
-        for key in ('observed','predicted','scales'):
-            self.assertEqual(self.weather.upload(json.dumps(self.rows[key]).encode())['kind'],key)
-        self.assertEqual(self.weather.upload(json.dumps(self.rows['predicted']).encode())['months'],{'first':'2026-10','last':'2026-10'})
-        with patch('public_data.download',side_effect=AssertionError('must not fetch')):
-            w=SpaceWeather(self.tmp.name).snapshot(2026,10)
+    def test_files_uploaded_to_the_container_stay_usable_while_it_is_unreachable(self):
+        # The container saved the administrator's NOAA files and reports them as uploads.
+        self.origin='upload'
+        with patch('public_data.download',side_effect=self.download):
+            w=self.weather.snapshot(2026,10)
         self.assertEqual(w['ssn']['value'],87.5)
         self.assertEqual({s['fetch_state'] for s in w['sources'].values()},{'uploaded'})
         self.assertEqual(w['sources']['observed']['origin'],'upload')
-        # Past the cache period, a failed download keeps the uploaded file in use.
-        for file in Path(self.tmp.name).glob('*.json'):
-            data=json.loads(file.read_text());data['fetched_at']=time.time()-90000;file.write_text(json.dumps(data))
+        for record in self.weather.memory.values():record['fetched_at']=time.time()-90000
         with patch('public_data.download',side_effect=OSError('offline')):
-            p,w=SpaceWeather(self.tmp.name).calculation_input({'year':2026,'month':10,'ssn_source':'noaa'})
+            p,w=self.weather.calculation_input({'year':2026,'month':10,'ssn_source':'noaa'})
         self.assertEqual(p['ssn'],61.2)
         self.assertEqual(w['sources']['predicted']['fetch_state'],'uploaded')
-        # A successful download replaces it.
+        # Newer data from the container replaces it.
+        self.origin='api';self.weather.forget()
         self.rows['predicted']=[{'time-tag':'2026-10','predicted_ssn':100,'predicted_f10.7':130}]
         with patch('public_data.download',side_effect=self.download):
-            w=SpaceWeather(self.tmp.name).snapshot(2026,10)
+            w=self.weather.snapshot(2026,10)
         self.assertEqual((w['ssn']['value'],w['sources']['predicted']['origin']),(100,'api'))
 
-    def test_file_link_without_files_uses_uploaded_noaa_files(self):
-        with tempfile.TemporaryDirectory() as empty, patch.dict(os.environ,{'HF_PUBLIC_DATA_MODE':'file','HF_PUBLIC_DATA_DIR':empty}):
-            w=self.weather.snapshot(2026,10,force=True)
-            self.assertIsNone(w['ssn'])
-            self.assertTrue(all(s['stale'] and s['error'] for s in w['sources'].values()))
-            with self.assertRaises(SpaceWeatherError):self.weather.calculation_input({'year':2026,'month':10,'ssn_source':'noaa'})
-            self.weather.upload(json.dumps(self.rows['predicted']).encode())
-            w=self.weather.snapshot(2026,10,force=True)
-            self.assertEqual((w['ssn']['value'],w['ssn']['stale'],w['link']['mode']),(87.5,False,'file'))
+    def test_container_saves_uploaded_noaa_files(self):
+        folder=Path(self.tmp.name)
+        for key in ('observed','predicted','scales'):
+            self.assertEqual(public_data_store.import_noaa(json.dumps(self.rows[key]).encode(),folder)['kind'],key)
+            self.assertEqual(public_data_store.read_file(folder,key)[2],'upload')
+        self.assertEqual(public_data_store.import_noaa(json.dumps(self.rows['predicted']).encode(),folder)['months'],{'first':'2026-10','last':'2026-10'})
 
-    def test_upload_rejects_other_files(self):
+    def test_container_rejects_other_files(self):
         for raw in (b'',b'not json',b'[1,2]',b'[{"time-tag":"2026-10","ssn":5}]',b'[{"time-tag":"2026-10","predicted_ssn":-1}]',
                     b'[{"time-tag":"2026-10","predicted_ssn":NaN}]',b'{"wrong":{}}',b'[{"predicted_ssn":80}]',b' '*2_000_001):
-            with self.assertRaises(ValueError,msg=raw[:40]):self.weather.upload(raw)
-        self.assertEqual(list(Path(self.tmp.name).glob('*.json')),[])
+            with self.assertRaises(ValueError,msg=raw[:40]):public_data_store.import_noaa(raw,Path(self.tmp.name))
+        self.assertEqual(list(Path(self.tmp.name).iterdir()),[])
 
 class WeatherHttpTests(unittest.TestCase):
     def test_endpoint_and_saved_automatic_input(self):

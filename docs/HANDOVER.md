@@ -70,7 +70,7 @@ flowchart TD
 | `app/engine.py` | 入力検証、固定長カード、アンテナ一時ファイル、外部実行、生出力解析 |
 | `app/gateway_client.py` と `position_contract.py` | 内部JSON v1の取得・検証、位置参照の解決 |
 | `app/gateway_server.py` と `positions.py` | 外部形式の解析、局設定、最新位置、認証付き内部API |
-| `app/public_data_server.py` と `public_data.py` | 公開データの取得用コンテナ（定期取得・検証・連携ファイル）と、CHUCK側のAPI連携・ファイル連携。CHUCKは提供元へ直接接続しない（[PUBLIC_DATA.md](PUBLIC_DATA.md)） |
+| `app/public_data_server.py`・`public_data_store.py` と `public_data.py` | 公開データの取得用コンテナ（定期取得・検証・ファイルの保存と読み込み・連携ファイルの取り込み）と、CHUCK側のAPI連携クライアント。CHUCKは公開データのファイルを保存・読み込みしない。CHUCKは提供元へ直接接続しない（[PUBLIC_DATA.md](PUBLIC_DATA.md)） |
 | `app/public_data_ui.py` と `public_data_static/` | 取得用コンテナの管理画面（`HF_PUBLIC_DATA_UI_PASSWORD`、取得状態、今すぐ取得、GIROの有効化）。GIRO設定は取得用コンテナの `/data/settings.json` に保存し、CHUCKは `/api/status` で従う |
 | `app/gateway_ui.py` と `gateway_static/` | 管理パスワード、セッション、局設定・受信状態表示 |
 | `app/presets.py` と `diversity.py` | カタログ保存・改訂管理、RXごとの計算と理論範囲 |

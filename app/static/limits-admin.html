@@ -15,10 +15,10 @@
 </form>
 <form id="space-weather-form" class="panel">
 <h3 id="space-weather">公開データの連携</h3>
-<p class="hint">宇宙天気・電離圏観測などの公開データは、取得用コンテナが定期的に取得します。CHUCKと取得用コンテナの両方を公開環境で動かすときはAPI連携、CHUCKをオンプレミスで動かすときはファイル連携です（環境変数 HF_PUBLIC_DATA_MODE）。</p>
+<p class="hint">宇宙天気・電離圏観測などの公開データは、取得用コンテナだけが取得・保存・読み込みを行い、CHUCKはAPI連携で受け取ります。CHUCKをオンプレミスで動かすときは、オンプレミスの取得用コンテナが連携ファイルを読み込みます（取得用コンテナの環境変数 HF_PUBLIC_DATA_SOURCE=file）。</p>
 <p id="space-weather-mode" class="hint"></p>
 <p id="public-data-export" class="exports" hidden><a href="/api/public-data/export" download>オンプレミス用の連携ファイルをダウンロード</a></p>
-<p class="hint">ファイル連携では、公開環境の取得用コンテナが書き出す連携ファイル（chuck-public-data.json）をここで取り込みます。取得用コンテナがない場合は、NOAA SWPCのJSONファイルをそのまま取り込むこともできます。より新しいデータだけが置き換わります。</p>
+<p class="hint">ファイル連携では、公開環境の取得用コンテナが書き出す連携ファイル（chuck-public-data.json）をここで取り込みます。NOAA SWPCのJSONファイルをそのまま取り込むこともできます。ファイルはCHUCKには保存せず取得用コンテナへ渡し、取得用コンテナが検証して保存します。より新しいデータだけが置き換わります。</p>
 <ul class="hint">
 <li>観測平滑SSN：<code>https://services.swpc.noaa.gov/json/solar-cycle/observed-solar-cycle-indices.json</code></li>
 <li>予測平滑SSN：<code>https://services.swpc.noaa.gov/json/solar-cycle/predicted-solar-cycle.json</code></li>

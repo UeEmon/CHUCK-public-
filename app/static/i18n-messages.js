@@ -11376,5 +11376,41 @@ const HF_MESSAGES={
     "No mapa de ligações, as estações móveis recebidas pelo gateway de posições são agora desenhadas como △ com a ponta virada para o rumo (sobre o fundo). As estações móveis escolhidas como locais de emissão ou receção usam o mesmo △. Uma estação sem rumo é um △ tracejado apontado para norte. Passe o ponteiro sobre um △ para ver o rumo.",
     "Auf der Verbindungskarte werden über das Positions-Gateway empfangene mobile Stationen jetzt als △ gezeichnet, dessen Spitze in den Kurs über Grund zeigt. Als Sende- oder Empfangsstandort gewählte mobile Stationen verwenden dasselbe △. Eine Station ohne Kurs ist ein gestricheltes △ nach Norden. Mit dem Mauszeiger über einem △ wird der Kurs angezeigt.",
     "회선 지도에서 위치 게이트웨이로 받은 이동국을 △로 표시하고 꼭짓점을 침로(대지 침로) 방향으로 돌리도록 했습니다. 송수신 지점으로 선택한 이동국도 같은 △로 표시합니다. 침로가 없는 국은 북쪽을 향한 점선 △입니다. 지도의 △에 포인터를 올리면 침로 값을 표시합니다."
+  ],
+  "オンプレミス（ファイル連携）のため提供元から取得しません": [
+    "On premises (file link): not downloaded from the provider",
+    "Sur site (liaison par fichier) : pas de téléchargement depuis le fournisseur",
+    "Instalación local (enlace por archivo): no se descarga del proveedor",
+    "In sede (collegamento tramite file): nessun download dal fornitore",
+    "Local (vínculo por arquivo): não é obtido do provedor",
+    "Vor Ort (Dateianbindung): kein Abruf beim Anbieter",
+    "온프레미스(파일 연계)이므로 제공처에서 가져오지 않습니다"
+  ],
+  "公開データを取り込めませんでした": [
+    "Could not import the public data",
+    "Impossible d’importer les données publiques",
+    "No se pudieron importar los datos públicos",
+    "Impossibile importare i dati pubblici",
+    "Não foi possível importar os dados públicos",
+    "Öffentliche Daten konnten nicht importiert werden",
+    "공개 데이터를 가져오지 못했습니다"
+  ],
+  "保存したデータが壊れています": [
+    "The saved data is damaged",
+    "Les données enregistrées sont endommagées",
+    "Los datos guardados están dañados",
+    "I dati salvati sono danneggiati",
+    "Os dados salvos estão corrompidos",
+    "Die gespeicherten Daten sind beschädigt",
+    "저장된 데이터가 손상되었습니다"
+  ],
+  "オンプレミス（連携ファイルから読み込み）": [
+    "On premises (reading link files)",
+    "Sur site (lecture des fichiers de liaison)",
+    "Instalación local (lectura de archivos de enlace)",
+    "In sede (lettura dei file di collegamento)",
+    "Local (lendo arquivos de vínculo)",
+    "Vor Ort (Lesen von Verknüpfungsdateien)",
+    "온프레미스(연계 파일에서 읽기)"
   ]
 };

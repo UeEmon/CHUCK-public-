@@ -5,9 +5,8 @@ services:
     ports:
       - "${HF_BIND:-127.0.0.1}:${HF_PORT:-18082}:8000"
     environment:
-      # Public data (NOAA, NICT, GIRO) comes from the public-data fetcher: api when both run in the
-      # public environment, file when CHUCK runs on premises. See docs/PUBLIC_DATA.md.
-      HF_PUBLIC_DATA_MODE: "${HF_PUBLIC_DATA_MODE:-api}"
+      # Public data (NOAA, NICT, GIRO) comes only from the public-data container's API; CHUCK never contacts
+      # the providers or saves public data files. See docs/PUBLIC_DATA.md.
       HF_PUBLIC_DATA_URL: "${HF_PUBLIC_DATA_URL:-http://public-data:8002}"
       HF_PUBLIC_DATA_TOKEN: "${HF_PUBLIC_DATA_TOKEN:-}"
       OPENAI_API_KEY: "${OPENAI_API_KEY:-}"
@@ -29,6 +28,8 @@ services:
     depends_on:
       position-gateway:
         condition: service_healthy
+      public-data:
+        condition: service_started
     volumes:
       - hf-data:/data
     restart: unless-stopped
@@ -68,9 +69,11 @@ services:
       - /tmp:size=32m,mode=1777
     security_opt:
       - no-new-privileges:true
-  # Public-data fetcher: the only service that contacts NOAA, NICT and GIRO, on a schedule.
-  # On premises (HF_PUBLIC_DATA_MODE=file) it runs in the public environment instead:
-  #   docker compose up -d public-data
+  # Public-data container: the only service that contacts NOAA, NICT and GIRO and that saves and reads
+  # public data files. CHUCK receives the data over its API, in the public environment and on premises.
+  # On premises set HF_PUBLIC_DATA_SOURCE=file: it never downloads and reads the link files that an
+  # administrator imports on CHUCK's admin page, written by a container in the public environment:
+  #   docker compose up -d --build public-data
   public-data:
     build:
       context: .
@@ -81,6 +84,10 @@ services:
       - "${HF_PUBLIC_DATA_BIND:-127.0.0.1}:${HF_PUBLIC_DATA_PORT:-18084}:8002"
     environment:
       HF_PUBLIC_DATA_TOKEN: "${HF_PUBLIC_DATA_TOKEN:-}"
+      # internet (default): download from the providers. file: on premises, only imported link files.
+      HF_PUBLIC_DATA_SOURCE: "${HF_PUBLIC_DATA_SOURCE:-}"
+      # Former setting of CHUCK's file link; HF_PUBLIC_DATA_MODE=file still selects HF_PUBLIC_DATA_SOURCE=file.
+      HF_PUBLIC_DATA_MODE: "${HF_PUBLIC_DATA_MODE:-}"
       # Admin page at http://localhost:18084/ (16+ characters, not the token). GIRO is switched on there;
       # HF_GIRO_ENABLED only sets the initial choice before the page saves one.
       HF_PUBLIC_DATA_UI_PASSWORD: "${HF_PUBLIC_DATA_UI_PASSWORD:-}"
