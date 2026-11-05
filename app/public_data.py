@@ -1,17 +1,16 @@
 """CHUCK's client of the public-data container (public_data_server.py); the only way CHUCK gets public data.
 
-CHUCK never contacts the providers (NOAA, NICT, GIRO) and never saves or reads
-public data files itself. The public-data container downloads the data, keeps
-every file (downloads, imported link files, uploaded NOAA files) and hands it
-to CHUCK over its Bearer API.
+CHUCK never contacts the providers (NOAA, NICT, GIRO) and never saves, reads or
+imports public data files itself. The public-data container downloads the data,
+keeps every file (downloads, imported link files, imported NOAA files) and hands
+it to CHUCK over its Bearer API.
 
 Where the container's data comes from is the container's setting
 (HF_PUBLIC_DATA_SOURCE, see public_data_server.py):
 
 * internet (default) it downloads from the providers; CHUCK and the container run where the internet is reachable.
 * file     CHUCK and the container run on premises without internet. The container reads a link file written
-           by a container in the public environment; an administrator uploads it on the CHUCK admin page,
-           which passes it to the container (POST /api/import).
+           by a container in the public environment; an administrator imports it on the container's own admin page.
 
 Callers name a fixed source key only; the container owns the provider URLs.
 """
@@ -99,35 +98,6 @@ def download(key, force=False):
     if len(raw) > MAX_RAW or fetched_at is None:
         raise PublicDataError('取得用コンテナに接続できないか、応答が不正です')
     return raw, fetched_at, ORIGINS.get(headers.get('X-Origin'), 'api')
-
-
-def upload(raw):
-    """Pass a link file or a NOAA JSON file to the container, which checks and saves it.
-    Bad files raise ValueError with the container's reason."""
-    req = fetcher_request('/api/import', {'Content-Type': 'application/json'})
-    req.data = raw
-    req.method = 'POST'
-    try:
-        with build_opener(ProxyHandler({}), NoRedirect).open(req, timeout=60) as response:
-            body = response.read(MAX_RAW + 1)
-        result = json.loads(body)
-        if not isinstance(result, dict):
-            raise ValueError
-    except HTTPError as e:
-        try:
-            message = json.loads(e.read(65536)).get('error')
-        except (ValueError, AttributeError, OSError):
-            message = None
-        finally:
-            e.close()
-        if e.code == 400 and isinstance(message, str):
-            raise ValueError(message) from None
-        raise PublicDataError('取得用コンテナから取得できませんでした（HTTP ' + str(e.code) + '）') from None
-    except (URLError, OSError, ValueError):
-        raise PublicDataError('取得用コンテナに接続できないか、応答が不正です') from None
-    with LINK_LOCK:
-        LINK.clear()  # The import can change the container's GIRO setting.
-    return result
 
 
 def fetcher_request(path, headers=None):

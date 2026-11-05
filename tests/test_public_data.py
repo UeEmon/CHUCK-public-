@@ -164,14 +164,20 @@ class ApiTests(unittest.TestCase):
             with self.assertRaises(public_data.PublicDataError):public_data.download('observed')
             public_data.LINK.clear()
 
-    def test_on_premises_chuck_uploads_through_the_container(self):
-        # CHUCK passes files to the container (POST /api/import) and saves none itself.
+    def test_on_premises_container_imports_and_chuck_reads_over_the_api(self):
+        # Files are imported into the container (here with its Bearer API); CHUCK saves none and reads them over the API.
+        def post(raw):
+            req=urllib.request.Request(self.url+'/api/import',data=raw,headers={'Content-Type':'application/json','Authorization':'Bearer '+TOKEN})
+            try:
+                with urllib.request.urlopen(req) as r:return r.status,json.load(r)
+            except urllib.error.HTTPError as e:return e.code,json.load(e)
         with tempfile.TemporaryDirectory() as onprem, patch.dict(os.environ,{'HF_PUBLIC_DATA_URL':self.url,'HF_PUBLIC_DATA_TOKEN':TOKEN,'HF_PUBLIC_DATA_SOURCE':'file'}), \
                 patch.object(public_data_server,'FETCHER',public_data_server.Fetcher(onprem)), patch('public_data_server.urlopen',side_effect=AssertionError('must not connect')):
             public_data.LINK.clear()
             with self.assertRaises(public_data.PublicDataError):public_data.download('predicted')
-            self.assertEqual(public_data.upload(json.dumps(ROWS['predicted']).encode())['kind'],'predicted')
-            with self.assertRaises(ValueError):public_data.upload(b'{"wrong":1}')
+            status,body=post(json.dumps(ROWS['predicted']).encode())
+            self.assertEqual((status,body['kind']),(200,'predicted'))
+            self.assertEqual(post(b'{"wrong":1}')[0],400)
             self.assertEqual(self.get('/api/import',{'Authorization':'Bearer '+TOKEN})[0],404)  # POST only
             raw,_,origin=public_data.download('predicted')
             self.assertEqual((json.loads(raw),origin),(ROWS['predicted'],'upload'))

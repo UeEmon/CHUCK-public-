@@ -84,13 +84,6 @@ def noaa_ssn(year, month):
     if not ssn or ssn['stale']: return None,'NOAAの新鮮な平滑SSNがありません'
     return engine_ssn(ssn['value']),dict(kind=ssn['kind'],month=ssn['month'],published=ssn['value'],scale=ENGINE_SSN_SCALE)
 
-def import_public_data(raw):
-    """Pass an uploaded link file or NOAA JSON file to the public-data container, which checks and saves it,
-    and read the data from the container again."""
-    result=public_data.upload(raw)
-    SPACE_WEATHER.forget();OBSERVATIONS.forget()
-    return result
-
 def run_watch(identifier, blocking=False):
     """Recalculate one watched condition; False when another calculation holds the engine."""
     w=WATCHES.get(identifier)
@@ -293,10 +286,6 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json(200,dict(items=json.loads(raw).get('items',[])[:14],available=True))
             if path.startswith('/api/space-weather/briefing/'):
                 return self.briefing_file(path[len('/api/space-weather/briefing/'):])
-            if path=='/api/public-data/export':
-                # The bundle an administrator carries from the public site to an on-premises CHUCK.
-                raw,_=public_data.request('/api/export')
-                return self.send(200,raw,'application/json',public_data.BUNDLE_FORMAT+'.json')
             if path=='/api/effective-ssn':
                 query=parse_qs(urlparse(self.path).query)
                 now=datetime.now(timezone.utc)
@@ -422,7 +411,6 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/position-stations': return self.configure_position_station()
         if path=='/api/presets': return self.edit_presets()
         if path=='/api/watches': return self.edit_watches()
-        if path=='/api/space-weather/upload': return self.upload_space_weather()
         if path=='/api/antenna-imports' or path.startswith('/api/antenna-imports/'):return self.import_antenna(path)
         if path=='/api/antenna-patterns' or path.startswith('/api/antenna-patterns/'):return self.edit_patterns(path)
         if path.startswith('/api/jobs/') and path.endswith('/cancel'):
@@ -555,22 +543,6 @@ class Handler(BaseHTTPRequestHandler):
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except Exception:
             __import__('traceback').print_exc();self.json(500,{'error':'定時の再計算を更新できません'})
-
-    def upload_space_weather(self):
-        # On-premises sites bring public data as files: the container's link file or a NOAA JSON file itself.
-        # CHUCK only passes the file on; the public-data container checks and saves it.
-        if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
-            return self.json(403,{'error':'同一オリジンの画面から操作してください'})
-        if self.headers.get('Content-Type','').split(';')[0].strip()!='application/json':return self.json(415,{'error':'application/jsonが必要です'})
-        try:
-            length=int(self.headers.get('Content-Length','0'))
-            if not 0<length<=public_data.MAX_BUNDLE: raise InputError('ファイルは16 MB以下にしてください')
-            raw=self.rfile.read(length)
-            self.json(200,import_public_data(raw))
-        except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
-        except public_data.PublicDataError as e: self.json(503,{'error':str(e)})
-        except Exception:
-            __import__('traceback').print_exc();self.json(500,{'error':'宇宙天気データを取り込めませんでした'})
 
     def edit_patterns(self,path):
         if self.headers.get('Origin') not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):

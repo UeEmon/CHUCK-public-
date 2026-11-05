@@ -10045,15 +10045,6 @@ const HF_MESSAGES={
     "Anzeige aktualisieren",
     "표시 새로 고침"
   ],
-  "公開データは取得用コンテナが定期的に取得します（NOAAの月間系列は6時間、ほかは5分ごと）。オンプレミスでは管理者が管理画面で取り込みます。画面の更新ボタンはサーバーにある最新のデータを表示し直すもので、提供元から取得し直すことはしません。取得時刻は提供元からの取得に成功した時刻で、観測・発行時刻とは異なります。": [
-    "Public data is fetched on a schedule by the fetcher container (NOAA monthly series every 6 hours, the rest every 5 minutes). On premises, an administrator uploads it on the admin page. The refresh buttons here redisplay the latest data held by the server and never fetch again from the providers. The fetch time is when the data was last fetched successfully from the provider, which differs from the observation or issue time.",
-    "Les données publiques sont récupérées régulièrement par le conteneur de récupération (séries mensuelles NOAA toutes les 6 heures, le reste toutes les 5 minutes). Sur site, un administrateur les importe sur la page d’administration. Les boutons d’actualisation réaffichent les données les plus récentes du serveur et ne les récupèrent jamais de nouveau auprès des fournisseurs. L’heure de récupération est celle de la dernière récupération réussie auprès du fournisseur ; elle diffère de l’heure d’observation ou de publication.",
-    "Los datos públicos los obtiene periódicamente el contenedor de obtención (series mensuales de NOAA cada 6 horas; el resto, cada 5 minutos). En instalaciones locales, un administrador los importa en la página de administración. Los botones de actualizar vuelven a mostrar los datos más recientes del servidor y nunca los obtienen de nuevo de los proveedores. La hora de obtención es la del último éxito al obtenerlos del proveedor y difiere de la hora de observación o publicación.",
-    "I dati pubblici vengono scaricati periodicamente dal container di download (serie mensili NOAA ogni 6 ore, il resto ogni 5 minuti). In sede, un amministratore li importa nella pagina di amministrazione. I pulsanti di aggiornamento mostrano di nuovo i dati più recenti del server e non li scaricano mai di nuovo dai fornitori. L’ora di download è quella dell’ultimo download riuscito dal fornitore e differisce dall’ora di osservazione o di emissione.",
-    "Os dados públicos são obtidos periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas; o restante a cada 5 minutos). No local, um administrador os importa na página de administração. Os botões de atualizar exibem novamente os dados mais recentes do servidor e nunca os obtêm de novo dos provedores. O horário de obtenção é o do último sucesso ao obter do provedor e difere do horário de observação ou de emissão.",
-    "Öffentliche Daten ruft der Abrufcontainer regelmäßig ab (NOAA-Monatsreihen alle 6 Stunden, alles andere alle 5 Minuten). Vor Ort lädt ein Administrator sie auf der Verwaltungsseite hoch. Die Aktualisierungsschaltflächen zeigen die neuesten Daten des Servers erneut an und rufen nie erneut bei den Anbietern ab. Die Abrufzeit ist der letzte erfolgreiche Abruf beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
-    "공개 데이터는 가져오기 컨테이너가 정기적으로 가져옵니다(NOAA 월간 계열은 6시간, 그 밖에는 5분마다). 온프레미스에서는 관리자가 관리 화면에서 가져옵니다. 화면의 새로 고침 버튼은 서버에 있는 최신 데이터를 다시 표시할 뿐이며, 제공처에서 다시 가져오지 않습니다. 취득 시각은 제공처에서 마지막으로 가져오기에 성공한 시각으로, 관측·발행 시각과 다릅니다."
-  ],
   "表示を更新を押すと、対象月の平滑SSNと現在のR/S/Gを表示します。": [
     "Press Refresh display to show the smoothed SSN for the target month and the current R/S/G.",
     "Appuyez sur Actualiser l’affichage pour afficher le SSN lissé du mois cible et les R/S/G actuels.",
@@ -10216,15 +10207,6 @@ const HF_MESSAGES={
     "Abruf läuft. Bitte warten.",
     "수집 중입니다. 잠시 기다려 주십시오."
   ],
-  "1分ごとに、更新間隔を過ぎたデータを提供元から取得します。「今すぐ取得」は間隔にかかわらず全データを取得します（失敗したデータは60秒待ってから再試行します）。連携ファイルはオンプレミスのCHUCKの管理画面で取り込みます。": [
-    "Every minute, data past its refresh interval is downloaded from the provider. “Fetch now” downloads all data regardless of the interval (failed data is retried after 60 seconds). Import the link file on the admin page of the on-premises CHUCK.",
-    "Chaque minute, les données dont l’intervalle de mise à jour est dépassé sont téléchargées auprès du fournisseur. « Récupérer maintenant » télécharge toutes les données quel que soit l’intervalle (les données en échec sont retentées après 60 secondes). Importez le fichier de liaison sur la page d’administration du CHUCK sur site.",
-    "Cada minuto se descargan del proveedor los datos cuyo intervalo de actualización ha vencido. «Obtener ahora» descarga todos los datos sin importar el intervalo (los datos fallidos se reintentan tras 60 segundos). Importe el archivo de enlace en la página de administración del CHUCK local.",
-    "Ogni minuto i dati con intervallo di aggiornamento scaduto vengono scaricati dal fornitore. «Acquisisci ora» scarica tutti i dati indipendentemente dall’intervallo (i dati non riusciti vengono ritentati dopo 60 secondi). Importare il file di collegamento nella pagina di amministrazione del CHUCK on-premise.",
-    "A cada minuto, os dados com intervalo de atualização vencido são baixados do provedor. “Obter agora” baixa todos os dados independentemente do intervalo (os dados com falha são tentados novamente após 60 segundos). Importe o arquivo de vínculo na página de administração do CHUCK local.",
-    "Jede Minute werden Daten mit abgelaufenem Aktualisierungsintervall vom Anbieter abgerufen. „Jetzt abrufen“ ruft alle Daten unabhängig vom Intervall ab (fehlgeschlagene Daten werden nach 60 Sekunden erneut versucht). Importieren Sie die Verknüpfungsdatei auf der Verwaltungsseite des lokalen CHUCK.",
-    "1분마다 갱신 간격이 지난 데이터를 제공처에서 수집합니다. ‘지금 수집’은 간격과 관계없이 모든 데이터를 수집합니다(실패한 데이터는 60초 후 재시도). 연계 파일은 온프레미스 CHUCK의 관리 화면에서 가져옵니다."
-  ],
   "GIROの利用条件": [
     "GIRO terms of use",
     "conditions d’utilisation de GIRO",
@@ -10359,15 +10341,6 @@ const HF_MESSAGES={
     "Todos os dados foram obtidos.",
     "Alle Daten wurden abgerufen.",
     "모든 데이터를 수집했습니다."
-  ],
-  "公開データは取得用コンテナが定期的に取得します（NOAAの月間系列は6時間、ほかは5分ごと）。オンプレミスでは管理者が管理画面で取り込みます。この画面は開いたときと5分ごとに、サーバーにある最新のデータを自動で表示します。取得時刻は提供元からの取得に成功した時刻で、観測・発行時刻とは異なります。": [
-    "Public data is downloaded regularly by the fetcher container (NOAA monthly series every 6 hours, others every 5 minutes). On premises, an administrator imports it on the admin page. This screen automatically shows the latest data on the server when opened and every 5 minutes. The acquisition time is when the download from the provider succeeded, which differs from the observation or issue time.",
-    "Les données publiques sont téléchargées régulièrement par le conteneur de collecte (séries mensuelles NOAA toutes les 6 heures, les autres toutes les 5 minutes). Sur site, un administrateur les importe sur la page d’administration. Cet écran affiche automatiquement les dernières données du serveur à l’ouverture et toutes les 5 minutes. L’heure d’acquisition est celle du téléchargement réussi auprès du fournisseur, distincte de l’heure d’observation ou de publication.",
-    "El contenedor de obtención descarga periódicamente los datos públicos (series mensuales de NOAA cada 6 horas, el resto cada 5 minutos). En entornos locales, un administrador los importa en la página de administración. Esta pantalla muestra automáticamente los datos más recientes del servidor al abrirse y cada 5 minutos. La hora de obtención es cuando la descarga del proveedor tuvo éxito y difiere de la hora de observación o emisión.",
-    "I dati pubblici vengono scaricati periodicamente dal container di acquisizione (serie mensili NOAA ogni 6 ore, gli altri ogni 5 minuti). On-premise, un amministratore li importa nella pagina di amministrazione. Questa schermata mostra automaticamente i dati più recenti del server all’apertura e ogni 5 minuti. L’ora di acquisizione è quella del download riuscito dal fornitore, diversa dall’ora di osservazione o emissione.",
-    "Os dados públicos são baixados periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas, os demais a cada 5 minutos). Em ambiente local, um administrador os importa na página de administração. Esta tela mostra automaticamente os dados mais recentes do servidor ao abrir e a cada 5 minutos. O horário de obtenção é quando o download do provedor teve êxito, diferente do horário de observação ou emissão.",
-    "Öffentliche Daten werden regelmäßig vom Abrufcontainer abgerufen (NOAA-Monatsreihen alle 6 Stunden, andere alle 5 Minuten). Lokal importiert ein Administrator sie auf der Verwaltungsseite. Diese Ansicht zeigt beim Öffnen und alle 5 Minuten automatisch die neuesten Daten des Servers. Die Abrufzeit ist der Zeitpunkt des erfolgreichen Abrufs beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
-    "공개 데이터는 수집 컨테이너가 정기적으로 수집합니다(NOAA 월간 계열은 6시간, 그 외는 5분마다). 온프레미스에서는 관리자가 관리 화면에서 가져옵니다. 이 화면은 열 때와 5분마다 서버의 최신 데이터를 자동으로 표시합니다. 수집 시각은 제공처에서 수집에 성공한 시각으로, 관측·발행 시각과 다릅니다."
   ],
   "公開データ取得用コンテナの管理": [
     "Public-data fetcher administration",
@@ -11412,5 +11385,122 @@ const HF_MESSAGES={
     "Local (lendo arquivos de vínculo)",
     "Vor Ort (Lesen von Verknüpfungsdateien)",
     "온프레미스(연계 파일에서 읽기)"
+  ],
+  "1分ごとに、更新間隔を過ぎたデータを提供元から取得します。「今すぐ取得」は間隔にかかわらず全データを取得します（失敗したデータは60秒待ってから再試行します）。オンプレミス（HF_PUBLIC_DATA_SOURCE=file）では提供元へ接続せず、下の「連携ファイルの取り込み」で取り込んだデータだけを使います。": [
+    "Every minute, data past its refresh interval is downloaded from the provider. “Fetch now” downloads all data regardless of the interval (failed data waits 60 seconds before retrying). On premises (HF_PUBLIC_DATA_SOURCE=file) the providers are never contacted and only the data imported under “Import link files” below is used.",
+    "Chaque minute, les données dont l’intervalle de mise à jour est dépassé sont récupérées auprès du fournisseur. « Récupérer maintenant » récupère toutes les données quel que soit l’intervalle (les données en échec attendent 60 secondes avant un nouvel essai). Sur site (HF_PUBLIC_DATA_SOURCE=file), aucun fournisseur n’est contacté et seules les données importées dans « Importer des fichiers de liaison » ci-dessous sont utilisées.",
+    "Cada minuto se obtienen del proveedor los datos cuyo intervalo de actualización ha vencido. «Obtener ahora» obtiene todos los datos sin importar el intervalo (los datos fallidos esperan 60 segundos antes de reintentar). En instalaciones locales (HF_PUBLIC_DATA_SOURCE=file) no se contacta a ningún proveedor y solo se usan los datos importados en «Importar archivos de enlace» más abajo.",
+    "Ogni minuto vengono scaricati dal fornitore i dati il cui intervallo di aggiornamento è scaduto. «Scarica ora» scarica tutti i dati indipendentemente dall’intervallo (i dati non riusciti attendono 60 secondi prima di riprovare). In sede (HF_PUBLIC_DATA_SOURCE=file) nessun fornitore viene contattato e si usano solo i dati importati in «Importa file di collegamento» qui sotto.",
+    "A cada minuto, os dados com o intervalo de atualização vencido são obtidos do provedor. «Obter agora» obtém todos os dados independentemente do intervalo (dados com falha aguardam 60 segundos antes de tentar de novo). No local (HF_PUBLIC_DATA_SOURCE=file), nenhum provedor é contatado e só são usados os dados importados em «Importar arquivos de vínculo» abaixo.",
+    "Jede Minute werden Daten, deren Aktualisierungsintervall abgelaufen ist, beim Anbieter abgerufen. „Jetzt abrufen“ ruft alle Daten unabhängig vom Intervall ab (fehlgeschlagene Daten warten 60 Sekunden bis zum nächsten Versuch). Vor Ort (HF_PUBLIC_DATA_SOURCE=file) wird kein Anbieter kontaktiert, und es werden nur die unten unter „Verknüpfungsdateien importieren“ importierten Daten verwendet.",
+    "1분마다 업데이트 간격이 지난 데이터를 제공처에서 가져옵니다. '지금 가져오기'는 간격과 관계없이 모든 데이터를 가져옵니다(실패한 데이터는 60초 후에 다시 시도합니다). 온프레미스(HF_PUBLIC_DATA_SOURCE=file)에서는 제공처에 접속하지 않고, 아래 '연계 파일 가져오기'에서 가져온 데이터만 사용합니다."
+  ],
+  "連携ファイルの取り込み": [
+    "Import link files",
+    "Importer des fichiers de liaison",
+    "Importar archivos de enlace",
+    "Importa file di collegamento",
+    "Importar arquivos de vínculo",
+    "Verknüpfungsdateien importieren",
+    "연계 파일 가져오기"
+  ],
+  "連携ファイルまたはNOAAのJSONファイル（複数選択可）": [
+    "Link file or NOAA JSON files (multiple allowed)",
+    "Fichier de liaison ou fichiers JSON de la NOAA (plusieurs possibles)",
+    "Archivo de enlace o archivos JSON de NOAA (se admiten varios)",
+    "File di collegamento o file JSON NOAA (anche più di uno)",
+    "Arquivo de vínculo ou arquivos JSON da NOAA (vários permitidos)",
+    "Verknüpfungsdatei oder NOAA-JSON-Dateien (Mehrfachauswahl möglich)",
+    "연계 파일 또는 NOAA JSON 파일(여러 개 선택 가능)"
+  ],
+  "取り込む": [
+    "Import",
+    "Importer",
+    "Importar",
+    "Importa",
+    "Importar",
+    "Importieren",
+    "가져오기"
+  ],
+  "公開環境の取得用コンテナからダウンロードした連携ファイル（chuck-public-data.json）、またはNOAA SWPCのJSONファイル（観測平滑SSN・予測平滑SSN・障害レベル）を取り込み、このコンテナに保存します。連携ファイルは手元より新しいデータだけを置き換え、オンプレミスではGIROの設定も引き継ぎます。CHUCKはAPI連携でこのデータを受け取ります。予測平滑SSNは毎月更新されるため、月に1回程度取り込んでください。": [
+    "Imports a link file (chuck-public-data.json) downloaded from the fetcher container in the public environment, or NOAA SWPC JSON files (observed smoothed SSN, predicted smoothed SSN, scales), and saves them in this container. A link file replaces only data older than what it carries and, on premises, also carries over the GIRO setting. CHUCK receives this data over the API. The predicted smoothed SSN is updated monthly, so import about once a month.",
+    "Importe un fichier de liaison (chuck-public-data.json) téléchargé depuis le conteneur de récupération de l’environnement public, ou des fichiers JSON de la NOAA SWPC (SSN lissé observé, SSN lissé prévu, échelles), et les enregistre dans ce conteneur. Un fichier de liaison ne remplace que les données plus anciennes et, sur site, reprend aussi le réglage GIRO. CHUCK reçoit ces données par l’API. Le SSN lissé prévu est mis à jour chaque mois : importez environ une fois par mois.",
+    "Importa un archivo de enlace (chuck-public-data.json) descargado del contenedor de obtención del entorno público, o archivos JSON de NOAA SWPC (SSN suavizado observado, SSN suavizado previsto, escalas), y los guarda en este contenedor. Un archivo de enlace solo reemplaza los datos más antiguos y, en instalaciones locales, también traslada el ajuste de GIRO. CHUCK recibe estos datos por la API. El SSN suavizado previsto se actualiza cada mes, así que importe aproximadamente una vez al mes.",
+    "Importa un file di collegamento (chuck-public-data.json) scaricato dal container di download nell’ambiente pubblico, oppure file JSON di NOAA SWPC (SSN smussato osservato, SSN smussato previsto, scale), e li salva in questo container. Un file di collegamento sostituisce solo i dati più vecchi e, in sede, riporta anche l’impostazione GIRO. CHUCK riceve questi dati tramite API. L’SSN smussato previsto viene aggiornato ogni mese: importa circa una volta al mese.",
+    "Importa um arquivo de vínculo (chuck-public-data.json) baixado do contêiner de obtenção do ambiente público, ou arquivos JSON da NOAA SWPC (SSN suavizado observado, SSN suavizado previsto, escalas), e os salva neste contêiner. Um arquivo de vínculo só substitui dados mais antigos e, no local, também traz a configuração do GIRO. O CHUCK recebe esses dados pela API. O SSN suavizado previsto é atualizado mensalmente; importe cerca de uma vez por mês.",
+    "Importiert eine Verknüpfungsdatei (chuck-public-data.json), die aus dem Abrufcontainer der öffentlichen Umgebung heruntergeladen wurde, oder JSON-Dateien von NOAA SWPC (beobachtete geglättete SSN, vorhergesagte geglättete SSN, Skalen) und speichert sie in diesem Container. Eine Verknüpfungsdatei ersetzt nur ältere Daten und übernimmt vor Ort auch die GIRO-Einstellung. CHUCK erhält diese Daten über die API. Die vorhergesagte geglättete SSN wird monatlich aktualisiert; importieren Sie etwa einmal im Monat.",
+    "공개 환경의 가져오기 컨테이너에서 내려받은 연계 파일(chuck-public-data.json) 또는 NOAA SWPC의 JSON 파일(관측 평활 SSN·예측 평활 SSN·장애 등급)을 가져와 이 컨테이너에 저장합니다. 연계 파일은 보유 데이터보다 새로운 것만 바꾸며, 온프레미스에서는 GIRO 설정도 이어받습니다. CHUCK는 API 연계로 이 데이터를 받습니다. 예측 평활 SSN은 매월 갱신되므로 한 달에 한 번 정도 가져오세요."
+  ],
+  "入手経路": [
+    "Source",
+    "Origine",
+    "Origen",
+    "Origine",
+    "Origem",
+    "Herkunft",
+    "입수 경로"
+  ],
+  "提供元から取得": [
+    "Downloaded from the provider",
+    "Récupéré auprès du fournisseur",
+    "Obtenido del proveedor",
+    "Scaricato dal fornitore",
+    "Obtido do provedor",
+    "Beim Anbieter abgerufen",
+    "제공처에서 가져옴"
+  ],
+  "連携ファイル": [
+    "Link file",
+    "Fichier de liaison",
+    "Archivo de enlace",
+    "File di collegamento",
+    "Arquivo de vínculo",
+    "Verknüpfungsdatei",
+    "연계 파일"
+  ],
+  "NOAAファイル": [
+    "NOAA file",
+    "Fichier NOAA",
+    "Archivo de NOAA",
+    "File NOAA",
+    "Arquivo da NOAA",
+    "NOAA-Datei",
+    "NOAA 파일"
+  ],
+  "取り込みました。": [
+    "Imported.",
+    "Importé.",
+    "Importado.",
+    "Importato.",
+    "Importado.",
+    "Importiert.",
+    "가져왔습니다."
+  ],
+  "取り込めなかったデータがあります：": [
+    "Some data could not be imported:",
+    "Certaines données n’ont pas pu être importées :",
+    "Algunos datos no se pudieron importar:",
+    "Alcuni dati non sono stati importati:",
+    "Alguns dados não puderam ser importados:",
+    "Einige Daten konnten nicht importiert werden:",
+    "가져오지 못한 데이터가 있습니다:"
+  ],
+  "公開データは取得用コンテナが定期的に取得します（NOAAの月間系列は6時間、ほかは5分ごと）。オンプレミスでは管理者が取得用コンテナの管理画面で連携ファイルを取り込みます。画面の更新ボタンはサーバーにある最新のデータを表示し直すもので、提供元から取得し直すことはしません。取得時刻は提供元からの取得に成功した時刻で、観測・発行時刻とは異なります。": [
+    "Public data is fetched on a schedule by the fetcher container (NOAA monthly series every 6 hours, the rest every 5 minutes). On premises, an administrator uploads it on the fetcher container’s admin page. The refresh buttons here redisplay the latest data held by the server and never fetch again from the providers. The fetch time is when the data was last fetched successfully from the provider, which differs from the observation or issue time.",
+    "Les données publiques sont récupérées régulièrement par le conteneur de récupération (séries mensuelles NOAA toutes les 6 heures, le reste toutes les 5 minutes). Sur site, un administrateur les importe sur la page d’administration du conteneur de récupération. Les boutons d’actualisation réaffichent les données les plus récentes du serveur et ne les récupèrent jamais de nouveau auprès des fournisseurs. L’heure de récupération est celle de la dernière récupération réussie auprès du fournisseur ; elle diffère de l’heure d’observation ou de publication.",
+    "Los datos públicos los obtiene periódicamente el contenedor de obtención (series mensuales de NOAA cada 6 horas; el resto, cada 5 minutos). En instalaciones locales, un administrador los importa en la página de administración del contenedor de obtención. Los botones de actualizar vuelven a mostrar los datos más recientes del servidor y nunca los obtienen de nuevo de los proveedores. La hora de obtención es la del último éxito al obtenerlos del proveedor y difiere de la hora de observación o publicación.",
+    "I dati pubblici vengono scaricati periodicamente dal container di download (serie mensili NOAA ogni 6 ore, il resto ogni 5 minuti). In sede, un amministratore li importa nella pagina di amministrazione del container di download. I pulsanti di aggiornamento mostrano di nuovo i dati più recenti del server e non li scaricano mai di nuovo dai fornitori. L’ora di download è quella dell’ultimo download riuscito dal fornitore e differisce dall’ora di osservazione o di emissione.",
+    "Os dados públicos são obtidos periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas; o restante a cada 5 minutos). No local, um administrador os importa na página de administração do contêiner de obtenção. Os botões de atualizar exibem novamente os dados mais recentes do servidor e nunca os obtêm de novo dos provedores. O horário de obtenção é o do último sucesso ao obter do provedor e difere do horário de observação ou de emissão.",
+    "Öffentliche Daten ruft der Abrufcontainer regelmäßig ab (NOAA-Monatsreihen alle 6 Stunden, alles andere alle 5 Minuten). Vor Ort lädt ein Administrator sie auf der Verwaltungsseite des Abrufcontainers hoch. Die Aktualisierungsschaltflächen zeigen die neuesten Daten des Servers erneut an und rufen nie erneut bei den Anbietern ab. Die Abrufzeit ist der letzte erfolgreiche Abruf beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
+    "공개 데이터는 가져오기 컨테이너가 정기적으로 가져옵니다(NOAA 월간 계열은 6시간, 그 밖에는 5분마다). 온프레미스에서는 관리자가 가져오기 컨테이너의 관리 화면에서 가져옵니다. 화면의 새로 고침 버튼은 서버에 있는 최신 데이터를 다시 표시할 뿐이며, 제공처에서 다시 가져오지 않습니다. 취득 시각은 제공처에서 마지막으로 가져오기에 성공한 시각으로, 관측·발행 시각과 다릅니다."
+  ],
+  "公開データは取得用コンテナが定期的に取得します（NOAAの月間系列は6時間、ほかは5分ごと）。オンプレミスでは管理者が取得用コンテナの管理画面で連携ファイルを取り込みます。この画面は開いたときと5分ごとに、サーバーにある最新のデータを自動で表示します。取得時刻は提供元からの取得に成功した時刻で、観測・発行時刻とは異なります。": [
+    "Public data is downloaded regularly by the fetcher container (NOAA monthly series every 6 hours, others every 5 minutes). On premises, an administrator imports it on the fetcher container’s admin page. This screen automatically shows the latest data on the server when opened and every 5 minutes. The acquisition time is when the download from the provider succeeded, which differs from the observation or issue time.",
+    "Les données publiques sont téléchargées régulièrement par le conteneur de collecte (séries mensuelles NOAA toutes les 6 heures, les autres toutes les 5 minutes). Sur site, un administrateur les importe sur la page d’administration du conteneur de récupération. Cet écran affiche automatiquement les dernières données du serveur à l’ouverture et toutes les 5 minutes. L’heure d’acquisition est celle du téléchargement réussi auprès du fournisseur, distincte de l’heure d’observation ou de publication.",
+    "El contenedor de obtención descarga periódicamente los datos públicos (series mensuales de NOAA cada 6 horas, el resto cada 5 minutos). En entornos locales, un administrador los importa en la página de administración del contenedor de obtención. Esta pantalla muestra automáticamente los datos más recientes del servidor al abrirse y cada 5 minutos. La hora de obtención es cuando la descarga del proveedor tuvo éxito y difiere de la hora de observación o emisión.",
+    "I dati pubblici vengono scaricati periodicamente dal container di acquisizione (serie mensili NOAA ogni 6 ore, gli altri ogni 5 minuti). On-premise, un amministratore li importa nella pagina di amministrazione del container di download. Questa schermata mostra automaticamente i dati più recenti del server all’apertura e ogni 5 minuti. L’ora di acquisizione è quella del download riuscito dal fornitore, diversa dall’ora di osservazione o emissione.",
+    "Os dados públicos são baixados periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas, os demais a cada 5 minutos). Em ambiente local, um administrador os importa na página de administração do contêiner de obtenção. Esta tela mostra automaticamente os dados mais recentes do servidor ao abrir e a cada 5 minutos. O horário de obtenção é quando o download do provedor teve êxito, diferente do horário de observação ou emissão.",
+    "Öffentliche Daten werden regelmäßig vom Abrufcontainer abgerufen (NOAA-Monatsreihen alle 6 Stunden, andere alle 5 Minuten). Lokal importiert ein Administrator sie auf der Verwaltungsseite des Abrufcontainers. Diese Ansicht zeigt beim Öffnen und alle 5 Minuten automatisch die neuesten Daten des Servers. Die Abrufzeit ist der Zeitpunkt des erfolgreichen Abrufs beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
+    "공개 데이터는 수집 컨테이너가 정기적으로 수집합니다(NOAA 월간 계열은 6시간, 그 외는 5분마다). 온프레미스에서는 관리자가 가져오기 컨테이너의 관리 화면에서 가져옵니다. 이 화면은 열 때와 5분마다 서버의 최신 데이터를 자동으로 표시합니다. 수집 시각은 제공처에서 수집에 성공한 시각으로, 관측·발행 시각과 다릅니다."
   ]
 };

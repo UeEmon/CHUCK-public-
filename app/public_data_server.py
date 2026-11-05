@@ -5,9 +5,10 @@ itself never contacts the providers. Each source is validated with CHUCK's own
 parser and kept as <key>.raw (the provider's bytes) and <key>.json (fetched_at,
 url, sha256).
 
-CHUCK never saves or reads public data files: it receives every source from
-this container's Bearer API (GET /api/data/<key>), and files that an
-administrator uploads on the CHUCK admin page are passed here (POST /api/import).
+CHUCK never saves, reads or imports public data files: it receives every
+source from this container's Bearer API (GET /api/data/<key>). Link files and
+NOAA JSON files are imported on this container's own admin page (or with the
+Bearer API POST /api/import).
 
 Where the data comes from is HF_PUBLIC_DATA_SOURCE:
 
@@ -16,7 +17,7 @@ Where the data comes from is HF_PUBLIC_DATA_SOURCE:
   also served at GET /api/export.
 * file: on premises without internet. Nothing is downloaded; the data comes from
   a link file written by a container in the public environment, or from NOAA
-  JSON files, imported through POST /api/import.
+  JSON files, imported on this container's admin page.
 
 The fetcher's own admin page (public_data_ui.py) shows the sources and turns GIRO on or off, and
 runs the space weather daily briefing (briefing.py) with the generative AI chosen per step.
@@ -117,7 +118,7 @@ class Fetcher:
         self.export()
 
     def import_file(self, raw):
-        """Check and save a link file or a NOAA JSON file uploaded by an administrator (through CHUCK).
+        """Check and save a link file or a NOAA JSON file imported by an administrator.
         A link file replaces only older data; on premises its GIRO setting is taken over too."""
         if is_bundle(raw) or len(raw) > MAX_RAW:
             validators = {key: check for key, (_, _, _, check) in sources(giro_enabled=True).items()}
@@ -360,7 +361,7 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
             self.json(404, {'error': '見つかりません'})
 
     def import_file(self):
-        """POST /api/import: a link file or a NOAA JSON file that CHUCK received from its administrator."""
+        """POST /api/import: a link file or a NOAA JSON file, e.g. from a scheduled job (the admin page uses /ui/api/import)."""
         if not self.authorize():
             return
         if self.headers.get('Content-Type', '').split(';')[0].strip() != 'application/json':

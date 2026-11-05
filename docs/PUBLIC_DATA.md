@@ -9,7 +9,7 @@ CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・Kp指�
 | 公開環境（既定） | CHUCKと取得用コンテナを公開環境（インターネットに接続できる環境）で動かす。取得用コンテナが提供元から取得する | `HF_PUBLIC_DATA_SOURCE=internet`（既定） | API連携 |
 | オンプレミス | CHUCKと取得用コンテナをオンプレミス（インターネットに接続できない環境）で動かす。取得用コンテナは提供元へ接続せず、公開環境の取得用コンテナが書き出した連携ファイルを読み込む（ファイル連携） | `HF_PUBLIC_DATA_SOURCE=file` | API連携 |
 
-現在の状態は管理画面（`/limits-admin.html`）の「公開データの連携」に表示されます。以前のCHUCK側の設定 `HF_PUBLIC_DATA_MODE=file` は、取得用コンテナの `HF_PUBLIC_DATA_SOURCE=file` として引き続き有効です（`HF_PUBLIC_DATA_SOURCE` を設定したときはそちらが優先）。
+連携ファイル・NOAAファイルの取り込みと連携ファイルのダウンロードは取得用コンテナの管理画面だけで行います（2026-11-05から。CHUCKの管理画面からは外しました）。CHUCKとの接続状況は、CHUCKの画面の「外部データの取得時刻」に表示されます。以前のCHUCK側の設定 `HF_PUBLIC_DATA_MODE=file` は、取得用コンテナの `HF_PUBLIC_DATA_SOURCE=file` として引き続き有効です（`HF_PUBLIC_DATA_SOURCE` を設定したときはそちらが優先）。
 
 ## 取得用コンテナ
 
@@ -21,15 +21,16 @@ CHUCKが使う公開データ（NOAA SWPCの平滑SSN・障害レベル・Kp指�
   - `GET /api/data/<種類>`：提供元の応答そのもの。`X-Fetched-At` に取得時刻（UNIX秒）、`X-Origin` に入手経路（download／bundle／upload）
   - `GET /api/export`：連携ファイル
   - `GET /api/status`：各データの取得時刻、GIROの設定（`giro_enabled`）、データの取得元（`source`：internet／file）、最後にファイルを取り込んだ時刻（`imported_at`）
-  - `POST /api/import`（`Content-Type: application/json`、16 MB以下）：連携ファイルまたはNOAA SWPCのJSONファイル。CHUCKの管理画面で取り込んだファイルを、CHUCKがそのまま渡します。検証して保存し、連携ファイルは手元より新しいデータだけを置き換えます。不正なファイルは400
+  - `POST /api/import`（`Content-Type: application/json`、16 MB以下）：連携ファイルまたはNOAA SWPCのJSONファイル。定期ジョブなどからの取り込み用です（管理画面の取り込みと同じ処理）。検証して保存し、連携ファイルは手元より新しいデータだけを置き換えます。不正なファイルは400
   - `GET /api/health`：死活確認（認証なし）
 
 ## 管理画面
 
 取得用コンテナの管理画面は `http://localhost:18084/` です。公開環境のサーバーでは、ポートを直接公開せず、リバースプロキシ（Caddy）の `https://data.<ドメイン>/` から開きます（サーバー構成側で管理画面のファイルと `/ui/*` だけを中継し、Bearer API `/api/*` は中継しません。画面のファイルを増やしたときは、その許可リストにも加えてください）。SSHのポート転送でサーバー自身の18084番に接続することもできます。`.env` に16文字以上の専用パスワード `HF_PUBLIC_DATA_UI_PASSWORD`（`HF_PUBLIC_DATA_TOKEN` とは別の値）を設定し、`docker compose up -d public-data` で反映してからログインします。未設定のときはログインできません。HTTPSの後ろで使う場合は `HF_PUBLIC_DATA_UI_SECURE_COOKIE=1` も設定します。
 
-- 取得状態：データごとの提供元、更新間隔、最終取得成功時刻、直近の失敗。「今すぐ取得」で更新間隔にかかわらず全データを取得します。
+- 取得状態：データごとの提供元、更新間隔、最終取得成功時刻、入手経路（提供元から取得／連携ファイル／NOAAファイル）、直近の失敗。「今すぐ取得」で更新間隔にかかわらず全データを取得します（オンプレミスでは表示しません）。
 - 連携ファイルのダウンロード（ファイル連携用）。
+- 連携ファイルの取り込み：連携ファイル（chuck-public-data.json）またはNOAA SWPCのJSONファイルを取り込み、このコンテナに保存します（複数選択可）。
 - GIRO · 海外電離圏観測の有効化・無効化：有効にするには、利用条件（[Rules of the Road](https://giro.uml.edu/didbase/RulesOfTheRoad.html)）への適合の確認が必要です。設定は `/data/settings.json` に保存され、再起動後も保持されます。`HF_GIRO_ENABLED=1` は、管理画面で一度も設定していないときの初期値です。
 - CHUCKは取得用コンテナのGIRO設定に従います（API連携では `GET /api/status` を30秒に1回まで確認、ファイル連携では取り込んだ連携ファイルの設定）。CHUCK側でGIROを有効にする設定はありません。
 
@@ -54,8 +55,8 @@ CHUCKは計算や表示のたびに取得用コンテナへ問い合わせ、取
 2. 連携ファイルを取り出します。次のいずれかです。
    - `docker compose cp public-data:/data/export/chuck-public-data.json .`
    - `curl -H "Authorization: Bearer $HF_PUBLIC_DATA_TOKEN" http://127.0.0.1:18084/api/export -o chuck-public-data.json`
-   - 公開環境でCHUCKもAPI連携で動かしている場合は、管理画面の「オンプレミス用の連携ファイルをダウンロード」
-3. ファイルをオンプレミス環境へ持ち込み、CHUCKの管理画面「公開データの連携」で取り込みます。CHUCKはファイルを保存せず、オンプレミスの取得用コンテナへ渡します（`POST /api/import`）。
+   - 公開環境の取得用コンテナの管理画面の「連携ファイルをダウンロード」
+3. ファイルをオンプレミス環境へ持ち込み、オンプレミスの取得用コンテナの管理画面（`http://localhost:18084/`）の「連携ファイルの取り込み」で取り込みます。CHUCKの管理画面では取り込みません。
 
 オンプレミスでは `.env` に `HF_PUBLIC_DATA_SOURCE=file` を設定し、CHUCKと取得用コンテナの両方を起動します（`docker compose up -d --build`）。この設定の取得用コンテナは提供元へ一切接続せず、定期取得・「今すぐ取得」・`--once` も行いません。
 

@@ -122,6 +122,19 @@ class AdminPageTests(unittest.TestCase):
             self.assertFalse(link['connected']);self.assertTrue(link['error']);self.assertIsNotNone(link['connected_at'])
             public_data.LINK.clear()
 
+    def test_admin_page_imports_link_files_and_noaa_files(self):
+        rows=[{'time-tag':'2026-10','predicted_ssn':87.5,'predicted_f10.7':130}]
+        self.assertEqual(self.request('/ui/api/import',rows)[0],401)
+        cookie=self.login()
+        self.assertEqual(self.request('/ui/api/import',rows,cookie=cookie,headers={'Origin':'http://evil'})[0],403)
+        code,_,body=self.request('/ui/api/import',rows,cookie=cookie)
+        self.assertEqual((code,body['kind'],body['status']['sources']['predicted']['origin']),(200,'predicted','upload'))
+        self.assertEqual(self.request('/ui/api/import',{'wrong':1},cookie=cookie)[0],400)
+        bundle=json.loads(self.fetcher.bundle());bundle['sources']['predicted']['fetched_at']+=5
+        code,_,body=self.request('/ui/api/import',bundle,cookie=cookie)
+        self.assertEqual((code,body['bundle']['imported']),(200,['predicted']))
+        self.assertEqual(self.fetcher.latest('predicted')[2],'bundle')
+
     def test_manual_fetch_and_export(self):
         cookie=self.login()
         code,_,body=self.request('/ui/api/fetch',{},cookie=cookie)

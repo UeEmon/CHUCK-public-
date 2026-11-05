@@ -1,6 +1,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 let loading=false,status=null;
+const ORIGINS={download:'提供元から取得',bundle:'連携ファイル',upload:'NOAAファイル'};
 function cell(tag,text){const e=document.createElement(tag);e.textContent=text;return e;}
 function notice(text,error=false){$('notice').textContent=text;$('notice').classList.toggle('error',error);}
 function loginView(authenticated){$('management').hidden=!authenticated;$('login-panel').hidden=authenticated;$('logout').hidden=!authenticated;}
@@ -14,7 +15,7 @@ function render(){
  const sources=Object.entries(status.sources),fetched=sources.filter(([,s])=>s.fetched_at).length;
  $('fetch-now').hidden=status.source==='file';
  $('fetcher-status').textContent=(status.source==='file'?'オンプレミス（連携ファイルから読み込み） · ':'')+'取得済み '+fetched+' / '+sources.length+' · CHUCK連携 '+(status.client_enabled?'有効':'無効（HF_PUBLIC_DATA_TOKEN未設定）')+' · GIRO '+(status.giro_enabled?'有効':'無効');
- $('source-list').replaceChildren(table(['データ','提供元','更新間隔','最終取得成功 UTC','状態'],sources.map(([key,s])=>[key,s.url,interval(s.refresh_seconds),s.fetched_at?s.fetched_at.replace('T',' ').replace(/\.\d+/,'').replace('+00:00',' UTC'):'未取得',s.error||(s.fetched_at?(s.age_seconds>s.refresh_seconds*2?'古いデータ':'取得済み'):'未取得')])));
+ $('source-list').replaceChildren(table(['データ','提供元','更新間隔','最終取得成功 UTC','入手経路','状態'],sources.map(([key,s])=>[key,s.url,interval(s.refresh_seconds),s.fetched_at?s.fetched_at.replace('T',' ').replace(/\.\d+/,'').replace('+00:00',' UTC'):'未取得',ORIGINS[s.origin]||'—',s.error||(s.fetched_at?(s.age_seconds>s.refresh_seconds*2?'古いデータ':'取得済み'):'未取得')])));
  $('giro-state').textContent=status.giro_enabled?'GIROの取得は有効です。':'GIROの取得は無効です。';
  $('giro-terms').href=status.giro_terms_url;$('giro-enable').hidden=status.giro_enabled;$('giro-disable').hidden=!status.giro_enabled;
  $('giro-form').elements.terms_accepted.closest('label').hidden=status.giro_enabled;
@@ -27,6 +28,24 @@ $('login-form').onsubmit=async e=>{e.preventDefault();const field=e.currentTarge
 $('logout').onclick=async()=>{try{await api('/ui/api/logout',{});status=null;$('source-list').replaceChildren();loginView(false);notice('ログアウトしました。');}catch(e){notice(e.message,true);}};
 $('giro-form').onsubmit=e=>{e.preventDefault();saveGiro(true);};
 $('giro-disable').onclick=()=>saveGiro(false);
+$('import-form').onsubmit=async e=>{
+ // Link files and NOAA files are saved in this container; CHUCK only receives the data over the API.
+ e.preventDefault();const form=e.currentTarget,button=form.querySelector('button');button.disabled=true;
+ const failed=[];
+ try{
+  for(const file of form.elements.files.files){
+   const r=await fetch('/ui/api/import',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:await file.text()});
+   const v=await r.json().catch(()=>({}));
+   if(r.status===401){loginView(false);throw Error(v.error||'通信に失敗しました');}
+   if(!r.ok){failed.push(file.name+': '+(v.error||'通信に失敗しました'));continue;}
+   if(v.bundle?.rejected?.length)failed.push(file.name+': '+v.bundle.rejected.join(', '));
+   status=v.status;
+  }
+  form.reset();if(status)render();
+  notice(failed.length?'取り込めなかったデータがあります：'+failed.join(' / '):'取り込みました。',failed.length>0);
+ }catch(error){notice(error.message,true);}
+ finally{button.disabled=false;}
+};
 $('fetch-now').onclick=async()=>{
  const button=$('fetch-now');button.disabled=true;notice('提供元から取得しています。');
  try{status=await api('/ui/api/fetch',{});render();const failed=Object.values(status.sources).filter(s=>s.error).length;notice(failed?'取得できなかったデータがあります。状態を確認してください。':'全データを取得しました。',failed>0);}catch(e){notice(e.message,true);}finally{button.disabled=false;}

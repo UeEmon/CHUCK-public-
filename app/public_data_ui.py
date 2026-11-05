@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlparse
 import briefing as briefing_module
 import briefing_ai
 from observations import GIRO_TERMS
-from public_data import BUNDLE_FORMAT
+from public_data import BUNDLE_FORMAT, MAX_BUNDLE
 
 BASE=Path(__file__).parent
 LOCK=threading.Lock()
@@ -106,6 +106,12 @@ class PublicDataUI:
             self.ui_json(415,dict(error='application/jsonが必要です'));return True
         try:
             size=int(self.headers.get('Content-Length','0'))
+            if path=='/ui/api/import':
+                # A link file or a NOAA JSON file, saved here; CHUCK receives the data over the API.
+                if not self.ui_session():self.ui_json(401,dict(error='管理画面へログインしてください。'));return True
+                if not 0<size<=MAX_BUNDLE:raise ValueError('ファイルは16 MB以下にしてください')
+                result=self.fetcher().import_file(self.rfile.read(size))
+                self.ui_json(200,dict(result,status=self.ui_status()));return True
             if not 0<size<=65536:raise ValueError('リクエストサイズが不正です')
             data=json.loads(self.rfile.read(size))
             if not isinstance(data,dict):raise ValueError('JSONオブジェクトが必要です')
