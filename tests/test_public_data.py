@@ -38,8 +38,14 @@ class FetcherTests(unittest.TestCase):
         self.fetcher=public_data_server.Fetcher(self.tmp.name,public_data_server.sources(giro_enabled=False))
 
     def test_sources_are_fixed_and_giro_is_opt_in(self):
-        self.assertEqual(set(public_data_server.sources(giro_enabled=False)),{'observed','predicted','scales','kp','kp-forecast','drap','nict'})
-        self.assertEqual(set(public_data_server.sources(giro_enabled=True))-{'observed','predicted','scales','kp','kp-forecast','drap','nict'},{'GU513','JR055','MHJ45'})
+        base={'observed','predicted','scales','kp','kp-forecast','drap','nict','forecast-3day'}
+        self.assertEqual(set(public_data_server.sources(giro_enabled=False)),base)
+        self.assertEqual(set(public_data_server.sources(giro_enabled=True))-base,{'GU513','JR055','MHJ45'})
+
+    def test_kp_products_are_read_every_five_minutes_while_a_briefing_waits(self):
+        self.assertEqual([self.fetcher.refresh_seconds(k) for k in ('kp','kp-forecast','forecast-3day','scales','observed')],[600,3600,3600,300,21600])
+        self.fetcher.fast=lambda:True
+        self.assertEqual([self.fetcher.refresh_seconds(k) for k in ('kp','kp-forecast','forecast-3day','scales','observed')],[300,300,300,300,21600])
 
     def test_scheduled_fetch_validates_and_keeps_previous_files(self):
         with patch('public_data_server.urlopen',side_effect=provider) as get:
@@ -61,7 +67,7 @@ class FetcherTests(unittest.TestCase):
             return provider(request)
         with patch('public_data_server.urlopen',side_effect=noaa_only) as get:
             self.fetcher.refresh_due()
-        self.assertEqual(sorted(c.args[0].full_url for c in get.call_args_list),sorted([ROOT+FEEDS['scales'][0],*(ROOT+path for path,_ in KP_FEEDS.values()),public_data_server.DRAP_URL,public_data_server.NICT_URL]))
+        self.assertEqual(sorted(c.args[0].full_url for c in get.call_args_list),sorted([ROOT+FEEDS['scales'][0],*(ROOT+path for path,_ in KP_FEEDS.values()),public_data_server.THREE_DAY_URL,public_data_server.DRAP_URL,public_data_server.NICT_URL]))
 
     def test_saved_files_are_checked_when_read(self):
         with patch('public_data_server.urlopen',side_effect=provider):self.fetcher.fetch('observed')

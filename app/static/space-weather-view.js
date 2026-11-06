@@ -179,16 +179,19 @@ function renderSwvSources(){
 
 // CHUCK SPACE WEATHER BRIEF: the daily video the fetcher published, with its two voices and eight subtitle languages.
 const SWV_BRIEF_LANGS=['ja','en','fr','es','it','pt','de','ko'],SWV_BRIEF_NAMES={ja:'日本語',en:'English',fr:'Français',es:'Español',it:'Italiano',pt:'Português',de:'Deutsch',ko:'한국어'};
-function swvBriefUrl(item,name){return '/api/space-weather/briefing/'+item.run_date_utc+'/'+name;}
+// A day can have a 12:00 UTC edition beside the daily one; release_id tells them apart (older releases have only the date).
+function swvBriefId(item){return item.release_id||item.run_date_utc;}
+function swvBriefLabel(item){return item.run_date_utc+(item.edition_hour_utc?' 12:00 UTC':'');}
+function swvBriefUrl(item,name){return '/api/space-weather/briefing/'+swvBriefId(item)+'/'+name;}
 function renderSwvBrief(){
  const items=swv.brief?.items||[],panel=$('swv-brief-panel');panel.hidden=!items.length;if(!items.length)return;
  const dates=$('swv-brief-date'),chosen=dates.value;
- dates.replaceChildren(...items.map(i=>{const o=cell('option',i.run_date_utc);o.value=i.run_date_utc;return o;}));
- dates.value=items.some(i=>i.run_date_utc===chosen)?chosen:items[0].run_date_utc;
+ dates.replaceChildren(...items.map(i=>{const o=cell('option',swvBriefLabel(i));o.value=swvBriefId(i);return o;}));
+ dates.value=items.some(i=>swvBriefId(i)===chosen)?chosen:swvBriefId(items[0]);
  if(dates.value!==swv.briefShown)playSwvBrief(false);
 }
 function playSwvBrief(keepTime=true){
- const item=(swv.brief?.items||[]).find(i=>i.run_date_utc===$('swv-brief-date').value);if(!item)return;
+ const item=(swv.brief?.items||[]).find(i=>swvBriefId(i)===$('swv-brief-date').value);if(!item)return;
  const video=$('swv-brief-video'),at=keepTime?video.currentTime:0,playing=keepTime&&!video.paused,ui=document.documentElement.lang||'ja';
  // The voices of this day's video; the viewer's choice is kept while it exists, otherwise the UI language, otherwise the first.
  const audio=$('swv-brief-audio'),voices=item.audio?.length?item.audio:['en'],kept=audio.value;
@@ -198,7 +201,7 @@ function playSwvBrief(keepTime=true){
  video.replaceChildren();video.src=swvBriefUrl(item,'video_'+audio.value+'.mp4');
  for(const lang of item.subtitles||[]){const t=document.createElement('track');t.kind='subtitles';t.srclang=lang;t.label=SWV_BRIEF_NAMES[lang]||lang;t.src=swvBriefUrl(item,'subtitles/'+lang+'.vtt');if(lang===subtitle)t.default=true;video.append(t);}
  video.addEventListener('loadedmetadata',()=>{if(at)video.currentTime=at;if(playing)video.play().catch(()=>{});},{once:true});
- swv.briefShown=item.run_date_utc;
+ swv.briefShown=swvBriefId(item);
  const box=$('swv-brief-sources');box.replaceChildren(document.createTextNode('出典: '));
  (item.sources||[]).forEach((src,n)=>{const a=cell('a',src.label);a.href=src.url;a.target='_blank';a.rel='noopener noreferrer';box.append(...(n?[document.createTextNode(' · ')]:[]),a);});
  box.append(document.createTextNode(' · 公開 '+observedTime(item.published_at)));

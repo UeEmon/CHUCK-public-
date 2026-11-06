@@ -8,8 +8,10 @@ Rules this module keeps (see docs/SPACE_WEATHER_BRIEFING.md):
 
 * Times are UTC. The observation window is the previous day 00:00 to the run day 00:00 UTC
   (end excluded). From 00:00 UTC the scheduler starts as soon as every required product is complete,
-  fresh and cleared (the data is frozen then); at 02:30 UTC it starts whatever it has. Production must
-  finish by 03:00 UTC. A run outside 00:00-03:00 UTC on its day is a test run and ends in HOLD.
+  fresh, cleared and updated for the day (the Kp forecast: NOAA's 3-day forecast issued at 00:30 UTC);
+  at 02:30 UTC it starts whatever it has. Production must finish by 03:00 UTC. A run outside 00:00-03:00
+  UTC on its day is a test run and ends in HOLD. An optional 12:00 UTC edition (off by default) does the
+  same twelve hours later: the 24 hours to 12:00 UTC, NOAA's 12:30 issue, 14:30 and 15:00 UTC.
 * Numbers are never written by an AI. Each value is a {{token}} the AI may only place; this code
   fills every language from the same structured value, then checks that every language holds the
   same tokens and no other digits.
@@ -125,12 +127,13 @@ CATALOG = {
            'required': True, 'expected_frequency': 'PT3H', 'max_age_seconds': 6 * 3600, 'license_id': 'noaa-nws-public',
            'rights_evidence_url': NOAA_TERMS, 'public': True, 'external_ai': True,
            'attribution': 'Source: NOAA / NWS Space Weather Prediction Center (SWPC).',
-           'cutoff_rule': 'all eight 3-hour intervals of the previous UTC day (00:00 to 24:00, end excluded)', 'fallback_policy': 'HOLD'},
+           'cutoff_rule': 'all eight 3-hour intervals of the 24 hours before the cutoff (00:00, or 12:00 for the 12:00 edition; end excluded)', 'fallback_policy': 'HOLD'},
     'kp-forecast': {'label': 'NOAA SWPC planetary Kp 3-day forecast', 'source': 'NOAA SWPC', 'url': ROOT + ALL_FEEDS['kp-forecast'][0],
                     'required': True, 'expected_frequency': 'PT1H', 'max_age_seconds': 3 * 3600, 'license_id': 'noaa-nws-public',
                     'rights_evidence_url': NOAA_TERMS, 'public': True, 'external_ai': True,
                     'attribution': 'Source: NOAA / NWS Space Weather Prediction Center (SWPC).',
-                    'cutoff_rule': 'latest forecast fetched by the freeze, forecast rows after the freeze on each of the run day and the next two days',
+                    'cutoff_rule': 'latest forecast fetched by the freeze, forecast rows after the freeze on each of the run day and the next two days; '
+                                   'the scheduler waits for the issue after the cutoff (00:30 or 12:30 UTC, from the 3-day forecast text)',
                     'fallback_policy': 'HOLD'},
     'drap': {'label': 'NOAA SWPC D-RAP global absorption', 'source': 'NOAA SWPC', 'url': DRAP_URL, 'required': False,
              'expected_frequency': 'PT5M', 'max_age_seconds': 3600, 'license_id': 'noaa-nws-public', 'rights_evidence_url': NOAA_TERMS,
@@ -185,15 +188,34 @@ def check_rights(value):
 
 # ---- the UTC timetable -----------------------------------------------------------------------
 
-def schedule(run_date):
-    start = datetime.combine(run_date, datetime.min.time(), timezone.utc)
+EDITIONS = (0, 12)  # the hour (UTC) each edition's observation window ends; 0 is the daily one, 12 is optional
+
+
+def release_id(run_date, hour=0):
+    """The name of one edition's release: the date for the daily 00:00 edition, the date and T12 for the 12:00 one."""
+    return run_date if not hour else f'{run_date}T{hour:02d}'
+
+
+RELEASE = re.compile(r'\d{4}-\d{2}-\d{2}(T12)?')
+
+
+def split_release(value):
+    """(run_date, hour) of a release name, or None."""
+    if not isinstance(value, str) or not RELEASE.fullmatch(value):
+        return None
+    return value[:10], int(value[11:]) if len(value) > 10 else 0
+
+
+def schedule(run_date, hour=0):
+    start = datetime.combine(run_date, datetime.min.time(), timezone.utc) + timedelta(hours=hour)
     return {'run_date': run_date.isoformat(), 'window_start': start - timedelta(hours=OBSERVATION_HOURS), 'window_end': start,
             'freeze': start + FREEZE, 'deadline': start + DEADLINE}
 
 
-def phase(now, run_date):
-    """Where the day's timetable stands: WAITING_FOR_0000, RETRYING_UNTIL_0230, FREEZE_WINDOW or DEADLINE_PASSED."""
-    s = schedule(run_date)
+def phase(now, run_date, hour=0):
+    """Where the edition's timetable stands: WAITING_FOR_0000, RETRYING_UNTIL_0230, FREEZE_WINDOW or DEADLINE_PASSED
+    (for the 12:00 edition the same names stand for 12:00, 14:30 and 15:00 UTC)."""
+    s = schedule(run_date, hour)
     if now < s['window_end']:
         return 'WAITING_FOR_0000'
     if now < s['freeze']:
@@ -230,15 +252,68 @@ def load(raw, key, fetched_at, url, origin):
     return item
 
 
+# NOAA's 3-day forecast text. It is not a source of any value; it only says when the Kp forecast was issued
+# (the JSON product does not), so the scheduler can wait for the issue that follows its edition's cutoff.
+THREE_DAY = 'forecast-3day'
+THREE_DAY_URL = ROOT + 'text/3-day-forecast.txt'
+NOAA_MONTHS = {m: n for n, m in enumerate(('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'), 1)}
+
+
+def parse_three_day(text):
+    """The issue time and the Kp breakdown of NOAA's 3-day forecast: {'issued': ISO time, 'kp': {time_tag: Kp}}."""
+    issued = re.search(r'^:Issued:\s+(\d{4}) (\w{3}) (\d{2}) (\d{2})(\d{2}) UTC', text, re.M)
+    header = re.search(r'^NOAA Kp index breakdown (\w{3}) \d{2}-(\w{3}) \d{2} (\d{4})\s*$', text, re.M)
+    if not issued or not header or issued.group(2) not in NOAA_MONTHS or header.group(2) not in NOAA_MONTHS:
+        raise ValueError('not a 3-day forecast')
+    lines = text[header.end():].splitlines()
+    columns = next((line for line in lines if line.strip()), '')
+    days = re.findall(r'(\w{3}) (\d{2})', columns)
+    if len(days) != 3 or any(m not in NOAA_MONTHS for m, _ in days):
+        raise ValueError('no Kp breakdown columns')
+    last_month, year = NOAA_MONTHS[header.group(2)], int(header.group(3))
+    # A breakdown across New Year names the later year; its December columns belong to the year before.
+    dates = [Date(year - (NOAA_MONTHS[m] > last_month), NOAA_MONTHS[m], int(d)) for m, d in days]
+    kp = {}
+    for line in lines:
+        row = re.match(r'\s*(\d{2})-\d{2}UT\s+(.*)$', line)
+        if not row:
+            continue
+        values = re.findall(r'(\d+(?:\.\d+)?)(?:\s*\(G\d\))?', row.group(2))
+        if len(values) != 3:
+            raise ValueError('Kp breakdown row without three values')
+        for day, value in zip(dates, values):
+            kp[f'{day.isoformat()}T{row.group(1)}:00:00'] = float(value)
+    if len(kp) != 24:
+        raise ValueError('Kp breakdown incomplete')
+    moment = datetime(int(issued.group(1)), NOAA_MONTHS[issued.group(2)], int(issued.group(3)), int(issued.group(4)), int(issued.group(5)), tzinfo=timezone.utc)
+    return {'issued': moment.isoformat(), 'kp': kp}
+
+
+def forecast_issue(three_day_raw, forecast_data):
+    """When the Kp forecast in the JSON product was issued: the 3-day forecast's issue time, provided every Kp the
+    JSON still marks 'predicted' equals that issue's breakdown (at least eight 3-hour slots compared). None otherwise."""
+    try:
+        issue = parse_three_day(three_day_raw.decode('utf-8', errors='replace')) if three_day_raw else None
+    except ValueError:
+        return None
+    if not issue:
+        return None
+    compared = [(r['kp'], issue['kp'][r['time'].replace(' ', 'T')[:19]]) for r in kp_rows(forecast_data)
+                if r['kind'] == 'predicted' and r['time'].replace(' ', 'T')[:19] in issue['kp']]
+    if len(compared) < 8 or any(abs(a - b) > 0.005 for a, b in compared):
+        return None
+    return issue['issued']
+
+
 def fetcher_files(directory):
     """Raw bytes and fetch times from the fetcher's own files: {key: (raw, fetched_at, url)}."""
     result = {}
-    for key, item in CATALOG.items():
+    for key, url in [(k, item['url']) for k, item in CATALOG.items()] + [(THREE_DAY, THREE_DAY_URL)]:
         try:
             raw, fetched_at, _ = read_file(Path(directory), key)
         except StoreError:
             continue
-        result[key] = (raw, fetched_at, item['url'])
+        result[key] = (raw, fetched_at, url)
     return result
 
 
@@ -268,9 +343,18 @@ def mock_files(run_date, frozen_at):
     for lat in range(90, -91, -30):
         drap.append(f'{lat} | ' + ' '.join('%.1f' % (max(0.0, 12 - abs(lat - 15) / 6 - abs(lon - 30) / 12)) for lon in lons))
     fetched = frozen_at.timestamp() - 120
+    # NOAA's 3-day forecast text for the same rows, issued at 00:30 (or 12:30) UTC before the freeze.
+    issued = datetime.combine(frozen_at.date(), datetime.min.time(), timezone.utc) + timedelta(hours=12 if frozen_at.hour >= 12 else 0, minutes=30)
+    names = [(start + timedelta(days=n)).strftime('%b %d') for n in range(3)]
+    three_day = [':Product: 3-Day Forecast', ':Issued: ' + issued.strftime('%Y %b %d %H%M') + ' UTC', '',
+                 f'NOAA Kp index breakdown {names[0]}-{names[2]} {(start + timedelta(days=2)).year}', '',
+                 '             ' + '       '.join(names)]
+    for k in range(8):
+        value = '%.2f' % [2.67, 3.33, 4.0, 5.33, 4.67, 3.0, 2.33, 3.67][k]
+        three_day.append(f'{3 * k:02d}-{(3 * k + 3) % 24:02d}UT       ' + '         '.join([value] * 3))
     items = {'scales': json.dumps(scales).encode(), 'kp': json.dumps(observed).encode(), 'kp-forecast': json.dumps(forecast).encode(),
-             'drap': '\n'.join(drap).encode()}
-    return {key: (raw, fetched, CATALOG[key]['url']) for key, raw in items.items()}
+             'drap': '\n'.join(drap).encode(), THREE_DAY: '\n'.join(three_day).encode()}
+    return {key: (raw, fetched, CATALOG[key]['url'] if key in CATALOG else THREE_DAY_URL) for key, raw in items.items()}
 
 
 def snapshot(files, folder):
@@ -284,7 +368,7 @@ def snapshot(files, folder):
 
 def snapshot_files(folder):
     result = {}
-    for key in CATALOG:
+    for key in (*CATALOG, THREE_DAY):
         try:
             raw, fetched_at, _ = read_file(folder, key)
             meta = json.loads((folder / (key + '.json')).read_text())
@@ -296,9 +380,9 @@ def snapshot_files(folder):
 
 # ---- facts --------------------------------------------------------------------------------------
 
-def collect(files, run_date, frozen_at, rights_table):
+def collect(files, run_date, frozen_at, rights_table, hour=0):
     """Product checks and the values a briefing may state, computed with CHUCK's own view functions."""
-    s = schedule(run_date)
+    s = schedule(run_date, hour)
     feeds = {}
     for key in CATALOG:
         raw, fetched_at, url = files.get(key, (None, None, CATALOG[key]['url']))
@@ -312,7 +396,7 @@ def collect(files, run_date, frozen_at, rights_table):
                          'invalid': feeds[key]['invalid'], 'detail': detail, 'rights': rights_state, 'used': bool(used and complete and fresh and r['public']),
                          'url': item['url'], 'license_id': item['license_id'], 'fetched_at': utc(datetime.fromtimestamp(feeds[key]['fetched_at'], timezone.utc)) if feeds[key]['fetched_at'] else None,
                          'sha256': feeds[key]['sha256'], 'times': times or {},
-                         # Whether the product's own content shows an update since the run day's 00:00 UTC (None: not checked).
+                         # Whether the product's own content shows an update since the edition's cutoff (None: not checked).
                          'updated_since_0000': updated}
 
     # R/S/G: the same reading as the space weather tab.
@@ -332,7 +416,7 @@ def collect(files, run_date, frozen_at, rights_table):
     complete = len(window) == 8
     latest = kp['latest']
     fresh = complete and latest is not None and (frozen_at - datetime.fromisoformat(latest['time'])).total_seconds() <= CATALOG['kp']['max_age_seconds']
-    # The window's last interval (21:00-24:00) is only observed after 00:00, so a complete window is an update since then.
+    # The window's last interval (21:00-24:00, or 09:00-12:00) is only observed after the cutoff, so a complete window is an update since then.
     product('kp', complete, fresh, None if complete else f'{len(window)} of 8 intervals in the window',
             times={'window_start': utc(s['window_start']), 'window_end': utc(s['window_end']), 'latest': latest and latest['time']}, updated=complete)
     # The outlook: the forecast product's rows still ahead of the freeze. NOAA marks the rest of the current
@@ -345,12 +429,14 @@ def collect(files, run_date, frozen_at, rights_table):
     complete = all(predicted.get(d) for d in outlook_dates)
     fetched = feeds['kp-forecast']['fetched_at']
     fresh = complete and fetched is not None and 0 <= frozen_at.timestamp() - fetched <= CATALOG['kp-forecast']['max_age_seconds'] + 300
-    # The product gives no issue time. NOAA marks the current day's rows 'estimated' (or 'observed') and later days
-    # 'predicted', so a run-day row that is no longer 'predicted' shows the product was made on the run day.
-    today = run_date.isoformat()
-    updated = any(r['time'][:10] == today and r['kind'] != 'predicted' for r in kp_rows(feeds['kp-forecast']['data']))
+    # The product gives no issue time; NOAA's 3-day forecast text does (00:30 and 12:30 UTC). The JSON counts as that
+    # issue only when its predicted Kp equal the text's breakdown, so the edition waits for the issue after its cutoff.
+    issued = forecast_issue(files.get(THREE_DAY, (None,))[0], feeds['kp-forecast']['data'])
+    updated = issued is not None and datetime.fromisoformat(issued) >= s['window_end']
     product('kp-forecast', complete, fresh, None if complete else 'predicted rows missing for a day of the outlook',
-            times={'issue_time': None, 'issue_time_note': 'not given in the product; fetched_at is the retrieval time'}, updated=updated)
+            times={'issue_time': issued and utc(datetime.fromisoformat(issued)),
+                   'issue_time_note': 'from NOAA\'s 3-day forecast text, matched to this product\'s predicted Kp' if issued
+                   else 'no matching 3-day forecast issue; fetched_at is the retrieval time'}, updated=updated)
     # D-RAP (optional).
     drap = feeds['drap']['data']
     peak = None
@@ -374,7 +460,8 @@ def collect(files, run_date, frozen_at, rights_table):
         values[name] = {'value': value, 'kind': kind, 'source': source, 'meaning': meaning, 'unit': unit, 'time': time_}
 
     put('date', run_date.isoformat(), 'date', None, 'the publication date (UTC); not the day the observations cover', 'date')
-    put('observed_date', s['window_start'].date().isoformat(), 'date', None, 'the UTC day the 24-hour observations cover', 'date')
+    if not hour:  # the 12:00 edition's window spans two days
+        put('observed_date', s['window_start'].date().isoformat(), 'date', None, 'the UTC day the 24-hour observations cover', 'date')
     put('window_start', s['window_start'].isoformat(), 'time', None, 'start of the 24-hour observation window (date and time)', 'datetime')
     put('window_end', s['window_end'].isoformat(), 'time', None, 'end of the 24-hour observation window (date and time)', 'datetime')
     put('hours_24', 24, 'constant', None, 'length of the observation window in hours', 'hours')
@@ -424,7 +511,7 @@ def collect(files, run_date, frozen_at, rights_table):
     chart = {'kp_rows': [r for r in kp['rows'] if start <= r['time']][:40] if products['kp']['used'] else [],
              'drap': drap if products['drap']['used'] else None, 'scales_days': scales['days'] if products['scales']['used'] else [],
              'outlook_dates': outlook_dates}
-    return {'products': products, 'values': values, 'chart': chart,
+    return {'products': products, 'values': values, 'chart': chart, 'timing': s, 'hour': hour,
             'kp_series_latest': latest, 'kp_series_forecast_max': kp['forecast_max']}
 
 
@@ -805,7 +892,7 @@ def kp_chart(slide, rows, window_end, x0, y0, w, h):
     bw = max(2, w / ((end - start) / 10800) - 3)
     cut = x0 + (window_end.timestamp() - start) / (end - start) * w
     slide.raw(f'<line x1="{cut:.1f}" x2="{cut:.1f}" y1="{y0}" y2="{y0 + h}" stroke="{MUTED}" stroke-dasharray="3 3"/>')
-    slide.text(cut + 6, y0 + 16, '00:00 UTC cutoff', 16, MUTED)
+    slide.text(cut + 6, y0 + 16, window_end.strftime('%H:%M') + ' UTC cutoff', 16, MUTED)
     for r in rows:
         x = x0 + (datetime.fromisoformat(r['time']).timestamp() - start) / (end - start) * w
         top = y0 + h - r['kp'] / 9 * h
@@ -847,7 +934,10 @@ def drap_map(slide, grid, x0, y0, w, h):
 def slides(facts, run_date, mock, frozen_at=None):
     """One English slide per segment, drawn from the structured values only. frozen_at is when the data was frozen."""
     values, chart, products = facts['values'], facts['chart'], facts['products']
-    frozen = frozen_at.astimezone(timezone.utc).strftime('%H:%M') if frozen_at else '02:30'
+    timing = facts['timing']
+    frozen = frozen_at.astimezone(timezone.utc).strftime('%H:%M') if frozen_at else utc(timing['freeze'])[11:16]
+    # The 12:00 edition names itself in every slide's header.
+    run_date = run_date + (' 12:00 UTC edition' if facts.get('hour') else '')
     v = lambda name: values[name]['value'] if name in values else None
     footer = ('MOCK DATA - NOT FOR RELEASE  |  ' if mock else '') + 'Automated briefing  |  Data: NOAA SWPC  |  Not an official forecast'
     result = {}
@@ -858,7 +948,6 @@ def slides(facts, run_date, mock, frozen_at=None):
     s.text(954, 210, 'Max Kp, past 24 h', 22, MUTED)
     s.text(954, 290, fmt(v('kp_max24')), 60, weight='700')
     s.text(954, 336, 'Latest Kp ' + fmt(v('kp_latest')), 20, MUTED)
-    timing = schedule(Date.fromisoformat(run_date))
     s.text(64, 420, 'Observation window: ' + utc(timing['window_start']) + ' to ' + utc(timing['window_end']) + ' (end excluded)', 20, MUTED)
     s.text(64, 452, 'Levels: NOAA SWPC scales. Values are observations unless marked as forecast.', 20, MUTED)
     result['overview'] = s
@@ -873,7 +962,7 @@ def slides(facts, run_date, mock, frozen_at=None):
         s.text(380, 300, 'D-RAP absorption: not available', 26, MUTED)
     result['solar'] = s
     s = Slide('geomagnetic', run_date, footer, frozen)
-    kp_chart(s, chart['kp_rows'], schedule(Date.fromisoformat(run_date))['window_end'], 110, 200, 1080, 300)
+    kp_chart(s, chart['kp_rows'], timing['window_end'], 110, 200, 1080, 300)
     s.text(110, 590, 'Max Kp in window ' + fmt(v('kp_max24')) + '  (G' + fmt(v('g_kp_max24')) + ')   Latest Kp ' + fmt(v('kp_latest')), 24)
     s.text(110, 624, 'Ionosphere (NICT): ' + ('foF2 ' + fmt(v('nict_fof2')) + ' MHz at ' + v('nict_station') if 'nict_fof2' in values
                                              else 'not included (rights pending or data missing)'), 18, MUTED)
@@ -1125,7 +1214,7 @@ def cost(call, pricing):
             'price_checked_on': per('checked_on'), 'invoice_reconciled_usd': None}
 
 
-def cost_report(run, calls, pricing, mock, budget, render_seconds):
+def cost_report(run, calls, pricing, mock, budget, render_seconds, runs_per_day=1):
     rows = [dict(c, **cost(c, pricing)) for c in calls]
     api = [r for r in rows if r['status'] not in ('cache_hit', 'mock')]
     measured = [r['calculated_usd_from_measured_usage'] for r in api]
@@ -1142,7 +1231,8 @@ def cost_report(run, calls, pricing, mock, budget, render_seconds):
               'estimated_text_usd': round(sum(estimated), 6) if estimated and all(v is not None for v in estimated) else None,
               'retry_or_failed_calls': sum(r['status'] not in ('completed', 'cache_hit', 'mock') for r in rows),
               'batch_api': 'not used: this build calls the synchronous APIs only (see docs)',
-              'monthly_projection_usd': round(measured_total * 30, 4) if measured_total is not None else None,
+              # Thirty days of this run's cost, times the editions made each day (two when the 12:00 edition is on).
+              'monthly_projection_usd': round(measured_total * 30 * runs_per_day, 4) if measured_total is not None else None,
               'budget_usd_per_run': budget, 'ffmpeg_render_seconds_measured': render_seconds, 'model_calls': rows}
     if mock:
         report.update(api_calls=0, metered_tokens=None, measured_provider_cost=None, calculated_usd_from_measured_usage=None,
@@ -1195,7 +1285,7 @@ class Briefing:
                     qa = json.loads((run / 'qa_report.json').read_text())
                 except (OSError, ValueError):
                     continue
-                rows.append({k: qa.get(k) for k in ('run_date_utc', 'run_id', 'mode', 'release_state', 'hold_reasons', 'finished_at')})
+                rows.append({k: qa.get(k) for k in ('run_date_utc', 'edition_hour_utc', 'run_id', 'mode', 'release_state', 'hold_reasons', 'finished_at')})
         return rows[:30]
 
     def file(self, run_date, run_id, name):
@@ -1214,39 +1304,61 @@ class Briefing:
         return {'flags': release_flags(), 'settings': self.settings.snapshot(), 'running': self.running, 'state': self.state,
                 'last_error': self.last_error, 'now': utc(now), 'phase': phase(now, today),
                 'timetable': {k: utc(v) if isinstance(v, datetime) else v for k, v in schedule(today).items()},
+                'editions': [{'hour': h, 'phase': phase(now, today, h),
+                              'timetable': {k: utc(v) if isinstance(v, datetime) else v for k, v in schedule(today, h).items()}}
+                             for h in self.editions()],
                 'catalog': {k: {f: v[f] for f in ('label', 'required', 'url', 'license_id', 'rights_evidence_url', 'public', 'external_ai', 'cutoff_rule')}
                             for k, v in CATALOG.items()},
                 'rights': rights(self.settings.read()['rights']), 'not_connected': NOT_CONNECTED,
                 'latest': latest, 'history': self.history(), 'published': self.published()}
 
     # scheduling: off unless HF_BRIEFING_SCHEDULER_ENABLED=1, and then only local files
-    def due(self, now=None):
-        """Whether the scheduler starts the day's run now: from 00:00 UTC as soon as the required data is ready,
-        and at 02:30 UTC in any case (a run without its data then ends in HOLD and says why)."""
-        now = now or self.clock()
-        when = phase(now, now.date())
-        if not release_flags()['scheduler_enabled'] or self.running or when not in ('RETRYING_UNTIL_0230', 'FREEZE_WINDOW'):
-            return False
-        # A day already published is not made again (the second try is for a day that held or failed). Checking
-        # whether the data is ready starts nothing, so it never uses up a try.
-        if self.scheduled.get(now.date().isoformat(), 0) >= 2 or (self.root / 'published' / now.date().isoformat()).is_dir():
-            return False
-        return when == 'FREEZE_WINDOW' or self.ready(now)
+    def editions(self):
+        """The editions the scheduler makes: 00:00 UTC always, 12:00 UTC when chosen on the admin page."""
+        return EDITIONS if self.settings.read().get('noon_edition') else EDITIONS[:1]
 
-    def ready(self, now):
-        """Every required product is complete, fresh, cleared and updated since the run day's 00:00 UTC (by its own
+    def window_open(self, now=None):
+        """Whether an edition's production window (cutoff to deadline) is open, when the fetcher reads the Kp products more often."""
+        now = now or self.clock()
+        return any(phase(now, now.date(), h) in ('RETRYING_UNTIL_0230', 'FREEZE_WINDOW') for h in self.editions())
+
+    def due(self, now=None):
+        """The edition the scheduler starts now, as (run_date, hour), or None: from the cutoff (00:00, or 12:00 UTC) as
+        soon as the required data is ready, and at the freeze (02:30, or 14:30 UTC) in any case (a run without its data
+        then ends in HOLD and says why)."""
+        now = now or self.clock()
+        if not release_flags()['scheduler_enabled'] or self.running:
+            return None
+        day = now.date().isoformat()
+        for hour in self.editions():
+            when = phase(now, now.date(), hour)
+            if when not in ('RETRYING_UNTIL_0230', 'FREEZE_WINDOW'):
+                continue
+            # An edition already published is not made again (the second try is for one that held or failed). Checking
+            # whether the data is ready starts nothing, so it never uses up a try.
+            name = release_id(day, hour)
+            if self.scheduled.get(name, 0) >= 2 or (self.root / 'published' / name).is_dir():
+                continue
+            if when == 'FREEZE_WINDOW' or self.ready(now, hour):
+                return day, hour
+        return None
+
+    def ready(self, now, hour=0):
+        """Every required product is complete, fresh, cleared and updated since the edition's cutoff (by its own
         content, not by the download time) in the fetcher's files as of now."""
         try:
-            facts = collect(fetcher_files(self.data), now.date(), now, rights(self.settings.read()['rights']))
+            facts = collect(fetcher_files(self.data), now.date(), now, rights(self.settings.read()['rights']), hour)
         except Exception:
             return False
         required = [p for p in facts['products'].values() if p['required']]
         return bool(required) and all(p['complete'] and p['fresh'] and p['rights'] == 'CLEARED' and p['updated_since_0000'] for p in required)
 
-    def start(self, mode='live', run_date=None, scheduled=False):
+    def start(self, mode='live', run_date=None, scheduled=False, hour=0):
         """Start one run in the background; False when a run is already going."""
         if mode not in ('mock', 'live', 'replay'):
             raise ValueError('実行方式が不正です')
+        if hour not in EDITIONS:
+            raise ValueError('版が不正です')
         run_date = run_date or self.clock().date().isoformat()
         if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', run_date):
             raise ValueError('日付が不正です')
@@ -1254,17 +1366,18 @@ class Briefing:
         with self.lock:
             if self.running:
                 return False
-            self.running = {'mode': mode, 'run_date': run_date, 'started_at': utc(self.clock())}
+            self.running = {'mode': mode, 'run_date': run_date, 'hour': hour, 'started_at': utc(self.clock())}
             if scheduled:
-                self.scheduled[run_date] = self.scheduled.get(run_date, 0) + 1
-        threading.Thread(target=self.background, args=(mode, run_date, scheduled), daemon=True).start()
+                name = release_id(run_date, hour)
+                self.scheduled[name] = self.scheduled.get(name, 0) + 1
+        threading.Thread(target=self.background, args=(mode, run_date, scheduled, hour), daemon=True).start()
         return True
 
-    def background(self, mode, run_date, scheduled):
+    def background(self, mode, run_date, scheduled, hour=0):
         try:
             if scheduled and self.refresh:
                 self.refresh()
-            self.run(mode, run_date, scheduled=scheduled)
+            self.run(mode, run_date, scheduled=scheduled, hour=hour)
             self.last_error = None
         except BriefingError as error:
             self.last_error = {'at': utc(self.clock()), 'error': str(error)}
@@ -1274,11 +1387,12 @@ class Briefing:
         finally:
             self.running = None
 
-    def run(self, mode, run_date, now=None, replay_of=None, scheduled=False):
-        """One complete run. Returns the quality report; publishes only as release_flags() and the gates allow."""
+    def run(self, mode, run_date, now=None, replay_of=None, scheduled=False, hour=0):
+        """One complete run of an edition (hour 0 or 12). Returns the quality report; publishes only as release_flags()
+        and the gates allow."""
         started = time.monotonic()
         day = Date.fromisoformat(run_date)
-        timing = schedule(day)
+        timing = schedule(day, hour)
         mock = mode == 'mock'
         real_now = now or self.clock()
         # A mock run simulates the scheduled freeze; live and replay runs use the real clock.
@@ -1306,7 +1420,7 @@ class Briefing:
             files = fetcher_files(self.data)
         snapshot(files, out / 'raw')
         note('FROZEN', frozen_at=utc(frozen_at))
-        facts = collect(files, day, frozen_at, rights_table)
+        facts = collect(files, day, frozen_at, rights_table, hour)
         products, values = facts['products'], facts['values']
         gates = {}
 
@@ -1321,7 +1435,7 @@ class Briefing:
              [k + ': PENDING_RIGHTS' for k, p in required.items() if p['rights'] != 'CLEARED'] or None)
         on_time = timing['window_end'] <= frozen_at < timing['deadline']
         calls, texts, review = [], None, None
-        manifest = {'run_date_utc': run_date, 'run_id': run_id, 'mode': mode, 'frozen_at': utc(frozen_at),
+        manifest = {'run_date_utc': run_date, 'edition_hour_utc': hour, 'run_id': run_id, 'mode': mode, 'frozen_at': utc(frozen_at),
                     'observation_window': {'start': utc(timing['window_start']), 'end': utc(timing['window_end']), 'end_excluded': True},
                     'products': products, 'not_connected': NOT_CONNECTED, 'mock': mock}
         (out / 'sources_manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=1))
@@ -1382,17 +1496,19 @@ class Briefing:
             gate('LANGUAGES_COMPLETE', False, 'not produced: required data missing or not cleared')
         gate('FACTS_VALID', not problems and texts is not None, problems or None)
         gate('MEDIA_VALID', media['ok'], media.get('problems') or None)
-        report = cost_report({'run_date': run_date, 'run_id': run_id, 'mode': mode}, calls, state['pricing'], mock, state['budget_usd_per_run'], render_seconds)
+        report = cost_report({'run_date': run_date, 'run_id': run_id, 'mode': mode}, calls, state['pricing'], mock, state['budget_usd_per_run'], render_seconds,
+                             2 if state.get('noon_edition') else 1)
         budget = state['budget_usd_per_run']
         spent = report['calculated_usd_from_measured_usage'] if report['calculated_usd_from_measured_usage'] is not None else report['estimated_text_usd']
         gate('BUDGET_OK', True if budget is None or mock or not report['api_calls'] else spent is not None and spent <= budget,
              'no budget set' if budget is None else None if spent is not None else 'cost could not be calculated (price missing)')
         gate('REVIEW_OK', None if review is None else passed(review), review and (review.get('issues') or None))
-        gate('SCHEDULE_OK', on_time, None if on_time else 'test run outside 00:00-03:00 UTC on the run date')
+        span = f'{hour:02d}:00-{hour + 3:02d}:00 UTC'
+        gate('SCHEDULE_OK', on_time, None if on_time else f'test run outside {span} on the run date')
         gate('PRODUCTION_INPUT', not mock, 'mock data' if mock else None)
         finished = self.clock()
         if not mock and finished >= timing['deadline'] and on_time:
-            gates['SCHEDULE_OK'] = {'passed': False, 'detail': 'production did not finish by 03:00 UTC'}
+            gates['SCHEDULE_OK'] = {'passed': False, 'detail': f'production did not finish by {hour + 3:02d}:00 UTC'}
         holds = [name for name in GATE_ORDER[:-1] if gates[name]['passed'] is False]
         # Only the scheduler's own live run publishes; a run started on the admin page stays local.
         publish = release_flags()['auto_publish_enabled'] and mode == 'live' and scheduled and not holds
@@ -1402,12 +1518,13 @@ class Briefing:
         published = None
         if publish:
             try:
-                published = self.publish(run_date, run_id, out, products, media.get('duration_seconds'), audio, subtitles)
+                published = self.publish(run_date, run_id, out, products, media.get('duration_seconds'), audio, subtitles, hour)
                 release = 'PUBLISHED'
             except (BriefingError, OSError) as error:
                 gates['RELEASE_POLICY'] = {'passed': False, 'detail': 'publishing failed: ' + str(error)[:300]}
         note(release)
-        qa = {'run_date_utc': run_date, 'run_id': run_id, 'mode': mode, 'mock': mock, 'idempotency_key': 'space-weather-briefing/' + run_date,
+        qa = {'run_date_utc': run_date, 'edition_hour_utc': hour, 'run_id': run_id, 'mode': mode, 'mock': mock,
+              'idempotency_key': 'space-weather-briefing/' + release_id(run_date, hour),
               'release_state': release, 'hold_reasons': holds, 'published': published is not None, 'published_at': published, 'flags': release_flags(),
               'quality_gates': {name: gates[name] for name in GATE_ORDER}, 'frozen_at': utc(frozen_at), 'finished_at': utc(finished),
               'elapsed_seconds': round(time.monotonic() - started, 2), 'media': media,
@@ -1426,11 +1543,12 @@ class Briefing:
         return qa
 
     # publishing: CHUCK's space weather tab only, through the fetcher's Bearer API
-    def publish(self, run_date, run_id, out, products, total, audio, subtitles):
-        """Copies a passed run to published/<date>: one web MP4 per voice (video and audio copied, not re-encoded),
-        the WebVTT subtitles and a description. Replaces the day's earlier release. Returns the time published."""
-        base = self.root / 'published'
-        tmp, target, old = base / (run_date + '.new'), base / run_date, base / (run_date + '.old')
+    def publish(self, run_date, run_id, out, products, total, audio, subtitles, hour=0):
+        """Copies a passed run to published/<date> (or <date>T12 for the 12:00 edition): one web MP4 per voice (video
+        and audio copied, not re-encoded), the WebVTT subtitles and a description. Replaces the edition's earlier
+        release. Returns the time published."""
+        base, name = self.root / 'published', release_id(run_date, hour)
+        tmp, target, old = base / (name + '.new'), base / name, base / (name + '.old')
         for path in (tmp, old):
             shutil.rmtree(path, ignore_errors=True)
         (tmp / 'subtitles').mkdir(parents=True)
@@ -1440,10 +1558,11 @@ class Briefing:
         for lang in subtitles:
             shutil.copyfile(out / 'subtitles' / (lang + '.vtt'), tmp / 'subtitles' / (lang + '.vtt'))
         now = utc(self.clock())
-        meta = {'title': 'CHUCK SPACE WEATHER BRIEF', 'run_date_utc': run_date, 'run_id': run_id, 'published_at': now,
+        timing = schedule(Date.fromisoformat(run_date), hour)
+        meta = {'title': 'CHUCK SPACE WEATHER BRIEF', 'run_date_utc': run_date, 'release_id': name, 'edition_hour_utc': hour,
+                'run_id': run_id, 'published_at': now,
                 'duration_seconds': total, 'audio': list(audio), 'subtitles': list(subtitles),
-                'observation_window': {'start': utc(schedule(Date.fromisoformat(run_date))['window_start']),
-                                       'end': utc(schedule(Date.fromisoformat(run_date))['window_end'])},
+                'observation_window': {'start': utc(timing['window_start']), 'end': utc(timing['window_end'])},
                 'sources': [{'label': p['label'], 'url': p['url'], 'attribution': CATALOG[k]['attribution'], 'license_id': p['license_id']}
                             for k, p in products.items() if p['used']],
                 'generated': 'Narration and translations are written by generative AI; every number is placed by code from the listed sources.'}
@@ -1455,27 +1574,35 @@ class Briefing:
         return now
 
     def published(self):
-        """Releases, newest first."""
-        base, items = self.root / 'published', []
-        for day in sorted(base.glob('????-??-??'), reverse=True) if base.exists() else []:
+        """Releases, newest first (a day's 12:00 edition before its 00:00 one)."""
+        items = []
+        for folder in self.releases()[::-1]:
             try:
-                items.append(json.loads((day / 'meta.json').read_text()))
+                meta = json.loads((folder / 'meta.json').read_text())
             except (OSError, ValueError):
                 continue
+            meta.setdefault('release_id', folder.name)
+            meta.setdefault('edition_hour_utc', split_release(folder.name)[1])
+            items.append(meta)
         return items
 
-    def published_file(self, run_date, name):
-        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', run_date or '') or not re.fullmatch(
+    def releases(self):
+        base = self.root / 'published'
+        return sorted(p for p in base.iterdir() if p.is_dir() and RELEASE.fullmatch(p.name)) if base.exists() else []
+
+    def published_file(self, release, name):
+        """One file of a release, named by its release id (the date, or the date and T12)."""
+        if not split_release(release) or not re.fullmatch(
                 r'meta\.json|video_(' + '|'.join(LANGUAGES) + r')\.mp4|subtitles/(' + '|'.join(LANGUAGES) + r')\.vtt', name or ''):
             return None
-        path = self.root / 'published' / run_date / name
+        path = self.root / 'published' / release / name
         return path if path.is_file() else None
 
-    def unpublish(self, run_date):
-        """Takes a day's release off CHUCK's page; the run itself stays in runs/."""
-        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', run_date or ''):
+    def unpublish(self, release):
+        """Takes a release (the date, or the date and T12) off CHUCK's page; the run itself stays in runs/."""
+        if not split_release(release):
             raise ValueError('日付が不正です')
-        target = self.root / 'published' / run_date
+        target = self.root / 'published' / release
         if not target.is_dir():
             return False
         shutil.rmtree(target)
@@ -1492,9 +1619,11 @@ class Briefing:
         days = sorted((self.root / 'runs').glob('*')) if (self.root / 'runs').exists() else []
         for old in days[:-KEEP_DAYS]:
             shutil.rmtree(old, ignore_errors=True)
-        released = sorted((self.root / 'published').glob('????-??-??')) if (self.root / 'published').exists() else []
-        for old in released[:-PUBLISHED_KEEP_DAYS]:
-            shutil.rmtree(old, ignore_errors=True)
+        released = self.releases()
+        keep = sorted({p.name[:10] for p in released})[-PUBLISHED_KEEP_DAYS:]
+        for old in released:
+            if old.name[:10] not in keep:
+                shutil.rmtree(old, ignore_errors=True)
         cache = self.root / 'cache'
         if cache.exists():
             limit = time.time() - KEEP_DAYS * 86400

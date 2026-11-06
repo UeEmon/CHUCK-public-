@@ -11,6 +11,7 @@ function input(name,value,type='text',placeholder=''){const i=document.createEle
 function labelled(text,control){const l=cell('label',text);l.append(control);return l;}
 function select(name,options,value){const s=document.createElement('select');s.name=name;for(const [v,t] of options){const o=cell('option',t);o.value=v;s.append(o);}s.value=value;return s;}
 function check(name,checked){const c=document.createElement('input');c.type='checkbox';c.name=name;c.checked=!!checked;return c;}
+function editionText(hour){return (hour?String(hour).padStart(2,'0'):'00')+':00 UTC';}
 function fileUrl(run,name,download=false){return '/ui/api/briefing/file?'+new URLSearchParams({date:run.run_date_utc,run:run.run_id,name,...(download?{download:'1'}:{})});}
 function gateText(g){return g.passed===true?'合格':g.passed===false?'不合格':'対象外';}
 function gridTable(headers,rows){const t=document.createElement('table'),head=document.createElement('tr');headers.forEach(v=>head.append(cell('th',v)));t.append(head);for(const values of rows){const tr=document.createElement('tr');for(const v of values){const td=document.createElement('td');if(v instanceof Node)td.append(v);else td.textContent=v??'—';tr.append(td);}t.append(tr);}return t;}
@@ -127,10 +128,10 @@ function renderBriefingStatus(){
  const b=brief,f=b.flags;
  $('briefing-flags').textContent='定時の自動作成 '+(f.scheduler_enabled?'有効':'無効')+' · CHUCKへの自動公開 '+(f.auto_publish_enabled?'有効（定時の実行が全検査に合格したときだけ）':'無効')+' · 他のサービスへの配信 なし';
  const pub=$('briefing-published');
- pub.replaceChildren(b.published.length?gridTable(['対象日','実行','公開','',''],b.published.map(m=>{const off=cell('button','取り下げる');off.type='button';
-  off.onclick=async()=>{off.disabled=true;try{brief=await api('/ui/api/briefing/unpublish',{date:m.run_date_utc});renderBriefingStatus();notice(m.run_date_utc+'の公開を取り下げました。');}catch(e){notice(e.message,true);off.disabled=false;}};
-  return [m.run_date_utc,m.run_id,utcText(m.published_at),cell('span','CHUCKの宇宙天気タブに表示中'),off];})):cell('p','CHUCKに公開中のブリーフィングはありません。'));
- const lines=['現在 '+utcText(b.now)+' · '+b.phase,'凍結 '+utcText(b.timetable.freeze)+' · 締切 '+utcText(b.timetable.deadline)];
+ pub.replaceChildren(b.published.length?gridTable(['対象日','版','実行','公開','',''],b.published.map(m=>{const off=cell('button','取り下げる'),id=m.release_id||m.run_date_utc;off.type='button';
+  off.onclick=async()=>{off.disabled=true;try{brief=await api('/ui/api/briefing/unpublish',{date:id});renderBriefingStatus();notice(id+'の公開を取り下げました。');}catch(e){notice(e.message,true);off.disabled=false;}};
+  return [m.run_date_utc,editionText(m.edition_hour_utc),m.run_id,utcText(m.published_at),cell('span','CHUCKの宇宙天気タブに表示中'),off];})):cell('p','CHUCKに公開中のブリーフィングはありません。'));
+ const lines=['現在 '+utcText(b.now),...(b.editions||[]).map(e=>editionText(e.hour)+'の版：'+e.phase+' · 凍結 '+utcText(e.timetable.freeze)+' · 締切 '+utcText(e.timetable.deadline))];
  if(b.running)lines.push('作成中です（'+b.running.mode+'、'+b.running.run_date+'、'+(b.state||'')+'）。');
  if(b.last_error)lines.push('前回の失敗 '+utcText(b.last_error.at)+'：'+b.last_error.error);
  const problems=Object.entries(b.settings.problems);if(problems.length)lines.push('未設定の工程：'+problems.map(([k,v])=>STEP_LABELS[k]+'（'+v+'）').join('、'));
@@ -149,7 +150,7 @@ function renderBriefingStatus(){
   const audio=run.files.filter(n=>n.endsWith('.wav')).map(n=>{const box=cell('label',(LANG_NAMES[n.slice(6,-4)]||n)+'の音声'),a=document.createElement('audio');a.controls=true;a.preload='none';a.src=fileUrl(run,n);box.append(a);return box;});
   $('briefing-files').replaceChildren(...audio,...links);
  }
- $('briefing-history').replaceChildren(gridTable(['対象日','実行','方式','結果','保留の理由','完了'],b.history.map(h=>[h.run_date_utc,h.run_id,h.mode,h.release_state,(h.hold_reasons||[]).join(', '),utcText(h.finished_at)])));
+ $('briefing-history').replaceChildren(gridTable(['対象日','実行','方式','結果','保留の理由','完了'],b.history.map(h=>[h.run_date_utc+(h.edition_hour_utc?' · '+editionText(h.edition_hour_utc):''),h.run_id,h.mode,h.release_state,(h.hold_reasons||[]).join(', '),utcText(h.finished_at)])));
 }
 function renderBriefingForm(){
  const s=brief.settings,form=$('briefing-settings');
@@ -202,7 +203,7 @@ function renderBriefingForm(){
  const free=new Set(s.providers.filter(p=>p.free_tier).map(p=>p.id)),names=[...new Set([...Object.values(s.steps).filter(c=>c.provider!=='none'&&c.model&&!free.has(c.provider)).map(c=>c.provider+'/'+c.model),...Object.keys(s.pricing)])];
  const freeUsed=Object.values(s.steps).some(c=>free.has(c.provider)),freeHint=cell('p','Gemini 無料枠の工程は料金0として計算します（入力は不要です）。');freeHint.className='hint';
  $('briefing-pricing').replaceChildren(...(freeUsed?[freeHint]:[]),names.length?gridTable(['生成AI/モデル',...PRICE_FIELDS.map(f=>f[1]),'料金表のURL','確認日'],names.map(n=>{const row=s.pricing[n]||{};return [n,...PRICE_FIELDS.map(([f])=>input('price-'+f+'-'+n,row[f]??'','text','—')),input('price-source_url-'+n,row.source_url,'url','https://'),input('price-checked_on-'+n,row.checked_on,'date')];})):cell('p','工程にモデルを設定すると、ここに料金の入力欄が出ます。'));
- form.elements.budget.value=s.budget_usd_per_run??'';form.elements.video_length.value=s.length;form.elements.resolution.value=s.resolution;
+ form.elements.budget.value=s.budget_usd_per_run??'';form.elements.video_length.value=s.length;form.elements.resolution.value=s.resolution;form.elements.noon_edition.checked=!!s.noon_edition;
  $('briefing-rights').replaceChildren(gridTable(['データ','必須','公開に使える','外部AIへ送れる','根拠のURL','決定'],Object.entries(brief.catalog).map(([k,c])=>{const r=brief.rights[k];return [c.label,c.required?'必須':'任意',check('right-public-'+k,r.public),check('right-ai-'+k,r.external_ai),input('right-url-'+k,r.source==='administrator'?r.evidence_url:'','url',c.rights_evidence_url),r.source==='administrator'?'管理者':'既定'];})));
 }
 // Which voices and subtitles the video carries. The English script is always written; a speech step shows only for a chosen voice.
@@ -229,7 +230,7 @@ function showSpeechMode(){
 }
 async function refreshBriefing(form=true){try{brief=await api('/ui/api/briefing');renderBriefingStatus();if(form)renderBriefingForm();}catch(e){notice(e.message,true);}}
 $('briefing-settings').onsubmit=async e=>{
- e.preventDefault();const f=e.currentTarget.elements,s=brief.settings,data={revision:s.revision,providers:{},steps:{},pricing:{},rights:{},length:f.video_length.value,resolution:f.resolution.value,budget_usd_per_run:f.budget.value.trim()||null,languages:pickedLanguages()};
+ e.preventDefault();const f=e.currentTarget.elements,s=brief.settings,data={revision:s.revision,providers:{},steps:{},pricing:{},rights:{},length:f.video_length.value,resolution:f.resolution.value,noon_edition:f.noon_edition.checked,budget_usd_per_run:f.budget.value.trim()||null,languages:pickedLanguages()};
  for(const p of s.providers){const change={};if(f['key-'+p.id].value)change.api_key=f['key-'+p.id].value;if(f['clear-'+p.id]?.checked)change.clear_api_key=true;if(p.id==='local'){change.endpoint=f['endpoint-local'].value;change.protocol=f['protocol-local'].value;}data.providers[p.id]=change;}
  for(const step of Object.keys(s.steps)){data.steps[step]={provider:f['step-provider-'+step].value,model:f['step-model-'+step].value};if(f['step-voice-'+step])data.steps[step].voice=f['step-voice-'+step].value;}
  if(!speechSeparate())for(const step of Object.keys(s.steps))if(s.step_kinds[step]==='speech')Object.assign(data.steps[step],speechChoice(step));
@@ -237,7 +238,7 @@ $('briefing-settings').onsubmit=async e=>{
  for(const k of Object.keys(brief.catalog)){const url=f['right-url-'+k].value.trim();if(url)data.rights[k]={public:f['right-public-'+k].checked,external_ai:f['right-ai-'+k].checked,evidence_url:url};}
  try{brief=await api('/ui/api/briefing/settings',data);renderBriefingStatus();renderBriefingForm();notice('ブリーフィングの設定を保存しました。');}catch(e){notice(e.message,true);}
 };
-$('briefing-run').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget.elements;try{brief=await api('/ui/api/briefing/run',{mode:f.mode.value,date:f.date.value});renderBriefingStatus();notice('ブリーフィングの作成を始めました。公開はしません。');}catch(err){notice(err.message,true);}};
+$('briefing-run').onsubmit=async e=>{e.preventDefault();const f=e.currentTarget.elements;try{brief=await api('/ui/api/briefing/run',{mode:f.mode.value,date:f.date.value,hour:Number(f.hour.value)});renderBriefingStatus();notice('ブリーフィングの作成を始めました。公開はしません。');}catch(err){notice(err.message,true);}};
 $('briefing-test').onclick=async()=>{const b=$('briefing-test');b.disabled=true;try{const r=await api('/ui/api/briefing/test',{});notice('接続試験：'+Object.entries(r.providers).map(([k,v])=>k+' '+v.result).join('、')+'（結果はbriefing/connection_report.mdにも保存しました）');}catch(e){notice(e.message,true);}finally{b.disabled=false;}};
 $('briefing-run').elements.date.value=new Date().toISOString().slice(0,10);
 // The form is filled once and after saving, so periodic updates never erase what the administrator is typing.

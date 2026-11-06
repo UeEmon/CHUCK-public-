@@ -165,7 +165,9 @@ class BriefingSettings:
                                         'protocol': os.environ.get('LOCAL_LLM_PROTOCOL', 'ollama')}},
                 'steps': {step: {'provider': provider, 'model': '', 'voice': ''} for step, provider in DEFAULT_STEPS.items()},
                 'pricing': {}, 'budget_usd_per_run': None, 'length': 'short', 'resolution': '1280x720',
-                'languages': copy.deepcopy(DEFAULT_LANGUAGES), 'rights': {}}
+                'languages': copy.deepcopy(DEFAULT_LANGUAGES), 'rights': {},
+                # Also make an edition after NOAA's 12:30 UTC update (off: one briefing a day, after the 00:30 one).
+                'noon_edition': False}
 
     def read(self):
         state = self.defaults()
@@ -195,6 +197,8 @@ class BriefingSettings:
             state['length'] = saved['length']
         if saved.get('resolution') in ('1280x720', '1920x1080'):
             state['resolution'] = saved['resolution']
+        if isinstance(saved.get('noon_edition'), bool):
+            state['noon_edition'] = saved['noon_edition']
         try:
             state['languages'] = languages_value(saved['languages'])
         except (KeyError, ValueError):
@@ -338,6 +342,10 @@ class BriefingSettings:
                 state['resolution'] = data['resolution']
             if 'languages' in data:
                 state['languages'] = languages_value(data['languages'])
+            if 'noon_edition' in data:
+                if not isinstance(data['noon_edition'], bool):
+                    raise ValueError('12:00 UTC の版の設定が不正です')
+                state['noon_edition'] = data['noon_edition']
             if 'rights' in data:
                 state['rights'] = data['rights']  # checked by the caller against the data catalog
             state['revision'] += 1

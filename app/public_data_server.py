@@ -37,7 +37,7 @@ from urllib.parse import urlparse, parse_qs
 from urllib.request import Request, urlopen
 
 from observations import DRAP_URL, NICT_URL, GIRO_URL, GIRO_STATIONS, giro_body, parse_drap, parse_nict, parse_giro
-from briefing import Briefing
+from briefing import Briefing, THREE_DAY, THREE_DAY_URL, parse_three_day, release_flags
 from public_data_ui import PublicDataUI
 from public_data import BUNDLE_FORMAT, KEY, MAX_BUNDLE, MAX_RAW
 from public_data_store import StoreError, import_bundle, import_noaa, is_bundle, make_bundle, read_file, write_file
@@ -71,6 +71,8 @@ def sources(giro_enabled=None):
     """Fixed allowlist: key -> (url, request body or None, refresh seconds, validator)."""
     table = {key: (ROOT + path, None, ttl, json_check(key)) for key, (path, ttl) in ALL_FEEDS.items()}
     table['drap'] = (DRAP_URL, None, 300, text_check(parse_drap))
+    # NOAA's 3-day forecast text, read by the briefing for the Kp forecast's issue time only.
+    table[THREE_DAY] = (THREE_DAY_URL, None, 3600, text_check(parse_three_day))
     table['nict'] = (NICT_URL, None, 300, text_check(parse_nict))
     if GIRO_ENABLED if giro_enabled is None else giro_enabled:
         for code in GIRO_STATIONS:
@@ -78,9 +80,16 @@ def sources(giro_enabled=None):
     return table
 
 
+# While a briefing edition waits for its data (00:00-03:00 UTC, and 12:00-15:00 UTC when that edition is on),
+# the Kp products are read every 5 minutes instead of every 10 or 60, so a new issue is seen within 5 minutes.
+FAST_KEYS = ('kp', 'kp-forecast', THREE_DAY)
+FAST_SECONDS = 300
+
+
 class Fetcher:
-    def __init__(self, directory, table=None):
+    def __init__(self, directory, table=None, fast=None):
         self.directory = Path(directory)
+        self.fast = fast or (lambda: False)
         self.table = sources(self.settings()['giro_enabled']) if table is None else table
         self.locks = {key: threading.Lock() for key in sources(True)} | {key: threading.Lock() for key in self.table}
         self.retry_after = {}
@@ -143,9 +152,16 @@ class Fetcher:
         except (OSError, ValueError):
             return None
 
+    def refresh_seconds(self, key):
+        ttl = self.table[key][2]
+        try:
+            return min(ttl, FAST_SECONDS) if key in FAST_KEYS and self.fast() else ttl
+        except Exception:
+            return ttl
+
     def due(self, key):
         meta = self.meta(key)
-        return not meta or not 0 <= time.time() - meta.get('fetched_at', 0) < self.table[key][2]
+        return not meta or not 0 <= time.time() - meta.get('fetched_at', 0) < self.refresh_seconds(key)
 
     def fetch(self, key):
         """Download one source now; returns an error message or None. Failures keep the previous files."""
@@ -211,7 +227,7 @@ class Fetcher:
         for key, (url, _, ttl, _) in list(self.table.items()):
             meta = self.meta(key) or {}
             fetched = meta.get('fetched_at')
-            result[key] = {'url': url, 'refresh_seconds': ttl,
+            result[key] = {'url': url, 'refresh_seconds': self.refresh_seconds(key),
                            'fetched_at': datetime.fromtimestamp(fetched, timezone.utc).isoformat() if fetched else None,
                            'age_seconds': round(now - fetched) if fetched else None, 'error': self.errors.get(key),
                            'origin': meta.get('origin', 'download') if fetched else None}
@@ -221,14 +237,16 @@ class Fetcher:
 FETCHER = Fetcher(DATA)
 # Space weather daily briefing (local files only). Its scheduler is off unless HF_BRIEFING_SCHEDULER_ENABLED=1.
 BRIEFING = Briefing(DATA, refresh=lambda: FETCHER.refresh_due(every=True))
+FETCHER.fast = lambda: release_flags()['scheduler_enabled'] and BRIEFING.window_open()
 
 
 def loop():
     while True:
         try:
             FETCHER.refresh_due()
-            if BRIEFING.due():
-                BRIEFING.start('live', scheduled=True)
+            edition = BRIEFING.due()
+            if edition:
+                BRIEFING.start('live', run_date=edition[0], scheduled=True, hour=edition[1])
         except Exception:
             __import__('traceback').print_exc()
         time.sleep(60)
@@ -329,8 +347,8 @@ class Handler(PublicDataUI, BaseHTTPRequestHandler):
             if url.path.startswith('/api/briefing/published/'):
                 if not self.authorize():
                     return
-                run_date, _, name = url.path[len('/api/briefing/published/'):].partition('/')
-                path = BRIEFING.published_file(run_date, name)
+                release, _, name = url.path[len('/api/briefing/published/'):].partition('/')
+                path = BRIEFING.published_file(release, name)
                 if path is None:
                     return self.json(404, {'error': '見つかりません'})
                 return self.send_file(path)

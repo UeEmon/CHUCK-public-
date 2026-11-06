@@ -81,6 +81,64 @@ class FakeAI:
                        'status': 'completed', 'usage_kind': 'unavailable', 'measured': dict.fromkeys(('input_tokens', 'output_tokens')), 'duration_seconds': .1}
 
 
+NOAA_SAMPLE = """:Product: 3-Day Forecast
+:Issued: 2026 Nov 05 1230 UTC
+# Prepared by the U.S. Dept. of Commerce, NOAA, Space Weather Prediction Center
+#
+A. NOAA Geomagnetic Activity Observation and Forecast
+
+NOAA Kp index breakdown Nov 05-Nov 07 2026
+
+             Nov 05       Nov 06       Nov 07
+00-03UT       1.33         2.33         5.00 (G1)    
+03-06UT       1.67         2.00         3.67         
+06-09UT       1.67         2.00         3.33         
+09-12UT       2.67         2.33         3.33         
+12-15UT       2.67         2.33         3.33         
+15-18UT       1.67         3.67         3.33         
+18-21UT       1.67         4.00         3.33         
+21-00UT       3.67         4.67 (G1)    3.33         
+
+Rationale: G1 (Minor) or greater geomagnetic storms are likely on 06-07
+Nov due to CH HSS influences.
+
+B. NOAA Solar Radiation Activity Observation and Forecast
+
+Solar Radiation Storm Forecast for Nov 05-Nov 07 2026
+
+              Nov 05  Nov 06  Nov 07
+S1 or greater    5%      5%      5%
+"""
+
+
+class ThreeDayForecastTests(unittest.TestCase):
+    """NOAA's 3-day forecast text (the 2026-11-05 12:30 issue, as published) gives the Kp forecast's issue time."""
+
+    def test_issue_time_and_breakdown(self):
+        issue = b.parse_three_day(NOAA_SAMPLE)
+        self.assertEqual(issue['issued'], '2026-11-05T12:30:00+00:00')
+        self.assertEqual((issue['kp']['2026-11-07T00:00:00'], issue['kp']['2026-11-06T21:00:00'], len(issue['kp'])), (5.0, 4.67, 24))
+        with self.assertRaises(ValueError):
+            b.parse_three_day(NOAA_SAMPLE.replace('21-00UT', 'xx'))
+        with self.assertRaises(ValueError):
+            b.parse_three_day('not a forecast')
+        # Across New Year the December columns belong to the year before the one named.
+        year = b.parse_three_day(NOAA_SAMPLE.replace('Nov 05-Nov 07 2026', 'Dec 31-Jan 02 2027').replace(
+            '             Nov 05       Nov 06       Nov 07', '             Dec 31       Jan 01       Jan 02'))
+        self.assertIn('2026-12-31T00:00:00', year['kp'])
+        self.assertIn('2027-01-02T21:00:00', year['kp'])
+
+    def test_the_json_counts_as_the_issue_only_when_its_predicted_kp_match(self):
+        rows = [{'time_tag': f'2026-11-0{d}T{h:02d}:00:00', 'kp': kp, 'observed': kind, 'noaa_scale': None}
+                for d, h, kp, kind in [(5, 21, 2.67, 'estimated')] + [(6, h, v, 'predicted') for h, v in zip(range(0, 24, 3), (2.33, 2.0, 2.0, 2.33, 2.33, 3.67, 4.0, 4.67))]
+                + [(7, 0, 5.0, 'predicted'), (8, 0, 4.0, 'predicted')]]
+        self.assertEqual(b.forecast_issue(NOAA_SAMPLE.encode(), rows), '2026-11-05T12:30:00+00:00')
+        rows[3]['kp'] = 3.0
+        self.assertIsNone(b.forecast_issue(NOAA_SAMPLE.encode(), rows))
+        self.assertIsNone(b.forecast_issue(None, rows))
+        self.assertIsNone(b.forecast_issue(NOAA_SAMPLE.encode(), rows[:4]))  # fewer than eight slots to compare
+
+
 class TimetableTests(unittest.TestCase):
     def test_utc_timetable_across_dates(self):
         at = lambda *a: datetime(*a, tzinfo=timezone.utc)
@@ -340,17 +398,21 @@ class RunTests(unittest.TestCase):
         at = lambda *a: datetime(*a, tzinfo=timezone.utc)
         early = at(2026, 11, 3, 0, 40)
         with patch.dict(os.environ, {'HF_BRIEFING_SCHEDULER_ENABLED': '1'}):
-            # The Kp forecast still marks the run day 'predicted': it was made before 00:00, so the run waits.
-            fetched_files(self.tmp.name, frozen_at=early, edit={'kp-forecast': lambda raw: raw.replace(b'estimated', b'predicted')})
+            # NOAA's 3-day forecast is still the previous day's 12:30 issue, so the run waits for the 00:30 one.
+            fetched_files(self.tmp.name, frozen_at=early, edit={b.THREE_DAY: lambda raw: raw.replace(b'Nov 03 0030', b'Nov 02 1230')})
             maker = b.Briefing(self.tmp.name, clock=lambda: early)
+            self.assertFalse(maker.due())
+            # The text is the 00:30 issue but the JSON still holds other Kp values: not yet the same issue, so it waits too.
+            fetched_files(self.tmp.name, frozen_at=early, edit={'kp-forecast': lambda raw: raw.replace(b'"5.33"', b'"6.00"')})
             self.assertFalse(maker.due())
             self.assertTrue(maker.due(at(2026, 11, 3, 2, 30)))  # at 02:30 it starts with what it has (and holds if data is missing)
             # Once every required product shows an update since 00:00, it starts at once.
             fetched_files(self.tmp.name, frozen_at=early)
-            self.assertTrue(maker.due())
+            self.assertEqual(maker.due(), ('2026-11-03', 0))
             facts = b.collect(b.fetcher_files(Path(self.tmp.name)), RUN, early, b.rights({}))
             self.assertEqual({k: p['updated_since_0000'] for k, p in facts['products'].items() if p['required']},
                              {'scales': True, 'kp': True, 'kp-forecast': True})
+            self.assertEqual(facts['products']['kp-forecast']['times']['issue_time'], '2026-11-03T00:30:00Z')
             # Nothing before 00:00 or after 03:00; checking starts nothing, so only real starts use up the two tries.
             self.assertFalse(maker.due(at(2026, 11, 2, 23, 50)))
             self.assertFalse(maker.due(at(2026, 11, 3, 3, 0)))
@@ -514,6 +576,53 @@ class RunTests(unittest.TestCase):
         self.assertFalse(maker.unpublish('2026-11-03'))
         with self.assertRaises(ValueError):
             maker.unpublish('../x')
+
+    def test_the_noon_edition_is_optional_and_publishes_beside_the_daily_one(self):
+        at = lambda *a: datetime(*a, tzinfo=timezone.utc)
+        maker = b.Briefing(self.tmp.name, clock=lambda: at(2026, 11, 3, 12, 40))
+        self.assertEqual(maker.editions(), (0,))
+        self.assertEqual(b.phase(at(2026, 11, 3, 12, 40), RUN, 12), 'RETRYING_UNTIL_0230')
+        timing = b.schedule(RUN, 12)
+        self.assertEqual([b.utc(timing[k]) for k in ('window_start', 'window_end', 'freeze', 'deadline')],
+                         ['2026-11-02T12:00:00Z', '2026-11-03T12:00:00Z', '2026-11-03T14:30:00Z', '2026-11-03T15:00:00Z'])
+        with patch.dict(os.environ, {'HF_BRIEFING_SCHEDULER_ENABLED': '1', 'AUTO_PUBLISH_ENABLED': '1'}):
+            fetched_files(self.tmp.name, frozen_at=at(2026, 11, 3, 12, 40))
+            self.assertIsNone(maker.due())  # off by default: one briefing a day
+            self.assertFalse(maker.window_open())
+            maker.settings.save({'revision': maker.settings.read()['revision'], 'noon_edition': True})
+            self.assertTrue(maker.window_open())
+            # Before NOAA's 12:30 issue the 12:00 edition waits; the 00:30 issue does not count for it.
+            fetched_files(self.tmp.name, frozen_at=at(2026, 11, 3, 12, 40), edit={b.THREE_DAY: lambda raw: raw.replace(b'1230', b'0030')})
+            self.assertIsNone(maker.due())
+            fetched_files(self.tmp.name, frozen_at=at(2026, 11, 3, 12, 40))
+            self.assertEqual(maker.due(), ('2026-11-03', 12))
+            self.assertEqual(maker.due(at(2026, 11, 3, 14, 30)), ('2026-11-03', 12))
+            self.assertIsNone(maker.due(at(2026, 11, 3, 15, 0)))
+            maker.scheduled['2026-11-03T12'] = 2
+            self.assertIsNone(maker.due())
+            self.assertEqual(maker.due(at(2026, 11, 3, 2, 30)), ('2026-11-03', 0))  # the daily edition keeps its own tries
+            if FFMPEG:
+                configure(maker, 'gemini')
+                fake = FakeAI()
+                with patch.object(ai, 'generate_json', fake.generate_json), patch.object(ai, 'speak', fake.speak):
+                    qa = maker.run('live', '2026-11-03', scheduled=True, hour=12)
+                self.assertEqual(qa['release_state'], 'PUBLISHED', qa['quality_gates'])
+                self.assertEqual((qa['edition_hour_utc'], qa['idempotency_key'], qa['frozen_at']),
+                                 (12, 'space-weather-briefing/2026-11-03T12', '2026-11-03T12:40:00Z'))
+                self.assertEqual(qa['cost']['monthly_projection_usd'] is None or qa['cost']['monthly_projection_usd'] >= 0, True)
+                [meta] = maker.published()
+                self.assertEqual((meta['release_id'], meta['edition_hour_utc'], meta['observation_window']),
+                                 ('2026-11-03T12', 12, {'start': '2026-11-02T12:00:00Z', 'end': '2026-11-03T12:00:00Z'}))
+                self.assertIsNotNone(maker.published_file('2026-11-03T12', 'video_en.mp4'))
+                self.assertIsNone(maker.published_file('2026-11-03T13', 'video_en.mp4'))
+                self.assertIsNone(maker.due(at(2026, 11, 3, 14, 30)))  # published, so not made again
+                briefing = json.loads((maker.run_dir('2026-11-03', qa['run_id']) / 'briefing.json').read_text())
+                self.assertNotIn('observed_date', briefing['values'])  # the window spans two days
+                self.assertTrue(maker.unpublish('2026-11-03T12'))
+        with self.assertRaises(ValueError):
+            maker.settings.save({'revision': maker.settings.read()['revision'], 'noon_edition': 'yes'})
+        with self.assertRaises(ValueError):
+            maker.start('mock', '2026-11-03', hour=6)
 
     def test_hold_without_required_data_calls_no_ai(self):
         fetched_files(self.tmp.name, drop=('kp-forecast',))

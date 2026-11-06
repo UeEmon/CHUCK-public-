@@ -173,7 +173,7 @@ class PublicDataUI:
                 except briefing_ai.AIError as error:self.ui_json(502,dict(error=str(error)));return True
                 self.ui_json(200,dict(provider=data['provider'],**voices));return True
             if path=='/ui/api/briefing/unpublish':
-                # Takes a day off CHUCK's space weather tab at once; the run's files stay here.
+                # Takes a release (a day, or a day's 12:00 edition) off CHUCK's space weather tab at once; the run's files stay here.
                 if not self.briefing().unpublish(data.get('date')):self.ui_json(404,dict(error='公開されていません'));return True
                 self.ui_json(200,self.briefing().status());return True
             if path=='/ui/api/briefing/recommend':
@@ -201,7 +201,9 @@ class PublicDataUI:
                 self.ui_json(200,briefing_module.test_connections(self.briefing()));return True
             if path=='/ui/api/briefing/run':
                 # A verification run: files stay in this container. Nothing is published or delivered.
-                if not self.briefing().start(data.get('mode','mock'),data.get('date') or None):
+                hour=data.get('hour',0)
+                if hour not in briefing_module.EDITIONS or isinstance(hour,bool):raise ValueError('版が不正です')
+                if not self.briefing().start(data.get('mode','mock'),data.get('date') or None,hour=hour):
                     self.ui_json(409,dict(error='ブリーフィングを作成中です。しばらく待ってください。'));return True
                 self.ui_json(202,self.briefing().status());return True
             if path=='/ui/api/fetch':
