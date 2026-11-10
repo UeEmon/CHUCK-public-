@@ -303,6 +303,15 @@ class TemplateTests(unittest.TestCase):
         implied = {'d1_kp': kp, 'd1_g': {'value': 1, 'unit': 'scale', 'source': 'kp-forecast'}}
         self.assertEqual(b.check_values(implied), ['d1_g: does not follow from Kp'])
 
+    def test_review_is_told_that_noaa_g1_at_kp_467_is_consistent(self):
+        # 2026-11-09 was held: the reviewer read "G1 begins at Kp 5" and failed a correct "Kp 4.67, G1" outlook.
+        self.assertIn('never fail the briefing because two values seem to disagree', b.REVIEW_SYSTEM)
+        values = FactsTests.facts(self)['values']
+        self.assertIn('4.67', values['g1_kp']['meaning'])
+        official = [v for k, v in values.items() if k.endswith('_g') and k.startswith('d') and v['source'] == 'scales']
+        self.assertTrue(official)
+        self.assertTrue(all('not a contradiction' in v['meaning'] for v in official))
+
     def test_slides_are_english_and_subtitles_are_ordered(self):
         slide = b.Slide('overview', '2026-11-03', 'footer')
         self.assertEqual(b.check_slides({'overview': slide}), [])
