@@ -299,8 +299,10 @@ class TemplateTests(unittest.TestCase):
     def test_noaa_g_forecast_leads_over_the_kp_implied_level(self):
         kp = {'value': 4.67, 'unit': 'kp', 'source': 'kp-forecast'}
         official = {'d1_kp': kp, 'd1_g': {'value': 1, 'unit': 'scale', 'source': 'scales'}}
-        self.assertEqual(b.check_values(official), [])  # NOAA may forecast G1 with a maximum Kp of 4.67
+        self.assertEqual(b.check_values(official), [])  # NOAA forecasts G1 with a maximum Kp of 4.67 (Kp 5-)
         implied = {'d1_kp': kp, 'd1_g': {'value': 1, 'unit': 'scale', 'source': 'kp-forecast'}}
+        self.assertEqual(b.check_values(implied), [])  # and the Kp-implied level agrees with NOAA
+        implied['d1_g']['value'] = 0
         self.assertEqual(b.check_values(implied), ['d1_g: does not follow from Kp'])
 
     def test_slides_are_english_and_subtitles_are_ordered(self):
@@ -480,13 +482,20 @@ class RunTests(unittest.TestCase):
         answers = [{'verdict': 'fail', 'issues': ['Kp 3.33 matches the value. No issue there.']}, {'verdict': 'pass', 'issues': []}]
         fake = FakeAI()
         plain = fake.generate_json
+        seen = []
         def generate(cfg, *args, **kwargs):
             value, call = plain(cfg, *args, **kwargs)
+            if cfg['step'] == 'review':
+                seen.append(args)
             return (answers.pop(0) if cfg['step'] == 'review' else value), call
         with patch.object(ai, 'generate_json', generate), patch.object(ai, 'speak', fake.speak):
             qa = maker.run('live', '2026-11-03')
         self.assertEqual([c['step'] for c in qa['calls'][:5]], ['script', 'translate', 'translate', 'review', 'review'])
         self.assertTrue(qa['quality_gates']['REVIEW_OK']['passed'])
+        # The second review gets the first one's issues to confirm or drop; the first does not.
+        self.assertEqual([json.loads(r[1]).get('previous_issues') for r in seen],
+                         [None, ['Kp 3.33 matches the value. No issue there.']])
+        seen.clear()
         # Two failing answers hold the run, and the next run asks again instead of reusing a cached fail.
         answers[:] = [{'verdict': 'fail', 'issues': ['x']}] * 2
         maker2 = b.Briefing(self.tmp.name + '/again', clock=lambda: FREEZE)

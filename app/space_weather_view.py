@@ -93,8 +93,9 @@ def scale_days(feed, now):
 
 
 def kp_storm_level(kp):
-    """NOAA G scale from Kp: Kp 5 is G1 up to Kp 9 for G5."""
-    return max(0, min(5, int(kp) - 4)) if kp is not None else None
+    """NOAA G scale from Kp: Kp 5 is G1 up to Kp 9 for G5. Kp comes in thirds and NOAA counts the lower third of a
+    level as that level (Kp 5-, given as 4.67, is G1, as in NOAA's 3-day forecast: "4.67 (G1)")."""
+    return max(0, min(5, int(round(kp, 2) + 0.34) - 4)) if kp is not None else None
 
 
 def kp_series(observed, forecast, now):

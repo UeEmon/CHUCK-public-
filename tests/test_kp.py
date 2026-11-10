@@ -6,7 +6,7 @@ import unittest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'app'))
 from space_weather import kp_rows
-from space_weather_view import kp_series
+from space_weather_view import kp_series, kp_storm_level
 
 NOW=datetime(2026,10,31,3,0,tzinfo=timezone.utc)
 
@@ -33,6 +33,12 @@ class KpTests(unittest.TestCase):
         self.assertFalse(series['stale'])
         self.assertEqual((series['forecast_max']['kp'],series['forecast_max']['g']),(5.0,1))
         self.assertEqual(len([r for r in series['rows'] if r['kind']=='predicted']),8)
+
+    def test_storm_level_counts_the_lower_third_as_noaa_does(self):
+        # NOAA's 3-day forecast prints "4.67 (G1)": Kp 5- is G1, Kp 4+ is not.
+        cases={0:0,4.33:0,4.67:1,5:1,5.33:1,5.67:2,6.67:3,7.67:4,8.67:5,9:5}
+        self.assertEqual({kp:kp_storm_level(kp) for kp in cases},cases)
+        self.assertIsNone(kp_storm_level(None))
 
 
 if __name__=='__main__':unittest.main()
