@@ -51,7 +51,9 @@ const {chromium}=require('playwright');
   assert.match(out.text,/TX × RX マトリックス · REL（%）/);assert.match(out.text,/周波数 最良周波数 · 03:00 UTC · 中継 2段まで/);
   assert.match(out.text,/経路の詳細 · 周波数 × UTC/);assert.match(out.text,/deadbeef/);
   assert.doesNotMatch(out.text,/CSV出力/);
-  assert.equal(out.tables,3);
+  // The operating plan panel prints with the tab.
+  assert.match(out.text,/メッシュの24時間運用計画/);
+  assert.equal(out.tables,4);
   // Cell colours survive the copy.
   assert.match(out.html,/<td style="background: rgb\(/);
 
@@ -95,7 +97,7 @@ const {chromium}=require('playwright');
   });
   out=await print('#diversity-exports .report-tab-print','diversity');
   assert.match(out.text,/^伝搬予測報告書 · ダイバーシティー予測\n/);assert.match(out.text,/経路\t東京 → Guam · Saipan/);
-  assert.match(out.text,/サイト別詳細/);assert.equal(out.tables,4);
+  assert.match(out.text,/サイト別詳細/);assert.match(out.text,/受信局と周波数の24時間計画/);assert.equal(out.tables,5);
   await page.evaluate(()=>{tab('propagation-chart');$('chart-site').value='rx2';renderPropagationChart();});
   out=await print('#chart-print','chart');
   assert.match(out.text,/^伝搬予測報告書 · Propagation Chart\n/);assert.match(out.text,/ID d1/);

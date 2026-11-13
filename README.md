@@ -68,6 +68,8 @@ docker compose logs --tail=100 -f
 - カタログ・仕様書（PDF／画像）を生成AI OCRで読み取り、原本・根拠を確認してアンテナプリセットへ登録（[設定・操作](docs/ANTENNA_OCR.md)）
 - OCRのOpenAI／Claude／Gemini／ローカルLLM切替、接続先モデルの取得・選択、APIキー設定と[取得手順](docs/AI_SETTINGS.md)
 - 外部データの観測時刻と最終取得成功時刻を分けて一覧表示。キャッシュを待たずに最新データを個別／一括取得
+- ダイバーシティー・メッシュの結果から、時間帯ごとの周波数と受信局（メッシュは経路ごと、または全経路で共通の周波数）を決めた24時間運用計画（[説明](docs/FREQUENCY_PLAN.md#ダイバーシティーメッシュの計画)）
+- 保存した地点間予測2件のREL・SNRの差を周波数×UTCで比べ、違う条件を一覧表示（[説明](docs/COMPARE.md)）
 
 国外観測データの追加候補・取得形式・利用条件は[国外電離圏データ調査](docs/INTERNATIONAL_IONOSPHERE.md)にまとめています。
 

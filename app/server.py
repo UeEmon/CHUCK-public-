@@ -296,8 +296,9 @@ class Handler(BaseHTTPRequestHandler):
             if path=='/api/watches':
                 return self.json(200,dict(interval_hours=WATCH_INTERVAL_HOURS,max=watch.MAX_WATCHES,note=watch.NOTE,watches=WATCHES.list()))
             if path=='/api/history':
-                with connection() as c: rows=c.execute('SELECT id,created,kind,json_extract(result,\'$.parameters\') FROM predictions ORDER BY created DESC LIMIT 100').fetchall()
-                return self.json(200,[dict(id=r[0],created=r[1],kind=r[2],parameters=json.loads(r[3])) for r in rows])
+                # Station names (from the circuit snapshot) let the history list and the comparison tell runs apart.
+                with connection() as c: rows=c.execute('SELECT id,created,kind,json_extract(result,\'$.parameters\'),json_extract(result,\'$.ui_selection.tx.location.name\'),json_extract(result,\'$.ui_selection.rxs[0].location.name\') FROM predictions ORDER BY created DESC LIMIT 100').fetchall()
+                return self.json(200,[dict(id=r[0],created=r[1],kind=r[2],parameters=json.loads(r[3]),tx_name=r[4],rx_name=r[5]) for r in rows])
             if path.startswith('/api/results/'):
                 pieces=path.split('/')
                 r=load(pieces[3])

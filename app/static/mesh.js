@@ -32,7 +32,7 @@ function showMesh(){
  $('mesh-exports').replaceChildren();for(const type of ['csv','json']){const a=cell('a',type.toUpperCase()+'出力');a.href=`/api/results/${r.id}/${type}`;a.download='';$('mesh-exports').append(a);}$('mesh-exports').append(reportButton('mesh'));$('mesh-exports').hidden=false;
  const select=$('mesh-frequency'),previous=select.value;select.replaceChildren(new Option('最良周波数','best'),...p.frequencies.map(f=>new Option(f.toFixed(3)+' MHz',String(f))));select.value=[...select.options].some(o=>o.value===previous)?previous:'best';
  if(!meshSelected||!meshLink(meshSelected.tx,meshSelected.rx))meshSelected={tx:r.links[0].tx_id,rx:r.links[0].rx_id};
- renderMeshMatrix();
+ renderMeshMatrix();if(typeof renderMeshPlan==='function')renderMeshPlan();
 }
 function renderMeshMatrix(){
  const r=meshResult;if(!r)return;const hour=Number($('mesh-hour').value),frequency=$('mesh-frequency').value,target=r.parameters.reliability,relays=Number($('mesh-relays').value);

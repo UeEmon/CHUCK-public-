@@ -21,7 +21,7 @@ AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、�
 | GET | /api/antenna-patterns | 登録済み利得表の一覧（格子の概要・SHA-256） |
 | POST | /api/antenna-patterns | 利得表CSVの登録 `{name,source?,csv}`（同一オリジンのみ） |
 | POST | /api/antenna-patterns/{id}/delete | 利得表の削除（プリセットから参照中は不可） |
-| GET | /api/history | 最新100件の保存条件・日時・識別子 |
+| GET | /api/history | 最新100件の保存条件・日時・識別子。計算時に選んだTXとRX1の地点名（`tx_name`・`rx_name`、記録のない結果は `null`）も返す |
 | GET | /api/results/{id} | 保存済み計算のJSON |
 | GET | /api/results/{id}/csv | CSV（UTF-8 BOM付き） |
 | GET | /api/results/{id}/json | JSONダウンロード |

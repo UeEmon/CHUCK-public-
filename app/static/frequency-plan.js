@@ -8,22 +8,28 @@ function planHourly(r){
  const target=r.parameters.reliability;
  return planHours(r).map(h=>{let best=null;for(const v of h.rows){if(v.reliability===null||v.reliability===undefined)continue;if(!best||v.reliability>best.reliability||(v.reliability===best.reliability&&(v.snr_db_hz??-Infinity)>(best.snr_db_hz??-Infinity)))best=v;}return {hour:h.hour_utc,row:best??h.rows[0],meets:!!best&&best.reliability>=target};});
 }
-function planSteady(r){
- // Cyclic dynamic programme: most hours at the target REL first, then fewest switches (23→00 included), then highest total REL.
- const target=r.parameters.reliability,hours=planHours(r),n=r.parameters.frequencies.length,UNMET=1e7,SWITCH=1e4;
- const cost=hours.map(h=>h.rows.map(v=>{const rel=v.reliability??null;return (rel!==null&&rel>=target?0:UNMET)-(rel??0);}));
- let best=null;
+function planCyclic(cost,switchCost){
+ // Cyclic dynamic programme over hours×states: cost[t][s] per hour and state, switchCost(g,f) between consecutive hours (23→00 included).
+ // Returns the chosen state for each hour with the lowest total.
+ const T=cost.length,n=cost[0].length;let best=null;
  for(let start=0;start<n;start++){
   let score=cost[0].map((c,f)=>f===start?c:Infinity);const from=[];
-  for(let t=1;t<hours.length;t++){
+  for(let t=1;t<T;t++){
    const next=[],back=[];
-   for(let f=0;f<n;f++){let low=Infinity,arg=0;for(let g=0;g<n;g++){const s=score[g]+(g===f?0:SWITCH);if(s<low){low=s;arg=g;}}next.push(low+cost[t][f]);back.push(arg);}
+   for(let f=0;f<n;f++){let low=Infinity,arg=0;for(let g=0;g<n;g++){if(score[g]===Infinity)continue;const s=score[g]+switchCost(g,f);if(s<low){low=s;arg=g;}}next.push(low+cost[t][f]);back.push(arg);}
    score=next;from.push(back);
   }
-  for(let f=0;f<n;f++){const s=score[f]+(f===start||hours.length<2?0:SWITCH);if(!best||s<best.score)best={score:s,last:f,from};}
+  for(let f=0;f<n;f++){const s=score[f]+(T<2?0:switchCost(f,start));if(!best||s<best.score)best={score:s,last:f,from};}
  }
- const choice=new Array(hours.length);choice[hours.length-1]=best.last;
- for(let t=hours.length-1;t>0;t--)choice[t-1]=best.from[t-1][choice[t]];
+ const choice=new Array(T);choice[T-1]=best.last;
+ for(let t=T-1;t>0;t--)choice[t-1]=best.from[t-1][choice[t]];
+ return choice;
+}
+function planSteady(r){
+ // Most hours at the target REL first, then fewest switches (23→00 included), then highest total REL.
+ const target=r.parameters.reliability,hours=planHours(r),UNMET=1e7,SWITCH=1e4;
+ const cost=hours.map(h=>h.rows.map(v=>{const rel=v.reliability??null;return (rel!==null&&rel>=target?0:UNMET)-(rel??0);}));
+ const choice=planCyclic(cost,(g,f)=>g===f?0:SWITCH);
  return hours.map((h,t)=>{const v=h.rows[choice[t]];return {hour:h.hour_utc,row:v,meets:v.reliability!==null&&v.reliability!==undefined&&v.reliability>=target};});
 }
 function planBlocks(hours){

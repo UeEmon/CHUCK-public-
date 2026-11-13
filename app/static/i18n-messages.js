@@ -11502,5 +11502,401 @@ const HF_MESSAGES={
     "Os dados públicos são baixados periodicamente pelo contêiner de obtenção (séries mensais da NOAA a cada 6 horas, os demais a cada 5 minutos). Em ambiente local, um administrador os importa na página de administração do contêiner de obtenção. Esta tela mostra automaticamente os dados mais recentes do servidor ao abrir e a cada 5 minutos. O horário de obtenção é quando o download do provedor teve êxito, diferente do horário de observação ou emissão.",
     "Öffentliche Daten werden regelmäßig vom Abrufcontainer abgerufen (NOAA-Monatsreihen alle 6 Stunden, andere alle 5 Minuten). Lokal importiert ein Administrator sie auf der Verwaltungsseite des Abrufcontainers. Diese Ansicht zeigt beim Öffnen und alle 5 Minuten automatisch die neuesten Daten des Servers. Die Abrufzeit ist der Zeitpunkt des erfolgreichen Abrufs beim Anbieter und unterscheidet sich von der Beobachtungs- oder Ausgabezeit.",
     "공개 데이터는 수집 컨테이너가 정기적으로 수집합니다(NOAA 월간 계열은 6시간, 그 외는 5분마다). 온프레미스에서는 관리자가 가져오기 컨테이너의 관리 화면에서 가져옵니다. 이 화면은 열 때와 5분마다 서버의 최신 데이터를 자동으로 표시합니다. 수집 시각은 제공처에서 수집에 성공한 시각으로, 관측·발행 시각과 다릅니다."
+  ],
+  "受信局と周波数の24時間計画": [
+    "24-hour receiving-site and frequency plan",
+    "Plan sur 24 h des sites de réception et des fréquences",
+    "Plan de 24 h de sitios de recepción y frecuencias",
+    "Piano di 24 h di siti di ricezione e frequenze",
+    "Plano de 24 h de locais de receção e frequências",
+    "24-Stunden-Plan für Empfangsstandorte und Frequenzen",
+    "수신국과 주파수의 24시간 계획"
+  ],
+  "計算した周波数を割当周波数とみなし、時間帯ごとにTXが使う周波数と、受信に使うRXを決めます。「切替を抑える」は、目標REL以上の時間を毎時最良と同じだけ確保したうえで、周波数の切替を最も少なくし、次に受信局の切替を少なくします（23時から0時への切替も数えます）。": [
+    "The calculated frequencies are treated as the assigned set; for each time block the plan chooses the frequency the TX uses and the RX used for reception. “Fewest switches” keeps as many hours at or above the target REL as “Best each hour”, then makes the fewest frequency changes and, after that, the fewest receiving-site changes (the 23:00→00:00 change is counted too).",
+    "Les fréquences calculées sont considérées comme les fréquences attribuées ; pour chaque plage horaire, le plan choisit la fréquence utilisée par le TX et le RX utilisé pour la réception. « Moins de changements » conserve autant d’heures à la REL cible ou plus que « Meilleure chaque heure », puis réduit au minimum les changements de fréquence, puis les changements de site de réception (le passage de 23:00 à 00:00 est compté).",
+    "Las frecuencias calculadas se consideran las frecuencias asignadas; para cada franja horaria el plan elige la frecuencia que usa el TX y el RX que se usa para recibir. «Menos cambios» mantiene tantas horas en la REL objetivo o por encima como «Mejor cada hora», luego minimiza los cambios de frecuencia y, después, los cambios de sitio de recepción (también se cuenta el cambio de 23:00 a 00:00).",
+    "Le frequenze calcolate sono considerate le frequenze assegnate; per ogni fascia oraria il piano sceglie la frequenza usata dal TX e il RX usato per la ricezione. «Meno cambi» mantiene tante ore pari o superiori alla REL obiettivo quante «Migliore ogni ora», poi riduce al minimo i cambi di frequenza e, dopo, i cambi di sito di ricezione (si conta anche il cambio dalle 23:00 alle 00:00).",
+    "As frequências calculadas são tratadas como as frequências atribuídas; para cada faixa horária o plano escolhe a frequência usada pelo TX e o RX usado na receção. “Menos trocas” mantém tantas horas na REL alvo ou acima quanto “Melhor a cada hora”, depois minimiza as trocas de frequência e, a seguir, as trocas de local de receção (a troca das 23:00 para 00:00 também conta).",
+    "Die berechneten Frequenzen gelten als zugeteilte Frequenzen; für jeden Zeitblock wählt der Plan die Frequenz des TX und den RX für den Empfang. „Wenige Wechsel“ hält so viele Stunden auf oder über der Ziel-REL wie „Jede Stunde die beste“, minimiert dann die Frequenzwechsel und danach die Wechsel des Empfangsstandorts (der Wechsel von 23:00 auf 00:00 zählt mit).",
+    "계산한 주파수를 할당 주파수로 보고 시간대마다 TX가 사용할 주파수와 수신에 사용할 RX를 정합니다. '전환 최소화'는 목표 REL 이상인 시간을 '매시 최적'과 같은 만큼 확보한 뒤 주파수 전환을 가장 적게 하고, 그다음 수신국 전환을 적게 합니다(23시에서 0시로의 전환도 셉니다)."
+  ],
+  "計算後に受信局と周波数の計画を表示します": [
+    "The receiving-site and frequency plan appears after calculation",
+    "Le plan des sites de réception et des fréquences s’affiche après le calcul",
+    "El plan de sitios de recepción y frecuencias aparece tras el cálculo",
+    "Il piano dei siti di ricezione e delle frequenze appare dopo il calcolo",
+    "O plano de locais de receção e frequências aparece após o cálculo",
+    "Der Plan für Empfangsstandorte und Frequenzen erscheint nach der Berechnung",
+    "계산 후 수신국과 주파수의 계획을 표시합니다"
+  ],
+  "メッシュの24時間運用計画": [
+    "24-hour mesh operating plan",
+    "Plan d’exploitation du maillage sur 24 h",
+    "Plan de operación de la malla de 24 h",
+    "Piano operativo della maglia di 24 h",
+    "Plano de operação da malha de 24 h",
+    "24-Stunden-Betriebsplan für das Netz",
+    "메시 24시간 운용 계획"
+  ],
+  "経路ごと · 切替を抑える": [
+    "Per path · Fewest switches",
+    "Par trajet · Moins de changements",
+    "Por trayecto · Menos cambios",
+    "Per percorso · Meno cambi",
+    "Por percurso · Menos trocas",
+    "Je Strecke · Wenige Wechsel",
+    "경로별 · 전환 최소화"
+  ],
+  "経路ごと · 毎時最良": [
+    "Per path · Best each hour",
+    "Par trajet · Meilleure chaque heure",
+    "Por trayecto · Mejor cada hora",
+    "Per percorso · Migliore ogni ora",
+    "Por percurso · Melhor a cada hora",
+    "Je Strecke · Jede Stunde die beste",
+    "경로별 · 매시 최적"
+  ],
+  "全経路で共通の周波数": [
+    "One common frequency for all paths",
+    "Une fréquence commune à tous les trajets",
+    "Una frecuencia común para todos los trayectos",
+    "Una frequenza comune a tutti i percorsi",
+    "Uma frequência comum a todos os percursos",
+    "Eine gemeinsame Frequenz für alle Strecken",
+    "전 경로 공통 주파수"
+  ],
+  "計算した周波数を割当周波数とみなし、直通の各経路で時間帯ごとに使う周波数を決めます。「全経路で共通の周波数」は、全拠点が同じ周波数で運用する場合に、目標REL以上になる経路の数が最も多く、切替が最も少ない周波数を時間帯ごとに選びます。中継は考慮しません。": [
+    "The calculated frequencies are treated as the assigned set, and a frequency is chosen for each time block on every direct path. “One common frequency for all paths” is for all sites working on the same frequency: for each time block it chooses the frequency with the most paths at or above the target REL and the fewest changes. Relaying is not considered.",
+    "Les fréquences calculées sont considérées comme les fréquences attribuées, et une fréquence est choisie pour chaque plage horaire sur chaque trajet direct. « Une fréquence commune à tous les trajets » vaut lorsque tous les sites travaillent sur la même fréquence : pour chaque plage, elle choisit la fréquence donnant le plus de trajets à la REL cible ou plus, avec le moins de changements. Le relais n’est pas pris en compte.",
+    "Las frecuencias calculadas se consideran las frecuencias asignadas y se elige una frecuencia para cada franja horaria en cada trayecto directo. «Una frecuencia común para todos los trayectos» es para cuando todos los sitios operan en la misma frecuencia: en cada franja elige la frecuencia con más trayectos en la REL objetivo o por encima y con menos cambios. No se considera el relevo.",
+    "Le frequenze calcolate sono considerate le frequenze assegnate e per ogni fascia oraria viene scelta una frequenza su ogni percorso diretto. «Una frequenza comune a tutti i percorsi» vale quando tutti i siti operano sulla stessa frequenza: per ogni fascia sceglie la frequenza con più percorsi pari o superiori alla REL obiettivo e con meno cambi. Il rilancio non è considerato.",
+    "As frequências calculadas são tratadas como as frequências atribuídas, e é escolhida uma frequência para cada faixa horária em cada percurso direto. “Uma frequência comum a todos os percursos” serve quando todos os locais operam na mesma frequência: em cada faixa escolhe a frequência com mais percursos na REL alvo ou acima e com menos trocas. A retransmissão não é considerada.",
+    "Die berechneten Frequenzen gelten als zugeteilte Frequenzen, und für jeden Zeitblock wird auf jeder direkten Strecke eine Frequenz gewählt. „Eine gemeinsame Frequenz für alle Strecken“ gilt, wenn alle Standorte auf derselben Frequenz arbeiten: Für jeden Zeitblock wird die Frequenz mit den meisten Strecken auf oder über der Ziel-REL und den wenigsten Wechseln gewählt. Weiterleitung wird nicht berücksichtigt.",
+    "계산한 주파수를 할당 주파수로 보고 각 직통 경로에서 시간대마다 사용할 주파수를 정합니다. '전 경로 공통 주파수'는 모든 거점이 같은 주파수로 운용하는 경우로, 시간대마다 목표 REL 이상이 되는 경로 수가 가장 많고 전환이 가장 적은 주파수를 고릅니다. 중계는 고려하지 않습니다."
+  ],
+  "計算後にメッシュの運用計画を表示します": [
+    "The mesh operating plan appears after calculation",
+    "Le plan d’exploitation du maillage s’affiche après le calcul",
+    "El plan de operación de la malla aparece tras el cálculo",
+    "Il piano operativo della maglia appare dopo il calcolo",
+    "O plano de operação da malha aparece após o cálculo",
+    "Der Betriebsplan für das Netz erscheint nach der Berechnung",
+    "계산 후 메시 운용 계획을 표시합니다"
+  ],
+  "2つの結果を比較": [
+    "Compare two results",
+    "Comparer deux résultats",
+    "Comparar dos resultados",
+    "Confronta due risultati",
+    "Comparar dois resultados",
+    "Zwei Ergebnisse vergleichen",
+    "두 결과 비교"
+  ],
+  "A（基準）": [
+    "A (baseline)",
+    "A (référence)",
+    "A (referencia)",
+    "A (riferimento)",
+    "A (referência)",
+    "A (Basis)",
+    "A(기준)"
+  ],
+  "AとBを入れ替える": [
+    "Swap A and B",
+    "Échanger A et B",
+    "Intercambiar A y B",
+    "Scambia A e B",
+    "Trocar A e B",
+    "A und B tauschen",
+    "A와 B 바꾸기"
+  ],
+  "REL の差 %": [
+    "REL difference %",
+    "Écart de REL %",
+    "Diferencia de REL %",
+    "Differenza di REL %",
+    "Diferença de REL %",
+    "REL-Differenz %",
+    "REL 차이 %"
+  ],
+  "SNR の差 dB": [
+    "SNR difference dB",
+    "Écart de SNR dB",
+    "Diferencia de SNR dB",
+    "Differenza di SNR dB",
+    "Diferença de SNR dB",
+    "SNR-Differenz dB",
+    "SNR 차이 dB"
+  ],
+  "保存された地点間予測を2件選び、BからAを引いた差を周波数×UTCで示します。アンテナ・送信電力・月などを変えたときの効果を確かめるための機能です。緑はBが高く、赤はBが低いセルです。▲はAでは目標REL未満でBでは目標REL以上、▼はその逆です。両方で計算した周波数だけを比べます。": [
+    "Choose two saved point-to-point predictions to see B minus A by frequency × UTC. Use it to check the effect of changing the antenna, transmit power, month and so on. Green cells are higher in B, red cells lower. ▲ marks cells below the target REL in A and at or above it in B; ▼ the reverse. Only frequencies calculated in both are compared.",
+    "Choisissez deux prévisions point à point enregistrées pour voir B moins A par fréquence × UTC. Utile pour vérifier l’effet d’un changement d’antenne, de puissance d’émission, de mois, etc. Les cellules vertes sont plus élevées dans B, les rouges plus basses. ▲ indique une cellule sous la REL cible dans A et à la REL cible ou plus dans B ; ▼ l’inverse. Seules les fréquences calculées dans les deux sont comparées.",
+    "Elija dos predicciones punto a punto guardadas para ver B menos A por frecuencia × UTC. Sirve para comprobar el efecto de cambiar la antena, la potencia de transmisión, el mes, etc. Las celdas verdes son más altas en B y las rojas más bajas. ▲ marca celdas por debajo de la REL objetivo en A y en ella o por encima en B; ▼ lo contrario. Solo se comparan las frecuencias calculadas en ambas.",
+    "Scegli due previsioni punto-punto salvate per vedere B meno A per frequenza × UTC. Serve a verificare l’effetto di un cambio di antenna, potenza di trasmissione, mese e così via. Le celle verdi sono più alte in B, quelle rosse più basse. ▲ indica celle sotto la REL obiettivo in A e pari o superiori in B; ▼ il contrario. Si confrontano solo le frequenze calcolate in entrambe.",
+    "Escolha duas previsões ponto a ponto guardadas para ver B menos A por frequência × UTC. Serve para verificar o efeito de mudar a antena, a potência de transmissão, o mês, etc. As células verdes são mais altas em B e as vermelhas mais baixas. ▲ marca células abaixo da REL alvo em A e na REL alvo ou acima em B; ▼ o inverso. Só se comparam as frequências calculadas em ambas.",
+    "Wählen Sie zwei gespeicherte Punkt-zu-Punkt-Vorhersagen, um B minus A nach Frequenz × UTC zu sehen. So lässt sich die Wirkung eines Wechsels von Antenne, Sendeleistung, Monat usw. prüfen. Grüne Zellen sind in B höher, rote niedriger. ▲ markiert Zellen, die in A unter und in B auf oder über der Ziel-REL liegen; ▼ das Umgekehrte. Verglichen werden nur Frequenzen, die in beiden berechnet wurden.",
+    "저장된 지점 간 예측 2건을 골라 B에서 A를 뺀 차이를 주파수×UTC로 보여 줍니다. 안테나·송신 전력·월 등을 바꾼 효과를 확인하는 기능입니다. 초록은 B가 높고 빨강은 B가 낮은 셀입니다. ▲는 A에서는 목표 REL 미만이고 B에서는 목표 REL 이상, ▼는 그 반대입니다. 양쪽에서 계산한 주파수만 비교합니다."
+  ],
+  "2件を選ぶと差を表示します": [
+    "Choose two results to see the difference",
+    "Choisissez deux résultats pour voir l’écart",
+    "Elija dos resultados para ver la diferencia",
+    "Scegli due risultati per vedere la differenza",
+    "Escolha dois resultados para ver a diferença",
+    "Wählen Sie zwei Ergebnisse, um die Differenz zu sehen",
+    "두 건을 고르면 차이를 표시합니다"
+  ],
+  "選択してください": [
+    "Please select",
+    "Sélectionnez",
+    "Seleccione",
+    "Seleziona",
+    "Selecione",
+    "Bitte wählen",
+    "선택하세요"
+  ],
+  "違う条件": [
+    "Differing condition",
+    "Condition différente",
+    "Condición distinta",
+    "Condizione diversa",
+    "Condição diferente",
+    "Abweichende Bedingung",
+    "다른 조건"
+  ],
+  "TX地点": [
+    "TX site",
+    "Site TX",
+    "Sitio TX",
+    "Sito TX",
+    "Local TX",
+    "TX-Standort",
+    "TX 지점"
+  ],
+  "RX地点": [
+    "RX site",
+    "Site RX",
+    "Sitio RX",
+    "Sito RX",
+    "Local RX",
+    "RX-Standort",
+    "RX 지점"
+  ],
+  "TX利得補正 dB": [
+    "TX gain correction dB",
+    "Correction de gain TX dB",
+    "Corrección de ganancia TX dB",
+    "Correzione del guadagno TX dB",
+    "Correção de ganho TX dB",
+    "TX-Gewinnkorrektur dB",
+    "TX 이득 보정 dB"
+  ],
+  "RX利得補正 dB": [
+    "RX gain correction dB",
+    "Correction de gain RX dB",
+    "Corrección de ganancia RX dB",
+    "Correzione del guadagno RX dB",
+    "Correção de ganho RX dB",
+    "RX-Gewinnkorrektur dB",
+    "RX 이득 보정 dB"
+  ],
+  "目標REL %": [
+    "Target REL %",
+    "REL cible %",
+    "REL objetivo %",
+    "REL obiettivo %",
+    "REL alvo %",
+    "Ziel-REL %",
+    "목표 REL %"
+  ],
+  "仮定する追加偏波損失 dB": [
+    "Assumed extra polarization loss dB",
+    "Perte de polarisation supplémentaire supposée dB",
+    "Pérdida de polarización adicional supuesta dB",
+    "Perdita di polarizzazione aggiuntiva ipotizzata dB",
+    "Perda de polarização adicional assumida dB",
+    "Angenommener zusätzlicher Polarisationsverlust dB",
+    "가정한 추가 편파 손실 dB"
+  ],
+  "別の結果を選んでください。": [
+    "Choose a different result.",
+    "Choisissez un autre résultat.",
+    "Elija otro resultado.",
+    "Scegli un altro risultato.",
+    "Escolha outro resultado.",
+    "Wählen Sie ein anderes Ergebnis.",
+    "다른 결과를 고르세요."
+  ],
+  "計算条件は同じです。": [
+    "The calculation conditions are the same.",
+    "Les conditions de calcul sont identiques.",
+    "Las condiciones de cálculo son las mismas.",
+    "Le condizioni di calcolo sono le stesse.",
+    "As condições de cálculo são as mesmas.",
+    "Die Berechnungsbedingungen sind gleich.",
+    "계산 조건이 같습니다."
+  ],
+  "共通の周波数がないため比較できません": [
+    "No frequency in common, so the results cannot be compared",
+    "Aucune fréquence commune : comparaison impossible",
+    "No hay frecuencias en común, no se pueden comparar",
+    "Nessuna frequenza in comune: confronto impossibile",
+    "Não há frequências em comum, não é possível comparar",
+    "Keine gemeinsame Frequenz, daher kein Vergleich möglich",
+    "공통 주파수가 없어 비교할 수 없습니다"
+  ],
+  "送信拠点": [
+    "Transmitting site",
+    "Site émetteur",
+    "Sitio transmisor",
+    "Sito trasmittente",
+    "Local transmissor",
+    "Sendestandort",
+    "송신 거점"
+  ],
+  "受信拠点": [
+    "Receiving site",
+    "Site récepteur",
+    "Sitio receptor",
+    "Sito ricevente",
+    "Local recetor",
+    "Empfangsstandort",
+    "수신 거점"
+  ],
+  "周波数の計画（UTC）": [
+    "Frequency plan (UTC)",
+    "Plan de fréquences (UTC)",
+    "Plan de frecuencias (UTC)",
+    "Piano delle frequenze (UTC)",
+    "Plano de frequências (UTC)",
+    "Frequenzplan (UTC)",
+    "주파수 계획(UTC)"
+  ],
+  "切替 回": [
+    "Switches",
+    "Changements",
+    "Cambios",
+    "Cambi",
+    "Trocas",
+    "Wechsel",
+    "전환 횟수"
+  ],
+  "目標REL以上の経路": [
+    "Paths at or above target REL",
+    "Trajets à la REL cible ou plus",
+    "Trayectos en la REL objetivo o más",
+    "Percorsi pari o superiori alla REL obiettivo",
+    "Percursos na REL alvo ou acima",
+    "Strecken auf oder über Ziel-REL",
+    "목표 REL 이상 경로"
+  ],
+  "最低REL %": [
+    "Lowest REL %",
+    "REL minimale %",
+    "REL mínima %",
+    "REL minima %",
+    "REL mínima %",
+    "Niedrigste REL %",
+    "최저 REL %"
+  ],
+  "{date} · SSN {ssn} · 目標REL {rel}% · RX {count} · 割当 {total} 波": [
+    "{date} · SSN {ssn} · Target REL {rel}% · RX {count} · {total} assigned frequencies",
+    "{date} · SSN {ssn} · REL cible {rel}% · RX {count} · {total} fréquences attribuées",
+    "{date} · SSN {ssn} · REL objetivo {rel}% · RX {count} · {total} frecuencias asignadas",
+    "{date} · SSN {ssn} · REL obiettivo {rel}% · RX {count} · {total} frequenze assegnate",
+    "{date} · SSN {ssn} · REL alvo {rel}% · RX {count} · {total} frequências atribuídas",
+    "{date} · SSN {ssn} · Ziel-REL {rel}% · RX {count} · {total} zugeteilte Frequenzen",
+    "{date} · SSN {ssn} · 목표 REL {rel}% · RX {count} · 할당 {total}파"
+  ],
+  "周波数の切替 {count} 回 · 受信局の切替 {sites} 回 · 目標REL以上 {met} / {total} 時間 · 方針: {label}": [
+    "{count} frequency switches · {sites} receiving-site switches · At or above target REL: {met} / {total} hours · Policy: {label}",
+    "{count} changements de fréquence · {sites} changements de site de réception · REL cible atteinte : {met} / {total} heures · Stratégie : {label}",
+    "{count} cambios de frecuencia · {sites} cambios de sitio de recepción · En la REL objetivo o más: {met} / {total} horas · Criterio: {label}",
+    "{count} cambi di frequenza · {sites} cambi di sito di ricezione · REL obiettivo raggiunta: {met} / {total} ore · Criterio: {label}",
+    "{count} trocas de frequência · {sites} trocas de local de receção · Na REL alvo ou acima: {met} / {total} horas · Critério: {label}",
+    "{count} Frequenzwechsel · {sites} Wechsel des Empfangsstandorts · Ziel-REL erreicht: {met} / {total} Stunden · Strategie: {label}",
+    "주파수 전환 {count}회 · 수신국 전환 {sites}회 · 목표 REL 이상: {met} / {total}시간 · 방침: {label}"
+  ],
+  "{date} · SSN {ssn} · 目標REL {rel}% · 拠点 {sites} · 経路 {paths} · 割当 {count} 波": [
+    "{date} · SSN {ssn} · Target REL {rel}% · {sites} sites · {paths} paths · {count} assigned frequencies",
+    "{date} · SSN {ssn} · REL cible {rel}% · {sites} sites · {paths} trajets · {count} fréquences attribuées",
+    "{date} · SSN {ssn} · REL objetivo {rel}% · {sites} sitios · {paths} trayectos · {count} frecuencias asignadas",
+    "{date} · SSN {ssn} · REL obiettivo {rel}% · {sites} siti · {paths} percorsi · {count} frequenze assegnate",
+    "{date} · SSN {ssn} · REL alvo {rel}% · {sites} locais · {paths} percursos · {count} frequências atribuídas",
+    "{date} · SSN {ssn} · Ziel-REL {rel}% · {sites} Standorte · {paths} Strecken · {count} zugeteilte Frequenzen",
+    "{date} · SSN {ssn} · 목표 REL {rel}% · 거점 {sites} · 경로 {paths} · 할당 {count}파"
+  ],
+  "切替 {count} 回 · 全経路が目標REL以上 {met} / {total} 時間 · 方針: {label}": [
+    "{count} switches · All paths at or above target REL: {met} / {total} hours · Policy: {label}",
+    "{count} changements · Tous les trajets à la REL cible : {met} / {total} heures · Stratégie : {label}",
+    "{count} cambios · Todos los trayectos en la REL objetivo o más: {met} / {total} horas · Criterio: {label}",
+    "{count} cambi · Tutti i percorsi alla REL obiettivo: {met} / {total} ore · Criterio: {label}",
+    "{count} trocas · Todos os percursos na REL alvo ou acima: {met} / {total} horas · Critério: {label}",
+    "{count} Wechsel · Alle Strecken auf Ziel-REL: {met} / {total} Stunden · Strategie: {label}",
+    "전환 {count}회 · 전 경로 목표 REL 이상: {met} / {total}시간 · 방침: {label}"
+  ],
+  "全経路の切替 {count} 回 · 目標REL以上 {met} / {total} 経路時間 · 方針: {label}": [
+    "{count} switches over all paths · At or above target REL: {met} / {total} path-hours · Policy: {label}",
+    "{count} changements sur tous les trajets · REL cible atteinte : {met} / {total} heures-trajets · Stratégie : {label}",
+    "{count} cambios en todos los trayectos · En la REL objetivo o más: {met} / {total} horas-trayecto · Criterio: {label}",
+    "{count} cambi su tutti i percorsi · REL obiettivo raggiunta: {met} / {total} ore-percorso · Criterio: {label}",
+    "{count} trocas em todos os percursos · Na REL alvo ou acima: {met} / {total} horas-percurso · Critério: {label}",
+    "{count} Wechsel über alle Strecken · Ziel-REL erreicht: {met} / {total} Streckenstunden · Strategie: {label}",
+    "전 경로 전환 {count}회 · 목표 REL 이상: {met} / {total} 경로시간 · 방침: {label}"
+  ],
+  "目標REL {rel}%（Aの値）以上の時間: A {a} 時間 → B {b} 時間（{diff}）": [
+    "Hours at or above target REL {rel}% (A's value): A {a} h → B {b} h ({diff})",
+    "Heures à la REL cible {rel} % (valeur de A) ou plus : A {a} h → B {b} h ({diff})",
+    "Horas en la REL objetivo {rel}% (valor de A) o más: A {a} h → B {b} h ({diff})",
+    "Ore pari o superiori alla REL obiettivo {rel}% (valore di A): A {a} h → B {b} h ({diff})",
+    "Horas na REL alvo {rel}% (valor de A) ou acima: A {a} h → B {b} h ({diff})",
+    "Stunden auf oder über Ziel-REL {rel}% (Wert von A): A {a} h → B {b} h ({diff})",
+    "목표 REL {rel}%(A의 값) 이상인 시간: A {a}시간 → B {b}시간({diff})"
+  ],
+  "Bが高いセル {better} · Bが低いセル {worse} · ▲ Bで目標RELに届く {gained} · ▼ Bで目標RELを下回る {lost}": [
+    "Higher in B: {better} cells · Lower in B: {worse} · ▲ Reaches target REL in B: {gained} · ▼ Falls below target REL in B: {lost}",
+    "Plus élevées dans B : {better} cellules · Plus basses dans B : {worse} · ▲ Atteint la REL cible dans B : {gained} · ▼ Passe sous la REL cible dans B : {lost}",
+    "Más altas en B: {better} celdas · Más bajas en B: {worse} · ▲ Alcanza la REL objetivo en B: {gained} · ▼ Baja de la REL objetivo en B: {lost}",
+    "Più alte in B: {better} celle · Più basse in B: {worse} · ▲ Raggiunge la REL obiettivo in B: {gained} · ▼ Scende sotto la REL obiettivo in B: {lost}",
+    "Mais altas em B: {better} células · Mais baixas em B: {worse} · ▲ Atinge a REL alvo em B: {gained} · ▼ Fica abaixo da REL alvo em B: {lost}",
+    "In B höher: {better} Zellen · In B niedriger: {worse} · ▲ Erreicht in B die Ziel-REL: {gained} · ▼ Fällt in B unter die Ziel-REL: {lost}",
+    "B가 높은 셀 {better} · B가 낮은 셀 {worse} · ▲ B에서 목표 REL 도달 {gained} · ▼ B에서 목표 REL 미달 {lost}"
+  ],
+  "片方だけで計算した周波数は表示しません: {list} MHz": [
+    "Frequencies calculated in only one result are not shown: {list} MHz",
+    "Les fréquences calculées dans un seul résultat ne sont pas affichées : {list} MHz",
+    "No se muestran las frecuencias calculadas en un solo resultado: {list} MHz",
+    "Le frequenze calcolate in un solo risultato non sono mostrate: {list} MHz",
+    "As frequências calculadas em só um resultado não são mostradas: {list} MHz",
+    "Nur in einem Ergebnis berechnete Frequenzen werden nicht gezeigt: {list} MHz",
+    "한쪽에서만 계산한 주파수는 표시하지 않습니다: {list} MHz"
+  ],
+  "ダイバーシティー・メッシュの24時間運用計画": [
+    "24-hour operating plans for diversity and mesh",
+    "Plans d’exploitation sur 24 h pour la diversité et le maillage",
+    "Planes de operación de 24 h para diversidad y malla",
+    "Piani operativi di 24 h per diversità e maglia",
+    "Planos de operação de 24 h para diversidade e malha",
+    "24-Stunden-Betriebspläne für Diversity und Netz",
+    "다이버시티·메시 24시간 운용 계획"
+  ],
+  "ダイバーシティー予測とメッシュ予測の結果から、時間帯ごとに使う周波数と受信局（メッシュでは経路ごと、または全経路で共通の周波数）を決めた計画表を作れるようにしました。切替を抑える方針と毎時最良を選べ、CSV出力と印刷ができます。": [
+    "Diversity and mesh predictions can now produce a plan table that sets the frequency and receiving site for each time block (for a mesh, per path or one common frequency for all paths). Choose fewest switches or best each hour, and export to CSV or print.",
+    "Les prévisions de diversité et de maillage produisent désormais un plan qui fixe la fréquence et le site de réception pour chaque plage horaire (pour un maillage, par trajet ou une fréquence commune à tous les trajets). Choisissez moins de changements ou meilleure chaque heure, puis exportez en CSV ou imprimez.",
+    "Las predicciones de diversidad y de malla ahora generan un plan que fija la frecuencia y el sitio de recepción para cada franja horaria (en una malla, por trayecto o una frecuencia común para todos). Elija menos cambios o mejor cada hora, y exporte a CSV o imprima.",
+    "Le previsioni di diversità e di maglia ora producono un piano che fissa la frequenza e il sito di ricezione per ogni fascia oraria (per una maglia, per percorso o una frequenza comune a tutti). Scegli meno cambi o migliore ogni ora, ed esporta in CSV o stampa.",
+    "As previsões de diversidade e de malha passam a gerar um plano que fixa a frequência e o local de receção para cada faixa horária (numa malha, por percurso ou uma frequência comum a todos). Escolha menos trocas ou melhor a cada hora, e exporte para CSV ou imprima.",
+    "Diversity- und Netzvorhersagen erzeugen jetzt einen Plan, der für jeden Zeitblock Frequenz und Empfangsstandort festlegt (im Netz je Strecke oder eine gemeinsame Frequenz für alle Strecken). Wählen Sie wenige Wechsel oder jede Stunde die beste und exportieren Sie als CSV oder drucken Sie.",
+    "다이버시티 예측과 메시 예측 결과로 시간대마다 사용할 주파수와 수신국(메시는 경로별 또는 전 경로 공통 주파수)을 정한 계획표를 만들 수 있게 했습니다. 전환 최소화와 매시 최적을 고를 수 있고 CSV 출력과 인쇄가 가능합니다."
+  ],
+  "計算履歴タブで保存された地点間予測を2件選ぶと、RELまたはSNRの差を周波数×UTCで表示します。違う計算条件の一覧と、目標REL以上の時間数の変化も示します。アンテナや送信電力を変えた効果の確認に使えます。": [
+    "In the Calculation history tab, choose two saved point-to-point predictions to see the REL or SNR difference by frequency × UTC, together with the conditions that differ and the change in hours at or above the target REL. Use it to check the effect of a different antenna or transmit power.",
+    "Dans l’onglet Historique des calculs, choisissez deux prévisions point à point enregistrées pour voir l’écart de REL ou de SNR par fréquence × UTC, avec les conditions qui diffèrent et la variation des heures à la REL cible ou plus. Utile pour vérifier l’effet d’une autre antenne ou puissance d’émission.",
+    "En la pestaña Historial de cálculos, elija dos predicciones punto a punto guardadas para ver la diferencia de REL o SNR por frecuencia × UTC, junto con las condiciones que difieren y el cambio en las horas en la REL objetivo o más. Sirve para comprobar el efecto de otra antena o potencia de transmisión.",
+    "Nella scheda Cronologia dei calcoli, scegli due previsioni punto-punto salvate per vedere la differenza di REL o SNR per frequenza × UTC, con le condizioni diverse e la variazione delle ore pari o superiori alla REL obiettivo. Serve a verificare l’effetto di un’altra antenna o potenza di trasmissione.",
+    "No separador Histórico de cálculos, escolha duas previsões ponto a ponto guardadas para ver a diferença de REL ou SNR por frequência × UTC, com as condições que diferem e a variação das horas na REL alvo ou acima. Serve para verificar o efeito de outra antena ou potência de transmissão.",
+    "Wählen Sie im Berechnungsverlauf zwei gespeicherte Punkt-zu-Punkt-Vorhersagen, um die REL- oder SNR-Differenz nach Frequenz × UTC zu sehen, zusammen mit den abweichenden Bedingungen und der Änderung der Stunden auf oder über der Ziel-REL. So lässt sich die Wirkung einer anderen Antenne oder Sendeleistung prüfen.",
+    "계산 이력 탭에서 저장된 지점 간 예측 2건을 고르면 REL 또는 SNR 차이를 주파수×UTC로 표시합니다. 다른 계산 조건 목록과 목표 REL 이상 시간 수의 변화도 보여 줍니다. 안테나나 송신 전력을 바꾼 효과를 확인하는 데 쓸 수 있습니다."
   ]
 };

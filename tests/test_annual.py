@@ -96,6 +96,21 @@ class AnnualApiTests(unittest.TestCase):
         self.assertEqual(rows[header+1][-1], 'True')
         self.assertEqual(self.request(f'/api/results/{r["id"]}/raw')[0], 404)
 
+    def test_history_lists_station_names(self):
+        # The comparison picks runs by the TX and RX1 names of the circuit snapshot; older results have none.
+        data = dict(tx_lat=35.68, tx_lon=139.69, rx_lat=13.45, rx_lon=144.75, year=2026, month=10, ssn=80, frequencies=[8, 12],
+                    ui_selection=dict(tx=dict(location=dict(name='東京')), rxs=[dict(location=dict(name='Test Site'))]))
+        with patch.object(self.server.ENGINE, 'run', side_effect=fake_run):
+            status, body = self.request('/api/annual', data)
+        self.assertEqual(status, 200, body)
+        row = next(r for r in json.loads(self.request('/api/history')[1]) if r['id'] == json.loads(body)['id'])
+        self.assertEqual((row['tx_name'], row['rx_name']), ('東京', 'Test Site'))
+        data.pop('ui_selection')
+        with patch.object(self.server.ENGINE, 'run', side_effect=fake_run):
+            body = self.request('/api/annual', data)[1]
+        row = next(r for r in json.loads(self.request('/api/history')[1]) if r['id'] == json.loads(body)['id'])
+        self.assertEqual((row['tx_name'], row['rx_name']), (None, None))
+
     def test_effective_ssn_is_refused(self):
         data = dict(tx_lat=35.68, tx_lon=139.69, rx_lat=13.45, rx_lon=144.75, year=2026, month=10, ssn_source='effective')
         status, body = self.request('/api/annual', data)
