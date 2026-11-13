@@ -18,6 +18,7 @@ function fillCoverageFrequencies(list){
 }
 // The map shows the chosen frequency at the UTC bar's hour; the bar steps or plays the 24 hours.
 function renderCoverageMatrix(){
+ if(coverageResult.stations)return renderStationCoverage();
  const r=coverageResult,m=r.matrix,f=Math.min(matrixFrequency,m.frequencies.length-1),h=matrixHour(),label=r.span===360?'全世界':r.span+'° × '+r.span+'°';
  fillCoverageFrequencies(m.frequencies);$('cov_freq').value=m.frequencies[f];
  $('coverage-info').replaceChildren(cell('span',`${m.frequencies[f]} MHz / ${h}:00 UTC / ${label} / ${m.size}×${m.size}格子 · TXから各格子点までのVOACAPエリア計算。格子点の間は補間して色分けしています`),...(r.notes??[]).map(n=>cell('p',n)));
@@ -25,7 +26,9 @@ function renderCoverageMatrix(){
 }
 // A new result keeps the frequency chosen for the previous one when it was calculated, and the shown hour.
 function openCoverageMatrix(r){matrixFrequency=Math.max(0,r.matrix.frequencies.indexOf(Number($('cov_freq').value)));}
-$('cov_freq').onchange=()=>{const m=coverageResult?.matrix;if(!m)return;const i=m.frequencies.indexOf(Number($('cov_freq').value));if(i>=0){matrixFrequency=i;showCoverage();}};
+$('cov_freq').onchange=()=>{const m=coverageResult?.matrix;if(!m)return;const best=$('cov_freq').value==='best',i=m.frequencies.indexOf(Number($('cov_freq').value));
+ // A result of several stations also offers the best frequency of each grid point (coverage-stations.js).
+ if(coverageResult.stations)stationBest=best;if(i>=0)matrixFrequency=i;if(best||i>=0)showCoverage();};
 $('cov_hour').addEventListener('change',()=>{if(coverageResult?.matrix&&!$('coverage').hidden)showCoverage();});
 $('compute-coverage').onclick=async()=>{
  if(busy)return;if(!form.checkValidity()){tab('conditions-tab');form.reportValidity();return;}if(!$('station-selection').reportValidity())return;try{validateCircuit();}catch(e){notice(e.message,true);return;}

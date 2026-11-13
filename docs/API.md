@@ -12,6 +12,7 @@ AI接続・キー設定とモデル一覧は[AI_SETTINGS.md](AI_SETTINGS.md)、�
 | POST | /api/predict | 24時間地点間予測・履歴保存 |
 | POST | /api/coverage | VOACAPエリア計算（TXから格子全体）・履歴保存 |
 | POST | /api/coverage-matrix | 周波数×24時間のVOACAPエリア計算・履歴保存 |
+| POST | /api/coverage-stations | TXと追加の送信所のエリア計算を重ねる・履歴保存 |
 | POST | /api/diversity | 単一TX→複数RXの24時間比較・履歴保存 |
 | GET | /api/positions | 移動局の最新位置・局別受信設定 |
 | POST | /api/positions または /api/positions/nmea | 本体では廃止。410、ゲートウェイ18083へ送信する |
@@ -124,7 +125,7 @@ REL目標（`reliability`）以上となる格子の面積割合（緯度の余�
 `signal_dbw`・`snr_db_hz`・`reliability` をそれぞれ1値1バイトでbase64にしたもの（南から北の行・西から東の列）です。
 バイトは S dBW＝−値、SNR＝値−100、REL＝値（%）、255は値なしです。CSVは周波数・時刻ごとの面積割合を出力します。
 
-coverage・coverage-matrixの本文に `job`（英数字・`_`・`-` の16〜64文字、呼び出し側が乱数で作る）を付けると、計算中に
+coverage・coverage-matrix・coverage-stationsの本文に `job`（英数字・`_`・`-` の16〜64文字、呼び出し側が乱数で作る）を付けると、計算中に
 `GET /api/jobs/{job}` が `{done, total, cancelling}`（完了した実行数と全体数）を返し、`POST /api/jobs/{job}/cancel` で
 実行中のエンジンを止めます。中止された計算は409と `{"error":"計算を中止しました","cancelled":true}` を返します。
 計算が終わるとjobは消え、GETは404を返します。
@@ -243,6 +244,24 @@ TX・RX1から1 km未満の候補はskippedと空のhours、rank=null）、note�
 
 履歴kind=sites。CSVは候補×UTCの行で、順位、地点、距離、時間数、平均REL、REL、区間ごとの周波数、目標REL以上かどうかを収録します。
 エンジンは最大20回逐次実行、各回60秒まで。公開版では回数制限のコストが5です。詳細は[SITES.md](SITES.md)。
+
+## 送信所の重ね合わせ
+
+`POST /api/coverage-stations`：`/api/coverage-matrix` と同じ入力（`span` を含む）に、stations（1〜3件。各要素はid・name［1〜40文字］・lat・lon）、
+任意で tx_id・tx_name（TXの地点IDと名称）を加えます。TXと各送信所について coverage-matrix と同じエリア計算を同じ格子で行います。
+追加した送信所はTXのアンテナ・送信電力を使い、受信はRX1のアンテナ・雑音です。範囲の中心は全送信所の中間で、`center_lat`・`center_lon` は無視します。
+格子は全世界が91×91、それ以外は61×61です。送信所どうし、または送信所とRX1が1 km未満なら400を返します。
+
+応答：kind=coverage_stations、parameters、stations（TXが先頭、id・name・lat・lon）、note、notes、span、center_lat、center_lon、input_area（TXの最初の実行）、
+matrix（size、lon_min、lon_max、lat_min、lat_max、frequencies、hours、cells、summary、best）、engine/engine_commit、履歴id/created。
+`cells[周波数][時刻]` は `reliability`（最良の送信所のREL、%）と `station`（最良の送信所の番号、stationsの添字）を1値1バイトでbase64にしたものです（255は値なし）。
+最良の送信所はRELが最も高いもの、同じならSNRが高いもの、それも同じなら先の送信所です。
+`summary[周波数][時刻]` は `{covered, stations:[{alone, best, only}]}` で、面積割合（緯度の余弦で重み付け、%）です。
+coveredはどれかの送信所で目標REL以上、aloneはその送信所だけで目標REL以上、bestはそのうちその送信所が最良、onlyはその送信所だけが目標REL以上の面積です。
+`best` は `{cells:[時刻], summary:[時刻]}` で、格子点ごとに最良周波数を選んだ地図です。cellsには `frequency`（frequenciesの添字）が加わります。
+
+履歴kind=coverage_stations。CSVは周波数（最良周波数は `best`）×UTC×送信所の行で、面積割合を収録します。地図はJSONに含まれます。
+エンジンは送信所数×周波数数×4回（CPU数まで並列）。公開版では回数制限のコストが60です。詳細は[COVERAGE_STATIONS.md](COVERAGE_STATIONS.md)。
 
 ## 定時の再計算
 

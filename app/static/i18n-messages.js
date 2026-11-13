@@ -11898,5 +11898,311 @@ const HF_MESSAGES={
     "No separador Histórico de cálculos, escolha duas previsões ponto a ponto guardadas para ver a diferença de REL ou SNR por frequência × UTC, com as condições que diferem e a variação das horas na REL alvo ou acima. Serve para verificar o efeito de outra antena ou potência de transmissão.",
     "Wählen Sie im Berechnungsverlauf zwei gespeicherte Punkt-zu-Punkt-Vorhersagen, um die REL- oder SNR-Differenz nach Frequenz × UTC zu sehen, zusammen mit den abweichenden Bedingungen und der Änderung der Stunden auf oder über der Ziel-REL. So lässt sich die Wirkung einer anderen Antenne oder Sendeleistung prüfen.",
     "계산 이력 탭에서 저장된 지점 간 예측 2건을 고르면 REL 또는 SNR 차이를 주파수×UTC로 표시합니다. 다른 계산 조건 목록과 목표 REL 이상 시간 수의 변화도 보여 줍니다. 안테나나 송신 전력을 바꾼 효과를 확인하는 데 쓸 수 있습니다."
+  ],
+  "送信所を重ねる": [
+    "Overlay transmitting stations",
+    "Superposer des stations d’émission",
+    "Superponer estaciones transmisoras",
+    "Sovrapponi stazioni trasmittenti",
+    "Sobrepor estações transmissoras",
+    "Sendestationen überlagern",
+    "송신소 겹쳐 보기"
+  ],
+  "TXのほかに地点プリセットから送信所を最大3か所選ぶと、上の範囲で送信所ごとにカバー範囲を計算して重ねます。格子点ごとに最も届く送信所の色で塗り、どの送信所でも目標RELに届かない所を空白域（灰色）として示します。追加した送信所はTXのアンテナ・送信電力を使います。計算は送信所の数だけ増え、数分かかります。": [
+    "Choose up to 3 transmitting stations from the location presets besides the TX to calculate the coverage of each station over the range above and overlay them. Each grid point is painted in the colour of the station that reaches it best, and places no station brings to the target REL are shown as gaps (grey). The added stations use the TX antenna and transmit power. The calculation grows with the number of stations and takes several minutes.",
+    "Choisissez jusqu’à 3 stations d’émission parmi les préréglages de lieux, en plus du TX, pour calculer la couverture de chaque station sur la zone ci-dessus et les superposer. Chaque point de grille prend la couleur de la station qui l’atteint le mieux ; les endroits où aucune station n’atteint la REL cible apparaissent comme lacunes (gris). Les stations ajoutées utilisent l’antenne et la puissance d’émission du TX. Le calcul croît avec le nombre de stations et prend plusieurs minutes.",
+    "Elija hasta 3 estaciones transmisoras de los ajustes de ubicación, además del TX, para calcular la cobertura de cada estación en el área anterior y superponerlas. Cada punto de la cuadrícula se pinta del color de la estación que mejor llega, y los lugares donde ninguna estación alcanza la REL objetivo se muestran como huecos (gris). Las estaciones añadidas usan la antena y la potencia de transmisión del TX. El cálculo crece con el número de estaciones y tarda varios minutos.",
+    "Scegli fino a 3 stazioni trasmittenti dalle preimpostazioni dei luoghi, oltre al TX, per calcolare la copertura di ogni stazione sull’area sopra e sovrapporle. Ogni punto della griglia è colorato con la stazione che lo raggiunge meglio; i luoghi che nessuna stazione porta alla REL obiettivo sono mostrati come lacune (grigio). Le stazioni aggiunte usano l’antenna e la potenza di trasmissione del TX. Il calcolo cresce con il numero di stazioni e richiede alcuni minuti.",
+    "Escolha até 3 estações transmissoras nas predefinições de locais, além do TX, para calcular a cobertura de cada estação na área acima e sobrepô-las. Cada ponto da grade recebe a cor da estação que melhor o alcança, e os locais onde nenhuma estação atinge a REL alvo aparecem como lacunas (cinza). As estações adicionadas usam a antena e a potência de transmissão do TX. O cálculo cresce com o número de estações e leva alguns minutos.",
+    "Wählen Sie neben dem TX bis zu 3 Sendestationen aus den Ortsvorlagen, um die Abdeckung jeder Station im obigen Bereich zu berechnen und zu überlagern. Jeder Gitterpunkt erhält die Farbe der Station, die ihn am besten erreicht; Orte, an denen keine Station die Ziel-REL erreicht, erscheinen als Lücken (grau). Die hinzugefügten Stationen verwenden Antenne und Sendeleistung des TX. Die Berechnung wächst mit der Zahl der Stationen und dauert einige Minuten.",
+    "TX 외에 지점 프리셋에서 송신소를 최대 3곳 고르면, 위 범위에서 송신소마다 커버 범위를 계산해 겹쳐 표시합니다. 격자점마다 가장 잘 닿는 송신소의 색으로 칠하고, 어느 송신소로도 목표 REL에 닿지 않는 곳은 공백 지역(회색)으로 표시합니다. 추가한 송신소는 TX의 안테나와 송신 전력을 사용합니다. 계산은 송신소 수만큼 늘어나며 몇 분이 걸립니다."
+  ],
+  "送信所を重ねて計算": [
+    "Calculate overlaid stations",
+    "Calculer les stations superposées",
+    "Calcular estaciones superpuestas",
+    "Calcola stazioni sovrapposte",
+    "Calcular estações sobrepostas",
+    "Überlagerte Stationen berechnen",
+    "송신소 겹쳐 계산"
+  ],
+  "最も届く送信所": [
+    "Best-reaching station",
+    "Station qui atteint le mieux",
+    "Estación que mejor llega",
+    "Stazione che raggiunge meglio",
+    "Estação que melhor alcança",
+    "Am besten erreichende Station",
+    "가장 잘 닿는 송신소"
+  ],
+  "最良のREL %": [
+    "Best REL %",
+    "Meilleure REL %",
+    "Mejor REL %",
+    "REL migliore %",
+    "Melhor REL %",
+    "Beste REL %",
+    "최고 REL %"
+  ],
+  "送信所": [
+    "Station",
+    "Station",
+    "Estación",
+    "Stazione",
+    "Estação",
+    "Station",
+    "송신소"
+  ],
+  "空白域": [
+    "Gap",
+    "Lacune",
+    "Hueco",
+    "Lacuna",
+    "Lacuna",
+    "Lücke",
+    "공백 지역"
+  ],
+  "最良の送信所": [
+    "Best station",
+    "Meilleure station",
+    "Mejor estación",
+    "Stazione migliore",
+    "Melhor estação",
+    "Beste Station",
+    "최적 송신소"
+  ],
+  "単独で目標REL以上 %": [
+    "Alone at target REL or above %",
+    "Seule à la REL cible ou plus %",
+    "Sola en la REL objetivo o más %",
+    "Da sola alla REL obiettivo o oltre %",
+    "Sozinha na REL alvo ou acima %",
+    "Allein auf Ziel-REL oder darüber %",
+    "단독으로 목표 REL 이상 %"
+  ],
+  "最も届く範囲 %": [
+    "Area where it reaches best %",
+    "Zone où elle atteint le mieux %",
+    "Área donde mejor llega %",
+    "Area in cui raggiunge meglio %",
+    "Área onde melhor alcança %",
+    "Fläche, in der sie am besten erreicht %",
+    "가장 잘 닿는 범위 %"
+  ],
+  "この送信所だけが届く範囲 %": [
+    "Area only this station reaches %",
+    "Zone atteinte par cette seule station %",
+    "Área a la que solo llega esta estación %",
+    "Area raggiunta solo da questa stazione %",
+    "Área alcançada só por esta estação %",
+    "Fläche, die nur diese Station erreicht %",
+    "이 송신소만 닿는 범위 %"
+  ],
+  "全送信所": [
+    "All stations",
+    "Toutes les stations",
+    "Todas las estaciones",
+    "Tutte le stazioni",
+    "Todas as estações",
+    "Alle Stationen",
+    "전체 송신소"
+  ],
+  "送信所の重ね合わせ": [
+    "Overlaid stations",
+    "Stations superposées",
+    "Estaciones superpuestas",
+    "Stazioni sovrapposte",
+    "Estações sobrepostas",
+    "Überlagerte Stationen",
+    "송신소 겹쳐 보기"
+  ],
+  "空白域（目標REL {target}%未満）": [
+    "Gap (below target REL {target}%)",
+    "Lacune (sous la REL cible {target} %)",
+    "Hueco (por debajo de la REL objetivo {target} %)",
+    "Lacuna (sotto la REL obiettivo {target}%)",
+    "Lacuna (abaixo da REL alvo {target}%)",
+    "Lücke (unter Ziel-REL {target} %)",
+    "공백 지역(목표 REL {target}% 미만)"
+  ],
+  "{label} / {hour}:00 UTC · 範囲内の面積に占める割合（緯度で重み付け）。地点間のRELではありません。": [
+    "{label} / {hour}:00 UTC · Share of the area in the range (weighted by latitude). Not a point-to-point REL.",
+    "{label} / {hour}:00 UTC · Part de la surface de la zone (pondérée par la latitude). Ce n’est pas une REL point à point.",
+    "{label} / {hour}:00 UTC · Proporción del área dentro del rango (ponderada por latitud). No es una REL punto a punto.",
+    "{label} / {hour}:00 UTC · Quota dell’area nell’intervallo (pesata per latitudine). Non è una REL punto-punto.",
+    "{label} / {hour}:00 UTC · Proporção da área na faixa (ponderada pela latitude). Não é uma REL ponto a ponto.",
+    "{label} / {hour}:00 UTC · Anteil an der Fläche im Bereich (nach Breite gewichtet). Keine Punkt-zu-Punkt-REL.",
+    "{label} / {hour}:00 UTC · 범위 내 면적에서 차지하는 비율(위도로 가중). 지점 간 REL이 아닙니다."
+  ],
+  "送信所の重ね合わせ {count}か所 · {label}": [
+    "Overlaid stations: {count} · {label}",
+    "Stations superposées : {count} · {label}",
+    "Estaciones superpuestas: {count} · {label}",
+    "Stazioni sovrapposte: {count} · {label}",
+    "Estações sobrepostas: {count} · {label}",
+    "Überlagerte Stationen: {count} · {label}",
+    "송신소 겹쳐 보기 {count}곳 · {label}"
+  ],
+  "{hour}:00 UTC / {label} / {size}×{size}格子": [
+    "{hour}:00 UTC / {label} / {size}×{size} grid",
+    "{hour}:00 UTC / {label} / grille {size}×{size}",
+    "{hour}:00 UTC / {label} / cuadrícula {size}×{size}",
+    "{hour}:00 UTC / {label} / griglia {size}×{size}",
+    "{hour}:00 UTC / {label} / grade {size}×{size}",
+    "{hour}:00 UTC / {label} / {size}×{size}-Gitter",
+    "{hour}:00 UTC / {label} / {size}×{size} 격자"
+  ],
+  "送信所の重ね合わせ {label} / {hour}:00 UTC · TX・RX間のパスは表示しません": [
+    "Overlaid stations {label} / {hour}:00 UTC · TX–RX paths are not shown",
+    "Stations superposées {label} / {hour}:00 UTC · les trajets TX–RX ne sont pas affichés",
+    "Estaciones superpuestas {label} / {hour}:00 UTC · no se muestran las trayectorias TX–RX",
+    "Stazioni sovrapposte {label} / {hour}:00 UTC · i percorsi TX–RX non sono mostrati",
+    "Estações sobrepostas {label} / {hour}:00 UTC · os percursos TX–RX não são mostrados",
+    "Überlagerte Stationen {label} / {hour}:00 UTC · TX–RX-Pfade werden nicht angezeigt",
+    "송신소 겹쳐 보기 {label} / {hour}:00 UTC · TX–RX 경로는 표시하지 않습니다"
+  ],
+  "{point} / 最良の送信所 {name} · {freq} MHz / {detail}": [
+    "{point} / Best station {name} · {freq} MHz / {detail}",
+    "{point} / Meilleure station {name} · {freq} MHz / {detail}",
+    "{point} / Mejor estación {name} · {freq} MHz / {detail}",
+    "{point} / Stazione migliore {name} · {freq} MHz / {detail}",
+    "{point} / Melhor estação {name} · {freq} MHz / {detail}",
+    "{point} / Beste Station {name} · {freq} MHz / {detail}",
+    "{point} / 최적 송신소 {name} · {freq} MHz / {detail}"
+  ],
+  "{point} / 最良の送信所 {name} / {detail}": [
+    "{point} / Best station {name} / {detail}",
+    "{point} / Meilleure station {name} / {detail}",
+    "{point} / Mejor estación {name} / {detail}",
+    "{point} / Stazione migliore {name} / {detail}",
+    "{point} / Melhor estação {name} / {detail}",
+    "{point} / Beste Station {name} / {detail}",
+    "{point} / 최적 송신소 {name} / {detail}"
+  ],
+  "{point} / 送信所 — / {detail}": [
+    "{point} / Station — / {detail}",
+    "{point} / Station — / {detail}",
+    "{point} / Estación — / {detail}",
+    "{point} / Stazione — / {detail}",
+    "{point} / Estação — / {detail}",
+    "{point} / Station — / {detail}",
+    "{point} / 송신소 — / {detail}"
+  ],
+  "送信所の重ね合わせは単一RXの回線で計算します。メッシュを外してください。": [
+    "Overlaid stations are calculated with a single-RX circuit. Turn off mesh.",
+    "Les stations superposées se calculent avec un circuit à un seul RX. Désactivez le maillage.",
+    "Las estaciones superpuestas se calculan con un circuito de un solo RX. Desactive la malla.",
+    "Le stazioni sovrapposte si calcolano con un circuito a un solo RX. Disattiva la rete.",
+    "As estações sobrepostas são calculadas com um circuito de um só RX. Desative a malha.",
+    "Überlagerte Stationen werden mit einem Einzel-RX-Kreis berechnet. Schalten Sie das Netz aus.",
+    "송신소 겹쳐 보기는 단일 RX 회선으로 계산합니다. 메시를 해제하세요."
+  ],
+  "重ねる送信所を1か所以上選んでください。": [
+    "Choose at least one station to overlay.",
+    "Choisissez au moins une station à superposer.",
+    "Elija al menos una estación para superponer.",
+    "Scegli almeno una stazione da sovrapporre.",
+    "Escolha pelo menos uma estação para sobrepor.",
+    "Wählen Sie mindestens eine Station zum Überlagern.",
+    "겹칠 송신소를 1곳 이상 고르세요."
+  ],
+  "送信所{count}か所 × 周波数{freqs}波 × 24時間のカバー範囲を計算しています。数分かかります。": [
+    "Calculating coverage for {count} stations × {freqs} frequencies × 24 hours. This takes several minutes.",
+    "Calcul de la couverture pour {count} stations × {freqs} fréquences × 24 heures. Cela prend plusieurs minutes.",
+    "Calculando la cobertura de {count} estaciones × {freqs} frecuencias × 24 horas. Tarda varios minutos.",
+    "Calcolo della copertura per {count} stazioni × {freqs} frequenze × 24 ore. Richiede alcuni minuti.",
+    "Calculando a cobertura de {count} estações × {freqs} frequências × 24 horas. Leva alguns minutos.",
+    "Abdeckung für {count} Stationen × {freqs} Frequenzen × 24 Stunden wird berechnet. Das dauert einige Minuten.",
+    "송신소 {count}곳 × 주파수 {freqs}개 × 24시간의 커버 범위를 계산하고 있습니다. 몇 분 걸립니다."
+  ],
+  "送信所を重ねて計算しています": [
+    "Calculating overlaid stations",
+    "Calcul des stations superposées",
+    "Calculando estaciones superpuestas",
+    "Calcolo delle stazioni sovrapposte",
+    "Calculando estações sobrepostas",
+    "Überlagerte Stationen werden berechnet",
+    "송신소를 겹쳐 계산하고 있습니다"
+  ],
+  "送信所を重ねたカバー範囲を計算しました。色は格子点ごとに最も届く送信所、灰色はどの送信所でも目標RELに届かない空白域です。": [
+    "Calculated the coverage of the overlaid stations. Colours show the station that reaches each grid point best; grey is a gap where no station reaches the target REL.",
+    "Couverture des stations superposées calculée. Les couleurs indiquent la station qui atteint le mieux chaque point de grille ; le gris est une lacune où aucune station n’atteint la REL cible.",
+    "Se calculó la cobertura de las estaciones superpuestas. Los colores indican la estación que mejor llega a cada punto; el gris es un hueco donde ninguna estación alcanza la REL objetivo.",
+    "Copertura delle stazioni sovrapposte calcolata. I colori indicano la stazione che raggiunge meglio ogni punto; il grigio è una lacuna dove nessuna stazione raggiunge la REL obiettivo.",
+    "Cobertura das estações sobrepostas calculada. As cores indicam a estação que melhor alcança cada ponto; o cinza é uma lacuna onde nenhuma estação atinge a REL alvo.",
+    "Abdeckung der überlagerten Stationen berechnet. Die Farben zeigen die Station, die jeden Gitterpunkt am besten erreicht; Grau ist eine Lücke, in der keine Station die Ziel-REL erreicht.",
+    "겹친 송신소의 커버 범위를 계산했습니다. 색은 격자점마다 가장 잘 닿는 송신소이고, 회색은 어느 송신소로도 목표 REL에 닿지 않는 공백 지역입니다."
+  ],
+  "送信所ごとにVOACAPのエリア計算を同じ格子で行い、格子点ごとにRELが最も高い送信所（同じRELならSNRが高い方）を示します。どの送信所でも目標RELに届かない格子点を空白域とします。追加した送信所はTXのアンテナ・送信電力で送信し、受信側はRX1のアンテナ・雑音を使うと仮定します。同じ周波数での送信所どうしの混信や、受信側での送信所の切替は考慮しません。": [
+    "A VOACAP area calculation is run for each station on the same grid, and each grid point shows the station with the highest REL (the higher SNR if REL is equal). Grid points no station brings to the target REL are gaps. The added stations are assumed to transmit with the TX antenna and power, and reception uses RX1’s antenna and noise. Interference between stations on the same frequency and switching between stations at the receiver are not considered.",
+    "Un calcul de zone VOACAP est effectué pour chaque station sur la même grille, et chaque point indique la station ayant la REL la plus élevée (le meilleur SNR à REL égale). Les points qu’aucune station n’amène à la REL cible sont des lacunes. Les stations ajoutées sont supposées émettre avec l’antenne et la puissance du TX, la réception utilisant l’antenne et le bruit du RX1. Les interférences entre stations sur la même fréquence et la commutation entre stations à la réception ne sont pas prises en compte.",
+    "Se ejecuta un cálculo de área VOACAP para cada estación en la misma cuadrícula, y cada punto muestra la estación con la REL más alta (la de mayor SNR si la REL es igual). Los puntos que ninguna estación lleva a la REL objetivo son huecos. Se supone que las estaciones añadidas transmiten con la antena y la potencia del TX, y la recepción usa la antena y el ruido del RX1. No se consideran la interferencia entre estaciones en la misma frecuencia ni la conmutación entre estaciones en el receptor.",
+    "Per ogni stazione si esegue un calcolo d’area VOACAP sulla stessa griglia, e ogni punto mostra la stazione con la REL più alta (a parità di REL, quella con SNR maggiore). I punti che nessuna stazione porta alla REL obiettivo sono lacune. Si assume che le stazioni aggiunte trasmettano con antenna e potenza del TX e che la ricezione usi antenna e rumore del RX1. Non si considerano l’interferenza tra stazioni sulla stessa frequenza né la commutazione tra stazioni in ricezione.",
+    "Um cálculo de área VOACAP é feito para cada estação na mesma grade, e cada ponto mostra a estação com a maior REL (a de maior SNR se a REL for igual). Os pontos que nenhuma estação leva à REL alvo são lacunas. Supõe-se que as estações adicionadas transmitem com a antena e a potência do TX, e a recepção usa a antena e o ruído do RX1. Não se consideram a interferência entre estações na mesma frequência nem a comutação entre estações na recepção.",
+    "Für jede Station wird eine VOACAP-Flächenberechnung auf demselben Gitter ausgeführt; jeder Gitterpunkt zeigt die Station mit der höchsten REL (bei gleicher REL die mit höherem SNR). Gitterpunkte, die keine Station auf die Ziel-REL bringt, sind Lücken. Für die hinzugefügten Stationen werden Antenne und Sendeleistung des TX angenommen, für den Empfang Antenne und Rauschen von RX1. Störungen zwischen Stationen auf derselben Frequenz und das Umschalten zwischen Stationen beim Empfänger werden nicht berücksichtigt.",
+    "송신소마다 같은 격자에서 VOACAP 영역 계산을 하고, 격자점마다 REL이 가장 높은 송신소(REL이 같으면 SNR이 높은 쪽)를 표시합니다. 어느 송신소로도 목표 REL에 닿지 않는 격자점을 공백 지역으로 합니다. 추가한 송신소는 TX의 안테나와 송신 전력으로 송신하고, 수신 측은 RX1의 안테나와 잡음을 사용한다고 가정합니다. 같은 주파수에서 송신소끼리의 혼신이나 수신 측의 송신소 전환은 고려하지 않습니다."
+  ],
+  "追加する送信所は1〜{count}か所で指定してください": [
+    "Specify 1 to {count} stations to add",
+    "Indiquez de 1 à {count} stations à ajouter",
+    "Indique de 1 a {count} estaciones para añadir",
+    "Indica da 1 a {count} stazioni da aggiungere",
+    "Indique de 1 a {count} estações a adicionar",
+    "Geben Sie 1 bis {count} hinzuzufügende Stationen an",
+    "추가할 송신소는 1~{count}곳으로 지정하세요"
+  ],
+  "送信所の形式が不正です": [
+    "Invalid station format",
+    "Format de station invalide",
+    "Formato de estación no válido",
+    "Formato della stazione non valido",
+    "Formato de estação inválido",
+    "Ungültiges Stationsformat",
+    "송신소 형식이 올바르지 않습니다"
+  ],
+  "送信所の名称は1〜40文字で指定してください": [
+    "Station names must be 1 to 40 characters",
+    "Le nom de la station doit comporter 1 à 40 caractères",
+    "El nombre de la estación debe tener de 1 a 40 caracteres",
+    "Il nome della stazione deve avere da 1 a 40 caratteri",
+    "O nome da estação deve ter de 1 a 40 caracteres",
+    "Stationsnamen müssen 1 bis 40 Zeichen lang sein",
+    "송신소 이름은 1~40자로 지정하세요"
+  ],
+  "送信所の緯度・経度が範囲外です": [
+    "Station latitude or longitude is out of range",
+    "Latitude ou longitude de la station hors plage",
+    "Latitud o longitud de la estación fuera de rango",
+    "Latitudine o longitudine della stazione fuori intervallo",
+    "Latitude ou longitude da estação fora do intervalo",
+    "Breite oder Länge der Station außerhalb des Bereichs",
+    "송신소의 위도·경도가 범위를 벗어났습니다"
+  ],
+  "送信所「{name}」はRX1と同じ地点です。RX1を別の地点にしてください": [
+    "Station “{name}” is at the same place as RX1. Choose another location for RX1",
+    "La station « {name} » est au même endroit que le RX1. Choisissez un autre lieu pour le RX1",
+    "La estación «{name}» está en el mismo lugar que el RX1. Elija otra ubicación para el RX1",
+    "La stazione «{name}» è nello stesso luogo del RX1. Scegli un altro luogo per il RX1",
+    "A estação “{name}” está no mesmo local que o RX1. Escolha outro local para o RX1",
+    "Station „{name}“ liegt am selben Ort wie RX1. Wählen Sie einen anderen Ort für RX1",
+    "송신소 「{name}」은(는) RX1과 같은 지점입니다. RX1을 다른 지점으로 바꾸세요"
+  ],
+  "送信所「{name}」は「{other}」と同じ地点です": [
+    "Station “{name}” is at the same place as “{other}”",
+    "La station « {name} » est au même endroit que « {other} »",
+    "La estación «{name}» está en el mismo lugar que «{other}»",
+    "La stazione «{name}» è nello stesso luogo di «{other}»",
+    "A estação “{name}” está no mesmo local que “{other}”",
+    "Station „{name}“ liegt am selben Ort wie „{other}“",
+    "송신소 「{name}」은(는) 「{other}」와(과) 같은 지점입니다"
+  ],
+  "「カバー範囲」タブで、TXのほかに地点プリセットから最大3か所の送信所を選び、カバー範囲を重ねて計算できるようにしました。地図は格子点ごとに最も届く送信所の色で塗り、どの送信所でも目標RELに届かない所を空白域（灰色）で示します。最良周波数または周波数ごとに24時間を切り替えられ、送信所ごとの面積の割合も表示します。": [
+    "On the Coverage tab, you can now choose up to 3 transmitting stations from the location presets besides the TX and calculate their coverage overlaid. The map paints each grid point in the colour of the station that reaches it best and shows places no station brings to the target REL as gaps (grey). You can step through 24 hours at the best frequency or a single frequency, and the share of the area for each station is shown too.",
+    "Dans l’onglet Couverture, vous pouvez désormais choisir jusqu’à 3 stations d’émission parmi les préréglages de lieux, en plus du TX, et calculer leurs couvertures superposées. La carte colore chaque point de grille selon la station qui l’atteint le mieux et montre en lacunes (gris) les endroits qu’aucune station n’amène à la REL cible. Vous pouvez parcourir les 24 heures à la meilleure fréquence ou à une seule fréquence, et la part de surface de chaque station est également affichée.",
+    "En la pestaña Cobertura ahora puede elegir hasta 3 estaciones transmisoras de los ajustes de ubicación, además del TX, y calcular sus coberturas superpuestas. El mapa pinta cada punto de la cuadrícula del color de la estación que mejor llega y muestra como huecos (gris) los lugares donde ninguna estación alcanza la REL objetivo. Puede recorrer las 24 horas con la mejor frecuencia o con una sola frecuencia, y también se muestra la proporción de área de cada estación.",
+    "Nella scheda Copertura ora puoi scegliere fino a 3 stazioni trasmittenti dalle preimpostazioni dei luoghi, oltre al TX, e calcolarne le coperture sovrapposte. La mappa colora ogni punto della griglia con la stazione che lo raggiunge meglio e mostra come lacune (grigio) i luoghi che nessuna stazione porta alla REL obiettivo. Puoi scorrere le 24 ore alla frequenza migliore o a una sola frequenza, e viene mostrata anche la quota d’area di ogni stazione.",
+    "Na aba Cobertura, agora é possível escolher até 3 estações transmissoras nas predefinições de locais, além do TX, e calcular as coberturas sobrepostas. O mapa pinta cada ponto da grade com a cor da estação que melhor o alcança e mostra como lacunas (cinza) os locais onde nenhuma estação atinge a REL alvo. É possível percorrer as 24 horas na melhor frequência ou numa só frequência, e a proporção de área de cada estação também é mostrada.",
+    "Auf der Registerkarte Abdeckung können Sie jetzt neben dem TX bis zu 3 Sendestationen aus den Ortsvorlagen wählen und ihre Abdeckung überlagert berechnen. Die Karte färbt jeden Gitterpunkt in der Farbe der Station, die ihn am besten erreicht, und zeigt Orte, die keine Station auf die Ziel-REL bringt, als Lücken (grau). Sie können die 24 Stunden bei der besten Frequenz oder einer einzelnen Frequenz durchgehen; der Flächenanteil jeder Station wird ebenfalls angezeigt.",
+    "「커버 범위」 탭에서 TX 외에 지점 프리셋에서 송신소를 최대 3곳 골라 커버 범위를 겹쳐 계산할 수 있게 되었습니다. 지도는 격자점마다 가장 잘 닿는 송신소의 색으로 칠하고, 어느 송신소로도 목표 REL에 닿지 않는 곳을 공백 지역(회색)으로 표시합니다. 최적 주파수 또는 주파수별로 24시간을 전환할 수 있으며, 송신소별 면적 비율도 표시합니다."
   ]
 };

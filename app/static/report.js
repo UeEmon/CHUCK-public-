@@ -65,12 +65,13 @@ function reportConditions(d,id,r){
  const p=r.parameters,rows=[];
  if(id==='mesh')rows.push(['拠点',r.sites.map(s=>resultSiteText(s.name)).join(' · ')]);
  else if(id==='diversity')rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.sites.map(s=>resultSiteText(s.name)).join(' · ')}`]);
+ else if(id==='coverage'&&r.stations)rows.push(['送信所',r.stations.map(s=>resultSiteText(s.name)).join(' · ')]);
  else if(p.tx_lat!==undefined)rows.push(['経路',`${reportEndpoint(r.ui_selection,'tx').name??'TX'} → ${r.chart_site!=null?resultSiteText(r.chart_site):reportEndpoint(r.ui_selection,'rx').name??'RX'}`]);
  if(r.distance_km!==undefined)rows.push(['回線距離・方位',`${r.distance_km} km`+(r.bearing_deg!==undefined?` / ${r.bearing_deg} °`:'')]);
  rows.push(['対象年月',`${p.year}/${p.month}`]);
  if(id!=='annual')rows.push(['SSN',String(p.ssn)]);
  if(p.power_w!==undefined&&id!=='mesh')rows.push(['送信電力',`${p.power_w} W`]);
- rows.push(['周波数',id==='coverage'&&r.matrix?`${r.matrix.frequencies[Math.min(matrixFrequency,r.matrix.frequencies.length-1)]} MHz / ${$('cov_hour').value}:00 UTC`:id==='coverage'?`${r.frequency_mhz} MHz / ${r.hour_utc}:00 UTC`:p.frequencies.map(f=>f.toFixed(3)).join(', ')+' MHz']);
+ rows.push(['周波数',id==='coverage'&&r.stations?`${stationFrequencyLabel()} / ${$('cov_hour').value}:00 UTC`:id==='coverage'&&r.matrix?`${r.matrix.frequencies[Math.min(matrixFrequency,r.matrix.frequencies.length-1)]} MHz / ${$('cov_hour').value}:00 UTC`:id==='coverage'?`${r.frequency_mhz} MHz / ${r.hour_utc}:00 UTC`:p.frequencies.map(f=>f.toFixed(3)).join(', ')+' MHz']);
  if(p.required_snr!==undefined)rows.push(['要求SNR・目標REL',`${p.required_snr} dB·Hz / ${p.reliability}%`]);
  if(p.absorption_mode)rows.push(['吸収モード',reportText(absorptionLabel(p))]);rows.push(['計算方式',methodLabels[p.method]??methodLabels[30]]);
  if(p.modulation)rows.push(['電波型式・偏波',reportText(radioCaption(p).slice(3))]);

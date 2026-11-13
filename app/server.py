@@ -26,6 +26,7 @@ import mesh
 import annual
 import power
 import site_search
+import coverage_stations
 import watch
 from gateway_client import GatewayClient, GatewayError
 from presets import PresetStore, PresetConflict
@@ -210,6 +211,19 @@ def coverage_matrix(p, extra, job=None):
                 cells=[[pack_area(g) for g in row] for row in grids]),
             'input_area':done[0]['input_area'],'notes':coverage_notes(p),'span':span,'center_lat':lat,'center_lon':lon,'engine':'voacapl 0.7.7','engine_commit':__import__('engine').ENGINE_COMMIT}
 
+def coverage_of_stations(p, extra, stations, job=None):
+    # The TX and the chosen stations share one grid, centred between them.
+    name=extra.get('tx_name');name=name.strip()[:40] if isinstance(name,str) and name.strip() else 'TX'
+    identifier=extra.get('tx_id');identifier=identifier if isinstance(identifier,str) and len(identifier)<=64 else ''
+    everyone=[dict(id=identifier,name=name,lat=p['tx_lat'],lon=p['tx_lon'])]+stations
+    lat,lon=coverage_stations.center(everyone)
+    _,_,span,bounds,size=coverage_region(p,dict(extra,center_lat=lat,center_lon=lon),coverage_stations.SIZES)
+    def total(n):
+        if job: job['total']=n
+    r=coverage_stations.predict(ENGINE,p,everyone,bounds,size,job and job['cancel'],lambda:JOBS.step(job),total)
+    r.update(notes=coverage_notes(p),span=span,center_lat=lat,center_lon=lon,engine='voacapl 0.7.7',engine_commit=__import__('engine').ENGINE_COMMIT)
+    return r
+
 class Handler(BaseHTTPRequestHandler):
     def send(self,code,body,content_type='application/json; charset=utf-8',filename=None):
         if not isinstance(body,bytes): body=body.encode('utf-8')
@@ -370,6 +384,16 @@ class Handler(BaseHTTPRequestHandler):
                                 for h in c['hours']:
                                     rel=h['reliability'];f=h['frequencies']+[None]
                                     w.writerow(head+[h['hour_utc'],rel,f[0],f[1],rel is not None and rel>=r['parameters']['reliability']])
+                        elif r.get('kind') == 'coverage_stations':
+                            # The maps stay in the JSON; the CSV lists each station's share of the area per frequency and hour.
+                            w.writerow(['# coverage_stations_note',r['note']])
+                            w.writerow(['MHz','UTC','station','lat','lon','alone_area_percent','best_area_percent','only_area_percent','all_stations_area_percent','REL_target_percent'])
+                            m=r['matrix']
+                            for f,row in [*zip(m['frequencies'],m['summary']),('best',m['best']['summary'])]:
+                                for h,v in zip(m['hours'],row):
+                                    for s,a in zip(r['stations'],v['stations']):
+                                        name=s['name'] if not s['name'].startswith(('=','+','-','@')) else "'"+s['name']
+                                        w.writerow([f,h,name,s['lat'],s['lon'],a['alone'],a['best'],a['only'],v['covered'],r['parameters']['reliability']])
                         elif 'hours' in r:
                             w.writerow(['UTC','MHz','REL_percent','SNR_dBHz','S_dBW','TOA_deg','MUF_MHz'])
                             for h in r['hours']:
@@ -416,7 +440,7 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/antenna-patterns' or path.startswith('/api/antenna-patterns/'):return self.edit_patterns(path)
         if path.startswith('/api/jobs/') and path.endswith('/cancel'):
             return self.json(200,{'cancelled':JOBS.cancel(path[len('/api/jobs/'):-len('/cancel')])})
-        if path not in ('/api/predict','/api/coverage','/api/coverage-matrix','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites'): return self.json(404,{'error':'見つかりません'})
+        if path not in ('/api/predict','/api/coverage','/api/coverage-matrix','/api/diversity','/api/mesh','/api/annual','/api/power','/api/sites','/api/coverage-stations'): return self.json(404,{'error':'見つかりません'})
         # Local app has no authentication: forbid cross-origin form / fetch writes.
         origin=self.headers.get('Origin')
         if origin and origin not in ('http://'+self.headers.get('Host',''),'https://'+self.headers.get('Host','')):
@@ -430,14 +454,14 @@ class Handler(BaseHTTPRequestHandler):
             data=json.loads(self.rfile.read(length))
             if not isinstance(data,dict): raise InputError('JSONオブジェクトが必要です')
             # Registered before the slow preparation so the page can poll and cancel from the start.
-            job=JOBS.start(data.get('job')) if path in ('/api/coverage','/api/coverage-matrix') else None
+            job=JOBS.start(data.get('job')) if path in ('/api/coverage','/api/coverage-matrix','/api/coverage-stations') else None
             if job: token=data['job']
             if path=='/api/diversity': data.pop('rx_position',None)
             if path=='/api/mesh':
                 for key in ('tx_position','rx_position','rx_sites'): data.pop(key,None)
             else: data.pop('mesh_sites',None)
             data,position_inputs=POSITIONS.apply(data)
-            if path in ('/api/coverage','/api/coverage-matrix') and 'tx_position' in data:
+            if path in ('/api/coverage','/api/coverage-matrix','/api/coverage-stations') and 'tx_position' in data:
                 data.update(center_lat=data['tx_lat'],center_lon=data['tx_lon'])
             sites,independent=diversity.prepare(data) if path=='/api/diversity' else (None,False)
             if sites:
@@ -446,6 +470,7 @@ class Handler(BaseHTTPRequestHandler):
                 data.update({'rx_'+key:first[key] for key in __import__('engine').ANTENNA_FIELDS})
             nodes=mesh.prepare(data) if path=='/api/mesh' else None
             candidates,site_mode=site_search.prepare(data) if path=='/api/sites' else (None,None)
+            stations=coverage_stations.prepare(data) if path=='/api/coverage-stations' else None
             if nodes:
                 data=dict(data,**mesh.endpoint(nodes[0],data,'tx'),**mesh.endpoint(nodes[1],data,'rx'),power_w=nodes[0]['power_w'],noise=nodes[1]['noise'])
             p=validate(dict(data,ssn=0) if data.get('ssn_source') in ('noaa','effective') else data)
@@ -464,12 +489,12 @@ class Handler(BaseHTTPRequestHandler):
             if not locked: return self.json(409,{'error':'別の計算を実行中です。完了後に再実行してください。'})
             if any(datetime.fromisoformat(v['expires_at']) < datetime.now(timezone.utc) for v in position_inputs.values()):
                 raise InputError('採用した位置情報が準備中に期限切れになりました。再計算してください。')
-            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else power.predict(ENGINE,p) if path=='/api/power' else site_search.predict(ENGINE,p,candidates,site_mode) if path=='/api/sites' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage_matrix(p,data,job) if path=='/api/coverage-matrix' else coverage(p,data,job)
+            r=annual.predict(ENGINE,p,lambda y,m:annual_ssn(p,y,m)) if path=='/api/annual' else power.predict(ENGINE,p) if path=='/api/power' else site_search.predict(ENGINE,p,candidates,site_mode) if path=='/api/sites' else mesh.predict(ENGINE,p,nodes) if nodes else diversity.predict(ENGINE,p,sites,independent) if sites else ENGINE.run(p) if path=='/api/predict' else coverage_of_stations(p,data,stations,job) if stations else coverage_matrix(p,data,job) if path=='/api/coverage-matrix' else coverage(p,data,job)
             if weather is not None: r['space_weather']=weather
             if effective is not None: r['effective_ssn']=effective
             if position_inputs: r['position_inputs']=position_inputs
             if isinstance(data.get('ui_selection'),dict): r['ui_selection']=data['ui_selection']
-            self.json(200,save(r,'annual' if path=='/api/annual' else 'power' if path=='/api/power' else 'sites' if path=='/api/sites' else 'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
+            self.json(200,save(r,'annual' if path=='/api/annual' else 'power' if path=='/api/power' else 'sites' if path=='/api/sites' else 'coverage_stations' if stations else 'mesh' if nodes else 'rx_diversity' if sites else 'point' if path=='/api/predict' else 'coverage'))
         except (InputError,ValueError,UnicodeError) as e: self.json(400,{'error':str(e)})
         except Cancelled as e: self.json(409,{'error':str(e),'cancelled':True})
         except (EngineError,SpaceWeatherError,EffectiveSSNError) as e: self.json(503,{'error':str(e)})

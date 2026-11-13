@@ -4,7 +4,7 @@
  const status=document.getElementById('status'),form=document.getElementById('rate-form');
  const say=(text,error)=>{status.textContent=text;status.style.color=error?'#f18c8c':'';};
  const LABELS={'/api/predict':'24時間予測','/api/coverage':'カバー範囲（1時刻）','/api/coverage-matrix':'カバー範囲（周波数×時刻）','/api/diversity':'ダイバーシティー予測',
-  '/api/mesh':'メッシュ予測','/api/annual':'12か月予測','/api/power':'必要な送信電力','/api/sites':'拠点の候補'};
+  '/api/mesh':'メッシュ予測','/api/annual':'12か月予測','/api/power':'必要な送信電力','/api/sites':'拠点の候補','/api/coverage-stations':'送信所の重ね合わせ'};
  async function call(body){
   const r=await fetch('/api/admin/rate-limit',body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});
   const v=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(Error(v.error||'失敗しました'),{status:r.status});return v;
